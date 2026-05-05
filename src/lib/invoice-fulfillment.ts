@@ -25,8 +25,6 @@ async function ensureMaguiConnectProfile(
     data: {
       userId,
       displayName: fallbackName?.trim() || "MAGUI Connect",
-      themeBackground: "#0a0a0a",
-      themeForeground: "#f5f5f5",
     },
     select: { id: true },
   })

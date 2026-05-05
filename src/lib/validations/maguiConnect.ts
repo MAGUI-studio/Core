@@ -118,9 +118,25 @@ const optionalHexColorSchema = z
     }
   )
 
+const optionalDateTimeStringSchema = z
+  .string()
+  .optional()
+  .nullable()
+  .transform(normalizeOptionalText)
+  .refine(
+    (value) =>
+      value === undefined || value === null || !Number.isNaN(Date.parse(value)),
+    {
+      message: "Data invalida",
+    }
+  )
+
 export const maguiConnectProfileSchema = z.object({
   title: z.string().min(2).max(80),
   description: z.string().max(280).optional().nullable(),
+  heroKicker: z.string().max(40).optional().nullable(),
+  heroHeadline: z.string().max(120).optional().nullable(),
+  heroDescription: z.string().max(400).optional().nullable(),
   bio: z.string().max(2000).optional().nullable(),
   avatarUrl: z.string().url().optional().nullable().or(z.literal("")),
   bannerUrl: z.string().url().optional().nullable().or(z.literal("")),
@@ -136,9 +152,9 @@ export const maguiConnectProfileSchema = z.object({
   whatsappMessage: z.string().max(200).optional().nullable(),
   primaryCtaLabel: z.string().max(40).optional().nullable(),
   primaryCtaUrl: optionalSafeUrlSchema,
+  secondaryCtaLabel: z.string().max(40).optional().nullable(),
+  secondaryCtaUrl: optionalSafeUrlSchema,
   themeAccent: optionalHexColorSchema,
-  themeBackground: optionalHexColorSchema,
-  themeForeground: optionalHexColorSchema,
   seoTitle: z.string().max(100).optional().nullable(),
   seoDescription: z.string().max(300).optional().nullable(),
 })
@@ -146,6 +162,9 @@ export const maguiConnectProfileSchema = z.object({
 export const maguiConnectLinkSchema = z.object({
   label: z.string().min(1).max(80),
   url: safeUrlSchema,
+  customShortDescription: z.string().max(120).optional().nullable(),
+  startsAt: optionalDateTimeStringSchema,
+  expiresAt: optionalDateTimeStringSchema,
   icon: z.string().optional().nullable(),
   kind: z.string().default("LINK"),
   isFeatured: z.boolean().default(false),
@@ -155,6 +174,7 @@ export const maguiConnectLinkSchema = z.object({
 
 export const maguiConnectSectionSchema = z.object({
   title: z.string().min(1).max(80),
+  description: z.string().max(280).optional().nullable(),
   isActive: z.boolean().default(true),
   isCollapsible: z.boolean().default(false),
 })

@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 
-import { MaguiConnectLink, MaguiConnectSection } from "@/src/generated/client"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import {
@@ -52,10 +51,34 @@ import { cn } from "@/src/lib/utils/utils"
 import { MAGUI_CONNECT_LINK_KIND_PRESETS } from "@/src/config/magui-connect-presets"
 
 interface MaguiConnectLinkItemProps {
-  link: MaguiConnectLink
-  sections: MaguiConnectSection[]
+  link: {
+    id: string
+    sectionId: string | null
+    label: string
+    url: string
+    customShortDescription: string | null
+    icon: string | null
+    kind: string
+    isFeatured: boolean
+    openInNewTab: boolean
+    startsAt: Date | null
+    expiresAt: Date | null
+  }
+  sections: Array<{ id: string; title: string }>
   onDelete?: () => void
-  onUpdate?: (updatedLink: MaguiConnectLink) => void
+  onUpdate?: (updatedLink: {
+    id: string
+    sectionId: string | null
+    label: string
+    url: string
+    customShortDescription: string | null
+    icon: string | null
+    kind: string
+    isFeatured: boolean
+    openInNewTab: boolean
+    startsAt: Date | null
+    expiresAt: Date | null
+  }) => void
 }
 
 export function MaguiConnectLinkItem({
@@ -72,7 +95,17 @@ export function MaguiConnectLinkItem({
 
   const [editLabel, setEditLabel] = React.useState(link.label)
   const [editUrl, setEditUrl] = React.useState(link.url)
+  const [editCustomShortDescription, setEditCustomShortDescription] =
+    React.useState(link.customShortDescription ?? "")
+  const [editKind, setEditKind] = React.useState(link.kind)
+  const [editStartsAt, setEditStartsAt] = React.useState(
+    link.startsAt ? toDateTimeLocalValue(link.startsAt) : ""
+  )
+  const [editExpiresAt, setEditExpiresAt] = React.useState(
+    link.expiresAt ? toDateTimeLocalValue(link.expiresAt) : ""
+  )
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false)
+  const [openKind, setOpenKind] = React.useState(false)
 
   React.useEffect(() => {
     setIsFeatured(link.isFeatured)
@@ -82,6 +115,7 @@ export function MaguiConnectLinkItem({
     (p) => p.value === link.kind
   )
   const iconSrc = preset?.icon
+  const scheduleStatus = getLinkScheduleStatus(link, t)
 
   const {
     attributes,
@@ -104,6 +138,9 @@ export function MaguiConnectLinkItem({
       const updated = await updateOwnMaguiConnectLinkAction(link.id, {
         label: link.label,
         url: link.url,
+        customShortDescription: link.customShortDescription,
+        startsAt: link.startsAt ? link.startsAt.toISOString() : null,
+        expiresAt: link.expiresAt ? link.expiresAt.toISOString() : null,
         kind: link.kind,
         isFeatured: nextState,
         openInNewTab: link.openInNewTab,
@@ -122,6 +159,9 @@ export function MaguiConnectLinkItem({
       const updated = await updateOwnMaguiConnectLinkAction(link.id, {
         label: link.label,
         url: link.url,
+        customShortDescription: link.customShortDescription,
+        startsAt: link.startsAt ? link.startsAt.toISOString() : null,
+        expiresAt: link.expiresAt ? link.expiresAt.toISOString() : null,
         kind: link.kind,
         isFeatured: link.isFeatured,
         openInNewTab: link.openInNewTab,
@@ -140,7 +180,10 @@ export function MaguiConnectLinkItem({
       const updated = await updateOwnMaguiConnectLinkAction(link.id, {
         label: editLabel,
         url: editUrl,
-        kind: link.kind,
+        customShortDescription: editCustomShortDescription,
+        startsAt: editStartsAt || null,
+        expiresAt: editExpiresAt || null,
+        kind: editKind,
         isFeatured: link.isFeatured,
         openInNewTab: link.openInNewTab,
         sectionId: link.sectionId,
@@ -204,7 +247,7 @@ export function MaguiConnectLinkItem({
           </div>
           <div className="flex items-center gap-2">
             <p className="truncate font-mono text-[9px] text-muted-foreground/60">
-              {link.url}
+              {link.customShortDescription || link.url}
             </p>
             <span className="text-[10px] text-muted-foreground/20">•</span>
             <Popover open={openSection} onOpenChange={setOpenSection}>
@@ -272,6 +315,26 @@ export function MaguiConnectLinkItem({
               </PopoverContent>
             </Popover>
           </div>
+          <div className="mt-1 space-y-1">
+            {scheduleStatus.dateLine ? (
+              <p className="text-[10px] text-muted-foreground/50">
+                {scheduleStatus.dateLine}
+              </p>
+            ) : null}
+            {scheduleStatus.message ? (
+              <p
+                className={cn(
+                  "text-[10px] font-semibold",
+                  scheduleStatus.tone === "warning" &&
+                    "text-amber-500 dark:text-amber-400",
+                  scheduleStatus.tone === "danger" && "text-destructive",
+                  scheduleStatus.tone === "info" && "text-brand-primary"
+                )}
+              >
+                {scheduleStatus.message}
+              </p>
+            ) : null}
+          </div>
         </div>
 
         <div className="flex items-center gap-1">
@@ -286,7 +349,7 @@ export function MaguiConnectLinkItem({
                 <PencilSimple size={16} />
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px] rounded-3xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl p-8">
+            <DialogContent className="overflow-visible sm:max-w-[500px] rounded-3xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl p-8">
               <DialogHeader className="mb-6">
                 <DialogTitle className="text-2xl font-black tracking-tight">
                   Editar Link
@@ -303,6 +366,121 @@ export function MaguiConnectLinkItem({
                     value={editLabel}
                     onChange={(e) => setEditLabel(e.target.value)}
                   />
+                </div>
+
+                <div className="grid gap-3">
+                  <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
+                    {t("customShortDescriptionLabel")}
+                  </Label>
+                  <Input
+                    className="h-12 rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-sm shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                    value={editCustomShortDescription}
+                    onChange={(e) =>
+                      setEditCustomShortDescription(e.target.value)
+                    }
+                  />
+                </div>
+
+                <div className="grid gap-3">
+                  <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
+                    {t("linkTypeLabel")}
+                  </Label>
+                  <Popover open={openKind} onOpenChange={setOpenKind}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        role="combobox"
+                        aria-expanded={openKind}
+                        className="h-12 w-full justify-between rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-sm font-normal shadow-none hover:bg-transparent hover:border-brand-primary focus-visible:ring-0 transition-all"
+                      >
+                        {MAGUI_CONNECT_LINK_KIND_PRESETS.find(
+                          (presetOption) => presetOption.value === editKind
+                        )?.label ?? t("linkTypePlaceholder")}
+                        <CaretUpDown size={16} className="ml-2 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-[300px] p-0 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
+                      align="start"
+                    >
+                      <Command className="rounded-2xl shadow-none">
+                        <CommandInput
+                          placeholder={t("linkTypeSearchPlaceholder")}
+                          className="h-12"
+                        />
+                        <CommandList
+                          className="max-h-72 overflow-y-auto overscroll-contain"
+                          onWheel={(event) => event.stopPropagation()}
+                        >
+                          <CommandEmpty>{t("linkTypeEmpty")}</CommandEmpty>
+                          <CommandGroup>
+                            {MAGUI_CONNECT_LINK_KIND_PRESETS.map(
+                              (presetOption) => (
+                                <CommandItem
+                                  key={presetOption.value}
+                                  value={presetOption.label}
+                                  onSelect={() => {
+                                    setEditKind(presetOption.value)
+                                    setOpenKind(false)
+                                  }}
+                                  className="flex items-center gap-3 py-3 px-4 text-xs font-normal"
+                                >
+                                  <div className="flex items-center gap-3 flex-1">
+                                    {presetOption.icon.startsWith("/") ? (
+                                      <div className="relative h-6 w-6">
+                                        <Image
+                                          src={presetOption.icon}
+                                          alt={presetOption.label}
+                                          fill
+                                          className="object-contain"
+                                        />
+                                      </div>
+                                    ) : null}
+                                    {presetOption.label}
+                                  </div>
+
+                                  <Check
+                                    size={16}
+                                    className={cn(
+                                      "text-brand-primary",
+                                      editKind === presetOption.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                </CommandItem>
+                              )
+                            )}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="grid gap-3">
+                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
+                      {t("linkStartAtLabel")}
+                    </Label>
+                    <Input
+                      className="h-12 rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-sm shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                      type="datetime-local"
+                      value={editStartsAt}
+                      onChange={(e) => setEditStartsAt(e.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-3">
+                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
+                      {t("linkExpiresAtLabel")}
+                    </Label>
+                    <Input
+                      className="h-12 rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-sm shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                      type="datetime-local"
+                      value={editExpiresAt}
+                      onChange={(e) => setEditExpiresAt(e.target.value)}
+                    />
+                  </div>
                 </div>
 
                 <div className="grid gap-3">
@@ -377,4 +555,74 @@ export function MaguiConnectLinkItem({
       </div>
     </div>
   )
+}
+
+function toDateTimeLocalValue(value: Date | string) {
+  const dateValue = value instanceof Date ? value : new Date(value)
+  const local = new Date(
+    dateValue.getTime() - dateValue.getTimezoneOffset() * 60000
+  )
+  return local.toISOString().slice(0, 16)
+}
+
+function getLinkScheduleStatus(
+  link: {
+    startsAt: Date | null
+    expiresAt: Date | null
+  },
+  t: ReturnType<typeof useTranslations<"MaguiConnect">>
+) {
+  const now = new Date()
+  const startsAt = link.startsAt ? new Date(link.startsAt) : null
+  const expiresAt = link.expiresAt ? new Date(link.expiresAt) : null
+
+  const dateParts: string[] = []
+  if (startsAt) {
+    dateParts.push(
+      `${t("scheduleStartsLabel")}: ${startsAt.toLocaleDateString("pt-BR")}`
+    )
+  }
+  if (expiresAt) {
+    dateParts.push(
+      `${t("scheduleEndsLabel")}: ${expiresAt.toLocaleDateString("pt-BR")}`
+    )
+  }
+
+  if (expiresAt && expiresAt < now) {
+    return {
+      tone: "danger" as const,
+      dateLine: dateParts.join(" • "),
+      message: t("linkExpiredMessage"),
+    }
+  }
+
+  if (startsAt && startsAt > now) {
+    const diffDays = Math.ceil(
+      (startsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+    )
+    return {
+      tone: "info" as const,
+      dateLine: dateParts.join(" • "),
+      message: t("linkScheduledMessage", { days: diffDays }),
+    }
+  }
+
+  if (expiresAt) {
+    const diffDays = Math.ceil(
+      (expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+    )
+    if (diffDays >= 0) {
+      return {
+        tone: diffDays <= 7 ? ("warning" as const) : ("info" as const),
+        dateLine: dateParts.join(" • "),
+        message: t("linkExpiresSoonMessage", { days: diffDays }),
+      }
+    }
+  }
+
+  return {
+    tone: "info" as const,
+    dateLine: dateParts.length > 0 ? dateParts.join(" • ") : null,
+    message: null,
+  }
 }

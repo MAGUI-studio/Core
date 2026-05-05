@@ -5,7 +5,6 @@ import * as React from "react"
 import { useTranslations } from "next-intl"
 import Image from "next/image"
 
-import { MaguiConnectProfile } from "@/src/generated/client"
 import {
   ArrowRight,
   Camera,
@@ -38,7 +37,31 @@ import {
 } from "@/src/lib/validations/maguiConnect"
 
 interface MaguiConnectEditorProps {
-  initialProfile: MaguiConnectProfile | null
+  initialProfile: {
+    displayName: string
+    headline: string | null
+    heroKicker: string | null
+    heroHeadline: string | null
+    heroDescription: string | null
+    bio: string | null
+    avatarUrl: string | null
+    bannerUrl: string | null
+    ogImageUrl: string | null
+    professionalCategory: string | null
+    location: string | null
+    companyName: string | null
+    publicEmail: string | null
+    publicPhone: string | null
+    whatsapp: string | null
+    whatsappMessage: string | null
+    primaryCtaLabel: string | null
+    primaryCtaUrl: string | null
+    secondaryCtaLabel: string | null
+    secondaryCtaUrl: string | null
+    themeAccent: string | null
+    seoTitle: string | null
+    seoDescription: string | null
+  } | null
 }
 
 const editorTabs = [
@@ -73,6 +96,9 @@ export function MaguiConnectEditor({
   const [formData, setFormData] = React.useState<MaguiConnectProfileInput>({
     title: initialProfile?.displayName ?? "",
     description: initialProfile?.headline ?? "",
+    heroKicker: initialProfile?.heroKicker ?? "",
+    heroHeadline: initialProfile?.heroHeadline ?? "",
+    heroDescription: initialProfile?.heroDescription ?? "",
     bio: initialProfile?.bio ?? "",
     avatarUrl: initialProfile?.avatarUrl ?? "",
     ogImageUrl: initialProfile?.ogImageUrl ?? "",
@@ -89,10 +115,10 @@ export function MaguiConnectEditor({
     whatsappMessage: initialProfile?.whatsappMessage ?? "",
     primaryCtaLabel: initialProfile?.primaryCtaLabel ?? "",
     primaryCtaUrl: initialProfile?.primaryCtaUrl ?? "",
+    secondaryCtaLabel: initialProfile?.secondaryCtaLabel ?? "",
+    secondaryCtaUrl: initialProfile?.secondaryCtaUrl ?? "",
     bannerUrl: initialProfile?.bannerUrl ?? "",
     themeAccent: initialProfile?.themeAccent ?? "#E5FF00",
-    themeBackground: initialProfile?.themeBackground ?? "#0a0a0a",
-    themeForeground: initialProfile?.themeForeground ?? "#f5f5f5",
     seoTitle: initialProfile?.seoTitle ?? "",
     seoDescription: initialProfile?.seoDescription ?? "",
   })
@@ -320,6 +346,54 @@ export function MaguiConnectEditor({
             <div className="grid gap-4">
               <Label
                 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/70"
+                htmlFor="heroKicker"
+              >
+                {t("heroKickerLabel")}
+              </Label>
+              <Input
+                id="heroKicker"
+                className="h-10 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-base font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                placeholder={t("heroKickerPlaceholder")}
+                value={formData.heroKicker ?? ""}
+                onChange={(e) => updateField("heroKicker", e.target.value)}
+              />
+            </div>
+
+            <div className="grid gap-4">
+              <Label
+                className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/70"
+                htmlFor="heroHeadline"
+              >
+                {t("heroHeadlineLabel")}
+              </Label>
+              <Input
+                id="heroHeadline"
+                className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-xl font-normal tracking-tight shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                placeholder={t("heroHeadlinePlaceholder")}
+                value={formData.heroHeadline ?? ""}
+                onChange={(e) => updateField("heroHeadline", e.target.value)}
+              />
+            </div>
+
+            <div className="grid gap-4">
+              <Label
+                className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/70"
+                htmlFor="heroDescription"
+              >
+                {t("heroDescriptionLabel")}
+              </Label>
+              <Textarea
+                id="heroDescription"
+                className="min-h-[120px] rounded-none border-0 border-b border-border/40 bg-transparent px-0 py-4 text-lg font-normal leading-relaxed shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all resize-none"
+                placeholder={t("heroDescriptionPlaceholder")}
+                value={formData.heroDescription ?? ""}
+                onChange={(e) => updateField("heroDescription", e.target.value)}
+              />
+            </div>
+
+            <div className="grid gap-4">
+              <Label
+                className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/70"
                 htmlFor="bio"
               >
                 {t("bioLabel")}
@@ -455,7 +529,7 @@ export function MaguiConnectEditor({
                   <Input
                     id="primaryCtaLabel"
                     className="h-10 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-base font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
-                    placeholder="Ex: Agendar Consultoria"
+                    placeholder={t("primaryCtaLabelPlaceholder")}
                     value={formData.primaryCtaLabel ?? ""}
                     onChange={(e) =>
                       updateField("primaryCtaLabel", e.target.value)
@@ -472,10 +546,44 @@ export function MaguiConnectEditor({
                   <Input
                     id="primaryCtaUrl"
                     className="h-10 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-base font-mono font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
-                    placeholder="https://..."
+                    placeholder={t("ctaUrlPlaceholder")}
                     value={formData.primaryCtaUrl ?? ""}
                     onChange={(e) =>
                       updateField("primaryCtaUrl", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="grid gap-4">
+                  <Label
+                    className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60"
+                    htmlFor="secondaryCtaLabel"
+                  >
+                    {t("secondaryCtaLabelLabel")}
+                  </Label>
+                  <Input
+                    id="secondaryCtaLabel"
+                    className="h-10 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-base font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                    placeholder={t("secondaryCtaLabelPlaceholder")}
+                    value={formData.secondaryCtaLabel ?? ""}
+                    onChange={(e) =>
+                      updateField("secondaryCtaLabel", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="grid gap-4">
+                  <Label
+                    className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60"
+                    htmlFor="secondaryCtaUrl"
+                  >
+                    {t("secondaryCtaUrlLabel")}
+                  </Label>
+                  <Input
+                    id="secondaryCtaUrl"
+                    className="h-10 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-base font-mono font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                    placeholder={t("ctaUrlPlaceholder")}
+                    value={formData.secondaryCtaUrl ?? ""}
+                    onChange={(e) =>
+                      updateField("secondaryCtaUrl", e.target.value)
                     }
                   />
                 </div>
@@ -641,8 +749,8 @@ export function MaguiConnectEditor({
               </div>
             </div>
 
-            <div className="grid gap-12 sm:grid-cols-3">
-              <div className="grid gap-4">
+            <div className="grid gap-12 sm:grid-cols-1">
+              <div className="grid gap-4 sm:max-w-xs">
                 <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/70">
                   {t("accentLabel")}
                 </Label>
@@ -651,32 +759,6 @@ export function MaguiConnectEditor({
                   className="h-12 w-full p-1 rounded-lg border-border/40 bg-transparent"
                   value={formData.themeAccent ?? "#E5FF00"}
                   onChange={(e) => updateField("themeAccent", e.target.value)}
-                />
-              </div>
-              <div className="grid gap-4">
-                <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/70">
-                  {t("bgLabel")}
-                </Label>
-                <Input
-                  type="color"
-                  className="h-12 w-full p-1 rounded-lg border-border/40 bg-transparent"
-                  value={formData.themeBackground ?? "#0a0a0a"}
-                  onChange={(e) =>
-                    updateField("themeBackground", e.target.value)
-                  }
-                />
-              </div>
-              <div className="grid gap-4">
-                <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/70">
-                  {t("fgLabel")}
-                </Label>
-                <Input
-                  type="color"
-                  className="h-12 w-full p-1 rounded-lg border-border/40 bg-transparent"
-                  value={formData.themeForeground ?? "#f5f5f5"}
-                  onChange={(e) =>
-                    updateField("themeForeground", e.target.value)
-                  }
                 />
               </div>
             </div>

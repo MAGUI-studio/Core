@@ -3,50 +3,36 @@ export const MAGUI_CONNECT_PRESETS = [
     id: "magui-signature",
     name: "MAGUI Signature",
     themeAccent: "#E5FF00", // Lima MAGUI
-    themeBackground: "#050505",
-    themeForeground: "#FFFFFF",
   },
   {
     id: "stealth-luxury",
     name: "Stealth Luxury",
     themeAccent: "#C0C0C0",
-    themeBackground: "#0A0A0B",
-    themeForeground: "#E0E0E0",
   },
   {
     id: "architect-white",
     name: "Pure Architect",
     themeAccent: "#000000",
-    themeBackground: "#FFFFFF",
-    themeForeground: "#1A1A1A",
   },
   {
     id: "neon-cyan",
     name: "Digital Cyan",
     themeAccent: "#00FFF2",
-    themeBackground: "#01080A",
-    themeForeground: "#F0FDFF",
   },
   {
     id: "executive-gold",
     name: "Executive Gold",
     themeAccent: "#D4AF37",
-    themeBackground: "#1A1A1A",
-    themeForeground: "#F5F5F5",
   },
   {
     id: "deep-ocean",
     name: "Deep Ocean",
     themeAccent: "#38BDF8",
-    themeBackground: "#030712",
-    themeForeground: "#F8FAFC",
   },
   {
     id: "nordic-minimal",
     name: "Nordic Minimal",
     themeAccent: "#5E81AC",
-    themeBackground: "#ECEFF4",
-    themeForeground: "#2E3440",
   },
 ]
 

@@ -5,7 +5,6 @@ import * as React from "react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 
-import { MaguiConnectSection } from "@/src/generated/client"
 import {
   DndContext,
   DragEndEvent,
@@ -28,6 +27,7 @@ import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
 import { Switch } from "@/src/components/ui/switch"
+import { Textarea } from "@/src/components/ui/textarea"
 
 import {
   createOwnMaguiConnectSectionAction,
@@ -37,7 +37,13 @@ import {
 } from "@/src/lib/actions/maguiConnect.actions"
 
 interface MaguiConnectSectionListProps {
-  sections: MaguiConnectSection[]
+  sections: Array<{
+    id: string
+    title: string
+    description: string | null
+    isActive: boolean
+    isCollapsible: boolean
+  }>
 }
 
 export function MaguiConnectSectionList({
@@ -48,6 +54,7 @@ export function MaguiConnectSectionList({
   const [items, setItems] = React.useState(sections)
   const [isAdding, setIsAdding] = React.useState(false)
   const [newTitle, setNewTitle] = React.useState("")
+  const [newDescription, setNewDescription] = React.useState("")
   const [newIsCollapsible, setNewIsCollapsible] = React.useState(false)
 
   React.useEffect(() => {
@@ -72,11 +79,13 @@ export function MaguiConnectSectionList({
     try {
       const created = await createOwnMaguiConnectSectionAction({
         title: newTitle,
+        description: newDescription,
         isActive: true,
         isCollapsible: newIsCollapsible,
       })
       setItems((current) => [...current, created])
       setNewTitle("")
+      setNewDescription("")
       setNewIsCollapsible(false)
       setIsAdding(false)
       router.refresh()
@@ -122,6 +131,18 @@ export function MaguiConnectSectionList({
               placeholder="Ex: Redes Sociais"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
+            />
+          </div>
+
+          <div className="grid gap-3">
+            <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
+              {t("groupDescriptionLabel")}
+            </Label>
+            <Textarea
+              className="min-h-24 rounded-2xl border-border/40 bg-transparent shadow-none"
+              placeholder={t("groupDescriptionPlaceholder")}
+              value={newDescription}
+              onChange={(e) => setNewDescription(e.target.value)}
             />
           </div>
 
@@ -207,12 +228,21 @@ function SectionItem({
   section,
   onDelete,
 }: {
-  section: MaguiConnectSection
+  section: {
+    id: string
+    title: string
+    description: string | null
+    isActive: boolean
+    isCollapsible: boolean
+  }
   onDelete: () => void
 }) {
   const t = useTranslations("MaguiConnect")
   const router = useRouter()
   const [title, setTitle] = React.useState(section.title)
+  const [description, setDescription] = React.useState(
+    section.description ?? ""
+  )
   const [isEditing, setIsEditing] = React.useState(false)
 
   const {
@@ -233,10 +263,12 @@ function SectionItem({
     try {
       await updateOwnMaguiConnectSectionAction(section.id, {
         title,
+        description,
         isActive: section.isActive,
         isCollapsible: section.isCollapsible,
       })
       setIsEditing(false)
+      router.refresh()
       toast.success("Grupo atualizado")
     } catch (error) {
       toast.error("Erro ao atualizar grupo")
@@ -247,6 +279,7 @@ function SectionItem({
     try {
       await updateOwnMaguiConnectSectionAction(section.id, {
         title: section.title,
+        description: section.description,
         isActive: section.isActive,
         isCollapsible: !section.isCollapsible,
       })
@@ -287,23 +320,54 @@ function SectionItem({
 
       <div className="flex-1 space-y-1">
         {isEditing ? (
-          <div className="flex items-center gap-4">
+          <div className="space-y-3">
             <Input
               autoFocus
               className="h-10 rounded-none border-0 border-b border-brand-primary bg-transparent px-0 text-base font-bold shadow-none focus-visible:ring-0 transition-all"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              onBlur={handleUpdate}
-              onKeyDown={(e) => e.key === "Enter" && handleUpdate()}
             />
+            <Textarea
+              className="min-h-20 rounded-2xl border-border/40 bg-transparent shadow-none"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <div className="flex gap-2">
+              <Button
+                className="rounded-full px-4"
+                size="sm"
+                onClick={handleUpdate}
+              >
+                {t("save")}
+              </Button>
+              <Button
+                className="rounded-full px-4"
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  setTitle(section.title)
+                  setDescription(section.description ?? "")
+                  setIsEditing(false)
+                }}
+              >
+                {t("cancel")}
+              </Button>
+            </div>
           </div>
         ) : (
-          <h4
-            className="text-sm font-black uppercase tracking-[0.2em] text-foreground cursor-pointer"
-            onClick={() => setIsEditing(true)}
-          >
-            {title}
-          </h4>
+          <div className="space-y-2">
+            <h4
+              className="text-sm font-black uppercase tracking-[0.2em] text-foreground cursor-pointer"
+              onClick={() => setIsEditing(true)}
+            >
+              {title}
+            </h4>
+            {section.description ? (
+              <p className="text-xs leading-relaxed text-muted-foreground/60">
+                {section.description}
+              </p>
+            ) : null}
+          </div>
         )}
         <p className="text-[9px] font-medium text-muted-foreground/40 uppercase tracking-widest">
           {section.isCollapsible ? "Colapsável" : "Lista Fixa"}

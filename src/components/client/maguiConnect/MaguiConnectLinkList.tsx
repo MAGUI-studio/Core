@@ -70,6 +70,9 @@ export function MaguiConnectLinkList({
   const [items, setItems] = React.useState(links)
   const [label, setLabel] = React.useState("")
   const [url, setUrl] = React.useState("")
+  const [customShortDescription, setCustomShortDescription] = React.useState("")
+  const [startsAt, setStartsAt] = React.useState("")
+  const [expiresAt, setExpiresAt] = React.useState("")
   const [kind, setKind] = React.useState("LINK")
   const [sectionId, setSectionId] = React.useState<string | null>(null)
   const [isAdding, setIsAdding] = React.useState(false)
@@ -100,6 +103,9 @@ export function MaguiConnectLinkList({
     const createdLink = await createOwnMaguiConnectLinkAction({
       label,
       url,
+      customShortDescription,
+      startsAt,
+      expiresAt,
       kind,
       isFeatured: false,
       openInNewTab: true,
@@ -109,14 +115,34 @@ export function MaguiConnectLinkList({
     router.refresh()
     setLabel("")
     setUrl("")
+    setCustomShortDescription("")
+    setStartsAt("")
+    setExpiresAt("")
     setKind("LINK")
     setSectionId(null)
     setIsAdding(false)
   }
 
-  const handleUpdate = (updatedLink: MaguiConnectLink) => {
+  const handleUpdate = (
+    updatedLink: Pick<
+      MaguiConnectLink,
+      | "id"
+      | "sectionId"
+      | "label"
+      | "url"
+      | "customShortDescription"
+      | "icon"
+      | "kind"
+      | "isFeatured"
+      | "openInNewTab"
+      | "startsAt"
+      | "expiresAt"
+    >
+  ) => {
     setItems((current) =>
-      current.map((item) => (item.id === updatedLink.id ? updatedLink : item))
+      current.map((item) =>
+        item.id === updatedLink.id ? { ...item, ...updatedLink } : item
+      )
     )
   }
 
@@ -162,7 +188,7 @@ export function MaguiConnectLinkList({
               <Input
                 autoFocus
                 className="h-14 rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-lg font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
-                placeholder="Ex: Meu Instagram"
+                placeholder={t("linkLabelPlaceholder")}
                 value={label}
                 onChange={(e) => setLabel(e.target.value)}
               />
@@ -251,9 +277,46 @@ export function MaguiConnectLinkList({
                 </Label>
                 <Input
                   className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-sm font-mono font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
-                  placeholder="https://instagram.com/..."
+                  placeholder={t("linkUrlPlaceholder")}
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-3">
+              <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
+                {t("customShortDescriptionLabel")}
+              </Label>
+              <Input
+                className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-sm font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                placeholder={t("customShortDescriptionPlaceholder")}
+                value={customShortDescription}
+                onChange={(e) => setCustomShortDescription(e.target.value)}
+              />
+            </div>
+
+            <div className="grid gap-12 sm:grid-cols-2">
+              <div className="grid gap-3">
+                <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
+                  {t("linkStartAtLabel")}
+                </Label>
+                <Input
+                  className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-sm font-normal shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                  type="datetime-local"
+                  value={startsAt}
+                  onChange={(e) => setStartsAt(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-3">
+                <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
+                  {t("linkExpiresAtLabel")}
+                </Label>
+                <Input
+                  className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-sm font-normal shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                  type="datetime-local"
+                  value={expiresAt}
+                  onChange={(e) => setExpiresAt(e.target.value)}
                 />
               </div>
             </div>
@@ -339,6 +402,9 @@ export function MaguiConnectLinkList({
                 setIsAdding(false)
                 setLabel("")
                 setUrl("")
+                setCustomShortDescription("")
+                setStartsAt("")
+                setExpiresAt("")
                 setKind("LINK")
                 setSectionId(null)
               }}

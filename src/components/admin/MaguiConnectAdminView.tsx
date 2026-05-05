@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 
-import { MaguiConnectProfile } from "@/src/generated/client"
 import {
   ArrowRight,
   CaretDown,
@@ -49,11 +48,38 @@ interface MaguiConnectAdminViewProps {
   userId: string
   canAccess: boolean
   profile:
-    | (MaguiConnectProfile & {
+    | ({
+        displayName: string
+        headline: string | null
+        heroKicker: string | null
+        heroHeadline: string | null
+        heroDescription: string | null
+        bio: string | null
+        avatarUrl: string | null
+        ogImageUrl: string | null
+        slug: string | null
+        domain: string | null
+        professionalCategory: string | null
+        location: string | null
+        companyName: string | null
+        publicEmail: string | null
+        publicPhone: string | null
+        whatsapp: string | null
+        primaryCtaLabel: string | null
+        primaryCtaUrl: string | null
+        secondaryCtaLabel: string | null
+        secondaryCtaUrl: string | null
+        themeAccent: string | null
+        seoTitle: string | null
+        seoDescription: string | null
+      } & {
         links: Array<{
           id: string
           label: string
           url: string
+          customShortDescription?: string | null
+          startsAt?: Date | null
+          expiresAt?: Date | null
           kind?: string
           isFeatured?: boolean
           openInNewTab?: boolean
@@ -75,6 +101,9 @@ export function MaguiConnectAdminView({
   const [formData, setFormData] = useState<MaguiConnectProfileInput>({
     title: profile?.displayName ?? clientName,
     description: profile?.headline ?? "",
+    heroKicker: profile?.heroKicker ?? "",
+    heroHeadline: profile?.heroHeadline ?? "",
+    heroDescription: profile?.heroDescription ?? "",
     bio: profile?.bio ?? "",
     avatarUrl: profile?.avatarUrl ?? "",
     ogImageUrl: profile?.ogImageUrl ?? "",
@@ -88,15 +117,18 @@ export function MaguiConnectAdminView({
     whatsapp: profile?.whatsapp ?? "",
     primaryCtaLabel: profile?.primaryCtaLabel ?? "",
     primaryCtaUrl: profile?.primaryCtaUrl ?? "",
+    secondaryCtaLabel: profile?.secondaryCtaLabel ?? "",
+    secondaryCtaUrl: profile?.secondaryCtaUrl ?? "",
     themeAccent: profile?.themeAccent ?? "",
-    themeBackground: profile?.themeBackground ?? "#0a0a0a",
-    themeForeground: profile?.themeForeground ?? "#f5f5f5",
     seoTitle: profile?.seoTitle ?? "",
     seoDescription: profile?.seoDescription ?? "",
   })
   const [newLink, setNewLink] = useState<MaguiConnectLinkInput>({
     label: "",
     url: "",
+    customShortDescription: "",
+    startsAt: "",
+    expiresAt: "",
     kind: "LINK",
     isFeatured: false,
     openInNewTab: true,
@@ -106,6 +138,9 @@ export function MaguiConnectAdminView({
     {
       label: "",
       url: "",
+      customShortDescription: "",
+      startsAt: "",
+      expiresAt: "",
       kind: "LINK",
       isFeatured: false,
       openInNewTab: true,
@@ -410,6 +445,113 @@ export function MaguiConnectAdminView({
                 <div className="grid gap-2">
                   <Label
                     className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+                    htmlFor="admin-magui-hero-kicker"
+                  >
+                    {t("heroKickerLabel")}
+                  </Label>
+                  <Input
+                    className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    id="admin-magui-hero-kicker"
+                    placeholder={t("heroKickerPlaceholder")}
+                    value={formData.heroKicker ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        heroKicker: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label
+                    className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+                    htmlFor="admin-magui-hero-headline"
+                  >
+                    {t("heroHeadlineLabel")}
+                  </Label>
+                  <Input
+                    className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    id="admin-magui-hero-headline"
+                    placeholder={t("heroHeadlinePlaceholder")}
+                    value={formData.heroHeadline ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        heroHeadline: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label
+                    className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+                    htmlFor="admin-magui-hero-description"
+                  >
+                    {t("heroDescriptionLabel")}
+                  </Label>
+                  <Textarea
+                    className="min-h-28 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    id="admin-magui-hero-description"
+                    placeholder={t("heroDescriptionPlaceholder")}
+                    value={formData.heroDescription ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        heroDescription: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid gap-2">
+                    <Label
+                      className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+                      htmlFor="admin-magui-secondary-cta-label"
+                    >
+                      {t("secondaryCtaLabelLabel")}
+                    </Label>
+                    <Input
+                      className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                      id="admin-magui-secondary-cta-label"
+                      placeholder={t("secondaryCtaLabelPlaceholder")}
+                      value={formData.secondaryCtaLabel ?? ""}
+                      onChange={(e) =>
+                        setFormData((current) => ({
+                          ...current,
+                          secondaryCtaLabel: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label
+                      className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+                      htmlFor="admin-magui-secondary-cta-url"
+                    >
+                      {t("secondaryCtaUrlLabel")}
+                    </Label>
+                    <Input
+                      className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                      id="admin-magui-secondary-cta-url"
+                      placeholder={t("ctaUrlPlaceholder")}
+                      value={formData.secondaryCtaUrl ?? ""}
+                      onChange={(e) =>
+                        setFormData((current) => ({
+                          ...current,
+                          secondaryCtaUrl: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label
+                    className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
                     htmlFor="admin-magui-description"
                   >
                     {t("descriptionLabel")}
@@ -496,6 +638,41 @@ export function MaguiConnectAdminView({
                     }))
                   }
                 />
+                <Input
+                  className="h-11 rounded-2xl border-border/40 bg-transparent shadow-none"
+                  placeholder={t("customShortDescriptionPlaceholder")}
+                  value={newLink.customShortDescription ?? ""}
+                  onChange={(e) =>
+                    setNewLink((current) => ({
+                      ...current,
+                      customShortDescription: e.target.value,
+                    }))
+                  }
+                />
+                <div className="grid gap-3 md:grid-cols-2">
+                  <Input
+                    className="h-11 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    type="datetime-local"
+                    value={newLink.startsAt ?? ""}
+                    onChange={(e) =>
+                      setNewLink((current) => ({
+                        ...current,
+                        startsAt: e.target.value,
+                      }))
+                    }
+                  />
+                  <Input
+                    className="h-11 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    type="datetime-local"
+                    value={newLink.expiresAt ?? ""}
+                    onChange={(e) =>
+                      setNewLink((current) => ({
+                        ...current,
+                        expiresAt: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
                 <div className="flex justify-start">
                   <Button
                     className="h-10 rounded-full px-5 text-[11px] font-semibold uppercase tracking-[0.18em]"
@@ -511,6 +688,9 @@ export function MaguiConnectAdminView({
                           setNewLink({
                             label: "",
                             url: "",
+                            customShortDescription: "",
+                            startsAt: "",
+                            expiresAt: "",
                             kind: "LINK",
                             isFeatured: false,
                             openInNewTab: true,
@@ -562,6 +742,18 @@ export function MaguiConnectAdminView({
                                   setEditingLinkData({
                                     label: link.label,
                                     url: link.url,
+                                    customShortDescription:
+                                      link.customShortDescription ?? "",
+                                    startsAt: link.startsAt
+                                      ? new Date(link.startsAt)
+                                          .toISOString()
+                                          .slice(0, 16)
+                                      : "",
+                                    expiresAt: link.expiresAt
+                                      ? new Date(link.expiresAt)
+                                          .toISOString()
+                                          .slice(0, 16)
+                                      : "",
                                     kind: link.kind ?? "LINK",
                                     isFeatured: link.isFeatured ?? false,
                                     openInNewTab: link.openInNewTab ?? true,
@@ -618,6 +810,45 @@ export function MaguiConnectAdminView({
                                 }))
                               }
                             />
+                            <Input
+                              className="h-11 rounded-2xl border-border/40 bg-transparent shadow-none"
+                              placeholder={t(
+                                "customShortDescriptionPlaceholder"
+                              )}
+                              value={
+                                editingLinkData.customShortDescription ?? ""
+                              }
+                              onChange={(e) =>
+                                setEditingLinkData((current) => ({
+                                  ...current,
+                                  customShortDescription: e.target.value,
+                                }))
+                              }
+                            />
+                            <div className="grid gap-3 md:grid-cols-2">
+                              <Input
+                                className="h-11 rounded-2xl border-border/40 bg-transparent shadow-none"
+                                type="datetime-local"
+                                value={editingLinkData.startsAt ?? ""}
+                                onChange={(e) =>
+                                  setEditingLinkData((current) => ({
+                                    ...current,
+                                    startsAt: e.target.value,
+                                  }))
+                                }
+                              />
+                              <Input
+                                className="h-11 rounded-2xl border-border/40 bg-transparent shadow-none"
+                                type="datetime-local"
+                                value={editingLinkData.expiresAt ?? ""}
+                                onChange={(e) =>
+                                  setEditingLinkData((current) => ({
+                                    ...current,
+                                    expiresAt: e.target.value,
+                                  }))
+                                }
+                              />
+                            </div>
                             <div className="flex flex-wrap gap-2">
                               <Button
                                 className="h-10 rounded-full px-5 text-[11px] font-semibold uppercase tracking-[0.18em]"
@@ -675,7 +906,9 @@ export function MaguiConnectAdminView({
                                 {link.label}
                               </span>
                               <span className="mt-1 truncate font-mono text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground opacity-40">
-                                {link.url.replace(/^https?:\/\/(www\.)?/, "")}
+                                {(
+                                  link.customShortDescription || link.url
+                                ).replace(/^https?:\/\/(www\.)?/, "")}
                               </span>
                             </div>
 

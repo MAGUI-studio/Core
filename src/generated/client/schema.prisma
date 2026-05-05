@@ -272,6 +272,9 @@ model MaguiConnectProfile {
   slug                 String?  @unique
   displayName          String
   headline             String?
+  heroKicker           String?
+  heroHeadline         String?
+  heroDescription      String?  @db.Text
   bio                  String?  @db.Text
   avatarUrl            String?
   bannerUrl            String?
@@ -286,9 +289,9 @@ model MaguiConnectProfile {
   whatsappMessage      String?
   primaryCtaLabel      String?
   primaryCtaUrl        String?
+  secondaryCtaLabel    String?
+  secondaryCtaUrl      String?
   themeAccent          String?
-  themeBackground      String?  @default("#0a0a0a")
-  themeForeground      String?  @default("#f5f5f5")
   seoTitle             String?
   seoDescription       String?
   createdAt            DateTime @default(now())
@@ -306,6 +309,7 @@ model MaguiConnectSection {
   profileId     String
   profile       MaguiConnectProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   title         String
+  description   String?             @db.Text
   sortOrder     Int                 @default(0)
   isActive      Boolean             @default(true)
   isCollapsible Boolean             @default(false)
@@ -317,23 +321,26 @@ model MaguiConnectSection {
 }
 
 model MaguiConnectLink {
-  id           String                   @id @default(cuid())
-  profileId    String
-  profile      MaguiConnectProfile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  sectionId    String?
-  section      MaguiConnectSection?     @relation(fields: [sectionId], references: [id], onDelete: SetNull)
-  label        String
-  url          String
-  icon         String?
-  kind         String                   @default("LINK")
-  sortOrder    Int                      @default(0)
-  isActive     Boolean                  @default(true)
-  isFeatured   Boolean                  @default(false)
-  openInNewTab Boolean                  @default(true)
-  clickCount   Int                      @default(0)
-  createdAt    DateTime                 @default(now())
-  updatedAt    DateTime                 @updatedAt
-  clickEvents  MaguiConnectClickEvent[]
+  id                     String                   @id @default(cuid())
+  profileId              String
+  profile                MaguiConnectProfile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  sectionId              String?
+  section                MaguiConnectSection?     @relation(fields: [sectionId], references: [id], onDelete: SetNull)
+  label                  String
+  url                    String
+  customShortDescription String?
+  startsAt               DateTime?
+  expiresAt              DateTime?
+  icon                   String?
+  kind                   String                   @default("LINK")
+  sortOrder              Int                      @default(0)
+  isActive               Boolean                  @default(true)
+  isFeatured             Boolean                  @default(false)
+  openInNewTab           Boolean                  @default(true)
+  clickCount             Int                      @default(0)
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  clickEvents            MaguiConnectClickEvent[]
 
   @@index([profileId, sortOrder])
   @@index([sectionId])

@@ -30,6 +30,7 @@ import { MaguiConnectAdminView } from "@/src/components/admin/MaguiConnectAdminV
 import { AddInvoiceForm } from "@/src/components/admin/financial/AddInvoiceForm"
 
 import { getAdminClientDetails } from "@/src/lib/client-data"
+import { getAdminMaguiConnectProfileByUserId } from "@/src/lib/maguiConnectData"
 import { isAdmin } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
 import { dashboardMetadata } from "@/src/lib/seo"
@@ -80,55 +81,7 @@ export default async function ClientDetailsPage({
   const localUser = await getAdminClientDetails(id)
 
   const maguiConnectProfile = localUser
-    ? await prisma.maguiConnectProfile.findUnique({
-        where: { userId: localUser.id },
-        select: {
-          id: true,
-          userId: true,
-          displayName: true,
-          headline: true,
-          bio: true,
-          avatarUrl: true,
-          bannerUrl: true,
-          ogImageUrl: true,
-          slug: true,
-          domain: true,
-          professionalCategory: true,
-          location: true,
-          companyName: true,
-          publicEmail: true,
-          publicPhone: true,
-          whatsapp: true,
-          whatsappMessage: true,
-          primaryCtaLabel: true,
-          primaryCtaUrl: true,
-          themeAccent: true,
-          themeBackground: true,
-          themeForeground: true,
-          seoTitle: true,
-          seoDescription: true,
-          createdAt: true,
-          updatedAt: true,
-          links: {
-            select: {
-              id: true,
-              profileId: true,
-              sectionId: true,
-              label: true,
-              url: true,
-              icon: true,
-              kind: true,
-              sortOrder: true,
-              isActive: true,
-              isFeatured: true,
-              openInNewTab: true,
-              clickCount: true,
-              createdAt: true,
-              updatedAt: true,
-            },
-          },
-        },
-      })
+    ? await getAdminMaguiConnectProfileByUserId(localUser.id)
     : null
   const standaloneInvoices = localUser
     ? await prisma.invoice.findMany({

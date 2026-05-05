@@ -1,25 +1,52 @@
 import { unstable_cache } from "next/cache"
 
-import {
-  MaguiConnectLink,
-  MaguiConnectProfile,
-  MaguiConnectSection,
-} from "@/src/generated/client"
+import { MaguiConnectLink, MaguiConnectSection } from "@/src/generated/client"
 
 import { CACHE_TTL } from "@/src/config/cache"
 
 import { cacheTags } from "./cache-tags"
 import prisma from "./prisma"
 
-type PublicMaguiConnectProfile = MaguiConnectProfile & {
+type PublicMaguiConnectProfile = {
+  id: string
+  userId: string
+  displayName: string
+  headline: string | null
+  heroKicker: string | null
+  heroHeadline: string | null
+  heroDescription: string | null
+  bio: string | null
+  avatarUrl: string | null
+  bannerUrl: string | null
+  ogImageUrl: string | null
+  slug: string | null
+  domain: string | null
+  professionalCategory: string | null
+  location: string | null
+  companyName: string | null
+  publicEmail: string | null
+  publicPhone: string | null
+  whatsapp: string | null
+  whatsappMessage: string | null
+  primaryCtaLabel: string | null
+  primaryCtaUrl: string | null
+  secondaryCtaLabel: string | null
+  secondaryCtaUrl: string | null
+  themeAccent: string | null
+  seoTitle: string | null
+  seoDescription: string | null
   links: MaguiConnectLink[]
-  sections: (MaguiConnectSection & { links: MaguiConnectLink[] })[]
+  sections: (MaguiConnectSection & {
+    description: string | null
+    links: MaguiConnectLink[]
+  })[]
 }
 
 const sectionSelection = {
   id: true,
   profileId: true,
   title: true,
+  description: true,
   sortOrder: true,
   isActive: true,
   isCollapsible: true,
@@ -33,6 +60,9 @@ const linkSelection = {
   sectionId: true,
   label: true,
   url: true,
+  customShortDescription: true,
+  startsAt: true,
+  expiresAt: true,
   icon: true,
   kind: true,
   sortOrder: true,
@@ -49,6 +79,9 @@ const publicProfileSelection = {
   userId: true,
   displayName: true,
   headline: true,
+  heroKicker: true,
+  heroHeadline: true,
+  heroDescription: true,
   bio: true,
   avatarUrl: true,
   bannerUrl: true,
@@ -64,9 +97,9 @@ const publicProfileSelection = {
   whatsappMessage: true,
   primaryCtaLabel: true,
   primaryCtaUrl: true,
+  secondaryCtaLabel: true,
+  secondaryCtaUrl: true,
   themeAccent: true,
-  themeBackground: true,
-  themeForeground: true,
   seoTitle: true,
   seoDescription: true,
   createdAt: true,
@@ -95,6 +128,9 @@ const adminProfileSelection = {
   userId: true,
   displayName: true,
   headline: true,
+  heroKicker: true,
+  heroHeadline: true,
+  heroDescription: true,
   bio: true,
   avatarUrl: true,
   bannerUrl: true,
@@ -110,9 +146,9 @@ const adminProfileSelection = {
   whatsappMessage: true,
   primaryCtaLabel: true,
   primaryCtaUrl: true,
+  secondaryCtaLabel: true,
+  secondaryCtaUrl: true,
   themeAccent: true,
-  themeBackground: true,
-  themeForeground: true,
   seoTitle: true,
   seoDescription: true,
   createdAt: true,
@@ -262,6 +298,13 @@ export async function getPublicMaguiConnectBySlug(slug: string) {
 }
 
 function formatPublicPayload(profile: PublicMaguiConnectProfile) {
+  const now = new Date()
+  const isLinkVisible = (link: MaguiConnectLink) => {
+    if (link.startsAt && link.startsAt > now) return false
+    if (link.expiresAt && link.expiresAt < now) return false
+    return true
+  }
+
   return {
     profile: {
       id: profile.id,
@@ -269,6 +312,9 @@ function formatPublicPayload(profile: PublicMaguiConnectProfile) {
       description: profile.headline,
       displayName: profile.displayName,
       headline: profile.headline,
+      heroKicker: profile.heroKicker,
+      heroHeadline: profile.heroHeadline,
+      heroDescription: profile.heroDescription,
       bio: profile.bio,
       avatarUrl: profile.avatarUrl,
       ogImageUrl: profile.ogImageUrl || profile.avatarUrl || null,
@@ -282,16 +328,19 @@ function formatPublicPayload(profile: PublicMaguiConnectProfile) {
       whatsapp: profile.whatsapp,
       primaryCtaLabel: profile.primaryCtaLabel,
       primaryCtaUrl: profile.primaryCtaUrl,
+      secondaryCtaLabel: profile.secondaryCtaLabel,
+      secondaryCtaUrl: profile.secondaryCtaUrl,
       themeAccent: profile.themeAccent,
-      themeBackground: profile.themeBackground,
-      themeForeground: profile.themeForeground,
       seoTitle: profile.seoTitle,
       seoDescription: profile.seoDescription,
     },
-    links: profile.links.map((link) => ({
+    links: profile.links.filter(isLinkVisible).map((link) => ({
       id: link.id,
       label: link.label,
       url: link.url,
+      customShortDescription: link.customShortDescription,
+      startsAt: link.startsAt,
+      expiresAt: link.expiresAt,
       icon: link.icon,
       kind: link.kind,
       sortOrder: link.sortOrder,
@@ -301,11 +350,15 @@ function formatPublicPayload(profile: PublicMaguiConnectProfile) {
     sections: profile.sections.map((section) => ({
       id: section.id,
       title: section.title,
+      description: section.description,
       sortOrder: section.sortOrder,
-      links: section.links.map((link) => ({
+      links: section.links.filter(isLinkVisible).map((link) => ({
         id: link.id,
         label: link.label,
         url: link.url,
+        customShortDescription: link.customShortDescription,
+        startsAt: link.startsAt,
+        expiresAt: link.expiresAt,
         icon: link.icon,
         kind: link.kind,
         sortOrder: link.sortOrder,

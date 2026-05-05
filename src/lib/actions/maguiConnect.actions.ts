@@ -72,6 +72,11 @@ function toNullable(value?: string | null) {
   return value && value.trim().length > 0 ? value.trim() : null
 }
 
+function toNullableDate(value?: string | null) {
+  const normalized = toNullable(value)
+  return normalized ? new Date(normalized) : null
+}
+
 async function ensureProfileUniqueFields(
   targetUserId: string,
   input: MaguiConnectProfileInput
@@ -127,8 +132,6 @@ async function ensureOwnProfile(userId: string, fallbackName?: string | null) {
     data: {
       userId,
       displayName: fallbackName?.trim() || "MAGUI Connect",
-      themeBackground: "#0a0a0a",
-      themeForeground: "#f5f5f5",
     },
   })
 }
@@ -186,6 +189,9 @@ async function saveMaguiConnectProfile(
   const profileFields = {
     displayName: input.title,
     headline: toNullable(input.description),
+    heroKicker: toNullable(input.heroKicker),
+    heroHeadline: toNullable(input.heroHeadline),
+    heroDescription: toNullable(input.heroDescription),
     bio: toNullable(input.bio),
     avatarUrl: toNullable(input.avatarUrl),
     bannerUrl: toNullable(input.bannerUrl),
@@ -199,9 +205,9 @@ async function saveMaguiConnectProfile(
     whatsappMessage: toNullable(input.whatsappMessage),
     primaryCtaLabel: toNullable(input.primaryCtaLabel),
     primaryCtaUrl: toNullable(input.primaryCtaUrl),
+    secondaryCtaLabel: toNullable(input.secondaryCtaLabel),
+    secondaryCtaUrl: toNullable(input.secondaryCtaUrl),
     themeAccent: toNullable(input.themeAccent),
-    themeBackground: toNullable(input.themeBackground),
-    themeForeground: toNullable(input.themeForeground),
     seoTitle: toNullable(input.seoTitle),
     seoDescription: toNullable(input.seoDescription),
     ...(slug !== undefined
@@ -317,6 +323,9 @@ export async function createOwnMaguiConnectLinkAction(
       profileId: profile.id,
       label: input.label,
       url: input.url,
+      customShortDescription: toNullable(input.customShortDescription),
+      startsAt: toNullableDate(input.startsAt),
+      expiresAt: toNullableDate(input.expiresAt),
       icon: toNullable(input.icon),
       kind: input.kind || "LINK",
       isFeatured: input.isFeatured ?? false,
@@ -367,6 +376,9 @@ export async function updateOwnMaguiConnectLinkAction(
     data: {
       label: input.label,
       url: input.url,
+      customShortDescription: toNullable(input.customShortDescription),
+      startsAt: toNullableDate(input.startsAt),
+      expiresAt: toNullableDate(input.expiresAt),
       icon: toNullable(input.icon),
       kind: input.kind || "LINK",
       isFeatured: input.isFeatured ?? false,
@@ -481,6 +493,9 @@ export async function createMaguiConnectLinkForUserAction(
       profileId: profile.id,
       label: input.label,
       url: input.url,
+      customShortDescription: toNullable(input.customShortDescription),
+      startsAt: toNullableDate(input.startsAt),
+      expiresAt: toNullableDate(input.expiresAt),
       icon: toNullable(input.icon),
       kind: input.kind || "LINK",
       isFeatured: input.isFeatured ?? false,
@@ -537,6 +552,9 @@ export async function updateMaguiConnectLinkForUserAction(
     data: {
       label: input.label,
       url: input.url,
+      customShortDescription: toNullable(input.customShortDescription),
+      startsAt: toNullableDate(input.startsAt),
+      expiresAt: toNullableDate(input.expiresAt),
       icon: toNullable(input.icon),
       kind: input.kind || "LINK",
       isFeatured: input.isFeatured ?? false,
@@ -625,6 +643,7 @@ export async function createOwnMaguiConnectSectionAction(
     data: {
       profileId: profile.id,
       title: input.title,
+      description: toNullable(input.description),
       isActive: input.isActive ?? true,
       isCollapsible: input.isCollapsible ?? false,
       sortOrder: (last._max.sortOrder ?? -1) + 1,
@@ -669,6 +688,7 @@ export async function updateOwnMaguiConnectSectionAction(
     where: { id: sectionId },
     data: {
       title: input.title,
+      description: toNullable(input.description),
       isActive: input.isActive ?? true,
       isCollapsible: input.isCollapsible ?? false,
     },
