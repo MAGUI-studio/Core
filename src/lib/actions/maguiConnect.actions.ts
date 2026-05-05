@@ -10,7 +10,10 @@ import {
   getCurrentAppUser,
   getInternalNotificationRecipients,
 } from "@/src/lib/project-governance"
-import { revalidateMaguiConnectProfile } from "@/src/lib/revalidate"
+import {
+  revalidateMaguiConnectAdminClient,
+  revalidateMaguiConnectProfile,
+} from "@/src/lib/revalidate"
 
 import {
   type MaguiConnectLinkInput,
@@ -807,7 +810,13 @@ export async function setMaguiConnectAccessForUserAction(
   const targetUser = await prisma.user.update({
     where: { id: targetUserId },
     data: { canAccessMaguiConnect: enabled },
-    select: { id: true, name: true, email: true, canAccessMaguiConnect: true },
+    select: {
+      id: true,
+      clerkId: true,
+      name: true,
+      email: true,
+      canAccessMaguiConnect: true,
+    },
   })
 
   if (enabled) {
@@ -827,6 +836,7 @@ export async function setMaguiConnectAccessForUserAction(
   })
 
   revalidateMaguiConnectProfile(targetUser.id)
+  revalidateMaguiConnectAdminClient(targetUser.clerkId)
 
   return targetUser
 }

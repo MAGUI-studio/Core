@@ -70,3 +70,8 @@ export function revalidateMaguiConnectProfile(userId: string) {
   revalidateTag(cacheTags.maguiConnectProfile(userId), "default")
   revalidateTag(cacheTags.maguiConnectAdmin, "default")
 }
+
+export function revalidateMaguiConnectAdminClient(clerkId: string) {
+  revalidateTag(cacheTags.adminClient(clerkId), "default")
+  revalidateTag(cacheTags.adminClientOptions, "default")
+}
