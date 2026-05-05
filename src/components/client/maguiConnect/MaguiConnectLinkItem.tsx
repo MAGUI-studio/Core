@@ -18,6 +18,17 @@ import {
 } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/src/components/ui/alert-dialog"
 import { Button } from "@/src/components/ui/button"
 import {
   Command,
@@ -528,29 +539,52 @@ export function MaguiConnectLinkItem({
             <Star size={16} weight={isFeatured ? "fill" : "regular"} />
           </Button>
 
-          <Button
-            className="h-8 w-8 cursor-pointer rounded-full text-muted-foreground/30 transition-all hover:bg-destructive/10 hover:text-destructive"
-            size="icon"
-            variant="ghost"
-            disabled={isPending}
-            title={t("deleteLink")}
-            onClick={() => {
-              if (confirm(t("confirmDelete"))) {
-                startTransition(async () => {
-                  try {
-                    await deleteOwnMaguiConnectLinkAction(link.id)
-                    onDelete?.()
-                    toast.success(t("linkDeleted"))
-                  } catch (error) {
-                    console.error(error)
-                    toast.error(t("deleteFailed"))
-                  }
-                })
-              }
-            }}
-          >
-            <Trash size={16} />
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                className="h-8 w-8 cursor-pointer rounded-full text-muted-foreground/30 transition-all hover:bg-destructive/10 hover:text-destructive"
+                size="icon"
+                variant="ghost"
+                disabled={isPending}
+                title={t("deleteLink")}
+              >
+                <Trash size={16} />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="rounded-3xl border-border/60 bg-background/95 backdrop-blur-xl shadow-2xl p-8">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="font-heading text-xl font-black uppercase tracking-tight">
+                  {t("confirmDelete")}
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-sm font-medium text-muted-foreground/60 leading-relaxed">
+                  Tem certeza que deseja remover este link? Esta ação não pode
+                  ser desfeita.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter className="gap-3 mt-8">
+                <AlertDialogCancel className="rounded-full border-border/40 text-xs font-bold uppercase tracking-widest hover:bg-muted/10 h-12 px-8">
+                  {t("cancel")}
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    startTransition(async () => {
+                      try {
+                        await deleteOwnMaguiConnectLinkAction(link.id)
+                        onDelete?.()
+                        toast.success(t("linkDeleted"))
+                      } catch (error) {
+                        console.error(error)
+                        toast.error(t("deleteFailed"))
+                      }
+                    })
+                  }}
+                  className="rounded-full bg-red-500 text-xs font-bold uppercase tracking-widest text-white hover:bg-red-600 shadow-lg shadow-red-500/20 h-12 px-8"
+                >
+                  {t("delete")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </div>

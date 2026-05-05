@@ -23,6 +23,17 @@ import { CSS } from "@dnd-kit/utilities"
 import { ArrowsDownUp, DotsSix, Plus, Trash } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/src/components/ui/alert-dialog"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
@@ -291,7 +302,6 @@ function SectionItem({
   }
 
   const handleDelete = async () => {
-    if (!confirm("Tem certeza? Links associados ficarao sem grupo.")) return
     try {
       await deleteOwnMaguiConnectSectionAction(section.id)
       onDelete()
@@ -385,14 +395,39 @@ function SectionItem({
           />
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-10 w-10 rounded-full text-muted-foreground/20 hover:text-red-500 hover:bg-red-500/5 transition-all"
-          onClick={handleDelete}
-        >
-          <Trash size={18} weight="bold" />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 rounded-full text-muted-foreground/20 hover:text-red-500 hover:bg-red-500/5 transition-all"
+            >
+              <Trash size={18} weight="bold" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="rounded-3xl border-border/60 bg-background/95 backdrop-blur-xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="font-heading text-xl font-black uppercase tracking-tight">
+                {t("confirmDelete")}
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-sm font-medium text-muted-foreground/60 leading-relaxed">
+                Tem certeza? Links associados ficarão sem grupo. Esta ação não
+                pode ser desfeita.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="gap-3">
+              <AlertDialogCancel className="rounded-full border-border/40 text-xs font-bold uppercase tracking-widest hover:bg-muted/10">
+                {t("cancel")}
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDelete}
+                className="rounded-full bg-red-500 text-xs font-bold uppercase tracking-widest text-white hover:bg-red-600 shadow-lg shadow-red-500/20"
+              >
+                {t("delete")}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   )
