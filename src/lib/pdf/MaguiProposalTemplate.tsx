@@ -752,18 +752,15 @@ function renderBlock(block: ContentBlock, currency: string) {
         </Text>
         <View style={styles.investmentMiniGrid}>
           <View style={styles.investmentMiniCard}>
-            <Text style={styles.investmentMiniLabel}>Total de entregas</Text>
+            <Text style={styles.investmentMiniLabel}>Itens previstos</Text>
             <Text style={styles.investmentMiniValue}>
               {String(block.itemCount).padStart(2, "0")}
             </Text>
           </View>
           <View style={styles.investmentMiniCard}>
-            <Text style={styles.investmentMiniLabel}>Ticket medio</Text>
+            <Text style={styles.investmentMiniLabel}>Valor total</Text>
             <Text style={styles.investmentMiniValue}>
-              {formatCurrency(
-                block.itemCount > 0 ? block.totalValue / block.itemCount : 0,
-                block.currency
-              )}
+              {formatCurrency(block.totalValue, block.currency)}
             </Text>
           </View>
         </View>
