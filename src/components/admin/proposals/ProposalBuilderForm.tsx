@@ -7,6 +7,7 @@ import {
   Calculator,
   ClockCountdown,
   FilePdf,
+  Gift,
   Info,
   ListChecks,
   MagicWand,
@@ -27,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select"
+import { Switch } from "@/src/components/ui/switch"
 import { Textarea } from "@/src/components/ui/textarea"
 
 import { createProposalAction } from "@/src/lib/actions/proposal.actions"
@@ -268,6 +270,8 @@ export function ProposalBuilderForm({
     setWarranty(PROPOSAL_PRESETS.warranty[0].content)
   }
 
+  const [includeConnectBonus, setIncludeConnectBonus] = React.useState(false)
+
   const buildProposalNotes = () => {
     const sections = [
       ["Resumo executivo", executiveSummary],
@@ -282,6 +286,12 @@ export function ProposalBuilderForm({
       ["Operação pela plataforma", platformFlow],
       ["Próximos passos", nextSteps],
       ["Observações adicionais", notes],
+      [
+        "Bonus exclusivo",
+        includeConnectBonus
+          ? "Incluso: MAGUI Connect (Perfil profissional de alta conversão e centralização de links). De R$ 497,00 por R$ 0,00."
+          : "",
+      ],
     ]
       .map(([sectionTitle, content]) => [sectionTitle, content.trim()] as const)
       .filter(([, content]) => content.length > 0)
@@ -769,6 +779,43 @@ export function ProposalBuilderForm({
               Valor consolidado desta proposta. Use os itens para reforçar o
               escopo e a leitura de investimento, não apenas o preço.
             </p>
+          </div>
+
+          <div className="space-y-4 border-t border-border/20 pt-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Gift className="size-5 text-brand-primary" weight="bold" />
+                <p className="text-[10px] font-black uppercase tracking-[0.22em] text-muted-foreground/55">
+                  Bônus MAGUI Connect
+                </p>
+              </div>
+              <Switch
+                checked={includeConnectBonus}
+                onCheckedChange={setIncludeConnectBonus}
+              />
+            </div>
+
+            {includeConnectBonus && (
+              <div className="rounded-2xl bg-brand-primary/5 p-4 border border-brand-primary/10 animate-in fade-in zoom-in-95 duration-300">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-brand-primary">
+                    Perfil Profissional
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground/40 line-through font-medium">
+                      R$ 497,00
+                    </span>
+                    <span className="text-xs font-black text-brand-primary uppercase tracking-tighter">
+                      Grátis
+                    </span>
+                  </div>
+                </div>
+                <p className="mt-2 text-[11px] leading-relaxed text-brand-primary/60 font-medium">
+                  Acesso vitalício ao MAGUI Connect incluso como bônus exclusivo
+                  nesta proposta.
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="space-y-3 border-t border-border/20 pt-6">
