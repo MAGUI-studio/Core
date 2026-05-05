@@ -462,38 +462,6 @@ export function ProposalBuilderForm({
       />
 
       <section className="space-y-8">
-        <div className="rounded-4xl border border-border/20 bg-muted/10 p-5">
-          <div className="flex items-center gap-2">
-            <Info className="size-4 text-brand-primary" weight="bold" />
-            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-muted-foreground/60">
-              Checklist da proposta
-            </p>
-          </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {requiredSections.map((section) => (
-              <span
-                key={section.label}
-                className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest ${
-                  section.ok
-                    ? "bg-emerald-500/10 text-emerald-700"
-                    : "bg-amber-500/10 text-amber-700"
-                }`}
-              >
-                {section.ok ? "OK" : "Pendente"} · {section.label}
-              </span>
-            ))}
-            <span
-              className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest ${
-                hasInvalidItems
-                  ? "bg-amber-500/10 text-amber-700"
-                  : "bg-emerald-500/10 text-emerald-700"
-              }`}
-            >
-              {hasInvalidItems ? "Pendente" : "OK"} · Itens com valor
-            </span>
-          </div>
-        </div>
-
         <FieldBlock
           label="Resumo executivo *"
           value={executiveSummary}
