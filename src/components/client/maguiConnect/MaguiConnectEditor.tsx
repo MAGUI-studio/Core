@@ -264,7 +264,7 @@ export function MaguiConnectEditor({
             </p>
           </div>
 
-          <TabsList className="flex h-auto w-full justify-start gap-10 overflow-x-auto overflow-y-hidden rounded-none border-b border-border/30 bg-transparent p-0 pb-px scrollbar-hide">
+          <TabsList className="flex h-auto w-full flex-nowrap justify-start gap-10 overflow-x-auto overflow-y-hidden rounded-none border-b border-border/30 bg-transparent p-0 pb-px scrollbar-hide">
             {editorTabs.map((tab) => {
               const labelKey =
                 tab.value === "basic"
