@@ -48,6 +48,7 @@ export const MAGUI_CONNECT_LINK_KIND_PRESETS = [
   { value: "EDUZZ", label: "Eduzz", icon: "/icons/Eduzz.svg" },
   { value: "DRIVE", label: "Google Drive", icon: "/icons/Drive.svg" },
   { value: "MAPS", label: "Google Maps", icon: "/icons/Maps.svg" },
+  { value: "GITHUB", label: "Github", icon: "/icons/Github.svg" },
   { value: "HOTMART", label: "Hotmart", icon: "/icons/Hotmart.svg" },
   { value: "IFOOD", label: "iFood", icon: "/icons/iFood.svg" },
   { value: "INSTAGRAM", label: "Instagram", icon: "/icons/Instagram.svg" },
