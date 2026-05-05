@@ -20,7 +20,7 @@ import {
 } from "@dnd-kit/sortable"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { ArrowsDownUp, DotsSix, Plus, Trash } from "@phosphor-icons/react"
+import { ArrowsDownUp, DotsSix, Pencil, Plus, Trash } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
 import {
@@ -395,6 +395,15 @@ function SectionItem({
           />
         </div>
 
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-10 w-10 rounded-full text-muted-foreground/20 hover:text-brand-primary hover:bg-brand-primary/5 transition-all"
+          onClick={() => setIsEditing(true)}
+        >
+          <Pencil size={18} weight="bold" />
+        </Button>
+
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
@@ -408,11 +417,11 @@ function SectionItem({
           <AlertDialogContent className="rounded-3xl border-border/60 bg-background/95 backdrop-blur-xl">
             <AlertDialogHeader>
               <AlertDialogTitle className="font-heading text-xl font-black uppercase tracking-tight">
-                {t("confirmDelete")}
+                Remover este grupo?
               </AlertDialogTitle>
               <AlertDialogDescription className="text-sm font-medium text-muted-foreground/60 leading-relaxed">
-                Tem certeza? Links associados ficarão sem grupo. Esta ação não
-                pode ser desfeita.
+                Tem certeza que deseja remover este grupo de links? Links
+                associados ficarão sem grupo. Esta ação não pode ser desfeita.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="gap-3">
