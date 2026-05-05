@@ -214,149 +214,151 @@ export function MaguiConnectLinkItem({
     <div
       ref={setNodeRef}
       className={cn(
-        "group relative transition-all rounded-2xl overflow-hidden",
+        "group relative transition-all rounded-2xl overflow-hidden border border-border/10",
         isDragging && "z-50 scale-[1.01] opacity-50 bg-muted/20",
-        isFeatured && "bg-brand-primary/[0.03] border border-brand-primary/10"
+        isFeatured && "bg-brand-primary/[0.03] border-brand-primary/10"
       )}
       style={style}
     >
-      <div className="flex items-center gap-3 sm:gap-4 py-4 px-2 transition-colors">
-        <button
-          {...attributes}
-          {...listeners}
-          className="cursor-grab p-1 text-muted-foreground/30 transition-colors hover:text-foreground active:cursor-grabbing shrink-0"
-          aria-label="Reorder"
-        >
-          <DotsSixVertical size={18} weight="bold" />
-        </button>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 sm:py-4 sm:px-2 transition-colors">
+        <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+          <button
+            {...attributes}
+            {...listeners}
+            className="cursor-grab p-1 text-muted-foreground/30 transition-colors hover:text-foreground active:cursor-grabbing shrink-0"
+            aria-label="Reorder"
+          >
+            <DotsSixVertical size={18} weight="bold" />
+          </button>
 
-        <div
-          className={cn(
-            "flex h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center transition-all overflow-hidden"
-          )}
-        >
-          {iconSrc && (
-            <div className="relative h-8 w-8 sm:h-10 sm:w-10">
-              <Image
-                src={iconSrc}
-                alt={link.label}
-                fill
-                className="object-contain"
-              />
-            </div>
-          )}
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <p className="truncate text-xs sm:text-sm font-bold">
-              {link.label}
-            </p>
-            {isFeatured && (
-              <span className="bg-brand-primary/10 text-brand-primary text-[7px] sm:text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md shrink-0">
-                Destaque
-              </span>
+          <div
+            className={cn(
+              "flex h-10 w-10 flex-shrink-0 items-center justify-center transition-all overflow-hidden bg-muted/5 rounded-xl border border-border/10"
+            )}
+          >
+            {iconSrc && (
+              <div className="relative h-6 w-6">
+                <Image
+                  src={iconSrc}
+                  alt={link.label}
+                  fill
+                  className="object-contain"
+                />
+              </div>
             )}
           </div>
-          <div className="flex items-center gap-2">
-            <p className="truncate font-mono text-[8px] sm:text-[9px] text-muted-foreground/60">
-              {link.customShortDescription || link.url}
-            </p>
-            <span className="text-[10px] text-muted-foreground/20">•</span>
-            <Popover open={openSection} onOpenChange={setOpenSection}>
-              <PopoverTrigger asChild>
-                <button className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-brand-primary/60 hover:text-brand-primary transition-colors flex items-center gap-1 min-w-0">
-                  <span className="truncate">
-                    {currentSection?.title ?? "Sem Grupo"}
-                  </span>
-                  <CaretUpDown size={10} className="shrink-0" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="w-[200px] p-0 rounded-xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
-                align="start"
-              >
-                <Command className="rounded-xl shadow-none">
-                  <CommandInput
-                    placeholder="Alterar grupo..."
-                    className="h-10 text-[11px]"
-                  />
-                  <CommandList>
-                    <CommandEmpty className="py-2 text-[10px]">
-                      Nenhum grupo.
-                    </CommandEmpty>
-                    <CommandGroup>
-                      <CommandItem
-                        onSelect={() => {
-                          changeSection(null)
-                          setOpenSection(false)
-                        }}
-                        className="flex items-center gap-2 py-2 px-3 text-[10px] font-bold uppercase tracking-wider"
-                      >
-                        Sem grupo
-                        <Check
-                          size={12}
-                          className={cn(
-                            "text-brand-primary ml-auto",
-                            !link.sectionId ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                      </CommandItem>
-                      {sections.map((s) => (
+
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <p className="truncate text-sm font-bold">{link.label}</p>
+              {isFeatured && (
+                <span className="bg-brand-primary/10 text-brand-primary text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md shrink-0">
+                  Destaque
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2 mt-0.5">
+              <p className="truncate font-mono text-[9px] text-muted-foreground/60 max-w-[150px] sm:max-w-none">
+                {link.customShortDescription || link.url}
+              </p>
+              <span className="text-[10px] text-muted-foreground/20 shrink-0">
+                •
+              </span>
+              <Popover open={openSection} onOpenChange={setOpenSection}>
+                <PopoverTrigger asChild>
+                  <button className="text-[9px] font-black uppercase tracking-widest text-brand-primary/60 hover:text-brand-primary transition-colors flex items-center gap-1 min-w-0">
+                    <span className="truncate">
+                      {currentSection?.title ?? "Sem Grupo"}
+                    </span>
+                    <CaretUpDown size={10} className="shrink-0" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-[200px] p-0 rounded-xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
+                  align="start"
+                >
+                  <Command className="rounded-xl shadow-none">
+                    <CommandInput
+                      placeholder="Alterar grupo..."
+                      className="h-10 text-[11px]"
+                    />
+                    <CommandList>
+                      <CommandEmpty className="py-2 text-[10px]">
+                        Nenhum grupo.
+                      </CommandEmpty>
+                      <CommandGroup>
                         <CommandItem
-                          key={s.id}
-                          value={s.title}
                           onSelect={() => {
-                            changeSection(s.id)
+                            changeSection(null)
                             setOpenSection(false)
                           }}
                           className="flex items-center gap-2 py-2 px-3 text-[10px] font-bold uppercase tracking-wider"
                         >
-                          <span className="truncate">{s.title}</span>
+                          Sem grupo
                           <Check
                             size={12}
                             className={cn(
                               "text-brand-primary ml-auto",
-                              link.sectionId === s.id
-                                ? "opacity-100"
-                                : "opacity-0"
+                              !link.sectionId ? "opacity-100" : "opacity-0"
                             )}
                           />
                         </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          </div>
-          <div className="mt-1 space-y-0.5">
-            {scheduleStatus.dateLine ? (
-              <p className="text-[8px] sm:text-[10px] text-muted-foreground/50 truncate">
-                {scheduleStatus.dateLine}
-              </p>
-            ) : null}
-            {scheduleStatus.message ? (
-              <p
-                className={cn(
-                  "text-[8px] sm:text-[10px] font-semibold truncate",
-                  scheduleStatus.tone === "warning" &&
-                    "text-amber-500 dark:text-amber-400",
-                  scheduleStatus.tone === "danger" && "text-destructive",
-                  scheduleStatus.tone === "info" && "text-brand-primary"
-                )}
-              >
-                {scheduleStatus.message}
-              </p>
-            ) : null}
+                        {sections.map((s) => (
+                          <CommandItem
+                            key={s.id}
+                            value={s.title}
+                            onSelect={() => {
+                              changeSection(s.id)
+                              setOpenSection(false)
+                            }}
+                            className="flex items-center gap-2 py-2 px-3 text-[10px] font-bold uppercase tracking-wider"
+                          >
+                            <span className="truncate">{s.title}</span>
+                            <Check
+                              size={12}
+                              className={cn(
+                                "text-brand-primary ml-auto",
+                                link.sectionId === s.id
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="mt-1.5 space-y-0.5">
+              {scheduleStatus.dateLine ? (
+                <p className="text-[9px] text-muted-foreground/50 truncate">
+                  {scheduleStatus.dateLine}
+                </p>
+              ) : null}
+              {scheduleStatus.message ? (
+                <p
+                  className={cn(
+                    "text-[9px] font-semibold truncate",
+                    scheduleStatus.tone === "warning" &&
+                      "text-amber-500 dark:text-amber-400",
+                    scheduleStatus.tone === "danger" && "text-destructive",
+                    scheduleStatus.tone === "info" && "text-brand-primary"
+                  )}
+                >
+                  {scheduleStatus.message}
+                </p>
+              ) : null}
+            </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+        <div className="flex items-center justify-end gap-2 shrink-0 border-t border-border/5 sm:border-0 pt-3 sm:pt-0">
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
             <DialogTrigger asChild>
               <Button
-                className="h-8 w-8 cursor-pointer rounded-full text-muted-foreground/30 transition-all hover:bg-muted/40 hover:text-foreground"
+                className="h-9 w-9 sm:h-8 sm:w-8 cursor-pointer rounded-full text-muted-foreground/40 transition-all hover:bg-muted/40 hover:text-foreground bg-muted/5 sm:bg-transparent"
                 size="icon"
                 variant="ghost"
                 title="Editar Detalhes"
@@ -535,10 +537,10 @@ export function MaguiConnectLinkItem({
 
           <Button
             className={cn(
-              "h-8 w-8 cursor-pointer rounded-full transition-all",
+              "h-9 w-9 sm:h-8 sm:w-8 cursor-pointer rounded-full transition-all bg-muted/5 sm:bg-transparent",
               isFeatured
-                ? "text-brand-primary hover:bg-brand-primary/10"
-                : "text-muted-foreground/30 hover:text-foreground hover:bg-muted/40"
+                ? "text-brand-primary hover:bg-brand-primary/10 bg-brand-primary/5"
+                : "text-muted-foreground/40 hover:text-foreground hover:bg-muted/40"
             )}
             size="icon"
             variant="ghost"
@@ -551,7 +553,7 @@ export function MaguiConnectLinkItem({
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
-                className="h-8 w-8 cursor-pointer rounded-full text-muted-foreground/30 transition-all hover:bg-destructive/10 hover:text-destructive"
+                className="h-9 w-9 sm:h-8 sm:w-8 cursor-pointer rounded-full text-muted-foreground/40 transition-all hover:bg-destructive/10 hover:text-destructive bg-muted/5 sm:bg-transparent"
                 size="icon"
                 variant="ghost"
                 disabled={isPending}

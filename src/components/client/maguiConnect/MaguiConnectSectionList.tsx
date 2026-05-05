@@ -324,89 +324,102 @@ function SectionItem({
       ref={setNodeRef}
       style={style}
       className={cn(
-        "group relative flex items-center gap-6 bg-background/40 p-6 transition-all hover:bg-muted/5 border border-border/20 rounded-3xl",
+        "group relative flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 bg-background/40 p-5 sm:p-6 transition-all hover:bg-muted/5 border border-border/20 rounded-3xl",
         isDragging && "z-50 border-brand-primary/40 bg-background/80 opacity-50"
       )}
     >
-      <div
-        {...attributes}
-        {...listeners}
-        className="cursor-grab active:cursor-grabbing text-muted-foreground/20 transition-colors group-hover:text-muted-foreground/40"
-      >
-        <DotsSix size={24} weight="bold" />
-      </div>
+      <div className="flex items-center gap-4 sm:gap-6 flex-1 min-w-0">
+        <div
+          {...attributes}
+          {...listeners}
+          className="cursor-grab active:cursor-grabbing text-muted-foreground/20 transition-colors group-hover:text-muted-foreground/40 shrink-0"
+        >
+          <DotsSix size={24} weight="bold" />
+        </div>
 
-      <div className="flex-1 space-y-1">
-        {isEditing ? (
-          <div className="space-y-3">
-            <Input
-              autoFocus
-              className="h-10 rounded-none border-0 border-b border-brand-primary bg-transparent px-0 text-base font-bold shadow-none focus-visible:ring-0 transition-all"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <Textarea
-              className="min-h-20 rounded-2xl border-border/40 bg-transparent shadow-none"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            <div className="flex gap-2">
-              <Button
-                className="rounded-full px-4"
-                size="sm"
-                onClick={handleUpdate}
-              >
-                {t("save")}
-              </Button>
-              <Button
-                className="rounded-full px-4"
-                size="sm"
-                variant="ghost"
-                onClick={() => {
-                  setTitle(section.title)
-                  setDescription(section.description ?? "")
-                  setIsEditing(false)
-                }}
-              >
-                {t("cancel")}
-              </Button>
+        <div className="flex-1 min-w-0 space-y-1">
+          {isEditing ? (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-[9px] font-black uppercase tracking-widest text-brand-primary/60">
+                  Nome do Grupo
+                </Label>
+                <Input
+                  autoFocus
+                  className="h-10 rounded-none border-0 border-b border-brand-primary bg-transparent px-0 text-base font-bold shadow-none focus-visible:ring-0 transition-all"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[9px] font-black uppercase tracking-widest text-brand-primary/60">
+                  Descrição
+                </Label>
+                <Textarea
+                  className="min-h-20 rounded-2xl border-border/40 bg-transparent shadow-none text-sm"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button
+                  className="w-full sm:w-auto rounded-full px-6"
+                  size="sm"
+                  onClick={handleUpdate}
+                >
+                  {t("save")}
+                </Button>
+                <Button
+                  className="w-full sm:w-auto rounded-full px-6"
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    setTitle(section.title)
+                    setDescription(section.description ?? "")
+                    setIsEditing(false)
+                  }}
+                >
+                  {t("cancel")}
+                </Button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <h4
-              className="text-sm font-black uppercase tracking-[0.2em] text-foreground cursor-pointer"
-              onClick={() => setIsEditing(true)}
-            >
-              {title}
-            </h4>
-            {section.description ? (
-              <p className="text-xs leading-relaxed text-muted-foreground/60">
-                {section.description}
-              </p>
-            ) : null}
-          </div>
-        )}
-        <p className="text-[9px] font-medium text-muted-foreground/40 uppercase tracking-widest">
-          {section.isCollapsible ? "Colapsável" : "Lista Fixa"}
-        </p>
+          ) : (
+            <div className="space-y-1">
+              <h4
+                className="text-sm font-black uppercase tracking-[0.2em] text-foreground cursor-pointer truncate"
+                onClick={() => setIsEditing(true)}
+              >
+                {title}
+              </h4>
+              {section.description ? (
+                <p className="text-xs leading-relaxed text-muted-foreground/60 line-clamp-2">
+                  {section.description}
+                </p>
+              ) : null}
+            </div>
+          )}
+          <p className="text-[9px] font-medium text-muted-foreground/40 uppercase tracking-widest">
+            {section.isCollapsible ? "Colapsável" : "Lista Fixa"}
+          </p>
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+      <div className="flex items-center justify-end gap-3 sm:gap-4 shrink-0 border-t border-border/5 sm:border-0 pt-4 sm:pt-0">
+        <div className="flex items-center gap-2 mr-auto sm:mr-0">
+          <Label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 whitespace-nowrap">
             {t("isCollapsibleLabel")}
           </Label>
           <Switch
             checked={section.isCollapsible}
             onCheckedChange={toggleCollapsible}
+            className="scale-90"
           />
         </div>
 
         <Button
           variant="ghost"
           size="icon"
-          className="h-10 w-10 rounded-full text-muted-foreground/20 hover:text-brand-primary hover:bg-brand-primary/5 transition-all"
+          className="h-10 w-10 sm:h-9 sm:w-9 rounded-full text-muted-foreground/20 hover:text-brand-primary hover:bg-brand-primary/5 transition-all bg-muted/5 sm:bg-transparent"
           onClick={() => setIsEditing(true)}
         >
           <Pencil size={18} weight="bold" />
@@ -417,12 +430,12 @@ function SectionItem({
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10 rounded-full text-muted-foreground/20 hover:text-red-500 hover:bg-red-500/5 transition-all"
+              className="h-10 w-10 sm:h-9 sm:w-9 rounded-full text-muted-foreground/20 hover:text-red-500 hover:bg-red-500/5 transition-all bg-muted/5 sm:bg-transparent"
             >
               <Trash size={18} weight="bold" />
             </Button>
           </AlertDialogTrigger>
-          <AlertDialogContent className="rounded-3xl border-border/60 bg-background/95 backdrop-blur-xl">
+          <AlertDialogContent className="w-[95vw] max-w-md rounded-3xl border-border/60 bg-background/95 backdrop-blur-xl p-6 sm:p-8">
             <AlertDialogHeader>
               <AlertDialogTitle className="font-heading text-xl font-black uppercase tracking-tight">
                 Remover este grupo?
@@ -432,13 +445,13 @@ function SectionItem({
                 associados ficarão sem grupo. Esta ação não pode ser desfeita.
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter className="gap-3">
-              <AlertDialogCancel className="rounded-full border-border/40 text-xs font-bold uppercase tracking-widest hover:bg-muted/10">
+            <AlertDialogFooter className="flex-col sm:flex-row gap-3 mt-8">
+              <AlertDialogCancel className="w-full sm:w-auto rounded-full border-border/40 text-xs font-bold uppercase tracking-widest hover:bg-muted/10 h-12 px-8 order-2 sm:order-1">
                 {t("cancel")}
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleDelete}
-                className="rounded-full bg-red-500 text-xs font-bold uppercase tracking-widest text-white hover:bg-red-600 shadow-lg shadow-red-500/20"
+                className="w-full sm:w-auto rounded-full bg-red-500 text-xs font-bold uppercase tracking-widest text-white hover:bg-red-600 shadow-lg shadow-red-500/20 h-12 px-8 order-1 sm:order-2"
               >
                 {t("delete")}
               </AlertDialogAction>

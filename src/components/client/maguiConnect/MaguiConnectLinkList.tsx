@@ -147,11 +147,11 @@ export function MaguiConnectLinkList({
   }
 
   return (
-    <div className="w-full max-w-4xl space-y-12 pt-12 sm:pt-16 border-t border-border/40 overflow-hidden">
+    <div className="w-full max-w-4xl space-y-10 sm:space-y-12 pt-10 sm:pt-16 border-t border-border/40 overflow-hidden">
       {!isAdding ? (
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
-            <h3 className="text-lg sm:text-xl font-black tracking-tight">
+            <h3 className="text-xl font-black tracking-tight">
               {t("linksTitle")}
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground/60">
@@ -160,7 +160,7 @@ export function MaguiConnectLinkList({
           </div>
 
           <button
-            className="group relative inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-foreground px-6 sm:px-8 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-background transition-all hover:opacity-90 active:scale-[0.98] shadow-none overflow-hidden"
+            className="group relative inline-flex h-12 sm:h-14 cursor-pointer items-center justify-center gap-2 rounded-full bg-foreground px-8 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-background transition-all hover:opacity-90 active:scale-[0.98] shadow-none overflow-hidden shrink-0"
             type="button"
             onClick={() => setIsAdding(true)}
           >
@@ -174,7 +174,7 @@ export function MaguiConnectLinkList({
       ) : (
         <div className="space-y-8 sm:space-y-10 animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="flex items-center gap-4">
-            <h3 className="text-lg sm:text-xl font-black tracking-tight">
+            <h3 className="text-xl font-black tracking-tight">
               {t("addLink")}
             </h3>
             <div className="h-[1px] flex-1 bg-border/40" />
@@ -187,14 +187,14 @@ export function MaguiConnectLinkList({
               </Label>
               <Input
                 autoFocus
-                className="h-12 sm:h-14 rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-base sm:text-lg font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                className="h-12 sm:h-14 rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-lg sm:text-xl font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                 placeholder={t("linkLabelPlaceholder")}
                 value={label}
                 onChange={(e) => setLabel(e.target.value)}
               />
             </div>
 
-            <div className="grid gap-8 sm:gap-12 sm:grid-cols-2">
+            <div className="grid gap-8 sm:gap-12 md:grid-cols-2">
               <div className="grid gap-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
                   Tipo de Destino
@@ -221,7 +221,7 @@ export function MaguiConnectLinkList({
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent
-                    className="w-[280px] sm:w-[300px] p-0 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
+                    className="w-[calc(100vw-48px)] sm:w-[300px] p-0 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
                     align="start"
                   >
                     <Command className="rounded-2xl shadow-none">
@@ -281,7 +281,7 @@ export function MaguiConnectLinkList({
                   {t("linkUrl")}
                 </Label>
                 <Input
-                  className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-xs sm:text-sm font-mono font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                  className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-sm font-mono font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                   placeholder={t("linkUrlPlaceholder")}
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
@@ -294,20 +294,20 @@ export function MaguiConnectLinkList({
                 {t("customShortDescriptionLabel")}
               </Label>
               <Input
-                className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-xs sm:text-sm font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                className="h-12 rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-sm font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                 placeholder={t("customShortDescriptionPlaceholder")}
                 value={customShortDescription}
                 onChange={(e) => setCustomShortDescription(e.target.value)}
               />
             </div>
 
-            <div className="grid gap-8 sm:gap-12 sm:grid-cols-2">
+            <div className="grid gap-8 sm:gap-12 md:grid-cols-2">
               <div className="grid gap-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
                   {t("linkStartAtLabel")}
                 </Label>
                 <Input
-                  className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-xs sm:text-sm font-normal shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                  className="h-12 rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-sm font-normal shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                   type="datetime-local"
                   value={startsAt}
                   onChange={(e) => setStartsAt(e.target.value)}
@@ -318,7 +318,7 @@ export function MaguiConnectLinkList({
                   {t("linkExpiresAtLabel")}
                 </Label>
                 <Input
-                  className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-xs sm:text-sm font-normal shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                  className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-sm font-normal shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                   type="datetime-local"
                   value={expiresAt}
                   onChange={(e) => setExpiresAt(e.target.value)}
@@ -335,7 +335,7 @@ export function MaguiConnectLinkList({
                   <Button
                     variant="ghost"
                     role="combobox"
-                    className="h-12 w-full justify-between rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-xs sm:text-sm font-normal shadow-none hover:bg-transparent hover:border-brand-primary focus-visible:ring-0 transition-all"
+                    className="h-12 w-full justify-between rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-sm font-normal shadow-none hover:bg-transparent hover:border-brand-primary focus-visible:ring-0 transition-all"
                   >
                     <span className="truncate">
                       {sectionId
@@ -349,7 +349,7 @@ export function MaguiConnectLinkList({
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
-                  className="w-[280px] sm:w-[300px] p-0 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
+                  className="w-[calc(100vw-48px)] sm:w-[300px] p-0 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
                   align="start"
                 >
                   <Command className="rounded-2xl shadow-none">

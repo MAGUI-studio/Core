@@ -89,7 +89,7 @@ export default async function MaguiConnectOverviewPage() {
             <div className="flex flex-wrap gap-4 w-full">
               <Link
                 href="/magui-connect/links"
-                className="group inline-flex w-full md:w-fit items-center gap-3 rounded-full bg-brand-primary px-7 py-4 text-sm font-semibold text-background transition hover:opacity-90"
+                className="group inline-flex w-full md:w-fit items-center gap-3 rounded-full bg-brand-primary px-7 py-4 text-sm font-semibold transition hover:opacity-90 text-white"
               >
                 Gerenciar links
                 <ArrowRightIcon
