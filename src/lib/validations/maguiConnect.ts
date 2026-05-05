@@ -102,6 +102,22 @@ const optionalSafeUrlSchema = z
     { message: "URL invalida" }
   )
 
+const optionalHexColorSchema = z
+  .string()
+  .optional()
+  .nullable()
+  .transform(normalizeOptionalText)
+  .refine(
+    (value) =>
+      value === undefined ||
+      value === null ||
+      /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value),
+    {
+      message:
+        "Invalid string: must match pattern /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/",
+    }
+  )
+
 export const maguiConnectProfileSchema = z.object({
   title: z.string().min(2).max(80),
   description: z.string().max(280).optional().nullable(),
@@ -120,21 +136,9 @@ export const maguiConnectProfileSchema = z.object({
   whatsappMessage: z.string().max(200).optional().nullable(),
   primaryCtaLabel: z.string().max(40).optional().nullable(),
   primaryCtaUrl: optionalSafeUrlSchema,
-  themeAccent: z
-    .string()
-    .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/)
-    .optional()
-    .nullable(),
-  themeBackground: z
-    .string()
-    .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/)
-    .optional()
-    .nullable(),
-  themeForeground: z
-    .string()
-    .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/)
-    .optional()
-    .nullable(),
+  themeAccent: optionalHexColorSchema,
+  themeBackground: optionalHexColorSchema,
+  themeForeground: optionalHexColorSchema,
   seoTitle: z.string().max(100).optional().nullable(),
   seoDescription: z.string().max(300).optional().nullable(),
 })
