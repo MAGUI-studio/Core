@@ -326,6 +326,7 @@ interface ParsedNotes {
   platformFlow: string[]
   nextSteps: string[]
   additionalNotes: string[]
+  bonus: string[]
 }
 
 interface TextSectionBlock {
@@ -352,6 +353,7 @@ interface InvestmentBlock {
   totalValue: number
   currency: string
   itemCount: number
+  bonusInfo?: string | null
 }
 
 type ContentBlock =
@@ -427,6 +429,7 @@ function parseProposalNotes(notes?: string | null): ParsedNotes {
     platformFlow: [],
     nextSteps: [],
     additionalNotes: [],
+    bonus: [],
   }
 
   if (!notes?.trim()) return parsed
@@ -457,6 +460,7 @@ function parseProposalNotes(notes?: string | null): ParsedNotes {
     else if (title === "operação pela plataforma") parsed.platformFlow = lines
     else if (title === "próximos passos") parsed.nextSteps = lines
     else if (title === "observações adicionais") parsed.additionalNotes = lines
+    else if (title === "bonus exclusivo") parsed.bonus = lines
   })
 
   if (
@@ -471,7 +475,8 @@ function parseProposalNotes(notes?: string | null): ParsedNotes {
     parsed.warranty.length === 0 &&
     parsed.platformFlow.length === 0 &&
     parsed.nextSteps.length === 0 &&
-    parsed.additionalNotes.length === 0
+    parsed.additionalNotes.length === 0 &&
+    parsed.bonus.length === 0
   ) {
     parsed.additionalNotes = splitContent(notes)
   }
@@ -693,9 +698,53 @@ function renderBlock(block: ContentBlock, currency: string) {
     return (
       <View style={styles.investmentBox} wrap={false}>
         <Text style={styles.investmentLabel}>Investimento total</Text>
-        <Text style={styles.investmentValue}>
-          {formatCurrency(block.totalValue, block.currency)}
-        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "baseline",
+            marginBottom: 4,
+          }}
+        >
+          <Text style={styles.investmentValue}>
+            {formatCurrency(block.totalValue, block.currency)}
+          </Text>
+          {block.bonusInfo && (
+            <View
+              style={{
+                marginLeft: 15,
+                backgroundColor: BRAND_COLORS.primary,
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                borderRadius: 4,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 8,
+                  fontWeight: "black",
+                  color: "#FFFFFF",
+                  textTransform: "uppercase",
+                }}
+              >
+                + Bônus MAGUI Connect incluso
+              </Text>
+            </View>
+          )}
+        </View>
+
+        {block.bonusInfo && (
+          <Text
+            style={{
+              fontSize: 8,
+              color: BRAND_COLORS.primary,
+              marginBottom: 10,
+              fontWeight: "bold",
+            }}
+          >
+            {block.bonusInfo}
+          </Text>
+        )}
+
         <Text style={styles.investmentText}>
           Valor consolidado para todas as entregas previstas nesta proposta, com
           leitura pensada para decisão comercial clara e condução mais
@@ -1018,6 +1067,7 @@ export function MaguiProposalTemplate({
       totalValue: proposal.totalValue,
       currency,
       itemCount: proposal.items.length,
+      bonusInfo: parsedNotes.bonus.length > 0 ? parsedNotes.bonus[0] : null,
     },
     ...createTextBlocks("bullets", "Próximos passos", nextSteps, 120),
   ]
