@@ -1,0 +1,219 @@
+"use client"
+
+import * as React from "react"
+
+import { useTranslations } from "next-intl"
+import { useRouter } from "next/navigation"
+
+import { LeadStatus } from "@/src/generated/client"
+import { Lead, MessageTemplate } from "@/src/types/crm"
+import {
+  CaretLeft,
+  CaretRight,
+  InstagramLogo,
+  NotePencil,
+  Phone,
+} from "@phosphor-icons/react"
+import { toast } from "sonner"
+
+import { Button } from "@/src/components/ui/button"
+
+import { LeadDetailsDrawer } from "@/src/components/admin/LeadDetailsDrawer"
+
+import { updateLeadStatus } from "@/src/lib/actions/crm.actions"
+import {
+  CRM_STATUS_ORDER,
+  getLeadDaysWithoutMovement,
+  getNextActionMeta,
+  isLeadStagnant,
+} from "@/src/lib/utils/crm"
+
+interface KanbanLeadCardProps {
+  lead: Lead
+  density?: "comfortable" | "compact"
+  isOpen?: boolean
+  clients: Array<{ id: string; name: string | null; email: string }>
+  templates: MessageTemplate[]
+  onDrawerOpenChange: (leadId: string, open: boolean) => void
+  onLeadUpdated: (lead: Lead) => void
+  onLeadDeleted: (leadId: string) => void
+}
+
+export function KanbanLeadCard({
+  lead,
+  density = "comfortable",
+  isOpen = false,
+  clients,
+  templates,
+  onDrawerOpenChange,
+  onLeadUpdated,
+  onLeadDeleted,
+}: KanbanLeadCardProps) {
+  const t = useTranslations("Admin.crm")
+  const router = useRouter()
+  const stagnant = isLeadStagnant(lead)
+  const nextAction = getNextActionMeta(lead.nextActionAt)
+  const missingCriticalInfo = [
+    !lead.value?.trim() ? "sem valor" : null,
+    !lead.assignedToId ? "sem responsavel" : null,
+    !lead.nextActionAt ? "sem follow-up" : null,
+  ].filter(Boolean)
+  const [isMoving, setIsMoving] = React.useState(false)
+
+  // Status excluding CONVERTIDO for manual movement restriction
+  const availableStatus = CRM_STATUS_ORDER.filter(
+    (s) => s !== LeadStatus.CONVERTIDO
+  )
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const currentIndex = availableStatus.indexOf(lead.status as any)
+
+  const canMovePrev = currentIndex > 0
+  const canMoveNext = currentIndex < availableStatus.length - 1
+
+  const handleMove = async (direction: "next" | "prev") => {
+    if (isMoving) return
+    setIsMoving(true)
+
+    const nextIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1
+    const nextStatus = availableStatus[nextIndex]
+
+    if (!nextStatus) {
+      setIsMoving(false)
+      return
+    }
+
+    const result = await updateLeadStatus(lead.id, nextStatus)
+
+    if (result.success) {
+      toast.success(`Lead movido para ${t(`status.${nextStatus}`)}`)
+      router.refresh()
+    } else {
+      toast.error(result.error || "Erro ao mover lead")
+    }
+
+    setIsMoving(false)
+  }
+
+  return (
+    <article
+      className={`group relative rounded-[1.5rem] border bg-background/95 p-4 shadow-[0_24px_60px_-42px_rgba(15,23,42,0.45)] transition-all ${
+        stagnant
+          ? "border-amber-500/25"
+          : "border-border/50 hover:border-border/70"
+      }`}
+    >
+      <div className="min-w-0 space-y-2">
+        <div className="flex items-start justify-between gap-2">
+          <p className="truncate text-base font-black tracking-tight text-foreground">
+            {lead.companyName}
+          </p>
+          <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+            {canMovePrev && (
+              <Button
+                variant="ghost"
+                size="icon"
+                disabled={isMoving}
+                onClick={() => handleMove("prev")}
+                className="size-7 rounded-full bg-muted/20 hover:bg-muted/40"
+              >
+                <CaretLeft weight="bold" className="size-3" />
+              </Button>
+            )}
+            {canMoveNext && (
+              <Button
+                variant="ghost"
+                size="icon"
+                disabled={isMoving}
+                onClick={() => handleMove("next")}
+                className="size-7 rounded-full bg-muted/20 hover:bg-muted/40"
+              >
+                <CaretRight weight="bold" className="size-3" />
+              </Button>
+            )}
+          </div>
+        </div>
+        {lead.contactName && (
+          <p className="truncate text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/55">
+            {lead.contactName}
+          </p>
+        )}
+      </div>
+
+      <div
+        className={`mt-4 grid rounded-[1.25rem] border border-border/35 bg-muted/10 ${density === "compact" ? "gap-2 p-3" : "gap-3 p-3.5"}`}
+      >
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground/50">
+            {t(`source.${lead.source}`)}
+          </span>
+          {stagnant && (
+            <span className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-600 dark:text-amber-400">
+              {getLeadDaysWithoutMovement(lead)}d parado
+            </span>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span
+            className={`text-[10px] font-black uppercase tracking-[0.16em] ${nextAction.tone}`}
+          >
+            {nextAction.label}
+          </span>
+          {missingCriticalInfo.map((item) => (
+            <span
+              key={item}
+              className="rounded-full bg-amber-500/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.16em] text-amber-700"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+        {(lead.instagram || lead.phone) && (
+          <div className="grid gap-2 text-sm text-foreground/80">
+            {lead.instagram && (
+              <div className="flex items-center gap-2 truncate">
+                <InstagramLogo
+                  size={14}
+                  className="shrink-0 text-muted-foreground/55"
+                />
+                <span className="truncate">{lead.instagram}</span>
+              </div>
+            )}
+            {lead.phone && (
+              <div className="flex items-center gap-2 truncate">
+                <Phone
+                  size={14}
+                  className="shrink-0 text-muted-foreground/55"
+                />
+                <span className="truncate">{lead.phone}</span>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div
+        className={`flex items-center justify-between gap-3 ${density === "compact" ? "mt-3" : "mt-4"}`}
+      >
+        <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/55">
+          <NotePencil size={12} /> {lead.followUpNotes?.length || 0} nota(s)
+        </span>
+        <LeadDetailsDrawer
+          lead={lead}
+          onOpenChange={(open) => onDrawerOpenChange(lead.id, open)}
+          open={isOpen}
+          clients={clients}
+          templates={templates}
+          onLeadUpdated={onLeadUpdated}
+          onLeadDeleted={onLeadDeleted}
+        >
+          <Button
+            variant="outline"
+            className="rounded-full px-4 text-[10px] font-black uppercase tracking-[0.2em]"
+          >
+            Abrir
+          </Button>
+        </LeadDetailsDrawer>
+      </div>
+    </article>
+  )
+}

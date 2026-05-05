@@ -1,0 +1,1306 @@
+{
+  "Index": {
+    "title": "MAGUI.studio",
+    "description": "Estúdio de design estratégico e interface focado em transformar desafios de negócios em sistemas digitais de alta performance.",
+    "hero_tag": "Design e tecnologia em total sincronia.",
+    "cta_primary": "Ver Projetos",
+    "cta_secondary": "Entrar em Contato"
+  },
+  "Locale": {
+    "en": "English",
+    "pt": "Português"
+  },
+  "LanguageSwitcher": {
+    "switch_to": "Mudar para {lang}",
+    "label": "Idioma"
+  },
+  "ThemeToggle": {
+    "light": "Claro",
+    "dark": "Escuro",
+    "label": "Aparência"
+  },
+  "Config": {
+    "name": "MAGUI.studio",
+    "description": "Estúdio de design estratégico e interface focado em transformar desafios de negócios em sistemas digitais de alta performance.",
+    "keywords": "Design, Tecnologia, Frontend, UI/UX, Performance, Core Web Vitals"
+  },
+  "Errors": {
+    "not_found": {
+      "title": "404 - Página não encontrada",
+      "description": "A página que você está procurando não existe.",
+      "button": "Voltar ao início"
+    },
+    "general": {
+      "title": "Algo deu errado!",
+      "description": "Ocorreu um erro inesperado.",
+      "button": "Tentar novamente"
+    }
+  },
+  "Auth": {
+    "signIn": {
+      "eyebrow": "Ecossistema MAGUI",
+      "portal_title": "Portal do",
+      "portal_subtitle": "Cliente",
+      "marketing_description": "Gestão estratégica e autoridade digital em um ecossistema de alta performance.",
+      "marketing_cta": "Conheça a MAGUI.studio",
+      "ident_title": "Identificação",
+      "title": "Acesso ao",
+      "subtitle": "Sistema"
+    },
+    "signUp": {
+      "eyebrow": "Join the Studio",
+      "title": "Criação de",
+      "subtitle": "Conta"
+    },
+    "footer": {
+      "copyright": "MAGUI.studio • Digital Authority System"
+    }
+  },
+  "Admin": {
+    "eyebrow": "Controle Interno",
+    "title": "Painel",
+    "subtitle": "Admin",
+    "clients": {
+      "eyebrow": "Portal de Gestão",
+      "title": "Clientes",
+      "description": "Controle e monitore os acessos do seu ecossistema digital. Gerencie permissões, cargos e configurações de segurança em uma central visual.",
+      "create": "Novo Cliente",
+      "search_placeholder": "Buscar por nome ou e-mail...",
+      "filter": "Filtrar",
+      "sort": "Ordenar por Nome",
+      "empty": "Nenhum cliente encontrado.",
+      "summary": "Exibindo {count} clientes no sistema",
+      "table": {
+        "profile": "Perfil do Usuário",
+        "id": "Identificação",
+        "privileges": "Nível de Acesso",
+        "actions": "Ações",
+        "inspect": "Detalhes"
+      },
+      "roles": {
+        "admin": "Administrador",
+        "client": "Cliente"
+      },
+      "stats": {
+        "active_clients": "Clientes ativos",
+        "active_projects": "Projetos em andamento",
+        "pending_approvals": "Aprovações pendentes",
+        "open_leads": "Leads em aberto",
+        "base_registered": "base cadastrada",
+        "finalized": "finalizados",
+        "review_today": "pedem revisão hoje",
+        "unread_notifications": "0 notificações não lidas"
+      },
+      "form": {
+        "identity_title": "Perfil de Identidade",
+        "identity_desc": "Identificação legal e nome de exibição",
+        "security_title": "Acesso de Segurança",
+        "security_desc": "Autenticação e identificadores únicos",
+        "email": "E-mail",
+        "firstName": "Nome",
+        "lastName": "Sobrenome",
+        "username": "Nome de Usuário",
+        "password": "Senha de Segurança",
+        "password_hint": "Mínimo de 8 caracteres",
+        "role": "Permissão",
+        "roles": {
+          "admin": "Administrador",
+          "client": "Cliente"
+        },
+        "submit": "Criar Acesso",
+        "submitting": "Inicializando...",
+        "success": "Cliente criado com sucesso!",
+        "error": "Erro ao criar cliente.",
+        "security_violation": "Violação de segurança: Verifique os campos e tente novamente.",
+        "errors": {
+          "password_pwned": "Esta senha é muito fraca e foi encontrada em vazamentos de dados. Escolha outra.",
+          "identifier_exists": "Este e-mail já está cadastrado no sistema.",
+          "password_too_short": "A senha deve ter no mínimo 8 caracteres.",
+          "username_invalid": "O nome de usuário não atende aos requisitos do sistema.",
+          "general": "Ocorreu um erro ao processar sua solicitação."
+        },
+        "categories": {
+          "LANDING_PAGE": "Landing Page de Alta Conversão",
+          "INSTITUTIONAL_SITE": "Site Institucional",
+          "BOOKING_PLATFORM": "Plataforma com Agendamento",
+          "STABILITY_PLAN": "Plano de Estabilidade e Suporte"
+        }
+      }
+    },
+    "service_categories": {
+      "LANDING_PAGE": {
+        "title": "Landing Page de Alta Conversão",
+        "approach": "Desenvolvimento de página única focada em transformar visitantes em clientes, com carregamento instantâneo e otimização total para celular.",
+        "suggested_value": "R$ 1.200",
+        "third_party": "Domínio e Hospedagem"
+      },
+      "INSTITUTIONAL_SITE": {
+        "title": "Site Institucional",
+        "approach": "Presença digital completa para sua empresa, com arquitetura moderna para transmitir autoridade e facilitar o contato do cliente.",
+        "suggested_value": "R$ 1.800",
+        "third_party": "Domínio e Hospedagem"
+      },
+      "BOOKING_PLATFORM": {
+        "title": "Plataforma com Agendamento",
+        "approach": "Sistema inteligente para automação de reservas e gestão de horários, eliminando trabalho manual e erros de agenda.",
+        "suggested_value": "R$ 2.500+",
+        "third_party": "Domínio e Hospedagem"
+      },
+      "STABILITY_PLAN": {
+        "title": "Plano de Estabilidade e Suporte",
+        "approach": "Gestão técnica completa para garantir que sua empresa nunca fique offline, com atualizações de segurança e monitoramento 24/7.",
+        "suggested_value": "R$ 100/mês",
+        "third_party": "Pago à Magui.studio"
+      }
+    },
+    "crm": {
+      "eyebrow": "Operação Comercial",
+      "title": "Comercial",
+      "description": "Gerencie leads, histórico de follow-up e movimentação do pipeline com a mesma disciplina operacional do restante da dashboard.",
+      "create": "Novo Lead",
+      "stats": {
+        "total": "Total de Leads",
+        "converted": "Convertidos",
+        "negotiation": "Em Negociação",
+        "value": "Valor Estimado"
+      },
+      "table": {
+        "company": "Empresa",
+        "contact": "Contato",
+        "status": "Status",
+        "value": "Ticket Est.",
+        "actions": "Ações",
+        "empty": "Nenhum lead catalogado no momento."
+      },
+      "details": {
+        "cancel": "Cancelar Operação"
+      },
+      "status": {
+        "GARIMPAGEM": "Prospecção",
+        "CONTATO_REALIZADO": "Contato Realizado",
+        "NEGOCIACAO": "Negociação",
+        "CONVERTIDO": "Convertido",
+        "DESCARTADO": "Descartado"
+      },
+      "source": {
+        "REFERRAL": "Indicação",
+        "ORGANIC": "Orgânico",
+        "INSTAGRAM": "Instagram",
+        "LINKEDIN": "LinkedIn",
+        "WEBSITE": "Site",
+        "OUTBOUND": "Outbound",
+        "EVENT": "Evento",
+        "OTHER": "Outro"
+      },
+      "form": {
+        "company": "Nome da Empresa",
+        "contact": "Pessoa de Contato",
+        "email": "E-mail",
+        "phone": "Telefone/WhatsApp",
+        "website": "Site Atual (URL)",
+        "instagram": "Instagram",
+        "notes": "Observações Estratégicas",
+        "value": "Valor Estimado",
+        "submit": "Salvar Lead",
+        "success": "Lead catalogado com sucesso!",
+        "error": "Erro ao salvar lead."
+      },
+      "convert": {
+        "title": "Converter em Projeto",
+        "description": "Transicao para execucao",
+        "client_section": "1. Cliente do projeto",
+        "existing_client": "Cliente existente",
+        "create_client": "Criar do lead",
+        "select_placeholder": "Escolha o acesso do cliente...",
+        "existing_hint": "Use esta opcao quando o cliente ja existe no sistema.",
+        "create_hint": "Cria ou sincroniza o acesso usando {email}.",
+        "missing_email": "e-mail ausente",
+        "project_section": "2. Dados do projeto",
+        "project_name": "Nome do Projeto",
+        "category": "Categoria",
+        "budget": "Orcamento (Opcional)",
+        "budget_placeholder": "Ex: R$ 15.000",
+        "cancel": "Cancelar",
+        "submit": "Iniciar Projeto",
+        "success": "Lead convertido com sucesso!",
+        "error": "Erro ao converter lead.",
+        "select_client_error": "Selecione um cliente.",
+        "email_required_error": "Este lead precisa de e-mail para criar o cliente."
+      }
+    },
+    "activity_feed": {
+      "title": "Atividade global",
+      "description": "O que mudou recentemente nos projetos e no fluxo operacional.",
+      "filter_all": "Tudo",
+      "open": "Abrir",
+      "empty": "Nenhuma atividade encontrada para esse filtro.",
+      "kinds": {
+        "approval": "Aprovações",
+        "project": "Projetos",
+        "asset": "Arquivos",
+        "briefing": "Briefings",
+        "timeline": "Timeline",
+        "system": "Sistema"
+      },
+      "time": {
+        "ago": "atrás",
+        "minute": "min",
+        "hour": "h",
+        "day": "d"
+      }
+    },
+    "attention_panel": {
+      "title": "Precisa de atenção",
+      "description": "Itens que pedem ação nas próximas horas.",
+      "sort_newest": "Novos",
+      "sort_oldest": "Antigos",
+      "filter_all_urgencies": "Todas as urgências",
+      "filter_high_urgency": "Alta urgência",
+      "filter_follow_up": "Acompanhamento",
+      "empty": "Nenhum item encontrado para os filtros atuais.",
+      "kinds": {
+        "approval": "Aprovações",
+        "deadline": "Prazos",
+        "lead": "Comercial",
+        "project": "Projetos",
+        "task": "Tarefas"
+      },
+      "priorities": {
+        "high": "Alta urgência",
+        "medium": "Acompanhar"
+      }
+    },
+    "commercial_health": {
+      "title": "Saúde do comercial",
+      "description": "Leads que pedem cuidado por falta de contexto, atraso ou perda de ritmo.",
+      "empty": "Nenhum lead crítico no momento.",
+      "open_lead": "Abrir lead",
+      "view_full": "Ver comercial completo",
+      "tones": {
+        "healthy": "Saudável",
+        "attention": "Atenção",
+        "risk": "Risco"
+      }
+    },
+    "project_health": {
+      "title": "Saúde dos projetos",
+      "description": "Leitura rápida dos projetos que merecem acompanhamento.",
+      "empty": "Nenhum projeto ativo no momento.",
+      "declared_progress": "Progresso declarado"
+    },
+    "recent_updates": {
+      "title": "Atualizações recentes",
+      "description": "O que mudou mais recentemente nos projetos.",
+      "empty": "Nenhuma atualização recente."
+    },
+    "action_items": {
+      "title": "Action items próximos",
+      "description": "Tarefas operacionais com prazo mais imediato.",
+      "empty": "Nenhuma tarefa com prazo definido.",
+      "no_date": "Sem data"
+    },
+    "recent_crm": {
+      "title": "Comercial recente",
+      "description": "Leads mais recentes para abrir o dia com contexto.",
+      "empty": "Nenhum lead cadastrado.",
+      "updated_at": "Atualizado em",
+      "no_contact": "Sem contato"
+    },
+    "template_library": {
+      "title": "Biblioteca de templates",
+      "description": "Mensagens base para comercial, updates, aprovações, material e onboarding."
+    },
+    "projects": {
+      "eyebrow": "Processo de Execução",
+      "title": "Projetos",
+      "description": "Inicie e gerencie novos projetos de alta performance no ecossistema MAGUI.",
+      "create": "Novo Projeto",
+      "form": {
+        "client_info": "Informações do Cliente",
+        "client_desc": "Dados de acesso e identidade do cliente",
+        "project_info": "Dados do Projeto",
+        "project_desc": "Configurações e prazos de execução",
+        "client_protocol": "Identificação do proprietário",
+        "client_selection_desc": "O projeto será vinculado permanentemente a este acesso",
+        "project_engineering": "Parâmetros de execução e prazos",
+        "project_name_desc": "Título oficial do projeto",
+        "budget_desc": "Valor bruto acordado",
+        "project_description_placeholder": "Escopo resumido e objetivos principais do sistema...",
+        "deadline_placeholder": "Definir data de entrega final...",
+        "confirmation_title": "Confirmação de Abertura",
+        "confirmation_desc": "Ao iniciar, o processo de design começará imediatamente.",
+        "select_client_placeholder": "Selecionar cliente no sistema...",
+        "search_client_placeholder": "Buscar por nome ou e-mail...",
+        "empty_clients": "Nenhum cliente catalogado.",
+        "hidden_identity": "Identidade Oculta",
+        "email": "E-mail do Cliente",
+        "clientName": "Nome Completo",
+        "password": "Senha de Acesso",
+        "projectName": "Nome do Projeto",
+        "projectDescription": "Descrição/Objetivo",
+        "budget": "Orçamento Previsto",
+        "deadline": "Prazo de Entrega",
+        "submit": "Iniciar Projeto",
+        "submitting": "Processando...",
+        "errors": {
+          "validation_failed": "Dados do formulário inválidos.",
+          "general": "Erro ao criar projeto."
+        }
+      },
+      "details": {
+        "tabs": {
+          "overview": "Visão Geral",
+          "engineering": "Status",
+          "timeline": "Timeline",
+          "audit": "Auditoria",
+          "briefing": "Briefing",
+          "assets": "Ativos",
+          "settings": "Configurações",
+          "communication": "Comunicação",
+          "handoff": "Handoff",
+          "financial": "Financeiro"
+        },
+        "project_info_title": "Informações do Projeto",
+        "project_description_label": "Descrição do Escopo",
+        "no_description": "Sem descrição detalhada.",
+        "asset_types": {
+          "CONTRACT": "Contrato",
+          "DESIGN_SYSTEM": "Design System",
+          "IMAGE": "Imagem",
+          "DOCUMENT": "Documento",
+          "SOURCE_CODE": "Código Fonte"
+        },
+        "management_title": "Gestão de Status e Evolução",
+        "timeline_title": "Histórico de Evolução",
+        "timeline_form_title": "Registrar Nova Evolução",
+        "client_card_title": "Informações do Proprietário",
+        "settings_title": "Configurações do Projeto",
+        "assets_title": "Repositório de Ativos (Assets)",
+        "budget_label": "Investimento",
+        "deadline_label": "Prazo Final",
+        "update_status": "Atualizar Status",
+        "add_timeline": "Novo Evento na Timeline",
+        "status_label": "Fase Atual do Projeto",
+        "progress_label": "Progresso de Execução",
+        "client_name_label": "Nome do Cliente",
+        "client_email_label": "E-mail de Contato",
+        "open_client": "Abrir cliente",
+        "not_available": "N/A",
+        "no_budget": "Sem orçamento",
+        "no_deadline": "Sem prazo definido",
+        "back_button": "Voltar",
+        "submitting": "Processando...",
+        "deleting": "Deletando...",
+        "delete_project": "Deletar Projeto",
+        "delete_confirm_title": "Confirmar Exclusão",
+        "delete_confirm_desc": "Esta ação é permanente e removerá todos os dados, timeline e ativos vinculados a este projeto.",
+        "cancel": "Cancelar",
+        "confirm_delete": "Confirmar Exclusão",
+        "delete_confirm_input_label": "Digite o nome do projeto para confirmar:",
+        "delete_confirm_placeholder": "Nome do Projeto",
+        "delete_confirm_error": "O nome digitado não coincide com o do projeto.",
+        "danger_zone_title": "Zona de Perigo",
+        "danger_zone_desc": "Ações irreversíveis para este projeto.",
+        "assets_manage_button": "Gerenciar Ativos",
+        "visualize": "Visualizar",
+        "delete_asset_confirm_title": "Remover Arquivo",
+        "delete_asset_confirm_desc": "Tem certeza que deseja excluir permanentemente este arquivo do sistema e do armazenamento?",
+        "no_assets": "Nenhum arquivo catalogado.",
+        "upload_button": "Upload de Arquivo",
+        "uploading": "Carregando...",
+        "upload_hint": "PDF, Imagens, Documentos (Max 32MB)",
+        "toggle_asset_visibility": "Alternar visibilidade do arquivo",
+        "asset_visibility_updated": "Visibilidade do arquivo atualizada.",
+        "timeline_form": {
+          "attachments": "Anexos da evolução",
+          "attachments_hint": "PDF e imagens para apoiar a entrega",
+          "attachments_button": "Adicionar arquivos",
+          "attachments_empty": "Nenhum anexo selecionado",
+          "title": "Título do Marco",
+          "title_placeholder": "Ex: Wireframes Finalizados",
+          "description": "Descrição detalhada (opcional)",
+          "description_placeholder": "Detalhes sobre esta evolução...",
+          "is_milestone": "Marcar como marco importante",
+          "requires_approval": "Solicitar Aprovação Formal",
+          "requires_approval_desc": "O cliente precisará aprovar este item para prosseguir",
+          "submit": "Registrar Evolução"
+        },
+        "categories": {
+          "LANDING_PAGE": "Landing Page",
+          "INSTITUTIONAL_SITE": "Site Institucional",
+          "BOOKING_PLATFORM": "Plataforma de Agendamento",
+          "STABILITY_PLAN": "Plano de Estabilidade"
+        },
+        "priorities": {
+          "LOW": "Baixa",
+          "MEDIUM": "Média",
+          "HIGH": "Alta",
+          "URGENT": "Urgente"
+        }
+      }
+    }
+  },
+  "Briefing": {
+    "title": "Central de Briefing",
+    "description": "Precisamos de algumas informações para iniciar a engenharia do seu projeto.",
+    "step": "Passo {current} de {total}",
+    "submit": "Enviar Briefing",
+    "success": "Briefing enviado! Nossa equipe analisará os dados.",
+    "success_description": "O briefing entrou no radar estratégico do time.",
+    "onboarding_protocol": "Protocolo de Onboarding",
+    "step_strategy": "Etapa estratégica",
+    "answer_label": "Resposta",
+    "optional": "(opcional)",
+    "min_required": "mínimo exigido",
+    "back_button": "Voltar",
+    "next_step": "Próxima Etapa",
+    "creative_direction": "Direção Criativa",
+    "briefing_map": "Mapa do briefing",
+    "live": "Vivo",
+    "step_number": "Etapa {number}",
+    "add_reference": "Adicionar Referência",
+    "steps": {
+      "businessDescription": {
+        "label": "Sobre o Negócio",
+        "slug": "sobre-o-negocio",
+        "placeholder": "Descreva brevemente o modelo de negócio, o que vendem e como operam."
+      },
+      "brandTone": {
+        "label": "Essência da Marca",
+        "slug": "essencia-da-marca",
+        "placeholder": "Como a marca deve soar e se comportar? Ex: sofisticada, precisa, calorosa, estratégica."
+      },
+      "businessGoals": {
+        "label": "Metas de Negócio",
+        "slug": "metas-de-negocio",
+        "placeholder": "Quais resultados esse projeto precisa gerar nos próximos meses?"
+      },
+      "primaryCta": {
+        "label": "Conversão Principal",
+        "slug": "conversao-principal",
+        "placeholder": "Qual é a ação mais importante que o visitante precisa realizar?"
+      },
+      "targetAudience": {
+        "label": "Público-Alvo",
+        "slug": "publico-alvo",
+        "placeholder": "Quem é o cliente ideal e o que ele valoriza na hora de decidir?"
+      },
+      "differentiators": {
+        "label": "Diferenciais",
+        "slug": "differentiators",
+        "placeholder": "O que torna a operação, a oferta ou a marca única frente à concorrência?"
+      },
+      "logos": {
+        "label": "Identidade Visual (Logos)",
+        "slug": "logos",
+        "placeholder": "Envie suas logos em vetor ou fundo transparente."
+      },
+      "palette": {
+        "label": "Cores Oficiais",
+        "slug": "cores",
+        "placeholder": "Defina as cores HEX principais da sua marca."
+      },
+      "typography": {
+        "label": "Tipografia",
+        "slug": "tipografia",
+        "placeholder": "Quais fontes sua marca utiliza?"
+      },
+      "brandbook": {
+        "label": "Brandbook",
+        "slug": "brandbook",
+        "placeholder": "Manual da marca ou guia de estilo."
+      },
+      "visualReferences": {
+        "label": "Referências Visuais",
+        "slug": "referencias-visuais",
+        "placeholder": "Adicione links de exemplos de sites, campanhas ou interfaces que refletem a visão do projeto."
+      },
+      "dislikedReferences": {
+        "label": "O que Evitar",
+        "slug": "evitar",
+        "placeholder": "O que você NÃO gosta ou quer evitar?"
+      },
+      "competitors": {
+        "label": "Concorrentes",
+        "slug": "concorrentes",
+        "placeholder": "Quais marcas operam no mesmo mercado que o seu?"
+      },
+      "desiredPerceptions": {
+        "label": "Percepção Desejada",
+        "slug": "percepcao",
+        "placeholder": "Palavras que definem como você quer ser visto."
+      },
+      "infrastructure": {
+        "label": "Acessos e Infra",
+        "slug": "infra",
+        "placeholder": "Dados técnicos, domínio e hospedagem."
+      },
+      "governance": {
+        "label": "Regras e Aprovadores",
+        "slug": "governanca",
+        "placeholder": "Quem toma as decisões finais no projeto?"
+      }
+    },
+    "questions": {
+      "tone": "Qual o tom de voz da marca?",
+      "references": "Referências (links de sites que você gosta)",
+      "goals": "Quais os principais objetivos deste projeto?"
+    },
+    "add_item": "Adicionar Item"
+  },
+  "ActionItems": {
+    "title": "Ações Necessárias",
+    "description": "Pendências que dependem de você para o avanço do projeto.",
+    "empty": "Nenhuma pendência ativa.",
+    "waiting": "AGUARDANDO VOCÊ",
+    "due_date": "Prazo: {date}",
+    "status": {
+      "PENDING": "Pendente",
+      "COMPLETED": "Concluído"
+    }
+  },
+  "Versions": {
+    "title": "Log de Versões e Preview",
+    "description": "Acompanhe a evolução técnica e o staging do seu projeto.",
+    "performance_title": "Relatório de Performance",
+    "scores": {
+      "performance": "Performance",
+      "accessibility": "Acessibilidade",
+      "best_practices": "Práticas",
+      "seo": "SEO"
+    }
+  },
+  "Approvals": {
+    "title": "Decisões e Aprovações",
+    "description": "Itens que requerem sua validação formal para prosseguir.",
+    "status": {
+      "PENDING": "Aprovação Pendente",
+      "APPROVED": "Aprovado em {date}",
+      "REJECTED": "Rejeitado"
+    },
+    "actions": {
+      "approve": "Aprovar Versão",
+      "reject": "Solicitar Ajustes",
+      "feedback_placeholder": "Descreva os ajustes necessários...",
+      "cancel": "Cancelar",
+      "send_feedback": "Enviar feedback"
+    },
+    "toast": {
+      "approve_success": "Aprovação registrada com sucesso.",
+      "reject_success": "Feedback enviado para o time.",
+      "error_approve": "Erro ao aprovar",
+      "error_reject": "Erro ao reprovar"
+    },
+    "dialog": {
+      "title": "Solicitar ajustes nesta entrega",
+      "description": "Explique com clareza o que precisa ser ajustado para o time devolver a entrega na próxima rodada.",
+      "placeholder": "Ex: precisamos revisar hierarquia visual, CTA principal e clareza da proposta."
+    }
+  },
+  "Sidebar": {
+    "menu": "Menu",
+    "dashboard": "Dashboard",
+    "feed": "Feed",
+    "notifications": "Notificações",
+    "clients": {
+      "title": "Clientes",
+      "list": "Todos os Clientes",
+      "create": "Adicionar Cliente"
+    },
+    "projects": {
+      "title": "Projetos",
+      "list": "Todos os Projetos",
+      "create": "Iniciar Projeto",
+      "categories": "Categorias de Servico",
+      "categories_all": "Todas as Categorias",
+      "categories_new": "Nova Categoria"
+    },
+    "commercial": {
+      "title": "Comercial",
+      "list": "Todos os Leads",
+      "kanban": "Kanban",
+      "create": "Novo Lead",
+      "proposals": "Todas as Propostas",
+      "proposal_create": "Nova Proposta"
+    },
+    "documents": {
+      "title": "Documentos",
+      "list": "Todos os Documentos",
+      "create": "Novo Documento"
+    },
+    "user": {
+      "profile": "Meu Perfil",
+      "settings": "Configurações",
+      "signOut": "Sair",
+      "signOut_description": "Encerrar sessão",
+      "admin_role": "Administrador",
+      "client_role": "Cliente"
+    },
+    "client": {
+      "home": "Início",
+      "projects": "Meus Projetos",
+      "maguiConnect": "MAGUI Connect",
+      "files": "Arquivos",
+      "notifications": "Notificações"
+    },
+    "descriptions": {
+      "dashboard": "Visão consolidada da operação",
+      "commercial_list": "Gestão ativa de leads e funil",
+      "commercial_create": "Catalogar nova oportunidade",
+      "proposals": "Controle de propostas enviadas",
+      "proposal_create": "Gerar novo documento comercial",
+      "projects_list": "Monitoramento de execução",
+      "projects_create": "Iniciar projeto",
+      "service_categories": "Configurações de serviços",
+      "clients_list": "Portal de acessos e usu?rios",
+      "clients_create": "Registrar novo acesso"
+    },
+    "pwa": {
+      "eyebrow": "App MAGUI",
+      "title": "Instale no seu celular",
+      "description": "Abra a dashboard em segundos, direto da tela inicial, com uma experiência mais fluida no dia a dia.",
+      "install_now": "Instalar agora"
+    }
+  },
+  "Dashboard": {
+    "client_home": {
+      "eyebrow": "Portal do Cliente",
+      "welcome_user": "Oi, {name}",
+      "description": "Seu projeto em uma visão simples: o que mudou, o que falta e qual ação precisa da sua atenção agora.",
+      "welcome_back": "Bem-vindo de volta",
+      "active_project_eyebrow": "Projeto em destaque",
+      "view_project": "Ver projeto",
+      "active_project_description": "Acompanhe o momento atual, o progresso e o último movimento importante.",
+      "quick_links_eyebrow": "Caminhos rápidos",
+      "quick_links_description": "Acesse os pontos que mais movem o projeto sem procurar em menus.",
+      "status": {
+        "payment_pending": "Pagamento pendente",
+        "on_track": "Tudo em dia",
+        "awaiting_approval": "Aguardando sua aprovação",
+        "need_shipment": "Precisamos de um envio",
+        "briefing_incomplete": "Briefing incompleto"
+      },
+      "nav": {
+        "projects": "Projetos",
+        "notifications": "Notificações"
+      },
+      "inbox": {
+        "pending_approvals": "entregas pendentes",
+        "pending_feedback": "solicitações abertas"
+      },
+      "cta": {
+        "type": {
+          "payment": "Pagamento Pendente",
+          "briefing": "Briefing Pendente",
+          "approval": "Entrega para Revisão",
+          "task_overdue": "Solicitação Atrasada",
+          "task": "Sua Ação é Necessária",
+          "new_update": "Nova Atualização",
+          "default": "Seu Projeto"
+        },
+        "label": {
+          "payment": "Ver pagamento",
+          "briefing": "Continuar briefing",
+          "approval": "Revisar entrega",
+          "task_overdue": "Resolver agora",
+          "task": "Resolver pendência",
+          "new_update": "Ver novidade",
+          "default": "Ver projeto"
+        },
+        "description": {
+          "payment": "Existe um pagamento pendente neste projeto. Quite essa etapa primeiro para liberar o briefing e o restante do fluxo.",
+          "briefing": "Complete os dados para iniciarmos a engenharia do seu sistema.",
+          "approval": "Uma nova entrega estratégica aguarda sua validação formal.",
+          "task": "Temos uma solicitação operacional em aberto para você.",
+          "default": "Acompanhe o progresso e as próximas etapas do seu projeto."
+        }
+      },
+      "project": {
+        "nav": {
+          "overview": "Geral",
+          "timeline": "Timeline",
+          "approvals": "Validações",
+          "files": "Arquivos",
+          "briefing": "Briefing",
+          "tasks": "Tarefas",
+          "hint": "Avance pelas seções"
+        },
+        "breadcrumb": {
+          "label": "Navegacao do projeto",
+          "projects": "Projetos",
+          "timeline": "Historico",
+          "approvals": "Entregas",
+          "files": "Arquivos",
+          "briefing": "Briefing",
+          "tasks": "Solicitacoes",
+          "communication": "Comunicação",
+          "financial": "Investimento"
+        },
+        "active_project": "Projeto Ativo",
+        "active_project_focus_description": "Este é o projeto em foco agora. Entre para ver entregas, arquivos, briefing e o histórico completo.",
+        "phase": "Fase atual",
+        "progress": "Progresso",
+        "deadline": "Prazo de entrega",
+        "no_deadline": "Sem prazo definido",
+        "last_update": "Último update"
+      },
+      "activity": {
+        "title": "Atividade Recente",
+        "subtitle": "O que mudou nos últimos dias",
+        "view_all": "Ver tudo",
+        "empty": "Nenhuma atividade registrada recentemente."
+      },
+      "active_project_title": "Seu Projeto Principal",
+      "quick_links_title": "Acesso Rápido",
+      "links": {
+        "financial": "Financeiro",
+        "files": "Arquivos",
+        "briefing": "Briefing",
+        "timeline": "Timeline",
+        "tasks": "Tarefas"
+      }
+    },
+    "eyebrow": "Painel do Cliente",
+    "admin_eyebrow": "Gestão de Projetos",
+    "admin_title": "Visão Geral do Estúdio",
+    "admin_overview": "Visão Geral",
+    "admin_description": "Painel diário para acompanhar operação, aprovações, comercial e execução em tempo real.",
+    "projects": {
+      "title": "Projetos"
+    },
+    "crm": {
+      "title": "Comercial"
+    },
+    "clients": {
+      "stats": {
+        "active_clients": "Clientes ativos",
+        "active_projects": "Projetos em andamento",
+        "pending_approvals": "Aprovações pendentes",
+        "open_leads": "Leads em aberto",
+        "base_registered": "base cadastrada",
+        "finalized": "finalizados",
+        "review_today": "pedem revisão hoje",
+        "unread_notifications": "0 notificações não lidas"
+      }
+    },
+    "approvals": {
+      "description": "Itens que requerem sua validação formal para prosseguir.",
+      "status": {
+        "PENDING": "Aprovação Pendente"
+      }
+    },
+    "recent_updates": {
+      "title": "Atualizações recentes",
+      "description": "O que mudou mais recentemente nos projetos.",
+      "empty": "Nenhuma atualização recente."
+    },
+    "action_items": {
+      "title": "Action items próximos",
+      "description": "Tarefas operacionais com prazo mais imediato.",
+      "empty": "Nenhuma tarefa com prazo definido.",
+      "no_date": "Sem data"
+    },
+    "recent_crm": {
+      "title": "Comercial recente",
+      "description": "Leads mais recentes para abrir o dia com contexto.",
+      "empty": "Nenhum lead cadastrado.",
+      "updated_at": "Atualizado em",
+      "no_contact": "Sem contato"
+    },
+    "project_health": {
+      "description": "Leitura rápida dos projetos que merecem acompanhamento."
+    },
+    "template_library": {
+      "title": "Biblioteca de templates",
+      "description": "Mensagens base para comercial, updates, aprovações, material e onboarding."
+    },
+    "select_project": "Selecione o Projeto",
+    "filter_projects": "Filtrar projetos...",
+    "no_project_found": "Nenhum projeto encontrado.",
+    "common": {
+      "attention": "Precisa de atenção",
+      "no_description": "Sem descrição detalhada.",
+      "quick_view": "Visão rápida",
+      "open_project": "Abrir projeto",
+      "back": "Voltar",
+      "contact_team": "Falar com o time",
+      "my_projects": "Meus Projetos"
+    },
+    "project_detail": {
+      "eyebrow": "Projeto em andamento",
+      "description_fallback": "Veja o momento atual do projeto, acompanhe entregas e resolva o que precisar da sua atenção.",
+      "primary_action": {
+        "payment": "Ver pendência financeira",
+        "approval": "Revisar entrega",
+        "task": "Responder solicitação",
+        "history": "Ver histórico"
+      },
+      "secondary_action": {
+        "files": "Abrir arquivos"
+      },
+      "metrics": {
+        "progress": "Progresso",
+        "progress_detail": "concluído",
+        "validate": "Validar",
+        "validate_detail": "entregas pendentes",
+        "deadline": "Prazo",
+        "deadline_detail": "data combinada",
+        "no_deadline": "Aberto"
+      },
+      "banner": {
+        "payment": {
+          "eyebrow": "Pagamento pendente",
+          "title": "Fatura aguardando pagamento",
+          "description": "Identificamos uma fatura em aberto para este projeto. Utilize o link do Stripe para regularizar seu investimento.",
+          "label": "Ir para o financeiro"
+        },
+        "attention": {
+          "eyebrow": "Precisa da sua atenção",
+          "description_approval": "Tem uma entrega pronta para sua validação. Aprove ou peça ajuste para o time seguir.",
+          "description_task": "Tem uma solicitação aberta para destravar a próxima etapa do projeto.",
+          "label_approval": "Revisar agora",
+          "label_task": "Responder solicitação"
+        }
+      },
+      "explore": {
+        "eyebrow": "Explore",
+        "title": "Tudo do projeto em seções simples",
+        "description": "Cada área abre uma parte da jornada: entregas, materiais, briefing, histórico e pendências.",
+        "approvals": {
+          "title": "Entregas para validar",
+          "description": "Aprove o que estiver certo ou peça ajustes com clareza. Sua resposta move a próxima etapa.",
+          "meta": "{count} pendente(s)"
+        },
+        "files": {
+          "title": "Materiais e arquivos",
+          "description": "Acesse documentos, imagens e arquivos finais enviados pela equipe.",
+          "meta": "{count} item(ns)"
+        },
+        "timeline": {
+          "title": "Histórico do projeto",
+          "description": "Veja as atualizações como uma história de progresso.",
+          "meta": "{count} update(s)"
+        },
+        "briefing": {
+          "title": "Alinhamento",
+          "description": "Revise briefing, referências e respostas importantes.",
+          "meta": "briefing"
+        },
+        "financial": {
+          "title": "Financeiro",
+          "description": "Gerencie seu investimento, parcelas e comprovantes.",
+          "meta": "financial"
+        },
+        "tasks": {
+          "title": "Solicitações",
+          "description": "Resolva pendências que dependem da sua resposta.",
+          "meta": "{count} aberta(s)"
+        }
+      },
+      "pages": {
+        "approvals": {
+          "title": "Entregas para validar",
+          "description": "Aprove o que estiver certo ou peça ajustes com clareza. Sua resposta move a próxima etapa."
+        },
+        "briefing": {
+          "title": "Briefing estratégico",
+          "description": "As respostas que orientam a engenharia e o design do seu ecossistema."
+        },
+        "files": {
+          "title": "Materiais e entregas",
+          "description": "Tudo que foi enviado ou gerado pelo time está centralizado aqui."
+        },
+        "financial": {
+          "title": "Financeiro e pagamentos",
+          "description": "Veja parcelas em aberto, histórico de pagamentos e comprovantes fiscais."
+        },
+        "tasks": {
+          "title": "O que precisamos de você",
+          "description": "Pendências, respostas e materiais que o time precisa para avançar.",
+          "badge": "Solicitação",
+          "overdue": "Atrasado",
+          "due_date": "Prazo"
+        },
+        "timeline": {
+          "title": "Histórico do projeto",
+          "description": "Acompanhe a evolução do sistema através de marcos e atualizações."
+        }
+      },
+      "empty_states": {
+        "approvals": {
+          "title": "Tudo validado por enquanto",
+          "description": "Quando uma entrega precisar da sua decisão, ela aparecerá aqui com botões para aprovar ou pedir ajuste."
+        },
+        "tasks": {
+          "title": "Nada pendente com você",
+          "description": "Quando o time precisar de alguma resposta ou envio, a solicitação aparece aqui com prazo e contexto."
+        },
+        "recent_activity": {
+          "title": "Nada novo por enquanto",
+          "eyebrow": "Movimento recente"
+        },
+        "assets": {
+          "title": "Nenhum arquivo catalogado",
+          "description": "Acesse documentos, imagens e arquivos finais enviados pela equipe.",
+          "search_placeholder": "Buscar arquivos pelo nome...",
+          "type_placeholder": "Tipo de arquivo",
+          "all_types": "Todos os tipos",
+          "filter_all": "Todos"
+        }
+      },
+      "briefing_complement": {
+        "title": "Complementar Briefing",
+        "description": "Algo mudou ou esqueceu de mencionar? Adicione uma nota estratégica.",
+        "form": {
+          "title_label": "Título do Complemento",
+          "title_placeholder": "Ex: Novos objetivos de conversão",
+          "description_label": "Descrição Detalhada",
+          "description_placeholder": "Descreva aqui o que mudou ou o que precisa ser considerado...",
+          "submit": "Enviar Complemento",
+          "submitting": "Processando..."
+        },
+        "edit": "Editar briefing",
+        "structure_title": "Estrutura de negócio"
+      },
+      "hero": {
+        "status_label_project": "Status do projeto",
+        "status_label_portal": "Hoje no portal",
+        "status_default": "Em andamento"
+      }
+    },
+    "inbox": {
+      "title": "Sua Inbox",
+      "description": "Pendências e ações que dependem de você.",
+      "pending_approvals": "Aguardando sua aprovação",
+      "required_documents": "Documentos necessários",
+      "pending_feedback": "Feedback pendente",
+      "recent_updates": "Novidades recentes",
+      "empty": "Você está em dia! Nenhuma pendência crítica.",
+      "cta_approve": "Revisar e Aprovar",
+      "cta_upload": "Enviar Arquivo",
+      "cta_feedback": "Responder",
+      "cta_view": "Ver detalhes"
+    },
+    "greetings": {
+      "morning": "Bom dia, {name}. Vamos ver como o projeto está andando?",
+      "afternoon": "Boa tarde, {name}. Aqui está o andamento do seu projeto.",
+      "evening": "Boa noite, {name}. Veja o que avançou no projeto hoje.",
+      "track_evolution": "Acompanhe as entregas, validações e próximos passos do projeto."
+    },
+    "global_timeline_title": "Timeline Global de Evolução",
+    "active_projects_count": "{count} projetos em execução",
+    "project_name_label": "Projeto",
+    "no_project": "Nenhum projeto ativo encontrado.",
+    "no_project_eyebrow": "Portal do Cliente",
+    "no_project_description": "Ainda não temos um projeto ativo registrado para sua conta. Se você acredita que isso é um erro ou quer iniciar algo novo, entre em contato.",
+    "status": {
+      "title": "Status do Projeto",
+      "progress": "Progresso Geral",
+      "deadline": "Prazo Final",
+      "no_deadline": "Sem prazo definido",
+      "pending_validations": "{count, plural, one {# validação pendente} other {# validações pendentes}}",
+      "no_pending_validations": "Sem validações pendentes no momento",
+      "current_phase": "Fase Atual",
+      "next_phase": "Próxima Fase",
+      "completed_phase": "Projeto Finalizado",
+      "STRATEGY": "Estratégia",
+      "ARCHITECTURE": "Arquitetura",
+      "DESIGN": "Design",
+      "ENGINEERING": "Desenvolvimento",
+      "QA": "Qualidade",
+      "LAUNCHED": "Finalizado"
+    },
+    "timeline": {
+      "title": "Feed do Projeto",
+      "milestone": "Marco Alcançado",
+      "description": "Linha viva de entregas, validações e decisões do projeto.",
+      "approved_on": "Aprovado em",
+      "status_published": "Publicado",
+      "status_approved": "Aprovado",
+      "status_adjustments_requested": "Ajustes Solicitados",
+      "requested_adjustments_title": "Ajustes que você solicitou",
+      "see_more": "Ver Mais",
+      "see_less": "Ver Menos",
+      "posted_at": "Publicado em"
+    },
+    "banner": {
+      "title": "{projectName} tem {count, plural, one {# entrega aguardando sua validação} other {# entregas aguardando sua validação}}",
+      "description": "Aprove a entrega ou solicite ajustes diretamente por aqui.",
+      "cta": "Validar agora"
+    },
+    "footer": {
+      "back_to_top": "Voltar ao Topo"
+    },
+    "rhythm_delivery": "Projeto em ritmo de entrega",
+    "current_phase": "Fase atual:",
+    "progress_label": "progresso",
+    "production_environment": "Ambiente de produção",
+    "source_code": "Código-fonte",
+    "unavailable": "Ainda indisponível",
+    "private_repo": "Repositório privado",
+    "feedback_sent": "Feedback enviado",
+    "assets_engine": "Assets Engine",
+    "waiting_files": "Aguardando envio de arquivos.",
+    "view_document": "Visualizar documento",
+    "attachments": {
+      "open_image": "Clique para abrir imagem",
+      "open_file": "Clique para abrir arquivo",
+      "image_gallery_title": "Galeria de imagens"
+    },
+    "category_label": "Categoria",
+    "priority_label": "Prioridade"
+  },
+  "Financial": {
+    "status": {
+      "PENDING": "Pendente",
+      "SENT": "Enviada",
+      "DRAFT": "Rascunho",
+      "PAID": "Pago",
+      "PARTIALLY_PAID": "Parcialmente Pago",
+      "OVERDUE": "Atrasado",
+      "CANCELLED": "Cancelado",
+      "DUE_SOON": "Vence em breve",
+      "WAIVED": "Isento"
+    }
+  },
+  "Proposals": {
+    "status": {
+      "DRAFT": "Rascunho",
+      "SENT": "Enviada",
+      "ACCEPTED": "Aceita",
+      "REJECTED": "Recusada",
+      "EXPIRED": "Expirada"
+    }
+  },
+  "Docs": {
+    "nav": {
+      "knowledge_base": "Knowledge Base",
+      "admin": {
+        "general": "Geral",
+        "overview": "Visão Geral",
+        "architecture": "Arquitetura",
+        "operation": "Operação",
+        "commercial_handoff": "Handoff Comercial",
+        "project_management": "Gestão de Projetos",
+        "financial": "Financeiro"
+      },
+      "client": {
+        "start": "Início",
+        "first_steps": "Primeiros Passos",
+        "your_project": "Seu Projeto",
+        "how_to_track": "Como Acompanhar",
+        "briefing_and_materials": "Briefing e Materiais",
+        "approvals": "Aprovações"
+      }
+    }
+  },
+  "Notifications": {
+    "eyebrow": "Central de sinais",
+    "title": "Notificações",
+    "description": "Acompanhe aprovações, solicitações de ajustes e novas publicações do projeto.",
+    "empty": "Nenhuma notificação registrada",
+    "mark_all": "Marcar todas como lidas",
+    "mark_all_success": "Notificações atualizadas.",
+    "mark_all_error": "Não foi possível atualizar as notificações.",
+    "new": "Novo",
+    "open": "Abrir",
+    "project_label": "Projeto {name}",
+    "state": {
+      "requires_attention": "Requer atenção",
+      "read": "Lida",
+      "unread": "Não visualizada"
+    },
+    "presentation": {
+      "client_action": "Ação do cliente",
+      "admin_action": "Ação do time",
+      "new_briefing": "Novo briefing",
+      "approved": "Validação concluída",
+      "status_approved": "Aprovado",
+      "update": "Atualização",
+      "project": "Projeto",
+      "file": "Arquivo",
+      "crm": "CRM",
+      "notification": "Notificação",
+      "requires_approval": "Requer aprovação",
+      "adjustments_requested": "Ajustes solicitados",
+      "review_content": "Revisar conteúdo",
+      "status_updated": "Status atualizado",
+      "new_material": "Novo material",
+      "lead_assigned": "Lead atribuído",
+      "informational": "Informativo",
+      "operations": "Operações",
+      "automatic_reminder": "Lembrete automático",
+      "connect": "MAGUI Connect",
+      "connect_access_request": "Solicitação de liberação"
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Próxima",
+      "page": "Página {current} de {total}"
+    }
+  },
+  "MaguiConnect": {
+    "pageTitle": "MAGUI Connect",
+    "crmBadge": "Seus links em um só lugar",
+    "landingTitle": "Crie sua página de links do seu jeito.",
+    "landingEyebrow": "Como funciona",
+    "landingPointOne": "Escolha um título para apresentar sua página.",
+    "landingPointTwo": "Adicione uma descrição curta sobre você, sua marca ou seu trabalho.",
+    "landingPointThree": "Organize seus links na ordem que preferir e mantenha tudo fácil de acessar.",
+    "crmDescription": "Reúna seus principais links em uma página simples, bonita e fácil de compartilhar com quem chega até você.",
+    "navOverview": "Visão Geral",
+    "navLinks": "Links e Seções",
+    "navSecurity": "Segurança",
+    "registerEyebrow": "Etapa 1",
+    "registerTitle": "Dados do perfil",
+    "registerDescription": "Defina como sua página vai se apresentar para quem abrir seus links.",
+    "tabBasic": "Básico",
+    "tabContact": "Contato",
+    "tabAppearance": "Aparência",
+    "tabAdvanced": "Avançado",
+    "tabSEO": "SEO",
+    "titleLabel": "Nome de Exibição",
+    "titlePlaceholder": "Ex: Dr. João Silva",
+    "descriptionLabel": "Headline",
+    "descriptionPlaceholder": "Ex: Cirurgião plástico em São Paulo.",
+    "bioLabel": "Biografia Curta",
+    "bioPlaceholder": "Conte um pouco mais sobre seu trabalho ou empresa...",
+    "categoryLabel": "Categoria Profissional",
+    "categoryPlaceholder": "Ex: Design Estratégico",
+    "locationLabel": "Localização",
+    "locationPlaceholder": "Ex: São Paulo, Brasil",
+    "emailLabel": "E-mail Público",
+    "whatsapp": "WhatsApp",
+    "whatsappMessageLabel": "Mensagem Pré-definida (WhatsApp)",
+    "whatsappMessagePlaceholder": "Ex: Vim pelo Connect e quero saber mais...",
+    "ctaSection": "Chamada para Ação (CTA)",
+    "ctaLabel": "Texto do Botão",
+    "ctaUrl": "Link do Botão",
+    "avatarLabel": "Foto de Perfil",
+    "avatarDescription": "Formatos suportados: JPG, PNG, WEBP (Máx. 4MB)",
+    "bannerLabel": "Banner de Perfil",
+    "bannerDescription": "Recomendado: 1500x500px. JPG, PNG, WEBP (Máx. 8MB)",
+    "uploadAvatar": "Fazer Upload",
+    "changeAvatar": "Trocar Foto",
+    "uploadBanner": "Carregar Banner",
+    "changeBanner": "Trocar Banner",
+    "deleteAvatar": "Excluir",
+    "deleteBanner": "Remover Banner",
+    "errorFileSize": "O arquivo é muito grande. Reduza o tamanho e tente novamente.",
+    "errorFileType": "Tipo de arquivo não suportado. Use JPG, PNG ou WEBP.",
+    "errorFileLimit": "Limite de arquivos excedido.",
+    "errorUploadGeneric": "Ocorreu um erro ao carregar o arquivo. Tente novamente.",
+    "accentLabel": "Cor de Destaque",
+    "bgLabel": "Fundo",
+    "fgLabel": "Texto",
+    "isCollapsibleLabel": "Seção Colapsável",
+    "slugLabel": "Slug",
+    "slugPlaceholder": "Ex: seu-nome",
+    "domainLabel": "Domínio Customizado",
+    "domainPlaceholder": "Ex: bio.seusite.com.br",
+    "seoTitleLabel": "Título SEO",
+    "seoTitlePlaceholder": "Como aparecerá no Google",
+    "seoDescriptionLabel": "Descrição SEO",
+    "seoDescriptionPlaceholder": "Breve resumo para motores de busca",
+    "save": "Salvar Alterações",
+    "saving": "Salvando...",
+    "cancel": "Cancelar",
+    "profileUpdated": "Perfil atualizado com sucesso!",
+    "updateFailed": "Erro ao atualizar perfil.",
+    "linksTitle": "Seus Links",
+    "linksEyebrow": "Etapa 2",
+    "linksDescription": "Gerencie seus destinos digitais.",
+    "addLink": "Novo Link",
+    "linkLabel": "Nome do Link",
+    "linkUrl": "URL do Link",
+    "deleteLink": "Remover",
+    "confirmDelete": "Remover este link?",
+    "noLinks": "Nenhum link cadastrado",
+    "linksHelper": "Adicione seu primeiro link acima para começar.",
+    "linksReorderHint": "Arraste para reordenar",
+    "adminDescription": "Resumo do Connect cadastrado para este cliente.",
+    "adminEmpty": "Cliente sem cadastro do MAGUI Connect.",
+    "adminNoDescription": "Sem descrição cadastrada.",
+    "adminCreateDescription": "Este cliente ainda não tem um Connect criado. Você pode iniciar o cadastro manualmente agora.",
+    "adminCreateButton": "Criar Connect",
+    "adminCreateSuccess": "Cadastro do MAGUI Connect criado com sucesso.",
+    "adminCreateError": "Não foi possível criar o cadastro do MAGUI Connect.",
+    "adminSlugDomainHelper": "O cliente pode definir o slug. O domínio fica reservado para configuração administrativa.",
+    "adminLinksDescription": "Veja todos os links desse cliente, ajuste texto e URL quando precisar e adicione novos sem sair do admin.",
+    "adminNoLinks": "Esse cliente ainda não cadastrou nenhum link.",
+    "adminLinkCreateSuccess": "Link adicionado com sucesso.",
+    "adminLinkCreateError": "Não foi possível adicionar o link.",
+    "adminLinkUpdateSuccess": "Link atualizado com sucesso.",
+    "adminLinkUpdateError": "Não foi possível atualizar o link.",
+    "adminLinkDeleteSuccess": "Link removido com sucesso.",
+    "adminLinkDeleteError": "Não foi possível remover o link.",
+    "adminUpdateSuccess": "Informações do MAGUI Connect atualizadas com sucesso.",
+    "adminUpdateError": "Não foi possível salvar as informações do MAGUI Connect.",
+    "lockedEyebrow": "Acesso sob liberação",
+    "lockedTitle": "Seu MAGUI Connect ainda não está liberado.",
+    "lockedDescription": "Uma página profissional para reunir seus links mais importantes, facilitar o contato e direcionar melhor quem chega até você.",
+    "lockedPriceLabel": "Investimento",
+    "lockedPriceValue": "R$ 497,00",
+    "lockedCardSeparateTitle": "Tudo em um lugar",
+    "lockedCardSeparateDescription": "Em vez de espalhar links em vários lugares, você concentra tudo em uma única página com direção clara.",
+    "lockedCardBonusTitle": "Mais confiança",
+    "lockedCardBonusDescription": "Uma apresentação organizada transmite mais autoridade e reduz atrito para quem está decidindo falar com você.",
+    "lockedCardManualTitle": "Mais controle",
+    "lockedCardManualDescription": "Você define o que ganha destaque, acompanha acessos e entende melhor onde está a atenção do seu público.",
+    "lockedBenefitsEyebrow": "Por que ativar",
+    "lockedBenefitsTitle": "Menos ruído. Mais foco. Mais chance de conversão.",
+    "lockedBenefitOneTitle": "Centralize tudo",
+    "lockedBenefitOneDescription": "Instagram, WhatsApp, portfólio, proposta comercial, agenda e qualquer outro destino importante em um único lugar.",
+    "lockedBenefitTwoTitle": "Guie a decisão",
+    "lockedBenefitTwoDescription": "Quando a pessoa encontra muitas opções soltas, ela hesita. Quando encontra uma rota clara, ela age.",
+    "lockedBenefitThreeTitle": "Acompanhe o interesse",
+    "lockedBenefitThreeDescription": "Com os analytics de links, você enxerga quais ações recebem mais atenção e ajusta sua estratégia com base em comportamento real.",
+    "lockedStoryEyebrow": "O problema",
+    "lockedStoryTitle": "Quem chega até você precisa entender rápido o próximo passo.",
+    "lockedStoryDescription": "Quando seus links ficam soltos, o visitante perde tempo pensando. Com o MAGUI Connect, tudo fica organizado em uma página clara, direta e muito mais fácil de consumir.",
+    "lockedFeatureOneTitle": "Página única para bio, portfólio e contato",
+    "lockedFeatureOneDescription": "Tudo o que importa em um lugar só, com hierarquia visual clara para guiar a atenção de quem chega.",
+    "lockedFeatureTwoTitle": "Links com prioridade estratégica",
+    "lockedFeatureTwoDescription": "Você escolhe o que merece mais destaque, levando o público para a ação certa no momento certo.",
+    "lockedFeatureThreeTitle": "Visual alinhado com sua marca",
+    "lockedFeatureThreeDescription": "Nome, foto, banner, descrição, cores e estrutura pensados para parecer profissional e coerente.",
+    "lockedFeatureFourTitle": "Leitura real de interesse",
+    "lockedFeatureFourDescription": "Os analytics ajudam a entender quais links recebem mais cliques e quais caminhos geram mais atenção.",
+    "lockedHowEyebrow": "Como funciona",
+    "lockedHowTitle": "Em poucos passos, sua página fica pronta para trabalhar por você.",
+    "lockedHowStepOneTitle": "Solicite a liberação",
+    "lockedHowStepOneDescription": "Você pede acesso ao MAGUI Connect diretamente pelo dashboard.",
+    "lockedHowStepTwoTitle": "Receba o contato",
+    "lockedHowStepTwoDescription": "Depois da solicitação, entramos em contato com a fatura para pagamento.",
+    "lockedHowStepThreeTitle": "Confirme o pagamento",
+    "lockedHowStepThreeDescription": "Assim que o pagamento for confirmado, liberamos o MAGUI Connect para a sua conta.",
+    "lockedHowStepFourTitle": "Monte e publique",
+    "lockedHowStepFourDescription": "Depois disso, você preenche seus links, ajusta o visual e acompanha os acessos.",
+    "lockedValueEyebrow": "O que você ganha",
+    "lockedValueTitle": "Não é só uma página de links. É uma camada de clareza sobre a sua presença digital.",
+    "lockedValuePointOne": "Mais profissionalismo na forma como você se apresenta.",
+    "lockedValuePointTwo": "Mais foco na ação que realmente importa.",
+    "lockedValuePointThree": "Menos dispersão e menos atrito para o visitante.",
+    "lockedValuePointFour": "Mais inteligência para decidir o que destacar.",
+    "lockedValuePointFive": "Mais controle sobre a jornada de quem chega até você.",
+    "lockedCtaTitle": "Quer ativar o seu MAGUI Connect?",
+    "lockedCtaDescription": "Solicite a liberação. Depois disso, entraremos em contato com a fatura e, após o pagamento, o acesso será habilitado.",
+    "lockedRequestButton": "Solicitar MAGUI Connect",
+    "lockedRequestSent": "Solicitação enviada",
+    "lockedRequestSuccess": "Sua solicitação foi enviada para a equipe.",
+    "lockedRequestError": "Não foi possível enviar sua solicitação agora.",
+    "lockedBackHome": "Voltar ao dashboard",
+    "analyticsEyebrow": "Leitura de performance",
+    "analyticsTitle": "Analytics dos links",
+    "analyticsDescription": "Veja todos os links do seu Connect, compare volume de acessos e entenda quais destinos estão recebendo mais atenção.",
+    "analyticsTotalClicks": "Cliques totais",
+    "analyticsTotalLinks": "Links ativos",
+    "analyticsTopLink": "Link com mais acessos",
+    "analyticsNoTopLink": "Sem dados ainda",
+    "analyticsLinksRanking": "Ranking de links",
+    "analyticsLinksRankingDescription": "Lista completa dos links cadastrados com volume de acessos por item.",
+    "analyticsNoLinks": "Nenhum link cadastrado ainda.",
+    "analyticsFeatured": "Destaque",
+    "analyticsClicksLabel": "Acessos"
+  }
+}

@@ -1,0 +1,4 @@
+-- Historical no-op.
+-- This migration used to add attachments for UpdateComment, but the table
+-- is not part of the current migration chain for fresh databases and is
+-- removed immediately by the next migration.

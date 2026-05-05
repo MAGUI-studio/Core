@@ -1,0 +1,28 @@
+export const cacheTags = {
+  adminProjects: "admin:projects",
+  adminProject: (id: string) => `admin:project:${id}`,
+  adminClientOptions: "admin:client-options",
+  adminClient: (id: string) => `admin:client:${id}`,
+  adminDashboard: "admin:dashboard",
+  adminCrm: "admin:crm",
+  adminCrmLeads: "admin:crm:leads",
+  adminCrmTemplates: "admin:crm:templates",
+  adminCrmViews: (userId: string) => `admin:crm:views:${userId}`,
+  adminCrmPrefs: (userId: string) => `admin:crm:prefs:${userId}`,
+  adminLead: (id: string) => `admin:lead:${id}`,
+  projectTimeline: (id: string) => `project:timeline:${id}`,
+  projectAssets: (id: string) => `project:assets:${id}`,
+  projectMembers: (id: string) => `project:members:${id}`,
+  projectBriefing: (id: string) => `project:briefing:${id}`,
+  clientProjects: "client:projects",
+  clientProject: "client:project",
+  clientPendingApprovals: "client:pending-approvals",
+  clientHome: "client:home",
+  clientNotifications: "client:notifications",
+  maguiConnectProfile: (userId: string) => `magui-connect:profile:${userId}`,
+  maguiConnectPublicByDomain: (domain: string) =>
+    `magui-connect:public:domain:${domain}`,
+  maguiConnectPublicBySlug: (slug: string) =>
+    `magui-connect:public:slug:${slug}`,
+  maguiConnectAdmin: "magui-connect:admin",
+} as const

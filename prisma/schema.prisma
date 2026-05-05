@@ -1,0 +1,1061 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ProposalStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum InvoiceKind {
+  PROJECT
+  MAGUI_CONNECT
+  OTHER
+}
+
+enum InstallmentStatus {
+  PENDING
+  DUE_SOON
+  OVERDUE
+  PAID
+  WAIVED
+}
+
+enum UserRole {
+  ADMIN
+  MEMBER
+  CLIENT
+}
+
+enum ProjectMemberRole {
+  OWNER
+  COLLABORATOR
+}
+
+enum ProjectStatus {
+  STRATEGY
+  ARCHITECTURE
+  DESIGN
+  ENGINEERING
+  QA
+  LAUNCHED
+}
+
+enum ProjectCategory {
+  LANDING_PAGE
+  INSTITUTIONAL_SITE
+  BOOKING_PLATFORM
+  STABILITY_PLAN
+}
+
+enum PaymentMethod {
+  FIFTY_FIFTY
+  MONTHLY_INSTALLMENTS
+}
+
+enum AssetType {
+  CONTRACT
+  DESIGN_SYSTEM
+  IMAGE
+  DOCUMENT
+  SOURCE_CODE
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ActionStatus {
+  PENDING
+  COMPLETED
+}
+
+enum ActionTargetRole {
+  ADMIN
+  CLIENT
+}
+
+enum AssetOrigin {
+  ADMIN
+  CLIENT
+}
+
+enum AssetVisibility {
+  INTERNAL
+  CLIENT
+}
+
+enum LeadStatus {
+  GARIMPAGEM
+  CONTATO_REALIZADO
+  NEGOCIACAO
+  CONVERTIDO
+  DESCARTADO
+}
+
+enum LeadSource {
+  REFERRAL
+  ORGANIC
+  INSTAGRAM
+  LINKEDIN
+  WEBSITE
+  OUTBOUND
+  EVENT
+  OTHER
+}
+
+enum LeadActivityType {
+  NOTE_CREATED
+  STATUS_CHANGED
+  SOURCE_UPDATED
+  CONTACT_UPDATED
+  WHATSAPP_LINK_OPENED
+  LEAD_EDITED
+  CONVERTED_TO_PROJECT
+  REMINDER_SET
+}
+
+enum NotificationType {
+  UPDATE_PENDING_APPROVAL
+  UPDATE_PUBLISHED
+  UPDATE_APPROVED
+  UPDATE_REJECTED
+  BRIEFING_SUBMITTED
+  ASSET_UPLOADED
+  PROJECT_STATUS_CHANGED
+  LEAD_ASSIGNED
+  OPERATIONAL_REMINDER
+  CONNECT_ACCESS_REQUEST
+}
+
+enum ScheduledReminderType {
+  LEAD_STALLED
+  APPROVAL_PENDING
+  PROJECT_SILENT
+  ACTION_ITEM_OVERDUE
+}
+
+enum ScheduledReminderStatus {
+  PENDING
+  SENT
+  RESOLVED
+  DISMISSED
+}
+
+enum AuditActorType {
+  SYSTEM
+  USER
+}
+
+enum DocumentType {
+  CONTRACT
+  AMENDMENT
+  NDA
+  PROPOSAL_ACCEPTANCE
+  ADDENDUM
+  OTHER
+}
+
+enum DocumentStatus {
+  DRAFT
+  SENT
+  VIEWED
+  SIGNED
+  COMPLETED
+  REJECTED
+  EXPIRED
+  CANCELLED
+}
+
+enum SignatureProvider {
+  AUTENTIQUE
+  DOCUSIGN
+  ADOBE_SIGN
+  OTHER
+}
+
+model DashboardMetricSnapshot {
+  id   String   @id @default(cuid())
+  date DateTime @default(now())
+
+  activeProjects    Int
+  completedProjects Int
+  pendingApprovals  Int
+
+  totalLeads       Int
+  convertedLeads   Int
+  negotiationValue Float
+
+  avgApprovalHours Float
+
+  createdAt DateTime @default(now())
+
+  @@index([date])
+}
+
+model EventOutbox {
+  id       String  @id @default(cuid())
+  type     String
+  payload  Json
+  status   String  @default("PENDING")
+  error    String? @db.Text
+  attempts Int     @default(0)
+
+  processedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([status, createdAt])
+}
+
+model User {
+  id      String   @id @default(cuid())
+  clerkId String   @unique
+  email   String   @unique
+  name    String?
+  role    UserRole @default(CLIENT)
+
+  companyName String?
+  phone       String?
+  position    String?
+  avatarUrl   String?
+  taxId       String?
+
+  projects           Project[]
+  projectMemberships ProjectMember[]
+  ownedLeads         Lead[]              @relation("LeadOwner")
+  leadNotes          LeadNote[]          @relation("LeadNoteAuthor")
+  notifications      Notification[]
+  auditLogs          AuditLog[]          @relation("AuditActor")
+  scheduledReminders ScheduledReminder[]
+
+  approvalEvents ApprovalEvent[]
+  leadActivities LeadActivity[]
+
+  documents               Document[]
+  createdDocumentVersions DocumentVersion[]
+
+  billingProfile   BillingProfile?
+  emailLogs        EmailLog[]
+  stripeCustomerId String?         @unique
+  invoices         Invoice[]       @relation("InvoiceClient")
+
+  canAccessMaguiConnect Boolean @default(false)
+  maguiConnectProfile MaguiConnectProfile?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MaguiConnectProfile {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  slug                 String?            @unique
+  displayName          String
+  headline             String?
+  bio                  String?            @db.Text
+  avatarUrl            String?
+  bannerUrl            String?
+  ogImageUrl           String?
+  domain               String?            @unique
+  professionalCategory String?
+  location             String?
+  companyName          String?
+  publicEmail          String?
+  publicPhone          String?
+  whatsapp             String?
+  whatsappMessage      String?
+  primaryCtaLabel      String?
+  primaryCtaUrl        String?
+  themeAccent          String?
+  themeBackground      String?            @default("#0a0a0a")
+  themeForeground      String?            @default("#f5f5f5")
+  seoTitle             String?
+  seoDescription       String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  links       MaguiConnectLink[]
+  sections    MaguiConnectSection[]
+  clickEvents MaguiConnectClickEvent[]
+
+  @@index([domain])
+}
+
+model MaguiConnectSection {
+  id        String              @id @default(cuid())
+  profileId String
+  profile   MaguiConnectProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title     String
+  sortOrder Int                 @default(0)
+  isActive  Boolean             @default(true)
+  isCollapsible Boolean         @default(false)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  links     MaguiConnectLink[]
+
+  @@index([profileId, sortOrder])
+}
+
+model MaguiConnectLink {
+  id           String                   @id @default(cuid())
+  profileId    String
+  profile      MaguiConnectProfile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  sectionId    String?
+  section      MaguiConnectSection?     @relation(fields: [sectionId], references: [id], onDelete: SetNull)
+  label        String
+  url          String
+  icon         String?
+  kind         String                   @default("LINK")
+  sortOrder    Int                      @default(0)
+  isActive     Boolean                  @default(true)
+  isFeatured   Boolean                  @default(false)
+  openInNewTab Boolean                  @default(true)
+  clickCount   Int                      @default(0)
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+  clickEvents  MaguiConnectClickEvent[]
+
+  @@index([profileId, sortOrder])
+  @@index([sectionId])
+}
+
+model Lead {
+  id            String     @id @default(cuid())
+  companyName   String
+  contactName   String?
+  email         String?
+  phone         String?
+  website       String?
+  instagram     String?
+  status        LeadStatus @default(GARIMPAGEM)
+  source        LeadSource @default(OTHER)
+  notes         String?    @db.Text
+  value         String?
+  lastContactAt DateTime?
+  nextActionAt  DateTime?
+
+  assignedToId  String?
+  assignedTo    User?          @relation("LeadOwner", fields: [assignedToId], references: [id], onDelete: SetNull)
+  followUpNotes LeadNote[]
+  activities    LeadActivity[]
+  proposals     Proposal[]
+  documents     Document[]
+
+  convertedProjectId String?
+  convertedAt        DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, updatedAt])
+  @@index([status, nextActionAt])
+  @@index([assignedToId, status, updatedAt])
+  @@index([convertedProjectId])
+}
+
+model LeadNote {
+  id      String @id @default(cuid())
+  content String @db.Text
+
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  authorId String?
+  author   User?   @relation("LeadNoteAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([leadId])
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+model LeadActivity {
+  id       String           @id @default(cuid())
+  type     LeadActivityType
+  title    String
+  content  String?          @db.Text
+  metadata Json?            @default("{}")
+
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  authorId String?
+  author   User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([leadId])
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+model MessageTemplate {
+  id      String @id @default(cuid())
+  scope   String @default("LEAD") // LEAD, PROJECT
+  name    String
+  content String @db.Text
+
+  createdById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([scope, createdAt])
+}
+
+model SavedView {
+  id          String @id @default(cuid())
+  userId      String
+  module      String // CRM, PROJECTS
+  name        String
+  filtersJson Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, module, name])
+}
+
+model ServiceCategory {
+  id             String  @id @default(cuid())
+  name           String
+  description    String? @db.Text
+  approach       String  @db.Text
+  suggestedValue Int // cents
+  imageUrl       String?
+  isSubscription Boolean @default(false)
+
+  projects Project[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id                      String          @id @default(cuid())
+  name                    String
+  description             String?         @db.Text
+  status                  ProjectStatus   @default(STRATEGY)
+  category                ProjectCategory @default(LANDING_PAGE)
+  progress                Int             @default(0)
+  budget                  Int? // cents
+  customValue             Boolean         @default(false)
+  hasInternationalization Boolean         @default(false)
+  internationalizationFee Int? // cents
+  paymentMethod           PaymentMethod   @default(FIFTY_FIFTY)
+
+  serviceCategoryId String?
+  serviceCategory   ServiceCategory? @relation(fields: [serviceCategoryId], references: [id], onDelete: SetNull)
+
+  briefing      Json?           @default("{}")
+  briefingNotes BriefingEntry[]
+
+  startDate     DateTime  @default(now())
+  deadline      DateTime?
+  liveUrl       String?
+  repositoryUrl String?
+
+  clientId String
+  client   User            @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  members  ProjectMember[]
+
+  updates       Update[]
+  assets        Asset[]
+  actionItems   ActionItem[]
+  versions      Version[]
+  notifications Notification[]
+  auditLogs     AuditLog[]
+  proposals     Proposal[]
+  handoff       ProjectHandoff?
+  kickoff       ProjectKickoffChecklist?
+  documents     Document[]
+  invoices      Invoice[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, updatedAt])
+  @@index([clientId, updatedAt])
+  @@index([serviceCategoryId])
+}
+
+model Document {
+  id     String         @id @default(cuid())
+  type   DocumentType   @default(CONTRACT)
+  title  String
+  status DocumentStatus @default(DRAFT)
+
+  sourceLeadId String?
+  lead         Lead?   @relation(fields: [sourceLeadId], references: [id], onDelete: SetNull)
+
+  clientId String?
+  client   User?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  signatureProvider SignatureProvider @default(AUTENTIQUE)
+  providerDocId     String?           @unique
+  providerLink      String?
+
+  // Parties Data (Snapshot)
+  contractedData  Json? @default("{}") // { legalName, tradeName, document, email, address... }
+  contractingData Json? @default("{}") // { legalName, tradeName, document, email, address... }
+
+  // Commercial Data (Snapshot)
+  commercialData Json? @default("{}") // { totalValue, installments, revisions, deadline... }
+
+  currentVersionId String?
+  versions         DocumentVersion[]
+  clauses          DocumentClause[]
+  signers          DocumentSigner[]
+  invoices         Invoice[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([clientId])
+  @@index([status])
+}
+
+model DocumentVersion {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  versionNumber   Int     @default(1)
+  pdfUrl          String?
+  contentSnapshot Json?   @default("{}")
+
+  createdById String?
+  createdBy   User?   @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([documentId])
+}
+
+model DocumentClause {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  order      Int     @default(0)
+  title      String
+  content    String  @db.Text
+  isRequired Boolean @default(true)
+
+  subclauses Json? @default("[]") // [{label, content, order}]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([documentId, order])
+}
+
+model DocumentSigner {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  name  String
+  email String
+  role  String? // CONTRACTOR, CLIENT, WITNESS
+
+  providerSignerId String?
+  status           String    @default("PENDING") // PENDING, SIGNED, REJECTED
+  signedAt         DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([documentId])
+}
+
+model ProjectHandoff {
+  id        String  @id @default(cuid())
+  projectId String  @unique
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  proposalId String?   @unique
+  proposal   Proposal? @relation(fields: [proposalId], references: [id], onDelete: SetNull)
+
+  // Commercial Snapshot
+  proposalTitle   String?
+  finalValue      Float?
+  currency        String  @default("BRL")
+  soldItems       Json?   @default("[]") // [{description, unitValue, quantity}]
+  commercialNotes String? @db.Text
+
+  // Operational Snapshot
+  status       String  @default("PENDING") // PENDING, COMPLETED
+  ownerId      String?
+  handoffNotes String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+}
+
+model ProjectKickoffChecklist {
+  id        String  @id @default(cuid())
+  projectId String  @unique
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  contractSigned    Boolean @default(false)
+  briefingCompleted Boolean @default(false)
+  brandAssetsSent   Boolean @default(false)
+  accessReceived    Boolean @default(false)
+  firstMeetingDone  Boolean @default(false)
+
+  items Json? @default("[]") // [{id, label, completed, type: "SYSTEM" | "CUSTOM"}]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BriefingEntry {
+  id      String @id @default(cuid())
+  title   String
+  content String @db.Text
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+}
+
+model ProjectMember {
+  id   String            @id @default(cuid())
+  role ProjectMemberRole @default(COLLABORATOR)
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([projectId, userId])
+  @@index([userId])
+  @@index([projectId, role])
+}
+
+model Update {
+  id          String  @id @default(cuid())
+  title       String
+  description String? @db.Text
+  isMilestone Boolean @default(false)
+  imageUrl    String?
+  timezone    String  @default("UTC")
+
+  requiresApproval Boolean        @default(false)
+  approvalStatus   ApprovalStatus @default(PENDING)
+  approvedAt       DateTime?
+  feedback         String?        @db.Text
+
+  projectId      String
+  project        Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  attachments    UpdateAttachment[]
+  approvalEvents ApprovalEvent[]
+
+  createdAt DateTime @default(now())
+
+  @@index([projectId, createdAt])
+  @@index([requiresApproval, approvalStatus, createdAt])
+}
+
+model UpdateAttachment {
+  id       String    @id @default(cuid())
+  name     String
+  url      String
+  key      String
+  customId String?
+  type     AssetType @default(DOCUMENT)
+  mimeType String?
+  size     Int?
+
+  updateId String
+  update   Update @relation(fields: [updateId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([updateId, createdAt])
+}
+
+model ApprovalEvent {
+  id       String         @id @default(cuid())
+  decision ApprovalStatus
+  comment  String?        @db.Text
+
+  updateId String
+  update   Update @relation(fields: [updateId], references: [id], onDelete: Cascade)
+
+  actorId String?
+  actor   User?   @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([updateId])
+  @@index([actorId])
+}
+
+model ActionItem {
+  id          String           @id @default(cuid())
+  title       String
+  description String?          @db.Text
+  status      ActionStatus     @default(PENDING)
+  dueDate     DateTime?
+  targetRole  ActionTargetRole @default(ADMIN)
+  ctaPath     String?
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, dueDate])
+  @@index([projectId, status, dueDate])
+  @@index([targetRole])
+}
+
+model Asset {
+  id       String    @id @default(cuid())
+  name     String
+  url      String
+  key      String
+  type     AssetType @default(DOCUMENT)
+  order    Int       @default(0)
+  timezone String    @default("UTC")
+
+  origin     AssetOrigin     @default(ADMIN)
+  visibility AssetVisibility @default(CLIENT)
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([projectId, visibility, order])
+  @@index([projectId, createdAt])
+}
+
+model Version {
+  id          String  @id @default(cuid())
+  name        String
+  deployUrl   String?
+  description String? @db.Text
+
+  scorePerformance   Int?
+  scoreAccessibility Int?
+  scoreBestPractices Int?
+  scoreSEO           Int?
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([projectId, createdAt])
+}
+
+model Notification {
+  id       String           @id @default(cuid())
+  type     NotificationType
+  title    String
+  message  String           @db.Text
+  ctaPath  String?
+  metadata Json?
+  readAt   DateTime?
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, readAt, createdAt])
+  @@index([projectId])
+}
+
+model ScheduledReminder {
+  id           String                  @id @default(cuid())
+  type         ScheduledReminderType
+  status       ScheduledReminderStatus @default(PENDING)
+  entityType   String
+  entityId     String
+  title        String
+  message      String                  @db.Text
+  ctaPath      String?
+  scheduledFor DateTime
+  sentAt       DateTime?
+  resolvedAt   DateTime?
+  metadata     Json?
+
+  recipientUserId String
+  recipientUser   User   @relation(fields: [recipientUserId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([recipientUserId, type, entityId])
+  @@index([recipientUserId, status, scheduledFor])
+  @@index([type, status])
+  @@index([entityType, entityId])
+}
+
+model AuditLog {
+  id         String         @id @default(cuid())
+  action     String
+  entityType String
+  entityId   String
+  summary    String
+  metadata   Json?
+  actorType  AuditActorType @default(SYSTEM)
+
+  actorId   String?
+  actor     User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([projectId, createdAt])
+  @@index([actorId])
+  @@index([entityType, entityId])
+}
+
+model Proposal {
+  id         String         @id @default(cuid())
+  number     Int            @default(autoincrement())
+  title      String
+  status     ProposalStatus @default(DRAFT)
+  validUntil DateTime?
+  totalValue Int            @default(0) // cents
+  currency   String         @default("BRL")
+  notes      String?        @db.Text
+
+  acceptedAt DateTime?
+  acceptedIp String?
+
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  handoff ProjectHandoff?
+
+  items    ProposalItem[]
+  invoices Invoice[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([leadId])
+  @@index([status])
+}
+
+model ProposalItem {
+  id              String  @id @default(cuid())
+  description     String
+  longDescription String? @db.Text
+  unitValue       Int     @default(0) // cents
+  quantity        Int     @default(1)
+  order           Int     @default(0)
+
+  proposalId String
+  proposal   Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([proposalId, order])
+}
+
+model ProposalBlock {
+  id       String @id @default(cuid())
+  category String // EXECUTIVE_SUMMARY, OBJECTIVES, etc.
+  title    String
+  content  String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}
+
+model BillingProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  legalName    String?
+  tradeName    String?
+  taxId        String?
+  billingEmail String?
+  billingPhone String?
+
+  addressStreet     String?
+  addressNumber     String?
+  addressComplement String?
+  addressDistrict   String?
+  addressCity       String?
+  addressState      String?
+  addressZipCode    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Invoice {
+  id          String        @id @default(cuid())
+  title       String
+  description String?       @db.Text
+  status      InvoiceStatus @default(DRAFT)
+  kind        InvoiceKind   @default(PROJECT)
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  clientId String?
+  client   User?   @relation("InvoiceClient", fields: [clientId], references: [id], onDelete: SetNull)
+
+  proposalId String?
+  proposal   Proposal? @relation(fields: [proposalId], references: [id], onDelete: SetNull)
+
+  documentId String?
+  document   Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+
+  totalAmount Int // cents
+  currency    String @default("BRL")
+
+  issuedAt DateTime  @default(now())
+  dueDate  DateTime?
+
+  installments Installment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([clientId])
+  @@index([kind])
+  @@index([status])
+}
+
+model Installment {
+  id        String  @id @default(cuid())
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  number  Int
+  amount  Int // cents
+  dueDate DateTime
+  status  InstallmentStatus @default(PENDING)
+
+  paidAt   DateTime?
+  proofUrl String? // Payment proof file
+  proofKey String?
+
+  stripeCheckoutSessionId String? @unique
+  stripeCheckoutUrl       String? @db.Text
+  stripePaymentIntentId   String? @unique
+
+  paymentEvents PaymentEvent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([invoiceId])
+  @@index([status, dueDate])
+}
+
+model PaymentEvent {
+  id            String      @id @default(cuid())
+  installmentId String
+  installment   Installment @relation(fields: [installmentId], references: [id], onDelete: Cascade)
+
+  type          String // PIX, TRANSFER, CREDIT_CARD, etc.
+  amount        Int // cents
+  date          DateTime @default(now())
+  note          String?  @db.Text
+  attachmentUrl String?
+  attachmentKey String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([installmentId])
+}
+
+model EmailLog {
+  id     String  @id @default(cuid())
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  to          String
+  subject     String
+  templateKey String // e.g., "PROPOSAL_SENT", "INVOICE_OVERDUE"
+
+  entityType String? // Project, Proposal, Invoice, etc.
+  entityId   String?
+
+  status            String  @default("SENT") // SENT, DELIVERED, FAILED
+  provider          String  @default("RESEND")
+  providerMessageId String? @unique
+
+  errorMessage String? @db.Text
+
+  sentAt    DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([templateKey])
+  @@index([entityType, entityId])
+}
+
+model MaguiConnectClickEvent {
+  id        String              @id @default(cuid())
+  profileId String
+  profile   MaguiConnectProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  linkId    String
+  link      MaguiConnectLink    @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  createdAt DateTime            @default(now())
+
+  @@index([profileId])
+  @@index([linkId])
+  @@index([createdAt])
+}
