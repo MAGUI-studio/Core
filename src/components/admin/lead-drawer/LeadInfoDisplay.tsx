@@ -34,76 +34,9 @@ export function LeadInfoDisplay({ lead }: LeadInfoDisplayProps) {
 
   const phone = sanitizePhoneForWhatsApp(lead.phone)
   const whatsappUrl = phone ? `https://wa.me/${phone}` : null
-  const missingCriticalInfo = [
-    !lead.source || lead.source === LeadSource.OTHER ? "Origem definida" : null,
-    !lead.value?.trim() ? "Valor estimado" : null,
-    !lead.nextActionAt ? "Proximo passo" : null,
-    !lead.assignedToId ? "Responsavel" : null,
-  ].filter(Boolean) as string[]
-  const completedSignals = [
-    lead.contactName ? "Contato principal" : null,
-    lead.email ? "E-mail principal" : null,
-    lead.phone ? "WhatsApp" : null,
-    lead.value ? "Valor estimado" : null,
-  ].filter(Boolean) as string[]
 
   return (
     <div className="grid gap-8">
-      <section className="rounded-4xl border border-border/40 bg-muted/5 p-6">
-        <div className="flex items-center gap-3">
-          <ListChecks
-            size={18}
-            weight="duotone"
-            className="text-brand-primary"
-          />
-          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/60">
-            Prontidao do lead
-          </h4>
-        </div>
-
-        <div className="mt-5 grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
-          <div className="space-y-2">
-            <Label label="Sinais preenchidos" />
-            <div className="flex flex-wrap gap-2">
-              {completedSignals.length > 0 ? (
-                completedSignals.map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-emerald-700"
-                  >
-                    {item}
-                  </span>
-                ))
-              ) : (
-                <p className="text-sm font-medium text-muted-foreground/70">
-                  Ainda faltam bases minimas para uma leitura comercial forte.
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label label="Faltando info critica" />
-            <div className="flex flex-wrap gap-2">
-              {missingCriticalInfo.length > 0 ? (
-                missingCriticalInfo.map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full bg-amber-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-amber-700"
-                  >
-                    {item}
-                  </span>
-                ))
-              ) : (
-                <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-emerald-700">
-                  Sem lacunas criticas
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
       <div className="grid gap-6 md:grid-cols-2">
         {/* Contact Intelligence */}
         <section className="space-y-4 rounded-4xl border border-border/40 bg-muted/5 p-6">

@@ -144,12 +144,6 @@ export function LeadDetailsDrawer({
     LeadStatus.NEGOCIACAO,
     LeadStatus.CONVERTIDO,
   ]
-  const missingCriticalInfo = [
-    !localLead.source || localLead.source === "OTHER" ? "Origem" : null,
-    !localLead.value?.trim() ? "Valor" : null,
-    !localLead.nextActionAt ? "Proximo passo" : null,
-    !localLead.assignedToId ? "Responsavel" : null,
-  ].filter(Boolean)
 
   return (
     <Sheet open={open} onOpenChange={handleSheetOpenChange}>
@@ -186,18 +180,6 @@ export function LeadDetailsDrawer({
                       {t(`source.${localLead.source}`)}
                     </span>
                   </div>
-                  {missingCriticalInfo.length > 0 ? (
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {missingCriticalInfo.map((item) => (
-                        <span
-                          key={item}
-                          className="rounded-full bg-amber-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-amber-700"
-                        >
-                          Falta {item}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
                 </div>
 
                 <DropdownMenu>

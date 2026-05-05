@@ -135,11 +135,6 @@ export function LeadsTable({
               filteredLeads.map((lead) => {
                 const stagnant = isLeadStagnant(lead)
                 const nextAction = getNextActionMeta(lead.nextActionAt)
-                const missingCriticalInfo = [
-                  !lead.value?.trim() ? "Sem valor" : null,
-                  !lead.assignedToId ? "Sem responsavel" : null,
-                  !lead.nextActionAt ? "Sem follow-up" : null,
-                ].filter(Boolean)
 
                 return (
                   <TableRow
@@ -171,14 +166,6 @@ export function LeadsTable({
                             >
                               {nextAction.label}
                             </span>
-                            {missingCriticalInfo.map((item) => (
-                              <span
-                                key={item}
-                                className="rounded-full bg-amber-500/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.16em] text-amber-700"
-                              >
-                                {item}
-                              </span>
-                            ))}
                           </div>
                         </div>
                       </div>

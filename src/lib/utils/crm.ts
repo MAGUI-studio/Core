@@ -99,8 +99,8 @@ export function getNextActionMeta(dateValue: string | Date | null): {
 } {
   if (!dateValue) {
     return {
-      label: "Sem cadência definida",
-      tone: "text-muted-foreground/55",
+      label: "",
+      tone: "text-transparent",
     }
   }
 
