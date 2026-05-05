@@ -214,17 +214,17 @@ export function MaguiConnectLinkItem({
     <div
       ref={setNodeRef}
       className={cn(
-        "group relative transition-all rounded-2xl",
+        "group relative transition-all rounded-2xl overflow-hidden",
         isDragging && "z-50 scale-[1.01] opacity-50 bg-muted/20",
         isFeatured && "bg-brand-primary/[0.03] border border-brand-primary/10"
       )}
       style={style}
     >
-      <div className="flex items-center gap-4 py-4 px-2 transition-colors">
+      <div className="flex items-center gap-3 sm:gap-4 py-4 px-2 transition-colors">
         <button
           {...attributes}
           {...listeners}
-          className="cursor-grab p-1 text-muted-foreground/30 transition-colors hover:text-foreground active:cursor-grabbing"
+          className="cursor-grab p-1 text-muted-foreground/30 transition-colors hover:text-foreground active:cursor-grabbing shrink-0"
           aria-label="Reorder"
         >
           <DotsSixVertical size={18} weight="bold" />
@@ -232,11 +232,11 @@ export function MaguiConnectLinkItem({
 
         <div
           className={cn(
-            "flex h-10 w-10 flex-shrink-0 items-center justify-center transition-all overflow-hidden"
+            "flex h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center transition-all overflow-hidden"
           )}
         >
           {iconSrc && (
-            <div className="relative h-10 w-10">
+            <div className="relative h-8 w-8 sm:h-10 sm:w-10">
               <Image
                 src={iconSrc}
                 alt={link.label}
@@ -249,23 +249,27 @@ export function MaguiConnectLinkItem({
 
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <p className="truncate text-sm font-bold">{link.label}</p>
+            <p className="truncate text-xs sm:text-sm font-bold">
+              {link.label}
+            </p>
             {isFeatured && (
-              <span className="bg-brand-primary/10 text-brand-primary text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md">
+              <span className="bg-brand-primary/10 text-brand-primary text-[7px] sm:text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md shrink-0">
                 Destaque
               </span>
             )}
           </div>
           <div className="flex items-center gap-2">
-            <p className="truncate font-mono text-[9px] text-muted-foreground/60">
+            <p className="truncate font-mono text-[8px] sm:text-[9px] text-muted-foreground/60">
               {link.customShortDescription || link.url}
             </p>
             <span className="text-[10px] text-muted-foreground/20">•</span>
             <Popover open={openSection} onOpenChange={setOpenSection}>
               <PopoverTrigger asChild>
-                <button className="text-[9px] font-black uppercase tracking-widest text-brand-primary/60 hover:text-brand-primary transition-colors flex items-center gap-1">
-                  {currentSection?.title ?? "Sem Grupo"}
-                  <CaretUpDown size={10} />
+                <button className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-brand-primary/60 hover:text-brand-primary transition-colors flex items-center gap-1 min-w-0">
+                  <span className="truncate">
+                    {currentSection?.title ?? "Sem Grupo"}
+                  </span>
+                  <CaretUpDown size={10} className="shrink-0" />
                 </button>
               </PopoverTrigger>
               <PopoverContent
@@ -308,7 +312,7 @@ export function MaguiConnectLinkItem({
                           }}
                           className="flex items-center gap-2 py-2 px-3 text-[10px] font-bold uppercase tracking-wider"
                         >
-                          {s.title}
+                          <span className="truncate">{s.title}</span>
                           <Check
                             size={12}
                             className={cn(
@@ -326,16 +330,16 @@ export function MaguiConnectLinkItem({
               </PopoverContent>
             </Popover>
           </div>
-          <div className="mt-1 space-y-1">
+          <div className="mt-1 space-y-0.5">
             {scheduleStatus.dateLine ? (
-              <p className="text-[10px] text-muted-foreground/50">
+              <p className="text-[8px] sm:text-[10px] text-muted-foreground/50 truncate">
                 {scheduleStatus.dateLine}
               </p>
             ) : null}
             {scheduleStatus.message ? (
               <p
                 className={cn(
-                  "text-[10px] font-semibold",
+                  "text-[8px] sm:text-[10px] font-semibold truncate",
                   scheduleStatus.tone === "warning" &&
                     "text-amber-500 dark:text-amber-400",
                   scheduleStatus.tone === "danger" && "text-destructive",
@@ -348,7 +352,7 @@ export function MaguiConnectLinkItem({
           </div>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
             <DialogTrigger asChild>
               <Button
@@ -360,14 +364,14 @@ export function MaguiConnectLinkItem({
                 <PencilSimple size={16} />
               </Button>
             </DialogTrigger>
-            <DialogContent className="overflow-visible sm:max-w-[500px] rounded-3xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl p-8">
+            <DialogContent className="overflow-y-auto max-h-[90vh] w-[95vw] sm:max-w-[500px] rounded-3xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl p-6 sm:p-8">
               <DialogHeader className="mb-6">
-                <DialogTitle className="text-2xl font-black tracking-tight">
+                <DialogTitle className="text-xl sm:text-2xl font-black tracking-tight">
                   Editar Link
                 </DialogTitle>
               </DialogHeader>
 
-              <div className="grid gap-10">
+              <div className="grid gap-8 sm:gap-10">
                 <div className="grid gap-3">
                   <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
                     {t("linkLabel")}
@@ -404,14 +408,19 @@ export function MaguiConnectLinkItem({
                         aria-expanded={openKind}
                         className="h-12 w-full justify-between rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-sm font-normal shadow-none hover:bg-transparent hover:border-brand-primary focus-visible:ring-0 transition-all"
                       >
-                        {MAGUI_CONNECT_LINK_KIND_PRESETS.find(
-                          (presetOption) => presetOption.value === editKind
-                        )?.label ?? t("linkTypePlaceholder")}
-                        <CaretUpDown size={16} className="ml-2 opacity-50" />
+                        <span className="truncate">
+                          {MAGUI_CONNECT_LINK_KIND_PRESETS.find(
+                            (presetOption) => presetOption.value === editKind
+                          )?.label ?? t("linkTypePlaceholder")}
+                        </span>
+                        <CaretUpDown
+                          size={16}
+                          className="ml-2 opacity-50 shrink-0"
+                        />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent
-                      className="w-[300px] p-0 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
+                      className="w-[280px] sm:w-[300px] p-0 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
                       align="start"
                     >
                       <Command className="rounded-2xl shadow-none">
@@ -469,7 +478,7 @@ export function MaguiConnectLinkItem({
                   </Popover>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-6 sm:grid-cols-2">
                   <div className="grid gap-3">
                     <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
                       {t("linkStartAtLabel")}
@@ -499,23 +508,23 @@ export function MaguiConnectLinkItem({
                     {t("linkUrl")}
                   </Label>
                   <Input
-                    className="h-12 rounded-none border-0 border-b border-border/60 bg-transparent px-0 font-mono text-xs shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                    className="h-12 rounded-none border-0 border-b border-border/60 bg-transparent px-0 font-mono text-[10px] sm:text-xs shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                     value={editUrl}
                     onChange={(e) => setEditUrl(e.target.value)}
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-4 mt-12">
+              <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 mt-10 sm:mt-12">
                 <Button
                   variant="ghost"
-                  className="rounded-full px-8 h-12 text-[10px] font-black uppercase tracking-widest"
+                  className="w-full sm:w-auto rounded-full px-8 h-12 text-[10px] font-black uppercase tracking-widest order-2 sm:order-1"
                   onClick={() => setIsEditDialogOpen(false)}
                 >
                   {t("cancel")}
                 </Button>
                 <Button
-                  className="rounded-full bg-brand-primary px-10 h-12 text-[10px] font-black uppercase tracking-widest text-white shadow-none"
+                  className="w-full sm:w-auto rounded-full bg-brand-primary px-10 h-12 text-[10px] font-black uppercase tracking-widest text-white shadow-none order-1 sm:order-2"
                   onClick={handleEditSave}
                 >
                   Salvar Alterações
@@ -551,7 +560,7 @@ export function MaguiConnectLinkItem({
                 <Trash size={16} />
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent className="rounded-3xl border-border/60 bg-background/95 backdrop-blur-xl shadow-2xl p-8">
+            <AlertDialogContent className="w-[95vw] max-w-md rounded-3xl border-border/60 bg-background/95 backdrop-blur-xl shadow-2xl p-6 sm:p-8">
               <AlertDialogHeader>
                 <AlertDialogTitle className="font-heading text-xl font-black uppercase tracking-tight">
                   {t("confirmDelete")}
@@ -561,8 +570,8 @@ export function MaguiConnectLinkItem({
                   ser desfeita.
                 </AlertDialogDescription>
               </AlertDialogHeader>
-              <AlertDialogFooter className="gap-3 mt-8">
-                <AlertDialogCancel className="rounded-full border-border/40 text-xs font-bold uppercase tracking-widest hover:bg-muted/10 h-12 px-8">
+              <AlertDialogFooter className="flex-col sm:flex-row gap-3 mt-8">
+                <AlertDialogCancel className="w-full sm:w-auto rounded-full border-border/40 text-xs font-bold uppercase tracking-widest hover:bg-muted/10 h-12 px-8 order-2 sm:order-1">
                   {t("cancel")}
                 </AlertDialogCancel>
                 <AlertDialogAction
@@ -578,7 +587,7 @@ export function MaguiConnectLinkItem({
                       }
                     })
                   }}
-                  className="rounded-full bg-red-500 text-xs font-bold uppercase tracking-widest text-white hover:bg-red-600 shadow-lg shadow-red-500/20 h-12 px-8"
+                  className="w-full sm:w-auto rounded-full bg-red-500 text-xs font-bold uppercase tracking-widest text-white hover:bg-red-600 shadow-lg shadow-red-500/20 h-12 px-8 order-1 sm:order-2"
                 >
                   {t("delete")}
                 </AlertDialogAction>

@@ -20,7 +20,13 @@ import {
 } from "@dnd-kit/sortable"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { ArrowsDownUp, DotsSix, Pencil, Plus, Trash } from "@phosphor-icons/react"
+import {
+  ArrowsDownUp,
+  DotsSix,
+  Pencil,
+  Plus,
+  Trash,
+} from "@phosphor-icons/react"
 import { toast } from "sonner"
 
 import {
@@ -107,18 +113,20 @@ export function MaguiConnectSectionList({
   }
 
   return (
-    <div className="max-w-4xl space-y-12 pt-16 border-t border-border/40">
+    <div className="w-full max-w-4xl space-y-12 pt-12 sm:pt-16 border-t border-border/40 overflow-hidden">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
-          <h3 className="text-xl font-black tracking-tight">Grupos de Links</h3>
-          <p className="text-sm text-muted-foreground/60">
+          <h3 className="text-lg sm:text-xl font-black tracking-tight">
+            Grupos de Links
+          </h3>
+          <p className="text-xs sm:text-sm text-muted-foreground/60">
             Organize seus links em categorias (Ex: Redes Sociais, Contato).
           </p>
         </div>
 
         {!isAdding && (
           <button
-            className="group relative inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-foreground px-8 text-[11px] font-black uppercase tracking-[0.2em] text-background transition-all hover:opacity-90 active:scale-[0.98] shadow-none overflow-hidden"
+            className="group relative inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-foreground px-6 sm:px-8 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-background transition-all hover:opacity-90 active:scale-[0.98] shadow-none overflow-hidden"
             type="button"
             onClick={() => setIsAdding(true)}
           >
@@ -131,14 +139,14 @@ export function MaguiConnectSectionList({
       </div>
 
       {isAdding && (
-        <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300 bg-muted/5 p-8 rounded-3xl border border-border/40">
+        <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300 bg-muted/5 p-6 sm:p-8 rounded-3xl border border-border/40">
           <div className="grid gap-3">
             <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
               Nome do Grupo
             </Label>
             <Input
               autoFocus
-              className="h-12 rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-lg font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+              className="h-12 rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-base sm:text-lg font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
               placeholder="Ex: Redes Sociais"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
@@ -150,7 +158,7 @@ export function MaguiConnectSectionList({
               {t("groupDescriptionLabel")}
             </Label>
             <Textarea
-              className="min-h-24 rounded-2xl border-border/40 bg-transparent shadow-none"
+              className="min-h-20 sm:min-h-24 rounded-2xl border-border/40 bg-transparent shadow-none text-sm sm:text-base"
               placeholder={t("groupDescriptionPlaceholder")}
               value={newDescription}
               onChange={(e) => setNewDescription(e.target.value)}
@@ -165,22 +173,22 @@ export function MaguiConnectSectionList({
             />
             <Label
               htmlFor="is-collapsible"
-              className="text-xs font-bold text-muted-foreground/60"
+              className="text-[10px] sm:text-xs font-bold text-muted-foreground/60 uppercase tracking-wider"
             >
               Transformar em Grupo Colapsável
             </Label>
           </div>
 
-          <div className="flex justify-end gap-4">
+          <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
             <Button
               variant="ghost"
-              className="rounded-full px-6"
+              className="w-full sm:w-auto rounded-full px-6 text-[10px] uppercase tracking-widest order-2 sm:order-1"
               onClick={() => setIsAdding(false)}
             >
               Cancelar
             </Button>
             <Button
-              className="rounded-full bg-brand-primary px-8 text-white"
+              className="w-full sm:w-auto rounded-full bg-brand-primary px-8 text-[10px] font-black uppercase tracking-widest text-white order-1 sm:order-2"
               onClick={handleAdd}
             >
               Criar Grupo
@@ -191,7 +199,7 @@ export function MaguiConnectSectionList({
 
       <div className="space-y-6">
         {items.length > 1 && (
-          <div className="flex items-center justify-end gap-2 text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground/30">
+          <div className="flex items-center justify-end gap-2 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground/30">
             <ArrowsDownUp size={12} weight="bold" />
             Arraste para reordenar os grupos
           </div>
@@ -208,8 +216,8 @@ export function MaguiConnectSectionList({
           >
             <div className="grid gap-4">
               {items.length === 0 && !isAdding ? (
-                <div className="py-12 text-center border-2 border-dashed border-border/20 rounded-3xl">
-                  <p className="text-sm text-muted-foreground/40 font-medium">
+                <div className="py-12 sm:py-16 text-center border-2 border-dashed border-border/20 rounded-3xl">
+                  <p className="text-xs sm:text-sm text-muted-foreground/40 font-medium">
                     Nenhum grupo criado ainda.
                   </p>
                 </div>

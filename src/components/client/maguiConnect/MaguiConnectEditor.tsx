@@ -320,7 +320,7 @@ export function MaguiConnectEditor({
               </Label>
               <Input
                 id="title"
-                className="h-16 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-3xl font-normal tracking-tight shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                className="h-12 sm:h-16 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-xl sm:text-3xl font-normal tracking-tight shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                 placeholder={t("titlePlaceholder")}
                 value={formData.title}
                 onChange={(e) => updateField("title", e.target.value)}
@@ -336,7 +336,7 @@ export function MaguiConnectEditor({
               </Label>
               <Input
                 id="description"
-                className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-xl font-normal tracking-tight shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                className="h-10 sm:h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-lg sm:text-xl font-normal tracking-tight shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                 placeholder={t("descriptionPlaceholder")}
                 value={formData.description ?? ""}
                 onChange={(e) => updateField("description", e.target.value)}
@@ -368,7 +368,7 @@ export function MaguiConnectEditor({
               </Label>
               <Input
                 id="heroHeadline"
-                className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-xl font-normal tracking-tight shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                className="h-10 sm:h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-lg sm:text-xl font-normal tracking-tight shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                 placeholder={t("heroHeadlinePlaceholder")}
                 value={formData.heroHeadline ?? ""}
                 onChange={(e) => updateField("heroHeadline", e.target.value)}
@@ -384,7 +384,7 @@ export function MaguiConnectEditor({
               </Label>
               <Textarea
                 id="heroDescription"
-                className="min-h-[120px] rounded-none border-0 border-b border-border/40 bg-transparent px-0 py-4 text-lg font-normal leading-relaxed shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all resize-none"
+                className="min-h-[100px] sm:min-h-[120px] rounded-none border-0 border-b border-border/40 bg-transparent px-0 py-3 sm:py-4 text-base sm:text-lg font-normal leading-relaxed shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all resize-none"
                 placeholder={t("heroDescriptionPlaceholder")}
                 value={formData.heroDescription ?? ""}
                 onChange={(e) => updateField("heroDescription", e.target.value)}
@@ -400,7 +400,7 @@ export function MaguiConnectEditor({
               </Label>
               <Textarea
                 id="bio"
-                className="min-h-[120px] rounded-none border-0 border-b border-border/40 bg-transparent px-0 py-4 text-lg font-normal leading-relaxed shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all resize-none"
+                className="min-h-[100px] sm:min-h-[120px] rounded-none border-0 border-b border-border/40 bg-transparent px-0 py-3 sm:py-4 text-base sm:text-lg font-normal leading-relaxed shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all resize-none"
                 placeholder={t("bioPlaceholder")}
                 value={formData.bio ?? ""}
                 onChange={(e) => updateField("bio", e.target.value)}
@@ -805,9 +805,9 @@ export function MaguiConnectEditor({
         </TabsContent>
       </Tabs>
 
-      <div className="flex justify-end pt-12 mt-16 border-t border-border/20">
+      <div className="flex justify-end pt-8 sm:pt-12 mt-12 sm:mt-16 border-t border-border/20">
         <Button
-          className="group relative cursor-pointer rounded-full bg-brand-primary px-12 h-16 text-[11px] font-black uppercase tracking-[0.5em] text-white hover:bg-brand-primary transition-all active:scale-[0.98] shadow-none overflow-hidden"
+          className="group relative cursor-pointer rounded-full bg-brand-primary px-8 sm:px-12 h-14 sm:h-16 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.3em] sm:tracking-[0.5em] text-white hover:bg-brand-primary transition-all active:scale-[0.98] shadow-none overflow-hidden"
           disabled={isPending}
           onClick={handleSave}
         >

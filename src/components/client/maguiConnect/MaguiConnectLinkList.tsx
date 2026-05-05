@@ -147,20 +147,20 @@ export function MaguiConnectLinkList({
   }
 
   return (
-    <div className="max-w-4xl space-y-12 pt-16 border-t border-border/40">
+    <div className="w-full max-w-4xl space-y-12 pt-12 sm:pt-16 border-t border-border/40 overflow-hidden">
       {!isAdding ? (
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
-            <h3 className="text-xl font-black tracking-tight">
+            <h3 className="text-lg sm:text-xl font-black tracking-tight">
               {t("linksTitle")}
             </h3>
-            <p className="text-sm text-muted-foreground/60">
+            <p className="text-xs sm:text-sm text-muted-foreground/60">
               {t("linksDescription")}
             </p>
           </div>
 
           <button
-            className="group relative inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-foreground px-8 text-[11px] font-black uppercase tracking-[0.2em] text-background transition-all hover:opacity-90 active:scale-[0.98] shadow-none overflow-hidden"
+            className="group relative inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-foreground px-6 sm:px-8 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-background transition-all hover:opacity-90 active:scale-[0.98] shadow-none overflow-hidden"
             type="button"
             onClick={() => setIsAdding(true)}
           >
@@ -172,29 +172,29 @@ export function MaguiConnectLinkList({
           </button>
         </div>
       ) : (
-        <div className="space-y-10 animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="space-y-8 sm:space-y-10 animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="flex items-center gap-4">
-            <h3 className="text-xl font-black tracking-tight">
+            <h3 className="text-lg sm:text-xl font-black tracking-tight">
               {t("addLink")}
             </h3>
             <div className="h-[1px] flex-1 bg-border/40" />
           </div>
 
-          <div className="grid gap-10">
+          <div className="grid gap-8 sm:gap-10">
             <div className="grid gap-3">
               <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
                 {t("linkLabel")}
               </Label>
               <Input
                 autoFocus
-                className="h-14 rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-lg font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                className="h-12 sm:h-14 rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-base sm:text-lg font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                 placeholder={t("linkLabelPlaceholder")}
                 value={label}
                 onChange={(e) => setLabel(e.target.value)}
               />
             </div>
 
-            <div className="grid gap-12 sm:grid-cols-2">
+            <div className="grid gap-8 sm:gap-12 sm:grid-cols-2">
               <div className="grid gap-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
                   Tipo de Destino
@@ -207,16 +207,21 @@ export function MaguiConnectLinkList({
                       aria-expanded={openKind}
                       className="h-12 w-full justify-between rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-sm font-normal shadow-none hover:bg-transparent hover:border-brand-primary focus-visible:ring-0 transition-all"
                     >
-                      {kind
-                        ? MAGUI_CONNECT_LINK_KIND_PRESETS.find(
-                            (p) => p.value === kind
-                          )?.label
-                        : "Selecione o tipo..."}
-                      <CaretUpDown size={16} className="ml-2 opacity-50" />
+                      <span className="truncate">
+                        {kind
+                          ? MAGUI_CONNECT_LINK_KIND_PRESETS.find(
+                              (p) => p.value === kind
+                            )?.label
+                          : "Selecione o tipo..."}
+                      </span>
+                      <CaretUpDown
+                        size={16}
+                        className="ml-2 opacity-50 shrink-0"
+                      />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent
-                    className="w-[300px] p-0 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
+                    className="w-[280px] sm:w-[300px] p-0 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
                     align="start"
                   >
                     <Command className="rounded-2xl shadow-none">
@@ -276,7 +281,7 @@ export function MaguiConnectLinkList({
                   {t("linkUrl")}
                 </Label>
                 <Input
-                  className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-sm font-mono font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                  className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-xs sm:text-sm font-mono font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                   placeholder={t("linkUrlPlaceholder")}
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
@@ -289,20 +294,20 @@ export function MaguiConnectLinkList({
                 {t("customShortDescriptionLabel")}
               </Label>
               <Input
-                className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-sm font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-xs sm:text-sm font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                 placeholder={t("customShortDescriptionPlaceholder")}
                 value={customShortDescription}
                 onChange={(e) => setCustomShortDescription(e.target.value)}
               />
             </div>
 
-            <div className="grid gap-12 sm:grid-cols-2">
+            <div className="grid gap-8 sm:gap-12 sm:grid-cols-2">
               <div className="grid gap-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/60">
                   {t("linkStartAtLabel")}
                 </Label>
                 <Input
-                  className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-sm font-normal shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                  className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-xs sm:text-sm font-normal shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                   type="datetime-local"
                   value={startsAt}
                   onChange={(e) => setStartsAt(e.target.value)}
@@ -313,7 +318,7 @@ export function MaguiConnectLinkList({
                   {t("linkExpiresAtLabel")}
                 </Label>
                 <Input
-                  className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-sm font-normal shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
+                  className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-xs sm:text-sm font-normal shadow-none focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
                   type="datetime-local"
                   value={expiresAt}
                   onChange={(e) => setExpiresAt(e.target.value)}
@@ -330,16 +335,21 @@ export function MaguiConnectLinkList({
                   <Button
                     variant="ghost"
                     role="combobox"
-                    className="h-12 w-full justify-between rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-sm font-normal shadow-none hover:bg-transparent hover:border-brand-primary focus-visible:ring-0 transition-all"
+                    className="h-12 w-full justify-between rounded-none border-0 border-b border-border/60 bg-transparent px-0 text-xs sm:text-sm font-normal shadow-none hover:bg-transparent hover:border-brand-primary focus-visible:ring-0 transition-all"
                   >
-                    {sectionId
-                      ? sections.find((s) => s.id === sectionId)?.title
-                      : "Sem grupo (solto)"}
-                    <CaretUpDown size={16} className="ml-2 opacity-50" />
+                    <span className="truncate">
+                      {sectionId
+                        ? sections.find((s) => s.id === sectionId)?.title
+                        : "Sem grupo (solto)"}
+                    </span>
+                    <CaretUpDown
+                      size={16}
+                      className="ml-2 opacity-50 shrink-0"
+                    />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
-                  className="w-[300px] p-0 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
+                  className="w-[280px] sm:w-[300px] p-0 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
                   align="start"
                 >
                   <Command className="rounded-2xl shadow-none">
@@ -376,7 +386,7 @@ export function MaguiConnectLinkList({
                             }}
                             className="flex items-center gap-3 py-3 px-4 text-xs font-normal"
                           >
-                            {s.title}
+                            <span className="truncate">{s.title}</span>
                             <Check
                               size={16}
                               className={cn(
@@ -394,9 +404,9 @@ export function MaguiConnectLinkList({
             </div>
           </div>
 
-          <div className="flex justify-end gap-6 pt-4">
+          <div className="flex flex-col sm:flex-row justify-end gap-4 sm:gap-6 pt-4">
             <Button
-              className="cursor-pointer rounded-full px-8 h-12 text-[11px] font-black uppercase tracking-[0.2em] transition-all hover:bg-muted/10"
+              className="w-full sm:w-auto cursor-pointer rounded-full px-8 h-12 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-muted/10 order-2 sm:order-1"
               variant="ghost"
               onClick={() => {
                 setIsAdding(false)
@@ -412,7 +422,7 @@ export function MaguiConnectLinkList({
               {t("cancel")}
             </Button>
             <Button
-              className="cursor-pointer rounded-full bg-brand-primary px-10 h-12 text-[11px] font-black uppercase tracking-[0.25em] text-white hover:bg-brand-primary/90 transition-all active:scale-[0.98] shadow-none"
+              className="w-full sm:w-auto cursor-pointer rounded-full bg-brand-primary px-10 h-12 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-white hover:bg-brand-primary/90 transition-all active:scale-[0.98] shadow-none order-1 sm:order-2"
               onClick={handleAdd}
             >
               Confirmar
