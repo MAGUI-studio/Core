@@ -706,7 +706,11 @@ function getLinkScheduleStatus(
       return {
         tone: diffDays <= 7 ? ("warning" as const) : ("info" as const),
         dateLine: dateParts.join(" • "),
-        message: countdown ?? t("linkExpiresSoonMessage", { days: diffDays }),
+        message: countdown ? (
+          <span className="text-red-500">{countdown}</span>
+        ) : (
+          t("linkExpiresSoonMessage", { days: diffDays })
+        ),
       }
     }
   }
