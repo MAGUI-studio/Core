@@ -84,6 +84,8 @@ export function MaguiConnectEditor({
 }: MaguiConnectEditorProps) {
   const t = useTranslations("MaguiConnect")
   const [isPending, startTransition] = React.useTransition()
+  const [isUploadingAvatar, setIsUploadingAvatar] = React.useState(false)
+  const [isUploadingBanner, setIsUploadingBanner] = React.useState(false)
 
   const [formData, setFormData] = React.useState<MaguiConnectProfileInput>({
     title: initialProfile?.displayName ?? "",
@@ -637,22 +639,30 @@ export function MaguiConnectEditor({
                     <div className="flex-1 sm:flex-none">
                       <UploadButton
                         endpoint="maguiConnectBanner"
+                        onUploadBegin={() => {
+                          setIsUploadingBanner(true)
+                        }}
                         onClientUploadComplete={(res) => {
+                          setIsUploadingBanner(false)
                           if (res?.[0]) handleBannerUpload(res[0].url)
                         }}
                         onUploadError={(error: Error) => {
+                          setIsUploadingBanner(false)
                           toast.error(getUploadErrorMessage(error))
                         }}
                         content={{
-                          button({ ready }) {
+                          button({ ready, isUploading }) {
+                            if (isUploading || isUploadingBanner) return "Enviando..."
                             if (ready) return t("uploadBanner")
                             return "Carregando..."
                           },
                           allowedContent: "Imagens até 8MB",
                         }}
                         appearance={{
-                          button:
+                          button: cn(
                             "h-14 w-full rounded-none bg-brand-primary px-8 text-[11px] font-black uppercase tracking-[0.3em] text-white hover:bg-brand-primary/90 transition-all ut-ready:bg-brand-primary ut-uploading:cursor-not-allowed shadow-none",
+                            (isUploadingBanner) && "opacity-50 cursor-wait pointer-events-none"
+                          ),
                           allowedContent: "hidden",
                         }}
                       />
@@ -710,22 +720,30 @@ export function MaguiConnectEditor({
                   <div className="mt-8">
                     <UploadButton
                       endpoint="maguiConnectAvatar"
+                      onUploadBegin={() => {
+                        setIsUploadingAvatar(true)
+                      }}
                       onClientUploadComplete={(res) => {
+                        setIsUploadingAvatar(false)
                         if (res?.[0]) handleAvatarUpload(res[0].url)
                       }}
                       onUploadError={(error: Error) => {
+                        setIsUploadingAvatar(false)
                         toast.error(getUploadErrorMessage(error))
                       }}
                       content={{
-                        button({ ready }) {
+                        button({ ready, isUploading }) {
+                          if (isUploading || isUploadingAvatar) return "Enviando..."
                           if (ready) return t("uploadAvatar")
                           return "Carregando..."
                         },
                         allowedContent: "Imagens até 4MB",
                       }}
                       appearance={{
-                        button:
+                        button: cn(
                           "h-14 w-full rounded-none bg-brand-primary px-8 text-[11px] font-black uppercase tracking-[0.3em] text-white hover:bg-brand-primary/90 transition-all ut-ready:bg-brand-primary ut-uploading:cursor-not-allowed shadow-none",
+                          (isUploadingAvatar) && "opacity-50 cursor-wait pointer-events-none"
+                        ),
                         allowedContent: "hidden",
                       }}
                     />
