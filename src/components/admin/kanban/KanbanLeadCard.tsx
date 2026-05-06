@@ -7,13 +7,7 @@ import { useRouter } from "next/navigation"
 
 import { LeadStatus } from "@/src/generated/client"
 import { Lead, MessageTemplate } from "@/src/types/crm"
-import {
-  CaretLeft,
-  CaretRight,
-  InstagramLogo,
-  NotePencil,
-  Phone,
-} from "@phosphor-icons/react"
+import { CaretLeft, CaretRight } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
 import { Button } from "@/src/components/ui/button"
@@ -21,12 +15,7 @@ import { Button } from "@/src/components/ui/button"
 import { LeadDetailsDrawer } from "@/src/components/admin/LeadDetailsDrawer"
 
 import { updateLeadStatus } from "@/src/lib/actions/crm.actions"
-import {
-  CRM_STATUS_ORDER,
-  getLeadDaysWithoutMovement,
-  getNextActionMeta,
-  isLeadStagnant,
-} from "@/src/lib/utils/crm"
+import { CRM_STATUS_ORDER } from "@/src/lib/utils/crm"
 
 interface KanbanLeadCardProps {
   lead: Lead
@@ -51,8 +40,6 @@ export function KanbanLeadCard({
 }: KanbanLeadCardProps) {
   const t = useTranslations("Admin.crm")
   const router = useRouter()
-  const stagnant = isLeadStagnant(lead)
-  const nextAction = getNextActionMeta(lead.nextActionAt)
   const [isMoving, setIsMoving] = React.useState(false)
 
   // Status excluding CONVERTIDO for manual movement restriction
@@ -91,14 +78,10 @@ export function KanbanLeadCard({
 
   return (
     <article
-      className={`group relative rounded-[1.5rem] border bg-background/95 p-4 shadow-[0_24px_60px_-42px_rgba(15,23,42,0.45)] transition-all ${
-        stagnant
-          ? "border-amber-500/25"
-          : "border-border/50 hover:border-border/70"
-      }`}
+      className="group relative rounded-[1.5rem] border border-border/50 bg-background/95 p-4 shadow-[0_24px_60px_-42px_rgba(15,23,42,0.45)] transition-all hover:border-border/70"
     >
-      <div className="min-w-0 space-y-2">
-        <div className="flex items-start justify-between gap-2">
+      <div className="min-w-0">
+        <div className="flex items-center justify-between gap-3">
           <p className="truncate text-base font-black tracking-tight text-foreground">
             {lead.companyName}
           </p>
@@ -127,63 +110,11 @@ export function KanbanLeadCard({
             )}
           </div>
         </div>
-        {lead.contactName && (
-          <p className="truncate text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/55">
-            {lead.contactName}
-          </p>
-        )}
       </div>
 
       <div
-        className={`mt-4 grid rounded-[1.25rem] border border-border/35 bg-muted/10 ${density === "compact" ? "gap-2 p-3" : "gap-3 p-3.5"}`}
+        className={`flex justify-end ${density === "compact" ? "mt-3" : "mt-4"}`}
       >
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground/50">
-            {t(`source.${lead.source}`)}
-          </span>
-          {stagnant && (
-            <span className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-600 dark:text-amber-400">
-              {getLeadDaysWithoutMovement(lead)}d parado
-            </span>
-          )}
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <span
-            className={`text-[10px] font-black uppercase tracking-[0.16em] ${nextAction.tone}`}
-          >
-            {nextAction.label}
-          </span>
-        </div>
-        {(lead.instagram || lead.phone) && (
-          <div className="grid gap-2 text-sm text-foreground/80">
-            {lead.instagram && (
-              <div className="flex items-center gap-2 truncate">
-                <InstagramLogo
-                  size={14}
-                  className="shrink-0 text-muted-foreground/55"
-                />
-                <span className="truncate">{lead.instagram}</span>
-              </div>
-            )}
-            {lead.phone && (
-              <div className="flex items-center gap-2 truncate">
-                <Phone
-                  size={14}
-                  className="shrink-0 text-muted-foreground/55"
-                />
-                <span className="truncate">{lead.phone}</span>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div
-        className={`flex items-center justify-between gap-3 ${density === "compact" ? "mt-3" : "mt-4"}`}
-      >
-        <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/55">
-          <NotePencil size={12} /> {lead.followUpNotes?.length || 0} nota(s)
-        </span>
         <LeadDetailsDrawer
           lead={lead}
           onOpenChange={(open) => onDrawerOpenChange(lead.id, open)}

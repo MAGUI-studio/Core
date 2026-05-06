@@ -52,6 +52,7 @@ import {
   duplicateProposalAction,
   updateProposalStatusAction,
 } from "@/src/lib/actions/proposal.actions"
+import { createContractFromProposalAction } from "@/src/lib/actions/document.actions"
 
 interface ProposalRecord {
   id: string
@@ -126,6 +127,22 @@ export function ProposalsOverviewList({
     } else {
       toast.error(tList("messages.statusError"))
     }
+  }
+
+  const handleGenerateContract = async (id: string) => {
+    const result = await createContractFromProposalAction(id)
+
+    if (result.success && result.documentId) {
+      toast.success(
+        result.reused
+          ? "Contrato existente aberto com sucesso."
+          : "Contrato gerado com sucesso."
+      )
+      window.open(`/api/documents/${result.documentId}/pdf`, "_blank", "noopener,noreferrer")
+      return
+    }
+
+    toast.error(result.error || "Erro ao gerar contrato")
   }
 
   const handleSort = (key: SortConfig["key"]) => {
@@ -477,6 +494,12 @@ export function ProposalsOverviewList({
                             className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
                           >
                             <Copy className="mr-2 size-4" /> {tList("duplicate")}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleGenerateContract(proposal.id)}
+                            className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
+                          >
+                            <ArrowSquareOut className="mr-2 size-4" /> Gerar contrato
                           </DropdownMenuItem>
 
                           <DropdownMenuSeparator className="my-1.5 bg-border/40" />
