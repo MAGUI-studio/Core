@@ -81,9 +81,7 @@ export default async function MaguiConnectOverviewPage() {
             </div>
 
             <p className="text-xl font-medium leading-snug text-muted-foreground lg:w-4/5 lg:text-2xl">
-              Quando o visitante entra na sua página, ele decide em segundos. Dê
-              destaque ao que importa, reduza escolhas desnecessárias e faça o
-              clique certo parecer natural.
+              {t("crmDescription")}
             </p>
 
             <div className="flex flex-wrap gap-4 w-full">
@@ -91,7 +89,7 @@ export default async function MaguiConnectOverviewPage() {
                 href="/magui-connect/links"
                 className="group inline-flex w-full md:w-fit items-center gap-3 rounded-full bg-brand-primary px-7 py-4 text-sm font-semibold transition hover:opacity-90 text-white"
               >
-                Gerenciar links
+                {t("overview.manageLinks")}
                 <ArrowRightIcon
                   size={18}
                   weight="bold"
@@ -103,7 +101,7 @@ export default async function MaguiConnectOverviewPage() {
                 href="/magui-connect/analytics"
                 className="inline-flex w-full md:w-fit items-center gap-3 rounded-full bg-muted px-7 py-4 text-sm font-semibold text-foreground transition hover:bg-muted/70"
               >
-                Entender cliques
+                {t("overview.understandClicks")}
               </Link>
             </div>
           </div>
@@ -111,19 +109,19 @@ export default async function MaguiConnectOverviewPage() {
           <div className="relative hidden lg:flex min-h-140 w-full items-center justify-center">
             <div className="relative w-full space-y-6">
               <DummyLink
-                label="Instagram"
+                label={t("linkKinds.INSTAGRAM")}
                 url="instagram.com/seu-perfil"
                 iconPath="/icons/Instagram.svg"
                 accentColor="#E5FF00"
               />
               <DummyLink
-                label="LinkedIn"
+                label={t("linkKinds.LINKEDIN")}
                 url="linkedin.com/in/exemplo"
                 iconPath="/icons/LinkedIn.svg"
                 accentColor="#E5FF00"
               />
               <DummyLink
-                label="WhatsApp"
+                label={t("linkKinds.WHATSAPP")}
                 url="wa.me/5511999999999"
                 iconPath="/icons/Whatsapp.svg"
                 accentColor="#E5FF00"
@@ -147,28 +145,26 @@ export default async function MaguiConnectOverviewPage() {
         <div className="relative grid w-full gap-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div className="space-y-6">
             <p className="text-xs font-black uppercase tracking-[0.36em] text-background/50">
-              Economia de atenção
+              {t("overview.economyTitle")}
             </p>
 
-            <h2 className="text-5xl font-black leading-[0.92] tracking-[-0.055em] lg:text-8xl">
-              Menos opções.{" "}
-              <span className="text-brand-primary">Mais decisão.</span>
-            </h2>
+            <h2
+              className="text-5xl font-black leading-[0.92] tracking-[-0.055em] lg:text-8xl"
+              dangerouslySetInnerHTML={{ __html: t("overview.economyHeadline") }}
+            />
           </div>
 
           <div className="space-y-8">
             <p className="text-xl font-medium leading-snug text-background/65 lg:text-3xl">
-              Opções demais parecem liberdade, mas geralmente aumentam
-              hesitação. Uma página boa não mostra tudo: ela guia o olhar para o
-              que tem mais valor.
+              {t("overview.economyDescription")}
             </p>
 
             <div className="flex flex-wrap gap-3 text-sm font-medium text-background/55">
-              <span>Menos ruído</span>
+              <span>{t("overview.lessNoise")}</span>
               <span>•</span>
-              <span>Mais foco</span>
+              <span>{t("overview.moreFocus")}</span>
               <span>•</span>
-              <span>Escolha mais óbvia</span>
+              <span>{t("overview.obviousChoice")}</span>
             </div>
           </div>
         </div>
@@ -182,20 +178,20 @@ export default async function MaguiConnectOverviewPage() {
         <div className="relative grid w-full gap-20 lg:grid-cols-3">
           <LandingArgument
             icon={<LinkSimpleIcon size={30} weight="duotone" />}
-            title="O topo ancora a percepção"
-            description="O primeiro destaque vira referência mental. Use essa posição para colocar a ação que você mais quer receber."
+            title={t("overview.topAnchorsTitle")}
+            description={t("overview.topAnchorsDescription")}
           />
 
           <LandingArgument
             icon={<CursorClickIcon size={30} weight="duotone" />}
-            title="O clique denuncia interesse"
-            description="Comportamento vale mais do que opinião. Se um link recebe atenção, ele está dizendo algo sobre a intenção do seu público."
+            title={t("overview.clickDenouncesInterestTitle")}
+            description={t("overview.clickDenouncesInterestDescription")}
           />
 
           <LandingArgument
             icon={<PathIcon size={30} weight="duotone" />}
-            title="O excesso rouba conversão"
-            description="Cada opção fraca compete contra a opção forte. Remover ruído pode ser mais eficiente do que adicionar novos caminhos."
+            title={t("overview.excessStealsConversionTitle")}
+            description={t("overview.excessStealsConversionDescription")}
           />
         </div>
       </section>
@@ -208,21 +204,20 @@ export default async function MaguiConnectOverviewPage() {
         <div className="relative grid w-full gap-16 lg:grid-cols-[1fr_1fr] lg:items-center">
           <div className="space-y-8">
             <p className="text-xs font-black uppercase tracking-[0.36em] text-brand-primary">
-              Leitura real
+              {t("overview.realReadingTitle")}
             </p>
 
             <h2 className="text-5xl font-black leading-[0.92] tracking-[-0.055em] lg:text-8xl">
-              Seus números mostram onde existe atenção.
+              {t("overview.realReadingHeadline")}
             </h2>
           </div>
 
           <div className="grid gap-10">
-            <MetricLine label="Cliques recebidos" value={totalClicks} />
-            <MetricLine label="Links ativos" value={totalLinks} />
+            <MetricLine label={t("overview.clicksReceived")} value={totalClicks} />
+            <MetricLine label={t("overview.activeLinks")} value={totalLinks} />
 
             <p className="text-lg font-medium leading-relaxed text-muted-foreground lg:text-xl">
-              Use esses sinais para decidir o que sobe, o que desce e o que não
-              merece mais disputar espaço com a ação principal.
+              {t("overview.realReadingDescription")}
             </p>
 
             <div className="flex flex-wrap gap-4 w-full">
@@ -230,7 +225,7 @@ export default async function MaguiConnectOverviewPage() {
                 href="/magui-connect/analytics"
                 className="inline-flex w-full md:w-fit items-center gap-3 rounded-full bg-foreground px-7 py-4 text-sm font-semibold text-background transition hover:opacity-90"
               >
-                Ver analytics
+                {t("overview.viewAnalytics")}
                 <ArrowRightIcon size={18} weight="bold" />
               </Link>
 
@@ -238,7 +233,7 @@ export default async function MaguiConnectOverviewPage() {
                 href="/magui-connect/links"
                 className="inline-flex w-full md:w-fit items-center gap-3 rounded-full bg-background px-7 py-4 text-sm font-semibold text-foreground transition hover:opacity-80"
               >
-                Ajustar links
+                {t("overview.adjustLinks")}
               </Link>
             </div>
           </div>
@@ -249,31 +244,31 @@ export default async function MaguiConnectOverviewPage() {
         <div className="grid w-full gap-16 lg:grid-cols-[0.75fr_1.25fr]">
           <div className="space-y-6">
             <p className="text-xs font-black uppercase tracking-[0.36em] text-brand-primary">
-              Hierarquia de clique
+              {t("overview.clickHierarchyTitle")}
             </p>
 
             <h2 className="text-5xl font-black leading-[0.92] tracking-[-0.055em] lg:text-7xl">
-              Faça o caminho certo parecer óbvio.
+              {t("overview.clickHierarchyHeadline")}
             </h2>
           </div>
 
           <div className="space-y-12">
             <LandingRule
               number="01"
-              title="Destaque uma ação principal"
-              description="Contato, compra, orçamento ou portfólio. Quando há uma prioridade visual, o visitante entende mais rápido o que fazer."
+              title={t("overview.ruleOneTitle")}
+              description={t("overview.ruleOneDescription")}
             />
 
             <LandingRule
               number="02"
-              title="Use o restante como suporte"
-              description="Links secundários devem complementar a jornada, não competir com o objetivo principal da página."
+              title={t("overview.ruleTwoTitle")}
+              description={t("overview.ruleTwoDescription")}
             />
 
             <LandingRule
               number="03"
-              title="Reordene com base no comportamento"
-              description="Os cliques mostram quais chamadas atraem atenção. Use isso para refinar a página sem depender de achismo."
+              title={t("overview.ruleThreeTitle")}
+              description={t("overview.ruleThreeDescription")}
             />
           </div>
         </div>

@@ -69,6 +69,7 @@ export function ClientTabs({
   maguiConnectProfile,
   canAccessMaguiConnect,
 }: ClientTabsProps) {
+  const t = useTranslations("Admin.clients")
   const tFinancial = useTranslations("Financial.status")
   const tStatus = useTranslations("Dashboard.status")
   const [activeTab, setActiveTab] = useQueryState(
@@ -88,21 +89,21 @@ export function ClientTabs({
             className="whitespace-nowrap px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-muted/5 data-[state=active]:bg-transparent"
           >
             <CurrencyCircleDollar weight="duotone" className="mr-2 size-4" />
-            Cobrança avulsa
+            {t("tabs.billing")}
           </TabsTrigger>
           <TabsTrigger
             value="connect"
             className="whitespace-nowrap px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-muted/5 data-[state=active]:bg-transparent"
           >
             <Globe weight="duotone" className="mr-2 size-4" />
-            MAGUI Connect
+            {t("tabs.connect")}
           </TabsTrigger>
           <TabsTrigger
             value="projects"
             className="whitespace-nowrap px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-muted/5 data-[state=active]:bg-transparent"
           >
             <FolderOpen weight="duotone" className="mr-2 size-4" />
-            Projetos vinculados
+            {t("tabs.projects")}
           </TabsTrigger>
         </TabsList>
       </div>
@@ -112,14 +113,13 @@ export function ClientTabs({
           <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div className="space-y-2">
               <p className="text-[10px] font-black uppercase tracking-[0.24em] text-muted-foreground/55">
-                Cobrança avulsa
+                {t("tabs.billing")}
               </p>
               <h2 className="text-2xl font-black tracking-tight text-foreground">
-                Emitir fatura sem projeto
+                {t("billing.title")}
               </h2>
               <p className="max-w-2xl text-sm leading-6 text-muted-foreground/75">
-                Use este fluxo para cobrar MAGUI Connect ou qualquer outro
-                serviço avulso diretamente para este cliente.
+                {t("billing.description")}
               </p>
             </div>
 
@@ -127,8 +127,8 @@ export function ClientTabs({
               clientId={localUserId}
               defaultKind={InvoiceKind.MAGUI_CONNECT}
               defaultTitle="MAGUI Connect"
-              triggerLabel="Nova cobrança"
-              dialogTitle="Criar cobrança avulsa"
+              triggerLabel={t("billing.trigger")}
+              dialogTitle={t("billing.dialogTitle")}
               triggerClassName={primaryActionClassName}
             />
           </div>
@@ -137,13 +137,13 @@ export function ClientTabs({
         <Card className="rounded-4xl border-border/40 bg-muted/10 backdrop-blur-md">
           <CardHeader className="border-b border-border/20">
             <CardTitle className="font-heading text-2xl font-black uppercase tracking-tight">
-              Cobranças avulsas
+              {t("billing.listTitle")}
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4 pt-6">
             {standaloneInvoices.length === 0 ? (
               <div className="rounded-[1.5rem] border border-dashed border-border/35 bg-background/40 px-5 py-10 text-center text-[10px] font-black uppercase tracking-[0.24em] text-muted-foreground/45">
-                Nenhuma cobrança avulsa emitida para este cliente.
+                {t("billing.empty")}
               </div>
             ) : (
               standaloneInvoices.map((invoice) => (
@@ -163,7 +163,7 @@ export function ClientTabs({
                         >
                           {invoice.kind === InvoiceKind.MAGUI_CONNECT
                             ? "MAGUI Connect"
-                            : "Avulsa"}
+                            : t("billing.kindStandalone")}
                         </Badge>
                         <Badge
                           variant="outline"
@@ -173,13 +173,13 @@ export function ClientTabs({
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground/75">
-                        {invoice.description || "Cobrança sem projeto vinculado."}
+                        {invoice.description || t("billing.noProjectDescription")}
                       </p>
                     </div>
 
                     <div className="text-left md:text-right">
                       <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
-                        Total
+                        {t("billing.totalLabel")}
                       </p>
                       <p className="text-lg font-black tracking-tight text-foreground">
                         {formatCurrencyBRLFromCents(invoice.totalAmount)}
@@ -195,7 +195,7 @@ export function ClientTabs({
                       >
                         <div className="flex flex-wrap items-center gap-3">
                           <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground/60">
-                            Parcela {installment.number}
+                            {t("billing.installmentLabel")} {installment.number}
                           </span>
                           <span className="text-sm font-black text-foreground">
                             {formatCurrencyBRLFromCents(installment.amount)}
@@ -236,12 +236,12 @@ export function ClientTabs({
           <CardHeader className="border-b border-border/20">
             <div className="flex items-center justify-between">
               <CardTitle className="font-heading text-2xl font-black uppercase tracking-tight">
-                Projetos vinculados
+                {t("tabs.projects")}
               </CardTitle>
               <Button asChild className={primaryActionClassName}>
                 <Link href="/admin/projects/register">
                   <Plus className="mr-2 size-4" />
-                  Iniciar projeto
+                  {t("projects.start")}
                 </Link>
               </Button>
             </div>
@@ -249,7 +249,7 @@ export function ClientTabs({
           <CardContent className="grid gap-4 pt-6">
             {projects.length === 0 ? (
               <div className="rounded-[1.5rem] border border-dashed border-border/35 bg-background/40 px-5 py-10 text-center text-[10px] font-black uppercase tracking-[0.24em] text-muted-foreground/45">
-                Nenhum projeto vinculado a este cliente.
+                {t("projects.empty")}
               </div>
             ) : (
               projects.map((project) => (
@@ -277,7 +277,7 @@ export function ClientTabs({
                         params: { id: project.id },
                       }}
                     >
-                      Abrir projeto
+                      {t("projects.open")}
                     </Link>
                   </Button>
                 </div>

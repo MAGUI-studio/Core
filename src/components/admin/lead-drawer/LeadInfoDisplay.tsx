@@ -29,7 +29,7 @@ export function LeadInfoDisplay({ lead }: LeadInfoDisplayProps) {
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text)
-    toast.success(`${label} copiado!`)
+    toast.success(t("details.copied", { label }))
   }
 
   const phone = sanitizePhoneForWhatsApp(lead.phone)
@@ -47,21 +47,21 @@ export function LeadInfoDisplay({ lead }: LeadInfoDisplayProps) {
               className="text-brand-primary"
             />
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/60">
-              Inteligência de Contato
+              {t("details.contactIntelligence")}
             </h4>
           </div>
 
           <div className="space-y-5">
             <div className="group space-y-1">
-              <Label label="Responsável" />
+              <Label label={t("details.owner")} />
               <p className="text-sm font-bold text-foreground/90">
-                {lead.contactName || "Time Comercial"}
+                {lead.contactName || t("details.salesTeam")}
               </p>
             </div>
 
             {lead.email && (
               <div className="group space-y-1">
-                <Label label="E-mail Corporativo" />
+                <Label label={t("details.corporateEmail")} />
                 <div className="flex items-center justify-between">
                   <p className="truncate text-sm font-bold text-foreground/90">
                     {lead.email}
@@ -80,7 +80,7 @@ export function LeadInfoDisplay({ lead }: LeadInfoDisplayProps) {
 
             {lead.phone && (
               <div className="group space-y-1">
-                <Label label="Telefone / WhatsApp" />
+                <Label label={t("details.phone")} />
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-bold text-foreground/90">
                     {lead.phone}
@@ -113,7 +113,7 @@ export function LeadInfoDisplay({ lead }: LeadInfoDisplayProps) {
 
             {lead.value && (
               <div className="group space-y-1">
-                <Label label="Faixa de investimento" />
+                <Label label={t("details.investmentRange")} />
                 <div className="flex items-center gap-2">
                   <CurrencyDollar size={16} className="text-brand-primary/60" />
                   <p className="text-sm font-bold text-foreground/90">
@@ -130,13 +130,13 @@ export function LeadInfoDisplay({ lead }: LeadInfoDisplayProps) {
           <div className="flex items-center gap-3">
             <Globe size={18} weight="duotone" className="text-brand-primary" />
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/60">
-              Origem e Presença
+              {t("details.sourcePresence")}
             </h4>
           </div>
 
           <div className="space-y-5">
             <div className="space-y-1">
-              <Label label="Canal de Aquisição" />
+              <Label label={t("details.acquisitionChannel")} />
               <p className="text-sm font-bold text-foreground/90">
                 {t(`source.${lead.source}`)}
               </p>
@@ -144,7 +144,7 @@ export function LeadInfoDisplay({ lead }: LeadInfoDisplayProps) {
 
             {lead.instagram && (
               <div className="space-y-1">
-                <Label label="Instagram" />
+                <Label label={t("details.instagram")} />
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-bold text-foreground/90">
                     @{lead.instagram.replace("@", "")}
@@ -172,8 +172,8 @@ export function LeadInfoDisplay({ lead }: LeadInfoDisplayProps) {
                 <Label
                   label={
                     lead.source === LeadSource.LINKEDIN
-                      ? "LinkedIn"
-                      : "Website Oficial"
+                      ? t("details.linkedin")
+                      : t("details.officialWebsite")
                   }
                 />
                 <div className="flex items-center gap-2">

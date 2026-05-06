@@ -81,6 +81,8 @@ export function ProposalsOverviewList({
   proposals,
 }: ProposalsOverviewListProps): React.JSX.Element {
   const t = useTranslations("Proposals.status")
+  const tList = useTranslations("Proposals.list")
+  const tCommon = useTranslations("Admin.crm")
   const [items, setItems] = React.useState(proposals)
   const [search, setSearch] = React.useState("")
   const [statusFilter, setStatusFilter] = React.useState<string>("ALL")
@@ -92,37 +94,37 @@ export function ProposalsOverviewList({
   const handleDelete = async (id: string) => {
     const result = await deleteProposalAction(id)
     if (result.success) {
-      toast.success("Proposta excluída")
+      toast.success(tList("messages.deleteSuccess"))
       setItems((current) => current.filter((proposal) => proposal.id !== id))
     } else {
-      toast.error("Erro ao excluir proposta")
+      toast.error(tList("messages.deleteError"))
     }
   }
 
   const handleDuplicate = async (id: string) => {
     const result = await duplicateProposalAction(id)
     if (result.success && result.proposal) {
-      toast.success("Proposta duplicada como rascunho")
+      toast.success(tList("messages.duplicateSuccess"))
       // In a real app, we might want to refresh the page or push the new item
       // For simplicity here, let's just refresh current data if we have access to a refetcher
       // Since this is a server component data, router.refresh() is better
       window.location.reload()
     } else {
-      toast.error("Erro ao duplicar proposta")
+      toast.error(tList("messages.duplicateError"))
     }
   }
 
   const handleStatusChange = async (id: string, status: ProposalStatus) => {
     const result = await updateProposalStatusAction(id, status)
     if (result.success) {
-      toast.success("Status atualizado")
+      toast.success(tList("messages.statusSuccess"))
       setItems((current) =>
         current.map((proposal) =>
           proposal.id === id ? { ...proposal, status } : proposal
         )
       )
     } else {
-      toast.error("Erro ao atualizar status")
+      toast.error(tList("messages.statusError"))
     }
   }
 
@@ -247,7 +249,7 @@ export function ProposalsOverviewList({
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por título, empresa ou número..."
+            placeholder={tList("searchPlaceholder")}
             className="h-12 rounded-2xl border-border/40 bg-muted/10 pl-11 pr-4 text-xs font-bold transition-all focus-visible:bg-muted/20 focus-visible:ring-brand-primary/20"
           />
         </div>
@@ -256,7 +258,7 @@ export function ProposalsOverviewList({
           <div className="flex items-center gap-2 px-3 text-muted-foreground/40">
             <Funnel weight="bold" size={14} />
             <span className="text-[10px] font-black uppercase tracking-widest">
-              Filtros
+              {tList("filtersLabel")}
             </span>
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -268,7 +270,7 @@ export function ProposalsOverviewList({
                 value="ALL"
                 className="text-[10px] font-black uppercase tracking-widest"
               >
-                Todos os Status
+                {tList("statusAll")}
               </SelectItem>
               <SelectItem
                 value="DRAFT"
@@ -314,7 +316,7 @@ export function ProposalsOverviewList({
                 onClick={() => handleSort("company")}
               >
                 <div className="flex items-center gap-2">
-                  Empresa {getSortIcon("company")}
+                  {tList("table.company")} {getSortIcon("company")}
                 </div>
               </TableHead>
               <TableHead
@@ -322,7 +324,7 @@ export function ProposalsOverviewList({
                 onClick={() => handleSort("title")}
               >
                 <div className="flex items-center gap-2">
-                  Proposta {getSortIcon("title")}
+                  {tList("table.proposal")} {getSortIcon("title")}
                 </div>
               </TableHead>
               <TableHead
@@ -338,7 +340,7 @@ export function ProposalsOverviewList({
                 onClick={() => handleSort("value")}
               >
                 <div className="flex items-center gap-2">
-                  Investimento {getSortIcon("value")}
+                  {tList("table.value")} {getSortIcon("value")}
                 </div>
               </TableHead>
               <TableHead
@@ -346,11 +348,11 @@ export function ProposalsOverviewList({
                 onClick={() => handleSort("date")}
               >
                 <div className="flex items-center gap-2">
-                  Criação {getSortIcon("date")}
+                  {tList("table.date")} {getSortIcon("date")}
                 </div>
               </TableHead>
               <TableHead className="h-16 px-8 text-right text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
-                Ações
+                {tList("table.actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -361,7 +363,7 @@ export function ProposalsOverviewList({
                   colSpan={6}
                   className="h-48 text-center text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/30"
                 >
-                  Nenhuma proposta encontrada
+                  {tList("empty")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -426,7 +428,7 @@ export function ProposalsOverviewList({
                         variant="ghost"
                         size="icon"
                         className="size-9 rounded-full text-muted-foreground/40 hover:bg-brand-primary/10 hover:text-brand-primary"
-                        title="Abrir PDF"
+                        title={tList("openPdf")}
                       >
                         <a
                           href={`/api/proposals/${proposal.id}/pdf`}
@@ -456,7 +458,7 @@ export function ProposalsOverviewList({
                         >
                           <div className="px-3 py-2">
                             <p className="text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
-                              Exportação
+                              {tList("exportLabel")}
                             </p>
                           </div>
                           <DropdownMenuItem
@@ -467,22 +469,21 @@ export function ProposalsOverviewList({
                               href={`/api/proposals/${proposal.id}/pdf?download=1`}
                               download={`proposta-${proposal.number}.pdf`}
                             >
-                              <DownloadSimple className="mr-2 size-4" /> Baixar
-                              PDF
+                              <DownloadSimple className="mr-2 size-4" /> {tList("downloadPdf")}
                             </a>
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleDuplicate(proposal.id)}
                             className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
                           >
-                            <Copy className="mr-2 size-4" /> Duplicar Base
+                            <Copy className="mr-2 size-4" /> {tList("duplicate")}
                           </DropdownMenuItem>
 
                           <DropdownMenuSeparator className="my-1.5 bg-border/40" />
 
                           <div className="px-3 py-2">
                             <p className="text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
-                              Status Comercial
+                              {tList("statusLabel")}
                             </p>
                           </div>
                           <DropdownMenuItem
@@ -491,7 +492,7 @@ export function ProposalsOverviewList({
                             }
                             className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-blue-500/10 focus:text-blue-600"
                           >
-                            Marcar como {t("SENT")}
+                            {tList("markAs", { status: t("SENT") })}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() =>
@@ -499,7 +500,7 @@ export function ProposalsOverviewList({
                             }
                             className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-emerald-500/10 focus:text-emerald-600"
                           >
-                            Marcar como {t("ACCEPTED")}
+                            {tList("markAs", { status: t("ACCEPTED") })}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() =>
@@ -507,7 +508,7 @@ export function ProposalsOverviewList({
                             }
                             className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-red-500/10 focus:text-red-600"
                           >
-                            Marcar como {t("REJECTED")}
+                            {tList("markAs", { status: t("REJECTED") })}
                           </DropdownMenuItem>
 
                           <DropdownMenuSeparator className="my-1.5 bg-border/40" />
@@ -516,7 +517,7 @@ export function ProposalsOverviewList({
                             onClick={() => handleDelete(proposal.id)}
                             className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight text-destructive focus:bg-destructive/10 focus:text-destructive"
                           >
-                            <Trash className="mr-2 size-4" /> Excluir Proposta
+                            <Trash className="mr-2 size-4" /> {tList("delete")}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -530,7 +531,7 @@ export function ProposalsOverviewList({
 
         <div className="flex items-center justify-between border-t border-border/15 bg-muted/10 px-8 py-4">
           <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
-            {filteredAndSortedItems.length} Proposta(s) encontrada(s)
+            {tList("summary", { count: filteredAndSortedItems.length })}
           </p>
         </div>
       </Card>

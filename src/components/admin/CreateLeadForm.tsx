@@ -51,10 +51,10 @@ export function CreateLeadForm(): React.JSX.Element {
   const showWebsiteField = source === "WEBSITE" || source === "LINKEDIN"
 
   const sourceFieldLabel = showInstagramField
-    ? "Link do Instagram"
+    ? t("form.instagramLabel")
     : source === "LINKEDIN"
-      ? "Link do LinkedIn"
-      : "Site"
+      ? t("form.linkedinLabel")
+      : t("form.websiteLabel")
 
   const sourceFieldPlaceholder = showInstagramField
     ? "https://instagram.com/usuario"
@@ -103,7 +103,7 @@ export function CreateLeadForm(): React.JSX.Element {
       <div className="grid gap-6">
         <div className="space-y-4">
           <h3 className="text-[10px] font-black uppercase tracking-[0.28em] text-muted-foreground/60">
-            Empresa
+            {t("form.companySection")}
           </h3>
 
           <div className="grid gap-4">
@@ -154,7 +154,7 @@ export function CreateLeadForm(): React.JSX.Element {
 
         <div className="space-y-4 pt-4">
           <h3 className="text-[10px] font-black uppercase tracking-[0.28em] text-muted-foreground/60">
-            Contato
+            {t("form.contactSection")}
           </h3>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -205,13 +205,13 @@ export function CreateLeadForm(): React.JSX.Element {
 
         <div className="space-y-4 pt-4">
           <h3 className="text-[10px] font-black uppercase tracking-[0.28em] text-muted-foreground/60">
-            Acompanhamento
+            {t("form.followUpSection")}
           </h3>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                Origem
+                {t("form.sourceLabel")}
               </Label>
               <div className="relative">
                 <Funnel
@@ -227,18 +227,18 @@ export function CreateLeadForm(): React.JSX.Element {
                     size="lg"
                     className="h-12 w-full rounded-2xl border-border/40 bg-muted/10 pl-12 text-left"
                   >
-                    <SelectValue placeholder="Selecione a origem" />
+                    <SelectValue placeholder={t("form.sourcePlaceholder")} />
                   </SelectTrigger>
                   <SelectContent
                     position="popper"
                     className="border border-border/60 bg-background shadow-2xl"
                   >
-                    <SelectItem value="REFERRAL">Indicacao</SelectItem>
-                    <SelectItem value="ORGANIC">Organico</SelectItem>
-                    <SelectItem value="INSTAGRAM">Instagram</SelectItem>
-                    <SelectItem value="LINKEDIN">LinkedIn</SelectItem>
-                    <SelectItem value="WEBSITE">Site</SelectItem>
-                    <SelectItem value="OTHER">Outro</SelectItem>
+                    <SelectItem value="REFERRAL">{t("source.REFERRAL")}</SelectItem>
+                    <SelectItem value="ORGANIC">{t("source.ORGANIC")}</SelectItem>
+                    <SelectItem value="INSTAGRAM">{t("source.INSTAGRAM")}</SelectItem>
+                    <SelectItem value="LINKEDIN">{t("source.LINKEDIN")}</SelectItem>
+                    <SelectItem value="WEBSITE">{t("source.WEBSITE")}</SelectItem>
+                    <SelectItem value="OTHER">{t("source.OTHER")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -249,7 +249,7 @@ export function CreateLeadForm(): React.JSX.Element {
                 htmlFor="value"
                 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground"
               >
-                Valor estimado
+                {t("form.valueLabel")}
               </Label>
               <div className="group relative">
                 <CurrencyDollar
@@ -316,7 +316,7 @@ export function CreateLeadForm(): React.JSX.Element {
 
         <div className="space-y-4 pt-4">
           <h3 className="text-[10px] font-black uppercase tracking-[0.28em] text-muted-foreground/60">
-            Observacoes
+            {t("form.notesSection")}
           </h3>
 
           <div className="space-y-2">
@@ -334,13 +334,12 @@ export function CreateLeadForm(): React.JSX.Element {
               <Textarea
                 id="notes"
                 name="notes"
-                placeholder="Registre contexto, momento da conversa, proximo passo e qualquer sinal que fortaleça a qualificacao."
+                placeholder={t("form.notesPlaceholder")}
                 className="min-h-[120px] rounded-2xl border-border/40 bg-muted/10 pl-12 transition-all focus:bg-muted/20"
               />
             </div>
             <p className="pl-1 text-[11px] text-muted-foreground/60">
-              Boas notas deixam claro origem, valor, responsavel pela conversa e
-              qual eh o proximo movimento comercial.
+              {t("form.notesHelper")}
             </p>
           </div>
         </div>

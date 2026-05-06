@@ -14,6 +14,9 @@
     "switch_to": "Switch to {lang}",
     "label": "Language"
   },
+  "Common": {
+    "close": "Close"
+  },
   "ThemeToggle": {
     "light": "Light",
     "dark": "Dark",
@@ -80,6 +83,28 @@
       "roles": {
         "admin": "Administrator",
         "client": "Client"
+      },
+      "tabs": {
+        "billing": "Standalone Billing",
+        "connect": "MAGUI Connect",
+        "projects": "Linked Projects"
+      },
+      "billing": {
+        "title": "Issue invoice without project",
+        "description": "Use this flow to charge for MAGUI Connect or any other standalone service directly to this client.",
+        "trigger": "New billing",
+        "dialogTitle": "Create standalone billing",
+        "listTitle": "Standalone Billings",
+        "empty": "No standalone billings issued for this client.",
+        "kindStandalone": "Standalone",
+        "noProjectDescription": "Billing without linked project.",
+        "totalLabel": "Total",
+        "installmentLabel": "Installment"
+      },
+      "projects": {
+        "empty": "No projects linked to this client.",
+        "open": "Open project",
+        "start": "Start project"
       },
       "stats": {
         "active_clients": "Active clients",
@@ -173,7 +198,19 @@
         "empty": "No leads cataloged at the moment."
       },
       "details": {
-        "cancel": "Cancel Operation"
+        "cancel": "Cancel Operation",
+        "contactIntelligence": "Contact Intelligence",
+        "owner": "Responsible",
+        "salesTeam": "Sales Team",
+        "corporateEmail": "Corporate Email",
+        "phone": "Phone / WhatsApp",
+        "investmentRange": "Investment range",
+        "sourcePresence": "Source & Presence",
+        "acquisitionChannel": "Acquisition Channel",
+        "instagram": "Instagram",
+        "officialWebsite": "Official Website",
+        "linkedin": "LinkedIn",
+        "copied": "{label} copied!"
       },
       "status": {
         "GARIMPAGEM": "Sourcing",
@@ -203,7 +240,19 @@
         "value": "Estimated Value",
         "submit": "Save Lead",
         "success": "Lead cataloged successfully!",
-        "error": "Error saving lead."
+        "error": "Error saving lead.",
+        "companySection": "Company",
+        "contactSection": "Contact",
+        "followUpSection": "Follow-up",
+        "sourceLabel": "Source",
+        "sourcePlaceholder": "Select source",
+        "valueLabel": "Estimated value",
+        "instagramLabel": "Instagram Link",
+        "linkedinLabel": "LinkedIn Link",
+        "websiteLabel": "Website",
+        "notesSection": "Observations",
+        "notesPlaceholder": "Register context, conversation moment, next step, and any sign that strengthens qualification.",
+        "notesHelper": "Good notes make clear source, value, responsible for the conversation and what is the next commercial movement."
       },
       "convert": {
         "title": "Convert to Project",
@@ -376,6 +425,11 @@
         "client_card_title": "Owner Information",
         "settings_title": "Project Settings",
         "assets_title": "Assets Repository",
+        "assets_eyebrow": "Files",
+        "assets_count_info": "{visibleCount} of {assetsCount} displayed",
+        "asset_type_all": "All types",
+        "asset_origin_all": "All origins",
+        "asset_visibility_all": "All visibility",
         "budget_label": "Investment",
         "deadline_label": "Final Deadline",
         "update_status": "Update Status",
@@ -436,7 +490,26 @@
           "MEDIUM": "Medium",
           "HIGH": "High",
           "URGENT": "Urgent"
-        }
+        },
+        "briefing_strategic_sheet": "Project Strategic Sheet",
+        "briefing_request_new": "Request New Briefing",
+        "briefing_business_context": "Business Context",
+        "briefing_visual_direction": "Visual Direction",
+        "briefing_visual_identity": "Visual Identity",
+        "briefing_primary_logo": "Primary Logo",
+        "briefing_secondary_logo": "Secondary Logo",
+        "briefing_color_palette": "Color Palette",
+        "briefing_no_color": "Color not defined",
+        "briefing_pending": "Pending",
+        "briefing_not_provided": "Not provided",
+        "briefing_not_started": "Briefing not started",
+        "briefing_not_started_desc": "The client has not filled out the initial details yet.",
+        "briefing_reset_success": "Briefing reset successfully",
+        "briefing_reset_error": "Error resetting briefing",
+        "briefing_reset_dialog_title": "Request New Briefing",
+        "briefing_reset_dialog_desc": "This action will delete all current briefing data for this project and request the client to fill it out again.",
+        "briefing_resetting": "Cleaning...",
+        "briefing_confirm_reset": "Confirm and Reset"
       }
     }
   },
@@ -1061,6 +1134,59 @@
       "CANCELLED": "Cancelled",
       "DUE_SOON": "Due Soon",
       "WAIVED": "Waived"
+    },
+    "messages": {
+      "paymentSuccess": "Payment completed successfully!",
+      "paymentCanceled": "The payment was canceled.",
+      "paymentRegistered": "Payment registered!"
+    },
+    "badges": {
+      "dueToday": "Due today",
+      "dueTomorrow": "Due tomorrow",
+      "dueInDays": "Due in {days} days"
+    },
+    "summary": {
+      "totalInvestment": "Total Investment",
+      "totalPaid": "Total Paid",
+      "pendingBalance": "Pending Balance",
+      "description": "Consolidated summary of the investment for project {projectName}.",
+      "descriptionGeneric": "Consolidated summary of the investment for this project.",
+      "pendingDescription": "Amount still pending to release the full operation.",
+      "noPendingDescription": "There is no open balance at this time."
+    },
+    "schedule": {
+      "title": "Financial Schedule",
+      "description": "Track your invoices and make payments securely.",
+      "empty": "No financial records found.",
+      "invoiceBadge": "INVOICE",
+      "invoiceDescription": "Billing linked to this project.",
+      "relatedProject": "Related project",
+      "projectLabel": "Project",
+      "installmentLabel": "Installment",
+      "waitingPrevious": "Waiting for previous",
+      "overdue": "Overdue",
+      "dueDate": "Due {date}",
+      "dueDateLong": "Due on {date}",
+      "payNow": "Pay Now",
+      "blocked": "Blocked",
+      "manualEntry": "Manual Entry",
+      "paidAt": "Paid at",
+      "receipt": "Receipt"
+    },
+    "manualEntry": {
+      "title": "Manual Entry",
+      "amountToLiquidate": "Amount to liquidate",
+      "sourceLabel": "Source of Funds",
+      "sourcePlaceholder": "Select source",
+      "auditNotes": "Audit Notes",
+      "notesPlaceholder": "Describe receipt details...",
+      "confirmButton": "Confirm Receipt"
+    },
+    "paymentTypes": {
+      "PIX": "Direct PIX",
+      "TED": "Bank Transfer",
+      "CASH": "Cash",
+      "OTHER": "Others"
     }
   },
   "Proposals": {
@@ -1070,6 +1196,91 @@
       "ACCEPTED": "Accepted",
       "REJECTED": "Rejected",
       "EXPIRED": "Expired"
+    },
+    "builder": {
+      "title": "Commercial Proposal",
+      "subtitle": "Structure the proposal with commercial clarity",
+      "description": "Fill in the context, deliveries, and project agreements in a cleaner reading. The proposal will be created immediately and can be adjusted later, without a separate review stage.",
+      "leadLabel": "Lead / client",
+      "leadPlaceholder": "Select the lead",
+      "categoryLabel": "Project category",
+      "categoryPlaceholder": "Select the category",
+      "documentTitleLabel": "Document title",
+      "documentTitleHelper": "Direct title, fixed currency in BRL, and less noise help maintain a more executive reading.",
+      "validityLabel": "Proposal validity",
+      "narrativeTitle": "Proposal narrative",
+      "narrativeDescription": "Fill in the context, objectives, and arguments that reinforce why this investment makes sense.",
+      "governanceTitle": "Governance and Acceptance",
+      "governanceDescription": "Define clear success criteria, what is out of scope, and post-delivery guarantees.",
+      "investmentTitle": "Scope and investment",
+      "investmentDescription": "Organize deliveries with commercial explanation and keep the total investment always visible.",
+      "itemsLabel": "Items and services",
+      "itemsDescription": "Each delivery must make clear what is included and what role it plays within the project.",
+      "addItem": "Add Item",
+      "deliveryLabel": "Delivery",
+      "deliveryNameLabel": "Delivery name",
+      "unitValueLabel": "Unit value",
+      "quantityLabel": "Qty",
+      "commercialExplanationLabel": "Commercial delivery explanation",
+      "commercialExplanationPlaceholder": "Describe what goes into this delivery, how it will be conducted, and what value it generates for the project.",
+      "totalInvestmentLabel": "Total investment",
+      "totalInvestmentHelper": "Consolidated value of this proposal. Use the items to reinforce the scope and investment reading, not just the price.",
+      "connectBonusTitle": "MAGUI Connect Bonus",
+      "professionalProfileLabel": "Professional Profile",
+      "freeLabel": "Free",
+      "connectBonusDescription": "Lifetime access to MAGUI Connect included as an exclusive bonus in this proposal.",
+      "commercialReadingTitle": "Commercial reading",
+      "commercialReadingHelper": "Stronger proposals connect delivery, impact, and conduction. When the value appears without context, the perception of investment loses strength.",
+      "conditionsTitle": "Conditions and operation",
+      "conditionsDescription": "Record how the project will be conducted, what are the next steps, and any observations relevant to the decision.",
+      "submitting": "Generating proposal...",
+      "submit": "Generate Proposal",
+      "projectGoal": "Project goals",
+      "expectedImpact": "Expected impact",
+      "differentials": "Delivery differentials",
+      "estimatedTimeline": "Estimated timeline",
+      "paymentConditions": "Payment conditions",
+      "nextSteps": "Next steps",
+      "acceptanceCriteria": "Acceptance criteria",
+      "notIncluded": "What is not included",
+      "warranty": "Warranty and adjustments",
+      "additionalNotes": "Additional observations",
+      "platformFlow": "Platform operation",
+      "categories": {
+        "landing-page": "Landing Page",
+        "institucional": "Institutional",
+        "booking": "Booking / Scheduling",
+        "estabilidade": "Stability Plan"
+      }
+    },
+    "list": {
+      "searchPlaceholder": "Search by title, company or number...",
+      "filtersLabel": "Filters",
+      "statusAll": "All Status",
+      "table": {
+        "company": "Company",
+        "proposal": "Proposal",
+        "value": "Investment",
+        "date": "Creation",
+        "actions": "Actions"
+      },
+      "empty": "No proposals found",
+      "summary": "{count} Proposal(s) found",
+      "exportLabel": "Export",
+      "statusLabel": "Commercial Status",
+      "downloadPdf": "Download PDF",
+      "duplicate": "Duplicate Base",
+      "delete": "Delete Proposal",
+      "openPdf": "Open PDF",
+      "markAs": "Mark as {status}",
+      "messages": {
+        "deleteSuccess": "Proposal deleted",
+        "deleteError": "Error deleting proposal",
+        "duplicateSuccess": "Proposal duplicated as draft",
+        "duplicateError": "Error duplicating proposal",
+        "statusSuccess": "Status updated",
+        "statusError": "Error updating status"
+      }
     }
   },
   "Docs": {
@@ -1274,9 +1485,11 @@
     "editGroup": "Edit Group",
     "linkDeleted": "Link removed successfully",
     "deleteFailed": "Error removing link",
-    "noLinks": "No links registered",
+    "noLinks": "No links registered yet.",
     "linksHelper": "Add your first link above to get started.",
     "linksReorderHint": "Drag to reorder",
+    "linkExpiresCountdown": "Ends in {hours} hours, {minutes} minutes, and {seconds} seconds.",
+    "reorder": "Reorder",
     "adminDescription": "Summary of the Connect registered for this client.",
     "adminEmpty": "Client has no MAGUI Connect record yet.",
     "adminNoDescription": "No description saved.",
@@ -1355,6 +1568,37 @@
     "lockedRequestSuccess": "Your request has been sent to the team.",
     "lockedRequestError": "Could not send your request right now.",
     "lockedBackHome": "Back to dashboard",
+    "overview": {
+      "manageLinks": "Manage links",
+      "understandClicks": "Understand clicks",
+      "economyTitle": "Attention economy",
+      "economyHeadline": "Less options. <span className=\"text-brand-primary\">More decision.</span>",
+      "economyDescription": "Too many options look like freedom, but usually increase hesitation. A good page doesn't show everything: it guides the eye to what has the most value.",
+      "lessNoise": "Less noise",
+      "moreFocus": "More focus",
+      "obviousChoice": "Obvious choice",
+      "topAnchorsTitle": "The top anchors perception",
+      "topAnchorsDescription": "The first highlight becomes a mental reference. Use this position to place the action you most want to receive.",
+      "clickDenouncesInterestTitle": "The click denounces interest",
+      "clickDenouncesInterestDescription": "Behavior is worth more than opinion. If a link receives attention, it's saying something about your audience's intent.",
+      "excessStealsConversionTitle": "Excess steals conversion",
+      "excessStealsConversionDescription": "Each weak option competes against the strong option. Removing noise can be more efficient than adding new paths.",
+      "realReadingTitle": "Real reading",
+      "realReadingHeadline": "Your numbers show where attention exists.",
+      "clicksReceived": "Clicks received",
+      "activeLinks": "Active links",
+      "realReadingDescription": "Use these signals to decide what goes up, what goes down, and what no longer deserves to compete for space with the main action.",
+      "viewAnalytics": "View analytics",
+      "adjustLinks": "Adjust links",
+      "clickHierarchyTitle": "Click hierarchy",
+      "clickHierarchyHeadline": "Make the right path seem obvious.",
+      "ruleOneTitle": "Highlight a main action",
+      "ruleOneDescription": "Contact, purchase, quote, or portfolio. When there's a visual priority, the visitor understands faster what to do.",
+      "ruleTwoTitle": "Use the rest as support",
+      "ruleTwoDescription": "Secondary links should complement the journey, not compete with the main goal of the page.",
+      "ruleThreeTitle": "Reorder based on behavior",
+      "ruleThreeDescription": "Clicks show which calls attract attention. Use this to refine the page without depending on guesswork."
+    },
     "analyticsEyebrow": "Performance reading",
     "analyticsTitle": "Link analytics",
     "analyticsDescription": "See every link in your Connect, compare traffic volume and understand which destinations are receiving the most attention.",
@@ -1366,6 +1610,38 @@
     "analyticsLinksRankingDescription": "Full list of registered links with access volume per item.",
     "analyticsNoLinks": "No links registered yet.",
     "analyticsFeatured": "Featured",
-    "analyticsClicksLabel": "Clicks"
+    "analyticsClicksLabel": "Clicks",
+    "linkKinds": {
+      "LINK": "Standard Link",
+      "ALIEXPRESS": "AliExpress",
+      "AMAZON": "Amazon",
+      "APPLE_MUSIC": "Apple Music",
+      "ARTSTATION": "Artstation",
+      "BEHANCE": "Behance",
+      "DISCORD": "Discord",
+      "DRIBBBLE": "Dribbble",
+      "EDUZZ": "Eduzz",
+      "DRIVE": "Google Drive",
+      "MAPS": "Google Maps",
+      "GITHUB": "Github",
+      "HOTMART": "Hotmart",
+      "IFOOD": "iFood",
+      "INSTAGRAM": "Instagram",
+      "KIWIFY": "Kiwify",
+      "LINKEDIN": "LinkedIn",
+      "MEDIUM": "Medium",
+      "MERCADO_LIVRE": "Mercado Livre",
+      "PINTEREST": "Pinterest",
+      "SHOPEE": "Shopee",
+      "SPOTIFY": "Spotify",
+      "TELEGRAM": "Telegram",
+      "THREADS": "Threads",
+      "TIKTOK": "TikTok",
+      "TWITCH": "Twitch",
+      "VIMEO": "Vimeo",
+      "WHATSAPP": "WhatsApp",
+      "X": "X (Twitter)",
+      "YOUTUBE": "YouTube"
+    }
   }
 }

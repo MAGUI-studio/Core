@@ -228,7 +228,7 @@ export function MaguiConnectLinkItem({
             {...attributes}
             {...listeners}
             className="cursor-grab p-1 text-muted-foreground/30 transition-colors hover:text-foreground active:cursor-grabbing shrink-0"
-            aria-label="Reorder"
+            aria-label={t("reorder")}
           >
             <DotsSixVertical size={18} weight="bold" />
           </button>
@@ -613,6 +613,7 @@ function toDateTimeLocalValue(value: Date | string) {
 }
 
 function useCountdownLabel(expiresAtValue: string | Date | null) {
+  const t = useTranslations("MaguiConnect")
   const [now, setNow] = React.useState(() => Date.now())
 
   React.useEffect(() => {
@@ -638,7 +639,7 @@ function useCountdownLabel(expiresAtValue: string | Date | null) {
   const minutes = Math.floor((totalSeconds % 3600) / 60)
   const seconds = totalSeconds % 60
 
-  return `Encerra em ${hours} horas, ${minutes} minutos e ${seconds} segundos.`
+  return t("linkExpiresCountdown", { hours, minutes, seconds })
 }
 
 function getLinkScheduleStatus(

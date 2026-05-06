@@ -14,6 +14,9 @@
     "switch_to": "Mudar para {lang}",
     "label": "Idioma"
   },
+  "Common": {
+    "close": "Fechar"
+  },
   "ThemeToggle": {
     "light": "Claro",
     "dark": "Escuro",
@@ -80,6 +83,28 @@
       "roles": {
         "admin": "Administrador",
         "client": "Cliente"
+      },
+      "tabs": {
+        "billing": "Cobrança avulsa",
+        "connect": "MAGUI Connect",
+        "projects": "Projetos vinculados"
+      },
+      "billing": {
+        "title": "Emitir fatura sem projeto",
+        "description": "Use este fluxo para cobrar MAGUI Connect ou qualquer outro serviço avulso diretamente para este cliente.",
+        "trigger": "Nova cobrança",
+        "dialogTitle": "Criar cobrança avulsa",
+        "listTitle": "Cobranças avulsas",
+        "empty": "Nenhuma cobrança avulsa emitida para este cliente.",
+        "kindStandalone": "Avulsa",
+        "noProjectDescription": "Cobrança sem projeto vinculado.",
+        "totalLabel": "Total",
+        "installmentLabel": "Parcela"
+      },
+      "projects": {
+        "empty": "Nenhum projeto vinculado a este cliente.",
+        "open": "Abrir projeto",
+        "start": "Iniciar projeto"
       },
       "stats": {
         "active_clients": "Clientes ativos",
@@ -173,7 +198,19 @@
         "empty": "Nenhum lead catalogado no momento."
       },
       "details": {
-        "cancel": "Cancelar Operação"
+        "cancel": "Cancelar Operação",
+        "contactIntelligence": "Inteligência de Contato",
+        "owner": "Responsável",
+        "salesTeam": "Time Comercial",
+        "corporateEmail": "E-mail Corporativo",
+        "phone": "Telefone / WhatsApp",
+        "investmentRange": "Faixa de investimento",
+        "sourcePresence": "Origem e Presença",
+        "acquisitionChannel": "Canal de Aquisição",
+        "instagram": "Instagram",
+        "officialWebsite": "Website Oficial",
+        "linkedin": "LinkedIn",
+        "copied": "{label} copiado!"
       },
       "status": {
         "GARIMPAGEM": "Prospecção",
@@ -203,7 +240,19 @@
         "value": "Valor Estimado",
         "submit": "Salvar Lead",
         "success": "Lead catalogado com sucesso!",
-        "error": "Erro ao salvar lead."
+        "error": "Erro ao salvar lead!",
+        "companySection": "Empresa",
+        "contactSection": "Contato",
+        "followUpSection": "Acompanhamento",
+        "sourceLabel": "Origem",
+        "sourcePlaceholder": "Selecione a origem",
+        "valueLabel": "Valor estimado",
+        "instagramLabel": "Link do Instagram",
+        "linkedinLabel": "Link do LinkedIn",
+        "websiteLabel": "Site",
+        "notesSection": "Observações",
+        "notesPlaceholder": "Registre contexto, momento da conversa, próximo passo e qualquer sinal que fortaleça a qualificação.",
+        "notesHelper": "Boas notas deixam claro origem, valor, responsável pela conversa e qual é o próximo movimento comercial."
       },
       "convert": {
         "title": "Converter em Projeto",
@@ -376,6 +425,11 @@
         "client_card_title": "Informações do Proprietário",
         "settings_title": "Configurações do Projeto",
         "assets_title": "Repositório de Ativos (Assets)",
+        "assets_eyebrow": "Arquivos",
+        "assets_count_info": "{visibleCount} de {assetsCount} exibidos",
+        "asset_type_all": "Todos os tipos",
+        "asset_origin_all": "Todas as origens",
+        "asset_visibility_all": "Toda visibilidade",
         "budget_label": "Investimento",
         "deadline_label": "Prazo Final",
         "update_status": "Atualizar Status",
@@ -436,7 +490,26 @@
           "MEDIUM": "Média",
           "HIGH": "Alta",
           "URGENT": "Urgente"
-        }
+        },
+        "briefing_strategic_sheet": "Ficha Estratégica do Projeto",
+        "briefing_request_new": "Solicitar Novo Preenchimento",
+        "briefing_business_context": "Contexto de Negócio",
+        "briefing_visual_direction": "Direção Visual",
+        "briefing_visual_identity": "Identidade Visual",
+        "briefing_primary_logo": "Logo Principal",
+        "briefing_secondary_logo": "Logo Secundário",
+        "briefing_color_palette": "Paleta de Cores",
+        "briefing_no_color": "Cor não definida",
+        "briefing_pending": "Pendente",
+        "briefing_not_provided": "Não fornecido",
+        "briefing_not_started": "Briefing não iniciado",
+        "briefing_not_started_desc": "O cliente ainda não preencheu os detalhes iniciais.",
+        "briefing_reset_success": "Briefing resetado com sucesso",
+        "briefing_reset_error": "Erro ao resetar briefing",
+        "briefing_reset_dialog_title": "Solicitar Novo Briefing",
+        "briefing_reset_dialog_desc": "Esta ação apagará todos os dados atuais de briefing deste projeto e solicitará que o cliente preencha novamente.",
+        "briefing_resetting": "Limpando...",
+        "briefing_confirm_reset": "Confirmar e Resetar"
       }
     }
   },
@@ -1061,6 +1134,59 @@
       "CANCELLED": "Cancelado",
       "DUE_SOON": "Vence em breve",
       "WAIVED": "Isento"
+    },
+    "messages": {
+      "paymentSuccess": "Pagamento realizado com sucesso!",
+      "paymentCanceled": "O pagamento foi cancelado.",
+      "paymentRegistered": "Pagamento registrado!"
+    },
+    "badges": {
+      "dueToday": "Vence hoje",
+      "dueTomorrow": "Vence amanhã",
+      "dueInDays": "Vence em {days} dias"
+    },
+    "summary": {
+      "totalInvestment": "Investimento Total",
+      "totalPaid": "Total Liquidado",
+      "pendingBalance": "Saldo devedor",
+      "description": "Resumo consolidado do investimento do projeto {projectName}.",
+      "descriptionGeneric": "Resumo consolidado do investimento deste projeto.",
+      "pendingDescription": "Valor ainda pendente para liberar a operação completa.",
+      "noPendingDescription": "Não existe saldo em aberto neste momento."
+    },
+    "schedule": {
+      "title": "Cronograma Financeiro",
+      "description": "Acompanhe suas faturas e realize pagamentos de forma segura.",
+      "empty": "Nenhum registro financeiro encontrado.",
+      "invoiceBadge": "FATURA",
+      "invoiceDescription": "Cobrança vinculada a este projeto.",
+      "relatedProject": "Projeto relacionado",
+      "projectLabel": "Projeto",
+      "installmentLabel": "Parcela",
+      "waitingPrevious": "Aguardando anterior",
+      "overdue": "Vencida",
+      "dueDate": "Vencimento {date}",
+      "dueDateLong": "Vencimento em {date}",
+      "payNow": "Pagar Agora",
+      "blocked": "Bloqueado",
+      "manualEntry": "Baixa Manual",
+      "paidAt": "Pago em",
+      "receipt": "Recibo"
+    },
+    "manualEntry": {
+      "title": "Baixa Manual",
+      "amountToLiquidate": "Valor a ser liquidado",
+      "sourceLabel": "Origem do Recurso",
+      "sourcePlaceholder": "Selecione a origem",
+      "auditNotes": "Notas de Auditoria",
+      "notesPlaceholder": "Descreva detalhes do recebimento...",
+      "confirmButton": "Confirmar Recebimento"
+    },
+    "paymentTypes": {
+      "PIX": "PIX Direto",
+      "TED": "Transferência Bancária",
+      "CASH": "Dinheiro / Espécie",
+      "OTHER": "Outros"
     }
   },
   "Proposals": {
@@ -1070,6 +1196,91 @@
       "ACCEPTED": "Aceita",
       "REJECTED": "Recusada",
       "EXPIRED": "Expirada"
+    },
+    "builder": {
+      "title": "Proposta Comercial",
+      "subtitle": "Estruture a proposta com clareza comercial",
+      "description": "Preencha o contexto, as entregas e os acordos do projeto em uma leitura mais limpa. A proposta será criada imediatamente e poderá ser ajustada depois, sem etapa separada de revisão.",
+      "leadLabel": "Lead / cliente",
+      "leadPlaceholder": "Selecione o lead",
+      "categoryLabel": "Categoria do projeto",
+      "categoryPlaceholder": "Selecione a categoria",
+      "documentTitleLabel": "Título do documento",
+      "documentTitleHelper": "Título direto, moeda fixa em BRL e menos ruído ajudam manter leitura mais executiva.",
+      "validityLabel": "Validade da proposta",
+      "narrativeTitle": "Narrativa da proposta",
+      "narrativeDescription": "Preencha o contexto, os objetivos e os argumentos que reforçam por que esse investimento faz sentido.",
+      "governanceTitle": "Governança e Aceite",
+      "governanceDescription": "Defina critérios claros de sucesso, o que está fora do escopo e as garantias pós-entrega.",
+      "investmentTitle": "Escopo e investimento",
+      "investmentDescription": "Organize as entregas com explicação comercial e mantenha o investimento total sempre visível.",
+      "itemsLabel": "Itens e serviços",
+      "itemsDescription": "Cada entrega deve deixar claro o que está incluso e qual papel ela cumpre dentro do projeto.",
+      "addItem": "Adicionar Item",
+      "deliveryLabel": "Entrega",
+      "deliveryNameLabel": "Nome da entrega",
+      "unitValueLabel": "Valor unitário",
+      "quantityLabel": "Qtd",
+      "commercialExplanationLabel": "Explicação comercial da entrega",
+      "commercialExplanationPlaceholder": "Descreva o que entra nesta entrega, como ela será conduzida e qual valor ela gera para o projeto.",
+      "totalInvestmentLabel": "Investimento total",
+      "totalInvestmentHelper": "Valor consolidado desta proposta. Use os itens para reforçar o escopo e a leitura de investimento, não apenas o preço.",
+      "connectBonusTitle": "Bônus MAGUI Connect",
+      "professionalProfileLabel": "Perfil Profissional",
+      "freeLabel": "Grátis",
+      "connectBonusDescription": "Acesso vitalício ao MAGUI Connect incluso como bônus exclusivo nesta proposta.",
+      "commercialReadingTitle": "Leitura comercial",
+      "commercialReadingHelper": "Propostas mais fortes conectam entrega, impacto e condução. Quando o valor aparece sem contexto, a percepção do investimento perde força.",
+      "conditionsTitle": "Condições e operação",
+      "conditionsDescription": "Registre como o projeto será conduzido, quais são os próximos passos e qualquer observação relevante para a decisão.",
+      "submitting": "Gerando proposta...",
+      "submit": "Gerar Proposta",
+      "projectGoal": "Objetivos do projeto",
+      "expectedImpact": "Impacto esperado",
+      "differentials": "Diferenciais da entrega",
+      "estimatedTimeline": "Prazo estimado",
+      "paymentConditions": "Condições de pagamento",
+      "nextSteps": "Próximos passos",
+      "acceptanceCriteria": "Critérios de aceite",
+      "notIncluded": "O que não está incluso",
+      "warranty": "Garantia e ajustes",
+      "additionalNotes": "Observações adicionais",
+      "platformFlow": "Operação pela plataforma",
+      "categories": {
+        "landing-page": "Landing Page",
+        "institucional": "Institucional",
+        "booking": "Booking / Agendamento",
+        "estabilidade": "Plano de Estabilidade"
+      }
+    },
+    "list": {
+      "searchPlaceholder": "Buscar por título, empresa ou número...",
+      "filtersLabel": "Filtros",
+      "statusAll": "Todos os Status",
+      "table": {
+        "company": "Empresa",
+        "proposal": "Proposta",
+        "value": "Investimento",
+        "date": "Criação",
+        "actions": "Ações"
+      },
+      "empty": "Nenhuma proposta encontrada",
+      "summary": "{count} Proposta(s) encontrada(s)",
+      "exportLabel": "Exportação",
+      "statusLabel": "Status Comercial",
+      "downloadPdf": "Baixar PDF",
+      "duplicate": "Duplicar Base",
+      "delete": "Excluir Proposta",
+      "openPdf": "Abrir PDF",
+      "markAs": "Marcar como {status}",
+      "messages": {
+        "deleteSuccess": "Proposta excluída",
+        "deleteError": "Erro ao excluir proposta",
+        "duplicateSuccess": "Proposta duplicada como rascunho",
+        "duplicateError": "Erro ao duplicar proposta",
+        "statusSuccess": "Status atualizado",
+        "statusError": "Erro ao atualizar status"
+      }
     }
   },
   "Docs": {
@@ -1277,6 +1488,8 @@
     "noLinks": "Nenhum link cadastrado",
     "linksHelper": "Adicione seu primeiro link acima para começar.",
     "linksReorderHint": "Arraste para reordenar",
+    "linkExpiresCountdown": "Encerra em {hours} horas, {minutes} minutos e {seconds} segundos.",
+    "reorder": "Reordenar",
     "adminDescription": "Resumo do Connect cadastrado para este cliente.",
     "adminEmpty": "Cliente sem cadastro do MAGUI Connect.",
     "adminNoDescription": "Sem descrição cadastrada.",
@@ -1355,6 +1568,37 @@
     "lockedRequestSuccess": "Sua solicitação foi enviada para a equipe.",
     "lockedRequestError": "Não foi possível enviar sua solicitação agora.",
     "lockedBackHome": "Voltar ao dashboard",
+    "overview": {
+      "manageLinks": "Gerenciar links",
+      "understandClicks": "Entender cliques",
+      "economyTitle": "Economia de atenção",
+      "economyHeadline": "Menos opções. <span className=\"text-brand-primary\">Mais decisão.</span>",
+      "economyDescription": "Opções demais parecem liberdade, mas geralmente aumentam hesitação. Uma página boa não mostra tudo: ela guia o olhar para o que tem mais valor.",
+      "lessNoise": "Menos ruído",
+      "moreFocus": "Mais foco",
+      "obviousChoice": "Escolha mais óbvia",
+      "topAnchorsTitle": "O topo ancora a percepção",
+      "topAnchorsDescription": "O primeiro destaque vira referência mental. Use essa posição para colocar a ação que você mais quer receber.",
+      "clickDenouncesInterestTitle": "O clique denuncia interesse",
+      "clickDenouncesInterestDescription": "Comportamento vale mais do que opinião. Se um link recebe atenção, ele está dizendo algo sobre a intenção do seu público.",
+      "excessStealsConversionTitle": "O excesso rouba conversão",
+      "excessStealsConversionDescription": "Cada opção fraca compete contra a opção forte. Remover ruído pode ser mais eficiente do que adicionar novos caminhos.",
+      "realReadingTitle": "Leitura real",
+      "realReadingHeadline": "Seus números mostram onde existe atenção.",
+      "clicksReceived": "Cliques recebidos",
+      "activeLinks": "Links ativos",
+      "realReadingDescription": "Use esses sinais para decidir o que sobe, o que desce e o que não merece mais disputar espaço com a ação principal.",
+      "viewAnalytics": "Ver analytics",
+      "adjustLinks": "Ajustar links",
+      "clickHierarchyTitle": "Hierarquia de clique",
+      "clickHierarchyHeadline": "Faça o caminho certo parecer óbvio.",
+      "ruleOneTitle": "Destaque uma ação principal",
+      "ruleOneDescription": "Contato, compra, orçamento ou portfólio. Quando há uma prioridade visual, o visitante entende mais rápido o que fazer.",
+      "ruleTwoTitle": "Use o restante como suporte",
+      "ruleTwoDescription": "Links secundários devem complementar a jornada, não competir com o objetivo principal da página.",
+      "ruleThreeTitle": "Reordene com base no comportamento",
+      "ruleThreeDescription": "Os cliques mostram quais chamadas atraem atenção. Use isso para refinar a página sem depender de achismo."
+    },
     "analyticsEyebrow": "Leitura de performance",
     "analyticsTitle": "Analytics dos links",
     "analyticsDescription": "Veja todos os links do seu Connect, compare volume de acessos e entenda quais destinos estão recebendo mais atenção.",
@@ -1366,6 +1610,38 @@
     "analyticsLinksRankingDescription": "Lista completa dos links cadastrados com volume de acessos por item.",
     "analyticsNoLinks": "Nenhum link cadastrado ainda.",
     "analyticsFeatured": "Destaque",
-    "analyticsClicksLabel": "Acessos"
+    "analyticsClicksLabel": "Acessos",
+    "linkKinds": {
+      "LINK": "Link Padrão",
+      "ALIEXPRESS": "AliExpress",
+      "AMAZON": "Amazon",
+      "APPLE_MUSIC": "Apple Music",
+      "ARTSTATION": "Artstation",
+      "BEHANCE": "Behance",
+      "DISCORD": "Discord",
+      "DRIBBBLE": "Dribbble",
+      "EDUZZ": "Eduzz",
+      "DRIVE": "Google Drive",
+      "MAPS": "Google Maps",
+      "GITHUB": "Github",
+      "HOTMART": "Hotmart",
+      "IFOOD": "iFood",
+      "INSTAGRAM": "Instagram",
+      "KIWIFY": "Kiwify",
+      "LINKEDIN": "LinkedIn",
+      "MEDIUM": "Medium",
+      "MERCADO_LIVRE": "Mercado Livre",
+      "PINTEREST": "Pinterest",
+      "SHOPEE": "Shopee",
+      "SPOTIFY": "Spotify",
+      "TELEGRAM": "Telegram",
+      "THREADS": "Threads",
+      "TIKTOK": "TikTok",
+      "TWITCH": "Twitch",
+      "VIMEO": "Vimeo",
+      "WHATSAPP": "WhatsApp",
+      "X": "X (Twitter)",
+      "YOUTUBE": "YouTube"
+    }
   }
 }

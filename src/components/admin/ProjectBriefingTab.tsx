@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 
 import { Prisma } from "@/src/generated/client"
@@ -46,6 +47,7 @@ export function ProjectBriefingTab({
   projectId,
   briefing,
 }: ProjectBriefingTabProps) {
+  const t = useTranslations("Admin.projects.details")
   const [isResetting, setIsResetting] = React.useState(false)
   const [showResetConfirm, setShowResetConfirm] = React.useState(false)
 
@@ -57,10 +59,10 @@ export function ProjectBriefingTab({
     const result = await resetProjectBriefingAction(projectId)
 
     if (result.success) {
-      toast.success("Briefing resetado com sucesso")
+      toast.success(t("briefing_reset_success"))
       setShowResetConfirm(false)
     } else {
-      toast.error(result.error || "Erro ao resetar briefing")
+      toast.error(result.error || t("briefing_reset_error"))
     }
     setIsResetting(false)
   }
@@ -92,7 +94,7 @@ export function ProjectBriefingTab({
         </span>
         {isEmpty ? (
           <p className="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground/20 italic">
-            Não fornecido
+            {t("briefing_not_provided")}
           </p>
         ) : (
           <>
@@ -149,7 +151,7 @@ export function ProjectBriefingTab({
         <div className="aspect-video w-full rounded-2xl border border-dashed border-border/40 flex flex-col items-center justify-center gap-2 opacity-30">
           <ImageIcon size={24} />
           <span className="text-[8px] font-black uppercase tracking-widest">
-            Pendente
+            {t("briefing_pending")}
           </span>
         </div>
       )}
@@ -161,10 +163,10 @@ export function ProjectBriefingTab({
       <div className="flex flex-col items-center justify-center py-20 opacity-40">
         <FileText className="size-16 mb-4" />
         <p className="font-heading text-xl font-black uppercase tracking-tight">
-          Briefing não iniciado
+          {t("briefing_not_started")}
         </p>
         <p className="text-[10px] font-black uppercase tracking-widest mt-1">
-          O cliente ainda não preencheu os detalhes iniciais.
+          {t("briefing_not_started_desc")}
         </p>
       </div>
     )
@@ -175,7 +177,7 @@ export function ProjectBriefingTab({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground/40">
-            Ficha Estratégica do Projeto
+            {t("briefing_strategic_sheet")}
           </h2>
         </div>
         <Button
@@ -185,7 +187,7 @@ export function ProjectBriefingTab({
           className="rounded-full border-destructive/20 text-destructive hover:bg-destructive/5 hover:text-destructive font-mono text-[10px] font-black uppercase tracking-widest gap-2"
         >
           <ArrowClockwise className="size-3" />
-          Solicitar Novo Preenchimento
+          {t("briefing_request_new")}
         </Button>
       </div>
 
@@ -194,18 +196,18 @@ export function ProjectBriefingTab({
           <section>
             {renderSectionHeader(
               <Briefcase weight="fill" className="size-5" />,
-              "Contexto de Negócio"
+              t("briefing_business_context")
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-2">
               <div className="md:col-span-2">
-                {renderField("Sobre o Negócio", data.businessDescription)}
+                {renderField(t("steps.businessDescription.label"), data.businessDescription)}
               </div>
-              {renderField("Essência da Marca", data.brandTone)}
-              {renderField("Objetivos do Projeto", data.businessGoals)}
-              {renderField("Público-Alvo", data.targetAudience)}
-              {renderField("Diferenciais", data.differentiators)}
+              {renderField(t("steps.brandTone.label"), data.brandTone)}
+              {renderField(t("steps.businessGoals.label"), data.businessGoals)}
+              {renderField(t("steps.targetAudience.label"), data.targetAudience)}
+              {renderField(t("steps.differentiators.label"), data.differentiators)}
               <div className="md:col-span-2">
-                {renderField("Conversão Principal (CTA)", data.primaryCta)}
+                {renderField(t("steps.primaryCta.label"), data.primaryCta)}
               </div>
             </div>
           </section>
@@ -213,16 +215,16 @@ export function ProjectBriefingTab({
           <section>
             {renderSectionHeader(
               <Eye weight="fill" className="size-5" />,
-              "Direção Visual"
+              t("briefing_visual_direction")
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-2">
               {renderField(
-                "Referências Visuais",
+                t("steps.visualReferences.label"),
                 data.visualReferences,
                 "list"
               )}
-              {renderField("O que evitar", data.dislikedReferences, "list")}
-              {renderField("Concorrentes", data.competitors, "list")}
+              {renderField(t("steps.dislikedReferences.label"), data.dislikedReferences, "list")}
+              {renderField(t("steps.competitors.label"), data.competitors, "list")}
             </div>
           </section>
         </div>
@@ -233,21 +235,21 @@ export function ProjectBriefingTab({
               <div className="flex items-center gap-3">
                 <Palette weight="fill" className="size-5 text-brand-primary" />
                 <CardTitle className="font-heading text-lg font-black uppercase tracking-tight">
-                  Identidade Visual
+                  {t("briefing_visual_identity")}
                 </CardTitle>
               </div>
             </CardHeader>
             <CardContent className="pt-8 space-y-8 px-8 pb-10">
               <div className="grid gap-6">
-                {renderLogo("Logo Principal", data.logos?.primary)}
-                {renderLogo("Logo Secundário", data.logos?.secondary)}
+                {renderLogo(t("briefing_primary_logo"), data.logos?.primary)}
+                {renderLogo(t("briefing_secondary_logo"), data.logos?.secondary)}
               </div>
 
               <Separator className="bg-border/40" />
 
               <div className="space-y-4">
                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
-                  Paleta de Cores
+                  {t("briefing_color_palette")}
                 </span>
                 <div className="flex items-center gap-3">
                   {data.palette?.primary ? (
@@ -262,7 +264,7 @@ export function ProjectBriefingTab({
                     </div>
                   ) : (
                     <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/20 italic">
-                      Cor não definida
+                      {t("briefing_no_color")}
                     </p>
                   )}
                   {data.palette?.secondary && (
@@ -287,24 +289,22 @@ export function ProjectBriefingTab({
         <AlertDialogContent className="rounded-3xl border-border/60 bg-background/95 backdrop-blur-xl">
           <AlertDialogHeader>
             <AlertDialogTitle className="font-heading text-xl font-black uppercase tracking-tight">
-              Solicitar Novo Briefing
+              {t("briefing_reset_dialog_title")}
             </AlertDialogTitle>
             <AlertDialogDescription className="text-sm font-medium text-muted-foreground/60 leading-relaxed">
-              Esta ação <strong className="text-destructive">apagará</strong>{" "}
-              todos os dados atuais de briefing deste projeto e solicitará que o
-              cliente preencha novamente.
+              {t("briefing_reset_dialog_desc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-3">
             <AlertDialogCancel className="rounded-full border-border/40 text-xs font-bold uppercase tracking-widest hover:bg-muted/10">
-              Cancelar
+              {t("cancel")}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleReset}
               disabled={isResetting}
               className="rounded-full bg-destructive text-xs font-bold uppercase tracking-widest text-white hover:bg-destructive/90"
             >
-              {isResetting ? "Limpando..." : "Confirmar e Resetar"}
+              {isResetting ? t("briefing_resetting") : t("briefing_confirm_reset")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

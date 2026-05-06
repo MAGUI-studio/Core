@@ -2,6 +2,8 @@
 
 import * as React from "react"
 
+import { useTranslations } from "next-intl"
+
 import { useRouter } from "@/src/i18n/navigation"
 import {
   Calculator,
@@ -76,6 +78,8 @@ export function ProposalBuilderForm({
   leads,
   initialLeadId,
 }: ProposalBuilderFormProps): React.JSX.Element {
+  const t = useTranslations("Proposals")
+  const tCommon = useTranslations("Admin.crm")
   const router = useRouter()
   const initialLead =
     leads.find((lead) => lead.id === initialLeadId) ?? leads[0] ?? null
@@ -87,8 +91,8 @@ export function ProposalBuilderForm({
     React.useState<string>("landing-page")
   const [title, setTitle] = React.useState(
     initialLead
-      ? `Proposta Comercial - ${initialLead.companyName}`
-      : "Proposta Comercial"
+      ? `${t("builder.title")} - ${initialLead.companyName}`
+      : t("builder.title")
   )
   const [validUntil, setValidUntil] = React.useState("")
   const [executiveSummary, setExecutiveSummary] = React.useState("")
@@ -107,14 +111,14 @@ export function ProposalBuilderForm({
   const [items, setItems] = React.useState<ProposalItemForm[]>([
     { ...EMPTY_ITEM },
   ])
+
   const requiredSections = [
-    { label: "Lead", ok: Boolean(selectedLeadId) },
-    { label: "Resumo executivo", ok: executiveSummary.trim().length > 0 },
-    { label: "Objetivos", ok: objectives.trim().length > 0 },
-    { label: "Impacto esperado", ok: expectedImpact.trim().length > 0 },
-    { label: "Prazo", ok: timeline.trim().length > 0 },
-    { label: "Pagamento", ok: paymentTerms.trim().length > 0 },
-    { label: "Proximos passos", ok: nextSteps.trim().length > 0 },
+    { label: t("builder.leadLabel"), ok: Boolean(selectedLeadId) },
+    { label: t("builder.narrativeTitle"), ok: executiveSummary.trim().length > 0 },
+    { label: t("Briefing.steps.businessGoals.label"), ok: objectives.trim().length > 0 },
+    { label: t("ActionItems.due_date", { date: "" }).replace(":", ""), ok: timeline.trim().length > 0 },
+    { label: t("Dashboard.client_home.links.financial"), ok: paymentTerms.trim().length > 0 },
+    { label: t("Briefing.next_step"), ok: nextSteps.trim().length > 0 },
   ]
   const hasInvalidItems = items.some(
     (item) => !item.description.trim() || item.unitValue <= 0
@@ -124,17 +128,17 @@ export function ProposalBuilderForm({
     const selectedLead = leads.find((lead) => lead.id === selectedLeadId)
     if (!selectedLead) return
 
-    setTitle((currentTitle) => {
+    setTitle((currentTitle: string) => {
       if (
-        currentTitle === "Proposta Comercial" ||
-        currentTitle.startsWith("Proposta Comercial - ")
+        currentTitle === t("builder.title") ||
+        currentTitle.startsWith(`${t("builder.title")} - `)
       ) {
-        return `Proposta Comercial - ${selectedLead.companyName}`
+        return `${t("builder.title")} - ${selectedLead.companyName}`
       }
 
       return currentTitle
     })
-  }, [selectedLeadId, leads])
+  }, [selectedLeadId, leads, t])
 
   const total = items.reduce(
     (acc, item) => acc + item.unitValue * item.quantity,
@@ -274,7 +278,7 @@ export function ProposalBuilderForm({
 
   const buildProposalNotes = () => {
     const sections = [
-      ["Resumo executivo", executiveSummary],
+      [t("builder.narrativeTitle"), executiveSummary],
       ["Objetivos do projeto", objectives],
       ["Impacto esperado", expectedImpact],
       ["Diferenciais da entrega", differentials],
@@ -287,9 +291,9 @@ export function ProposalBuilderForm({
       ["Próximos passos", nextSteps],
       ["Observações adicionais", notes],
       [
-        "Bonus exclusivo",
+        t("builder.connectBonusTitle"),
         includeConnectBonus
-          ? "Incluso: MAGUI Connect (Perfil profissional de alta conversão e centralização de links). De R$ 497,00 por R$ 0,00."
+          ? `Incluso: MAGUI Connect (${t("builder.professionalProfileLabel")}). De R$ 497,00 por R$ 0,00.`
           : "",
       ],
     ]
@@ -302,12 +306,12 @@ export function ProposalBuilderForm({
 
   const handleSubmit = async () => {
     if (!selectedLeadId) {
-      toast.error("Selecione o lead para vincular a proposta")
+      toast.error(t("builder.leadPlaceholder"))
       return
     }
 
     const requiredTextFields = [
-      { value: executiveSummary, label: "Resumo executivo" },
+      { value: executiveSummary, label: t("builder.narrativeTitle") },
       { value: objectives, label: "Objetivos do projeto" },
       { value: expectedImpact, label: "Impacto esperado" },
       { value: differentials, label: "Diferenciais da entrega" },
@@ -363,15 +367,13 @@ export function ProposalBuilderForm({
           </div>
           <div className="space-y-2">
             <p className="text-[10px] font-black uppercase tracking-[0.28em] text-brand-primary/65">
-              Proposta Comercial
+              {t("builder.title")}
             </p>
             <h2 className="font-heading text-3xl font-black tracking-tighter text-foreground sm:text-4xl">
-              Estruture a proposta com clareza comercial
+              {t("builder.subtitle")}
             </h2>
             <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground/75">
-              Preencha o contexto, as entregas e os acordos do projeto em uma
-              leitura mais limpa. A proposta sera criada imediatamente e podera
-              ser ajustada depois, sem etapa separada de revisao.
+              {t("builder.description")}
             </p>
           </div>
         </div>
@@ -379,14 +381,14 @@ export function ProposalBuilderForm({
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-2">
             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-              Lead / cliente <span className="text-destructive">*</span>
+              {t("builder.leadLabel")} <span className="text-destructive">*</span>
             </Label>
             <Select value={selectedLeadId} onValueChange={setSelectedLeadId}>
               <SelectTrigger
                 size="lg"
                 className="h-14 w-full rounded-2xl border-border/40 bg-muted/10 px-5 text-left font-sans font-bold text-foreground transition-all focus:ring-brand-primary/20 data-[placeholder]:text-muted-foreground"
               >
-                <SelectValue placeholder="Selecione o lead" />
+                <SelectValue placeholder={t("builder.leadPlaceholder")} />
               </SelectTrigger>
               <SelectContent
                 position="popper"
@@ -403,7 +405,7 @@ export function ProposalBuilderForm({
 
           <div className="space-y-2">
             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-              Categoria do projeto <span className="text-destructive">*</span>
+              {t("builder.categoryLabel")} <span className="text-destructive">*</span>
             </Label>
             <Select
               value={projectCategory}
@@ -413,14 +415,20 @@ export function ProposalBuilderForm({
                 size="lg"
                 className="h-14 w-full rounded-2xl border-border/40 bg-muted/10 px-5 text-left font-sans font-bold text-foreground transition-all focus:ring-brand-primary/20"
               >
-                <SelectValue placeholder="Selecione a categoria" />
+                <SelectValue placeholder={t("builder.categoryPlaceholder")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="landing-page">Landing Page</SelectItem>
-                <SelectItem value="institucional">Institucional</SelectItem>
-                <SelectItem value="booking">Booking / Agendamento</SelectItem>
+                <SelectItem value="landing-page">
+                  {t("builder.categories.landing-page")}
+                </SelectItem>
+                <SelectItem value="institucional">
+                  {t("builder.categories.institucional")}
+                </SelectItem>
+                <SelectItem value="booking">
+                  {t("builder.categories.booking")}
+                </SelectItem>
                 <SelectItem value="estabilidade">
-                  Plano de Estabilidade
+                  {t("builder.categories.estabilidade")}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -428,7 +436,7 @@ export function ProposalBuilderForm({
 
           <div className="space-y-2">
             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-              Título do documento <span className="text-destructive">*</span>
+              {t("builder.documentTitleLabel")} <span className="text-destructive">*</span>
             </Label>
             <Input
               value={title}
@@ -436,14 +444,13 @@ export function ProposalBuilderForm({
               className="h-14 flex-1 rounded-2xl border-border/40 bg-muted/10 px-5 text-sm font-semibold transition-all focus:border-brand-primary/50 focus:bg-muted/20"
             />
             <p className="pl-1 text-[11px] text-muted-foreground/65">
-              Titulo direto, moeda fixa em BRL e menos ruido ajudam manter
-              leitura mais executiva.
+              {t("builder.documentTitleHelper")}
             </p>
           </div>
 
           <div className="space-y-2 md:max-w-sm">
             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-              Validade da proposta
+              {t("builder.validityLabel")}
             </Label>
             <Input
               type="date"
@@ -457,13 +464,13 @@ export function ProposalBuilderForm({
 
       <SectionHeading
         icon={Sparkle}
-        title="Narrativa da proposta"
-        description="Preencha o contexto, os objetivos e os argumentos que reforçam por que esse investimento faz sentido."
+        title={t("builder.narrativeTitle")}
+        description={t("builder.narrativeDescription")}
       />
 
       <section className="space-y-8">
         <FieldBlock
-          label="Resumo executivo *"
+          label={`${t("builder.narrativeTitle")} *`}
           value={executiveSummary}
           onChange={setExecutiveSummary}
           placeholder="Apresente a leitura do momento, a oportunidade e a transformação que esta proposta pretende viabilizar."
@@ -474,7 +481,7 @@ export function ProposalBuilderForm({
           }
         />
         <FieldBlock
-          label="Objetivos do projeto *"
+          label={`${t("Briefing.steps.businessGoals.label")} *`}
           value={objectives}
           onChange={setObjectives}
           placeholder="Ex: estruturar a presença digital, elevar percepção de valor e melhorar a conversa comercial."
@@ -482,7 +489,7 @@ export function ProposalBuilderForm({
           onApplyPreset={(content) => handleApplyPreset(setObjectives, content)}
         />
         <FieldBlock
-          label="Impacto esperado *"
+          label={`${t("Admin.crm.form.valueLabel")} *`}
           value={expectedImpact}
           onChange={setExpectedImpact}
           placeholder="Ex: mais clareza na oferta, melhor apresentação da marca e mais confiança no processo comercial."
@@ -513,7 +520,7 @@ export function ProposalBuilderForm({
           onApplyPreset={(content) => handleApplyPreset(setTimeline, content)}
         />
         <FieldBlock
-          label="Condições de pagamento *"
+          label={`${t("Dashboard.client_home.links.financial")} *`}
           value={paymentTerms}
           onChange={setPaymentTerms}
           placeholder="Ex: 50% na aprovação e 50% na etapa final, via PIX ou transferência."
@@ -526,8 +533,8 @@ export function ProposalBuilderForm({
 
       <SectionHeading
         icon={ShieldCheck}
-        title="Governança e Aceite"
-        description="Defina critérios claros de sucesso, o que está fora do escopo e as garantias pós-entrega."
+        title={t("builder.governanceTitle")}
+        description={t("builder.governanceDescription")}
       />
 
       <section className="space-y-8">
@@ -566,8 +573,8 @@ export function ProposalBuilderForm({
 
       <SectionHeading
         icon={ListChecks}
-        title="Escopo e investimento"
-        description="Organize as entregas com explicação comercial e mantenha o investimento total sempre visível."
+        title={t("builder.investmentTitle")}
+        description={t("builder.investmentDescription")}
       />
 
       <section className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem]">
@@ -575,11 +582,10 @@ export function ProposalBuilderForm({
           <div className="flex items-center justify-between gap-4">
             <div className="space-y-1">
               <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                Itens e serviços
+                {t("builder.itemsLabel")}
               </Label>
               <p className="text-xs text-muted-foreground/50">
-                Cada entrega deve deixar claro o que está incluso e qual papel
-                ela cumpre dentro do projeto.
+                {t("builder.itemsDescription")}
               </p>
             </div>
             <Button
@@ -589,7 +595,7 @@ export function ProposalBuilderForm({
               className="h-10 rounded-2xl border-border/40 px-4 text-[9px] font-black uppercase tracking-widest"
             >
               <Plus className="mr-1.5 size-3" weight="bold" />
-              Adicionar Item
+              {t("builder.addItem")}
             </Button>
           </div>
 
@@ -601,7 +607,7 @@ export function ProposalBuilderForm({
               >
                 <div className="mb-4 flex items-center justify-between">
                   <p className="text-[10px] font-black uppercase tracking-[0.28em] text-muted-foreground/45">
-                    Entrega {String(index + 1).padStart(2, "0")}
+                    {t("builder.deliveryLabel")} {String(index + 1).padStart(2, "0")}
                   </p>
                   {items.length > 1 ? (
                     <Button
@@ -618,7 +624,7 @@ export function ProposalBuilderForm({
                 <div className="grid gap-6 md:grid-cols-12">
                   <div className="space-y-2 md:col-span-6">
                     <Label className="pl-1 text-[8px] font-bold uppercase tracking-widest text-muted-foreground/40">
-                      Nome da entrega{" "}
+                      {t("builder.deliveryNameLabel")}{" "}
                       <span className="text-destructive">*</span>
                     </Label>
                     <div className="space-y-2">
@@ -652,7 +658,7 @@ export function ProposalBuilderForm({
 
                   <div className="space-y-2 md:col-span-4">
                     <Label className="pl-1 text-[8px] font-bold uppercase tracking-widest text-muted-foreground/40">
-                      Valor unitário <span className="text-destructive">*</span>
+                      {t("builder.unitValueLabel")} <span className="text-destructive">*</span>
                     </Label>
                     <div className="relative">
                       <Input
@@ -673,7 +679,7 @@ export function ProposalBuilderForm({
 
                   <div className="space-y-2 md:col-span-2">
                     <Label className="pl-1 text-[8px] font-bold uppercase tracking-widest text-muted-foreground/40">
-                      Qtd <span className="text-destructive">*</span>
+                      {t("builder.quantityLabel")} <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       type="number"
@@ -691,7 +697,7 @@ export function ProposalBuilderForm({
 
                   <div className="space-y-2 md:col-span-12">
                     <Label className="pl-1 text-[8px] font-bold uppercase tracking-widest text-muted-foreground/40">
-                      Explicação comercial da entrega
+                      {t("builder.commercialExplanationLabel")}
                     </Label>
                     <div className="space-y-3">
                       <Textarea
@@ -703,7 +709,7 @@ export function ProposalBuilderForm({
                             e.target.value
                           )
                         }
-                        placeholder="Descreva o que entra nesta entrega, como ela será conduzida e qual valor ela gera para o projeto."
+                        placeholder={t("builder.commercialExplanationPlaceholder")}
                         className="min-h-28 rounded-2xl border-border/40 bg-muted/10 px-4 py-3 text-sm font-medium shadow-none focus-visible:ring-1 focus-visible:ring-brand-primary/30"
                       />
                       <div className="flex flex-wrap gap-2">
@@ -735,7 +741,7 @@ export function ProposalBuilderForm({
         <aside className="space-y-6 lg:sticky lg:top-8 lg:self-start">
           <div className="space-y-2">
             <p className="text-[10px] font-black uppercase tracking-[0.28em] text-brand-primary/70">
-              Investimento total
+              {t("builder.totalInvestmentLabel")}
             </p>
             <p className="font-heading text-5xl font-black tracking-tighter text-foreground">
               {new Intl.NumberFormat("pt-BR", {
@@ -744,8 +750,7 @@ export function ProposalBuilderForm({
               }).format(total)}
             </p>
             <p className="text-sm leading-relaxed text-muted-foreground/70">
-              Valor consolidado desta proposta. Use os itens para reforçar o
-              escopo e a leitura de investimento, não apenas o preço.
+              {t("builder.totalInvestmentHelper")}
             </p>
           </div>
 
@@ -754,7 +759,7 @@ export function ProposalBuilderForm({
               <div className="flex items-center gap-3">
                 <Gift className="size-5 text-brand-primary" weight="bold" />
                 <p className="text-[10px] font-black uppercase tracking-[0.22em] text-muted-foreground/55">
-                  Bônus MAGUI Connect
+                  {t("builder.connectBonusTitle")}
                 </p>
               </div>
               <Switch
@@ -767,20 +772,19 @@ export function ProposalBuilderForm({
               <div className="rounded-2xl bg-brand-primary/5 p-4 border border-brand-primary/10 animate-in fade-in zoom-in-95 duration-300">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-brand-primary">
-                    Perfil Profissional
+                    {t("builder.professionalProfileLabel")}
                   </span>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted-foreground/40 line-through font-medium">
                       R$ 497,00
                     </span>
                     <span className="text-xs font-black text-brand-primary uppercase tracking-tighter">
-                      Grátis
+                      {t("builder.freeLabel")}
                     </span>
                   </div>
                 </div>
                 <p className="mt-2 text-[11px] leading-relaxed text-brand-primary/60 font-medium">
-                  Acesso vitalício ao MAGUI Connect incluso como bônus exclusivo
-                  nesta proposta.
+                  {t("builder.connectBonusDescription")}
                 </p>
               </div>
             )}
@@ -790,13 +794,11 @@ export function ProposalBuilderForm({
             <div className="flex items-center gap-3">
               <Calculator className="size-5 text-brand-primary" weight="bold" />
               <p className="text-[10px] font-black uppercase tracking-[0.22em] text-muted-foreground/55">
-                Leitura comercial
+                {t("builder.commercialReadingTitle")}
               </p>
             </div>
             <p className="text-sm leading-relaxed text-muted-foreground/70">
-              Propostas mais fortes conectam entrega, impacto e condução. Quando
-              o valor aparece sem contexto, a percepção do investimento perde
-              força.
+              {t("builder.commercialReadingHelper")}
             </p>
           </div>
         </aside>
@@ -804,40 +806,15 @@ export function ProposalBuilderForm({
 
       <SectionHeading
         icon={ClockCountdown}
-        title="Condições e operação"
-        description="Registre como o projeto será conduzido, quais são os próximos passos e qualquer observação relevante para a decisão."
+        title={t("builder.conditionsTitle")}
+        description={t("builder.conditionsDescription")}
       />
 
-      <section className="grid gap-8 md:grid-cols-2">
-        <FieldBlock
-          label="Operação pela plataforma *"
-          value={platformFlow}
-          onChange={setPlatformFlow}
-          description="Texto padrão de governança para reforçar a centralização da comunicação, aprovações e materiais."
-          placeholder="Explique como a plataforma organiza comunicação, aprovações, materiais e acompanhamento."
-          presets={PROPOSAL_PRESETS.platformFlow}
-          onApplyPreset={(content) =>
-            handleApplyPreset(setPlatformFlow, content)
-          }
-        />
-        <FieldBlock
-          label="Próximos passos *"
-          value={nextSteps}
-          onChange={setNextSteps}
-          placeholder="Ex: aprovação da proposta, assinatura e envio dos materiais necessários."
-          presets={PROPOSAL_PRESETS.nextSteps}
-          onApplyPreset={(content) => handleApplyPreset(setNextSteps, content)}
-        />
-      </section>
-
-      <section className="grid gap-8 md:grid-cols-2">
-        <FieldBlock
-          label="Observações adicionais"
-          value={notes}
-          onChange={setNotes}
-          placeholder="Ex: materiais que devem ser fornecidos, revisões previstas, itens fora do escopo ou alinhamentos específicos."
-        />
-      </section>
+      <SectionHeading
+        icon={ListChecks}
+        title={t("builder.investmentTitle")}
+        description={t("builder.investmentDescription")}
+      />
 
       <div className="flex items-center justify-end gap-4 border-t border-border/10 pt-8">
         <Button
@@ -845,14 +822,14 @@ export function ProposalBuilderForm({
           variant="ghost"
           className="h-14 rounded-2xl px-8 text-[10px] font-black uppercase tracking-widest"
         >
-          Cancelar
+          {tCommon("details.cancel")}
         </Button>
         <Button
           onClick={handleSubmit}
           disabled={isSubmitting}
           className="h-14 rounded-2xl bg-brand-primary px-8 text-[10px] font-black uppercase tracking-widest text-white shadow-2xl shadow-brand-primary/30 transition-all hover:scale-[1.02] hover:bg-brand-primary/90 active:scale-[0.98]"
         >
-          {isSubmitting ? "Gerando proposta..." : "Gerar Proposta"}
+          {isSubmitting ? t("builder.submitting") : t("builder.submit")}
         </Button>
       </div>
     </div>

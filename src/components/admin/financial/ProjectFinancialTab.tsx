@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { useTranslations } from "next-intl"
 import { useSearchParams } from "next/navigation"
 
 import { Prisma } from "@/src/generated/client"
@@ -70,6 +71,7 @@ export function ProjectFinancialTab({
   invoices,
   projectName,
 }: ProjectFinancialTabProps) {
+  const t = useTranslations("Financial")
   const { isAdmin } = usePermissions()
   const searchParams = useSearchParams()
   const [selectedInstallment, setSelectedInstallment] = React.useState<
@@ -83,12 +85,12 @@ export function ProjectFinancialTab({
 
   React.useEffect(() => {
     if (searchParams.get("success")) {
-      toast.success("Pagamento realizado com sucesso!")
+      toast.success(t("messages.paymentSuccess"))
     }
     if (searchParams.get("canceled")) {
-      toast.error("O pagamento foi cancelado.")
+      toast.error(t("messages.paymentCanceled"))
     }
-  }, [searchParams])
+  }, [searchParams, t])
 
   const totalValue = invoices.reduce((acc, inv) => acc + inv.totalAmount, 0)
   const paidValue = invoices.reduce((acc, inv) => {
@@ -116,20 +118,20 @@ export function ProjectFinancialTab({
 
     if (diff === 0) {
       return {
-        label: "Vence hoje",
+        label: t("badges.dueToday"),
         className: "border-red-500/20 bg-red-500/10 text-red-600",
       }
     }
 
     if (diff === 1) {
       return {
-        label: "Vence amanha",
+        label: t("badges.dueTomorrow"),
         className: "border-amber-500/20 bg-amber-500/10 text-amber-700",
       }
     }
 
     return {
-      label: `Vence em ${diff} dias`,
+      label: t("badges.dueInDays", { days: diff }),
       className: "border-amber-500/20 bg-amber-500/10 text-amber-700",
     }
   }
@@ -148,7 +150,7 @@ export function ProjectFinancialTab({
     })
 
     if (result.success) {
-      toast.success("Pagamento registrado!")
+      toast.success(t("messages.paymentRegistered"))
       setIsPaymentDialogOpen(false)
     } else {
       toast.error(result.error)
@@ -192,7 +194,7 @@ export function ProjectFinancialTab({
                 <Receipt size={18} weight="duotone" />
               </div>
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
-                Investimento Total
+                {t("summary.totalInvestment")}
               </span>
             </div>
             <p className="text-4xl font-black uppercase tracking-tight text-foreground">
@@ -200,8 +202,8 @@ export function ProjectFinancialTab({
             </p>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground/65">
               {projectName
-                ? `Resumo consolidado do investimento do projeto ${projectName}.`
-                : "Resumo consolidado do investimento deste projeto."}
+                ? t("summary.description", { projectName })
+                : t("summary.descriptionGeneric")}
             </p>
           </CardContent>
         </Card>
@@ -213,7 +215,7 @@ export function ProjectFinancialTab({
                 <CheckCircle size={18} weight="duotone" />
               </div>
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600/60">
-                Total Liquidado
+                {t("summary.totalPaid")}
               </span>
             </div>
             <p className="text-4xl font-black uppercase tracking-tight text-emerald-600">
@@ -229,7 +231,7 @@ export function ProjectFinancialTab({
                 <Wallet size={18} weight="duotone" />
               </div>
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-red-600/70">
-                Saldo devedor
+                {t("summary.pendingBalance")}
               </span>
             </div>
             <p className="text-4xl font-black uppercase tracking-tight text-red-600">
@@ -237,8 +239,8 @@ export function ProjectFinancialTab({
             </p>
             <p className="mt-3 text-sm leading-relaxed text-red-600/70">
               {pendingValue > 0
-                ? "Valor ainda pendente para liberar a operacao completa."
-                : "Nao existe saldo em aberto neste momento."}
+                ? t("summary.pendingDescription")
+                : t("summary.noPendingDescription")}
             </p>
           </CardContent>
         </Card>
@@ -248,10 +250,10 @@ export function ProjectFinancialTab({
         <div className="flex items-center justify-between border-b border-border/20 pb-6">
           <div className="space-y-1">
             <h3 className="font-heading text-2xl font-black uppercase tracking-tight text-foreground">
-              Cronograma Financeiro
+              {t("schedule.title")}
             </h3>
             <p className="text-xs font-medium text-muted-foreground/50">
-              Acompanhe suas faturas e realize pagamentos de forma segura.
+              {t("schedule.description")}
             </p>
           </div>
           {isAdmin && <AddInvoiceForm projectId={projectId} />}
@@ -265,7 +267,7 @@ export function ProjectFinancialTab({
                 className="size-20 text-muted-foreground/10 mb-6"
               />
               <p className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground/30">
-                Nenhum registro financeiro encontrado.
+                {t("schedule.empty")}
               </p>
             </div>
           )}
@@ -276,7 +278,7 @@ export function ProjectFinancialTab({
                   <div className="space-y-2">
                     <div className="flex flex-wrap items-center gap-3">
                       <Badge className="rounded-full bg-foreground px-3 py-1 font-mono text-[9px] font-black uppercase tracking-widest text-background">
-                        FATURA
+                        {t("schedule.invoiceBadge")}
                       </Badge>
                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/45">
                         {invoice.title}
@@ -284,15 +286,15 @@ export function ProjectFinancialTab({
                     </div>
                     <p className="text-sm font-medium text-muted-foreground/70">
                       {invoice.description ||
-                        "Cobranca vinculada a este projeto."}
+                        t("schedule.invoiceDescription")}
                     </p>
                   </div>
                   <div className="text-left sm:text-right">
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/45">
-                      Projeto relacionado
+                      {t("schedule.relatedProject")}
                     </p>
                     <p className="text-sm font-black uppercase tracking-tight text-foreground">
-                      {invoice.project?.name || projectName || "Projeto"}
+                      {invoice.project?.name || projectName || t("schedule.projectLabel")}
                     </p>
                   </div>
                 </div>
@@ -353,7 +355,7 @@ export function ProjectFinancialTab({
                         <div className="space-y-1.5">
                           <div className="flex items-center gap-3">
                             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
-                              Parcela {inst.number}
+                              {t("schedule.installmentLabel")} {inst.number}
                             </p>
                             {inst.status !== "PAID" && !dueBadge && (
                               <span
@@ -367,10 +369,14 @@ export function ProjectFinancialTab({
                                 )}
                               >
                                 {hasUnpaidPrevious
-                                  ? "Aguardando anterior"
+                                  ? t("schedule.waitingPrevious")
                                   : isOverdue
-                                    ? "Vencida"
-                                    : `Vencimento ${format(new Date(inst.dueDate), "dd/MM", { locale: ptBR })}`}
+                                    ? t("schedule.overdue")
+                                    : t("schedule.dueDate", {
+                                        date: format(new Date(inst.dueDate), "dd/MM", {
+                                          locale: ptBR,
+                                        }),
+                                      })}
                               </span>
                             )}
                             {dueBadge && !hasUnpaidPrevious ? (
@@ -389,22 +395,23 @@ export function ProjectFinancialTab({
                           </p>
                           <div className="space-y-1">
                             <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/45">
-                              Projeto
+                              {t("schedule.projectLabel")}
                             </p>
                             <p className="text-xs font-bold text-foreground/75">
                               {invoice.project?.name ||
                                 projectName ||
-                                "Projeto"}
+                                t("schedule.projectLabel")}
                             </p>
                             <p className="text-xs font-medium text-muted-foreground/60">
-                              Vencimento em{" "}
-                              {format(
-                                new Date(inst.dueDate),
-                                "dd 'de' MMMM 'de' yyyy",
-                                {
-                                  locale: ptBR,
-                                }
-                              )}
+                              {t("schedule.dueDateLong", {
+                                date: format(
+                                  new Date(inst.dueDate),
+                                  "dd 'de' MMMM 'de' yyyy",
+                                  {
+                                    locale: ptBR,
+                                  }
+                                ),
+                              })}
                             </p>
                           </div>
                         </div>
@@ -428,7 +435,7 @@ export function ProjectFinancialTab({
                               ) : (
                                 <CreditCard weight="fill" className="size-5" />
                               )}
-                              {hasUnpaidPrevious ? "Bloqueado" : "Pagar Agora"}
+                              {hasUnpaidPrevious ? t("schedule.blocked") : t("schedule.payNow")}
                             </Button>
 
                             {isAdmin && (
@@ -440,7 +447,7 @@ export function ProjectFinancialTab({
                                 }}
                                 className="h-14 px-8 rounded-2xl border-emerald-500/20 text-emerald-600 hover:bg-emerald-500/5 font-mono text-[10px] font-black uppercase tracking-widest"
                               >
-                                Baixa Manual
+                                {t("schedule.manualEntry")}
                               </Button>
                             )}
                           </>
@@ -448,7 +455,7 @@ export function ProjectFinancialTab({
                           <div className="flex items-center gap-4">
                             <div className="text-right mr-4 hidden md:block">
                               <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">
-                                Pago em
+                                {t("schedule.paidAt")}
                               </p>
                               <p className="text-xs font-bold text-emerald-600/60">
                                 {inst.paidAt
@@ -465,7 +472,7 @@ export function ProjectFinancialTab({
                               className="h-14 px-6 rounded-2xl text-muted-foreground/40 hover:text-brand-primary transition-all font-mono text-[9px] font-black uppercase tracking-[0.2em] gap-2"
                             >
                               <FilePdf size={18} weight="fill" />
-                              Recibo
+                              {t("schedule.receipt")}
                             </Button>
                           </div>
                         )}
@@ -483,14 +490,14 @@ export function ProjectFinancialTab({
         <DialogContent className="rounded-[3rem] sm:max-w-[500px] border-border/10 bg-background/95 backdrop-blur-3xl p-10">
           <DialogHeader className="mb-8">
             <DialogTitle className="font-heading text-3xl font-black uppercase tracking-tighter text-foreground">
-              Baixa Manual
+              {t("manualEntry.title")}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleRegisterPayment} className="space-y-8">
             <div className="space-y-6">
               <div className="p-8 rounded-[2.5rem] bg-emerald-500/5 border border-emerald-500/10">
                 <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600/60 mb-2">
-                  Valor a ser liquidado
+                  {t("manualEntry.amountToLiquidate")}
                 </p>
                 <p className="text-4xl font-black text-emerald-700 tracking-tighter">
                   {selectedInstallment
@@ -501,28 +508,28 @@ export function ProjectFinancialTab({
 
               <div className="space-y-3">
                 <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 ml-4">
-                  Origem do Recurso
+                  {t("manualEntry.sourceLabel")}
                 </label>
                 <Select value={paymentType} onValueChange={setPaymentType}>
                   <SelectTrigger className="h-14 rounded-2xl border-border/40 bg-muted/5 px-6 font-bold text-sm">
-                    <SelectValue placeholder="Selecione a origem" />
+                    <SelectValue placeholder={t("manualEntry.sourcePlaceholder")} />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-border/10 bg-background/95 backdrop-blur-xl">
-                    <SelectItem value="PIX">PIX Direto</SelectItem>
-                    <SelectItem value="TED">Transferência Bancária</SelectItem>
-                    <SelectItem value="CASH">Dinheiro / Espécie</SelectItem>
-                    <SelectItem value="OTHER">Outros</SelectItem>
+                    <SelectItem value="PIX">{t("paymentTypes.PIX")}</SelectItem>
+                    <SelectItem value="TED">{t("paymentTypes.TED")}</SelectItem>
+                    <SelectItem value="CASH">{t("paymentTypes.CASH")}</SelectItem>
+                    <SelectItem value="OTHER">{t("paymentTypes.OTHER")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-3">
                 <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 ml-4">
-                  Notas de Auditoria
+                  {t("manualEntry.auditNotes")}
                 </label>
                 <textarea
                   name="note"
-                  placeholder="Descreva detalhes do recebimento..."
+                  placeholder={t("manualEntry.notesPlaceholder")}
                   className="w-full min-h-[120px] rounded-4xl border border-border/40 bg-muted/5 p-6 font-bold text-sm outline-none focus:border-brand-primary text-foreground resize-none transition-all focus:bg-background"
                 />
               </div>
@@ -532,7 +539,7 @@ export function ProjectFinancialTab({
               type="submit"
               className="h-16 w-full rounded-2xl bg-emerald-600 text-[11px] font-black uppercase tracking-[0.2em] text-white shadow-2xl shadow-emerald-500/20 transition-all hover:bg-emerald-700 hover:scale-[1.01] active:scale-95"
             >
-              Confirmar Recebimento
+              {t("manualEntry.confirmButton")}
             </Button>
           </form>
         </DialogContent>
