@@ -630,10 +630,10 @@ export function MaguiConnectEditor({
                       <Button
                         variant="ghost"
                         onClick={handleRemoveBanner}
-                        className="h-14 rounded-none border border-destructive/20 bg-destructive/5 px-6 text-[10px] font-black uppercase tracking-widest text-destructive transition-all hover:bg-destructive/10"
+                        aria-label={t("deleteBanner")}
+                        className="h-14 rounded-none border border-destructive/20 bg-destructive/5 px-6 text-destructive transition-all hover:bg-destructive/10"
                       >
-                        <Trash size={16} weight="bold" className="mr-2" />
-                        {t("deleteBanner")}
+                        <Trash size={16} weight="bold" />
                       </Button>
                     )}
                     <div className="flex-1 sm:flex-none">
