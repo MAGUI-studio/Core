@@ -1,0 +1,291 @@
+"use client"
+
+import * as React from "react"
+
+import { useTranslations } from "next-intl"
+
+import { InvoiceKind, Prisma } from "@/src/generated/client"
+import { Link } from "@/src/i18n/navigation"
+import {
+  CurrencyCircleDollar,
+  FolderOpen,
+  Globe,
+  Plus,
+} from "@phosphor-icons/react"
+import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
+import { parseAsString, useQueryState } from "nuqs"
+
+import { Badge } from "@/src/components/ui/badge"
+import { Button } from "@/src/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/src/components/ui/tabs"
+
+import { MaguiConnectAdminView } from "@/src/components/admin/MaguiConnectAdminView"
+import { AddInvoiceForm } from "@/src/components/admin/financial/AddInvoiceForm"
+
+import { formatCurrencyBRLFromCents } from "@/src/lib/utils/utils"
+
+interface ClientTabsProps {
+  userId: string
+  localUserId: string
+  clientFullName: string
+  standaloneInvoices: Prisma.InvoiceGetPayload<{
+    include: {
+      installments: true
+    }
+  }>[]
+  projects: Prisma.ProjectGetPayload<{
+    include: {
+      client: {
+        select: {
+          name: true
+          email: true
+        }
+      }
+    }
+  }>[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  maguiConnectProfile: any
+  canAccessMaguiConnect: boolean
+}
+
+export function ClientTabs({
+  userId,
+  localUserId,
+  clientFullName,
+  standaloneInvoices,
+  projects,
+  maguiConnectProfile,
+  canAccessMaguiConnect,
+}: ClientTabsProps) {
+  const tFinancial = useTranslations("Financial.status")
+  const tStatus = useTranslations("Dashboard.status")
+  const [activeTab, setActiveTab] = useQueryState(
+    "tab",
+    parseAsString.withDefault("billing")
+  )
+
+  const primaryActionClassName =
+    "h-12 rounded-full bg-brand-primary px-7 text-[10px] font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-brand-primary/20 transition-all hover:scale-[1.02] hover:bg-brand-primary/90"
+
+  return (
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <div className="mb-10 flex items-center justify-between overflow-x-auto border-b border-border/40 pb-4 scrollbar-hide">
+        <TabsList variant="line" className="flex-nowrap bg-transparent p-0">
+          <TabsTrigger
+            value="billing"
+            className="whitespace-nowrap px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-muted/5 data-[state=active]:bg-transparent"
+          >
+            <CurrencyCircleDollar weight="duotone" className="mr-2 size-4" />
+            Cobrança avulsa
+          </TabsTrigger>
+          <TabsTrigger
+            value="connect"
+            className="whitespace-nowrap px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-muted/5 data-[state=active]:bg-transparent"
+          >
+            <Globe weight="duotone" className="mr-2 size-4" />
+            MAGUI Connect
+          </TabsTrigger>
+          <TabsTrigger
+            value="projects"
+            className="whitespace-nowrap px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-muted/5 data-[state=active]:bg-transparent"
+          >
+            <FolderOpen weight="duotone" className="mr-2 size-4" />
+            Projetos vinculados
+          </TabsTrigger>
+        </TabsList>
+      </div>
+
+      <TabsContent value="billing" className="space-y-6 focus-visible:outline-none">
+        <section className="rounded-4xl border border-border/30 bg-muted/10 p-6 backdrop-blur-md">
+          <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <div className="space-y-2">
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-muted-foreground/55">
+                Cobrança avulsa
+              </p>
+              <h2 className="text-2xl font-black tracking-tight text-foreground">
+                Emitir fatura sem projeto
+              </h2>
+              <p className="max-w-2xl text-sm leading-6 text-muted-foreground/75">
+                Use este fluxo para cobrar MAGUI Connect ou qualquer outro
+                serviço avulso diretamente para este cliente.
+              </p>
+            </div>
+
+            <AddInvoiceForm
+              clientId={localUserId}
+              defaultKind={InvoiceKind.MAGUI_CONNECT}
+              defaultTitle="MAGUI Connect"
+              triggerLabel="Nova cobrança"
+              dialogTitle="Criar cobrança avulsa"
+              triggerClassName={primaryActionClassName}
+            />
+          </div>
+        </section>
+
+        <Card className="rounded-4xl border-border/40 bg-muted/10 backdrop-blur-md">
+          <CardHeader className="border-b border-border/20">
+            <CardTitle className="font-heading text-2xl font-black uppercase tracking-tight">
+              Cobranças avulsas
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4 pt-6">
+            {standaloneInvoices.length === 0 ? (
+              <div className="rounded-[1.5rem] border border-dashed border-border/35 bg-background/40 px-5 py-10 text-center text-[10px] font-black uppercase tracking-[0.24em] text-muted-foreground/45">
+                Nenhuma cobrança avulsa emitida para este cliente.
+              </div>
+            ) : (
+              standaloneInvoices.map((invoice) => (
+                <div
+                  key={invoice.id}
+                  className="rounded-[1.5rem] border border-border/30 bg-background/60 p-5"
+                >
+                  <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-base font-black tracking-tight text-foreground">
+                          {invoice.title}
+                        </p>
+                        <Badge
+                          variant="secondary"
+                          className="border-brand-primary/20 bg-brand-primary/5 text-[9px] font-black uppercase tracking-widest text-brand-primary"
+                        >
+                          {invoice.kind === InvoiceKind.MAGUI_CONNECT
+                            ? "MAGUI Connect"
+                            : "Avulsa"}
+                        </Badge>
+                        <Badge
+                          variant="outline"
+                          className="text-[9px] font-black uppercase tracking-widest"
+                        >
+                          {tFinancial(invoice.status)}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground/75">
+                        {invoice.description || "Cobrança sem projeto vinculado."}
+                      </p>
+                    </div>
+
+                    <div className="text-left md:text-right">
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+                        Total
+                      </p>
+                      <p className="text-lg font-black tracking-tight text-foreground">
+                        {formatCurrencyBRLFromCents(invoice.totalAmount)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 grid gap-3 border-t border-border/20 pt-4">
+                    {invoice.installments.map((installment) => (
+                      <div
+                        key={installment.id}
+                        className="flex flex-col gap-2 rounded-[1rem] bg-muted/30 px-4 py-3 md:flex-row md:items-center md:justify-between"
+                      >
+                        <div className="flex flex-wrap items-center gap-3">
+                          <span className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground/60">
+                            Parcela {installment.number}
+                          </span>
+                          <span className="text-sm font-black text-foreground">
+                            {formatCurrencyBRLFromCents(installment.amount)}
+                          </span>
+                          <span className="text-xs text-muted-foreground/70">
+                            {format(new Date(installment.dueDate), "dd/MM/yyyy", {
+                              locale: ptBR,
+                            })}
+                          </span>
+                        </div>
+                        <Badge
+                          variant="outline"
+                          className="w-fit text-[9px] font-black uppercase tracking-widest"
+                        >
+                          {tFinancial(installment.status)}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="connect" className="mt-0 focus-visible:outline-none">
+        <MaguiConnectAdminView
+          clientName={clientFullName}
+          userId={localUserId}
+          canAccess={canAccessMaguiConnect}
+          profile={maguiConnectProfile}
+        />
+      </TabsContent>
+
+      <TabsContent value="projects" className="mt-0 focus-visible:outline-none">
+        <Card className="rounded-4xl border-border/40 bg-muted/10 backdrop-blur-md">
+          <CardHeader className="border-b border-border/20">
+            <div className="flex items-center justify-between">
+              <CardTitle className="font-heading text-2xl font-black uppercase tracking-tight">
+                Projetos vinculados
+              </CardTitle>
+              <Button asChild className={primaryActionClassName}>
+                <Link href="/admin/projects/register">
+                  <Plus className="mr-2 size-4" />
+                  Iniciar projeto
+                </Link>
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="grid gap-4 pt-6">
+            {projects.length === 0 ? (
+              <div className="rounded-[1.5rem] border border-dashed border-border/35 bg-background/40 px-5 py-10 text-center text-[10px] font-black uppercase tracking-[0.24em] text-muted-foreground/45">
+                Nenhum projeto vinculado a este cliente.
+              </div>
+            ) : (
+              projects.map((project) => (
+                <div
+                  key={project.id}
+                  className="flex flex-col gap-3 rounded-[1.5rem] border border-border/30 bg-background/60 p-5 md:flex-row md:items-center md:justify-between"
+                >
+                  <div className="grid gap-1">
+                    <p className="text-base font-black tracking-tight text-foreground">
+                      {project.name}
+                    </p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
+                      {project.client.name || project.client.email} •{" "}
+                      {tStatus(project.status)}
+                    </p>
+                  </div>
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="rounded-full px-5 text-[10px] font-black uppercase tracking-[0.18em]"
+                  >
+                    <Link
+                      href={{
+                        pathname: "/admin/projects/[id]",
+                        params: { id: project.id },
+                      }}
+                    >
+                      Abrir projeto
+                    </Link>
+                  </Button>
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
+      </TabsContent>
+    </Tabs>
+  )
+}
