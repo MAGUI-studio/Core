@@ -7,10 +7,41 @@ import { CACHE_TTL } from "@/src/config/cache"
 import { cacheTags } from "./cache-tags"
 import prisma from "./prisma"
 
+function normalizeDomain(domain: string) {
+  return domain
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .replace(/\/+$/, "")
+}
+
+function getSeoStatus(profile: PublicMaguiConnectProfile) {
+  if (!profile.indexable) return "NOINDEX" as const
+
+  const effectiveOgImage =
+    profile.ogImageUrl || profile.bannerUrl || profile.avatarUrl || null
+  const effectiveSeoTitle = profile.seoTitle || profile.displayName || null
+  const effectiveSeoDescription =
+    profile.seoDescription || profile.headline || profile.bio || null
+
+  if (
+    profile.domain &&
+    effectiveSeoTitle &&
+    effectiveSeoDescription &&
+    effectiveOgImage
+  ) {
+    return "READY" as const
+  }
+
+  return "INCOMPLETE" as const
+}
+
 type PublicMaguiConnectProfile = {
   id: string
   userId: string
   displayName: string
+  siteName: string | null
   headline: string | null
   heroKicker: string | null
   heroHeadline: string | null
@@ -18,11 +49,18 @@ type PublicMaguiConnectProfile = {
   bio: string | null
   avatarUrl: string | null
   bannerUrl: string | null
+  faviconUrl: string | null
+  logoUrl: string | null
   ogImageUrl: string | null
+  twitterImageUrl: string | null
   slug: string | null
   domain: string | null
+  canonicalUrl: string | null
+  locale: string
   professionalCategory: string | null
   location: string | null
+  entityType: "PERSON" | "ORGANIZATION" | "BRAND"
+  jobTitle: string | null
   companyName: string | null
   publicEmail: string | null
   publicPhone: string | null
@@ -33,8 +71,13 @@ type PublicMaguiConnectProfile = {
   secondaryCtaLabel: string | null
   secondaryCtaUrl: string | null
   themeAccent: string | null
+  themeColor: string | null
   seoTitle: string | null
   seoDescription: string | null
+  seoKeywords: string | null
+  twitterHandle: string | null
+  indexable: boolean
+  seoNoFollow: boolean
   links: MaguiConnectLink[]
   sections: (MaguiConnectSection & {
     description: string | null
@@ -78,6 +121,7 @@ const publicProfileSelection = {
   id: true,
   userId: true,
   displayName: true,
+  siteName: true,
   headline: true,
   heroKicker: true,
   heroHeadline: true,
@@ -85,11 +129,18 @@ const publicProfileSelection = {
   bio: true,
   avatarUrl: true,
   bannerUrl: true,
+  faviconUrl: true,
+  logoUrl: true,
   ogImageUrl: true,
+  twitterImageUrl: true,
   slug: true,
   domain: true,
+  canonicalUrl: true,
+  locale: true,
   professionalCategory: true,
   location: true,
+  entityType: true,
+  jobTitle: true,
   companyName: true,
   publicEmail: true,
   publicPhone: true,
@@ -100,8 +151,13 @@ const publicProfileSelection = {
   secondaryCtaLabel: true,
   secondaryCtaUrl: true,
   themeAccent: true,
+  themeColor: true,
   seoTitle: true,
   seoDescription: true,
+  seoKeywords: true,
+  twitterHandle: true,
+  indexable: true,
+  seoNoFollow: true,
   createdAt: true,
   updatedAt: true,
   links: {
@@ -127,6 +183,7 @@ const adminProfileSelection = {
   id: true,
   userId: true,
   displayName: true,
+  siteName: true,
   headline: true,
   heroKicker: true,
   heroHeadline: true,
@@ -134,11 +191,18 @@ const adminProfileSelection = {
   bio: true,
   avatarUrl: true,
   bannerUrl: true,
+  faviconUrl: true,
+  logoUrl: true,
   ogImageUrl: true,
+  twitterImageUrl: true,
   slug: true,
   domain: true,
+  canonicalUrl: true,
+  locale: true,
   professionalCategory: true,
   location: true,
+  entityType: true,
+  jobTitle: true,
   companyName: true,
   publicEmail: true,
   publicPhone: true,
@@ -149,8 +213,13 @@ const adminProfileSelection = {
   secondaryCtaLabel: true,
   secondaryCtaUrl: true,
   themeAccent: true,
+  themeColor: true,
   seoTitle: true,
   seoDescription: true,
+  seoKeywords: true,
+  twitterHandle: true,
+  indexable: true,
+  seoNoFollow: true,
   createdAt: true,
   updatedAt: true,
   links: {
@@ -258,10 +327,11 @@ export async function getOwnMaguiConnectAnalytics(userId: string) {
 }
 
 export async function getPublicMaguiConnectByDomain(domain: string) {
+  const normalizedDomain = normalizeDomain(domain)
   return unstable_cache(
     async () => {
       const profile = await prisma.maguiConnectProfile.findUnique({
-        where: { domain },
+        where: { domain: normalizedDomain },
         select: publicProfileSelection,
       })
 
@@ -269,10 +339,10 @@ export async function getPublicMaguiConnectByDomain(domain: string) {
 
       return formatPublicPayload(profile)
     },
-    ["public-magui-connect-domain", domain],
+    ["public-magui-connect-domain", normalizedDomain],
     {
       revalidate: CACHE_TTL.DASHBOARD,
-      tags: [cacheTags.maguiConnectPublicByDomain(domain)],
+      tags: [cacheTags.maguiConnectPublicByDomain(normalizedDomain)],
     }
   )()
 }
@@ -299,6 +369,12 @@ export async function getPublicMaguiConnectBySlug(slug: string) {
 
 function formatPublicPayload(profile: PublicMaguiConnectProfile) {
   const now = new Date()
+  const seoStatus = getSeoStatus(profile)
+  const siteName = profile.siteName || profile.displayName
+  const ogImageUrl = profile.ogImageUrl || profile.bannerUrl || profile.avatarUrl
+  const twitterImageUrl = profile.twitterImageUrl || ogImageUrl || null
+  const seoTitle = profile.seoTitle || profile.displayName
+  const seoDescription = profile.seoDescription || profile.headline || profile.bio
   const isLinkVisible = (link: MaguiConnectLink) => {
     if (link.startsAt && link.startsAt > now) return false
     if (link.expiresAt && link.expiresAt < now) return false
@@ -311,28 +387,44 @@ function formatPublicPayload(profile: PublicMaguiConnectProfile) {
       title: profile.displayName,
       description: profile.headline,
       displayName: profile.displayName,
+      siteName,
       headline: profile.headline,
       heroKicker: profile.heroKicker,
       heroHeadline: profile.heroHeadline,
       heroDescription: profile.heroDescription,
       bio: profile.bio,
       avatarUrl: profile.avatarUrl,
-      ogImageUrl: profile.ogImageUrl || profile.avatarUrl || null,
+      bannerUrl: profile.bannerUrl,
+      faviconUrl: profile.faviconUrl,
+      logoUrl: profile.logoUrl,
+      ogImageUrl,
+      twitterImageUrl,
       domain: profile.domain,
       slug: profile.slug,
+      canonicalUrl: profile.canonicalUrl,
+      locale: profile.locale,
       professionalCategory: profile.professionalCategory,
       location: profile.location,
+      entityType: profile.entityType,
+      jobTitle: profile.jobTitle,
       companyName: profile.companyName,
       publicEmail: profile.publicEmail,
       publicPhone: profile.publicPhone,
       whatsapp: profile.whatsapp,
+      whatsappMessage: profile.whatsappMessage,
       primaryCtaLabel: profile.primaryCtaLabel,
       primaryCtaUrl: profile.primaryCtaUrl,
       secondaryCtaLabel: profile.secondaryCtaLabel,
       secondaryCtaUrl: profile.secondaryCtaUrl,
       themeAccent: profile.themeAccent,
-      seoTitle: profile.seoTitle,
-      seoDescription: profile.seoDescription,
+      themeColor: profile.themeColor,
+      seoTitle,
+      seoDescription,
+      seoKeywords: profile.seoKeywords,
+      twitterHandle: profile.twitterHandle,
+      indexable: profile.indexable,
+      seoNoFollow: profile.seoNoFollow,
+      seoStatus,
     },
     links: profile.links.filter(isLinkVisible).map((link) => ({
       id: link.id,

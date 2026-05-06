@@ -16,6 +16,7 @@ import {
 } from "@/src/lib/revalidate"
 
 import {
+  type MaguiConnectAdminProfileInput,
   type MaguiConnectLinkInput,
   type MaguiConnectProfileInput,
   type MaguiConnectSectionInput,
@@ -77,9 +78,40 @@ function toNullableDate(value?: string | null) {
   return normalized ? new Date(normalized) : null
 }
 
+function pickProfileFallbacks(input: MaguiConnectAdminProfileInput) {
+  const displayName = input.title.trim()
+  const headline = toNullable(input.description)
+  const bio = toNullable(input.bio)
+  const siteName = toNullable(input.siteName) ?? displayName
+  const seoTitle = toNullable(input.seoTitle) ?? displayName
+  const seoDescription =
+    toNullable(input.seoDescription) ?? headline ?? bio ?? null
+  const ogImageUrl =
+    toNullable(input.ogImageUrl) ??
+    toNullable(input.bannerUrl) ??
+    toNullable(input.avatarUrl) ??
+    null
+  const twitterImageUrl = toNullable(input.twitterImageUrl) ?? ogImageUrl
+  const companyName =
+    toNullable(input.companyName) ??
+    (input.entityType === "ORGANIZATION" ? siteName : null)
+
+  return {
+    displayName,
+    headline,
+    bio,
+    siteName,
+    seoTitle,
+    seoDescription,
+    ogImageUrl,
+    twitterImageUrl,
+    companyName,
+  }
+}
+
 async function ensureProfileUniqueFields(
   targetUserId: string,
-  input: MaguiConnectProfileInput
+  input: Pick<MaguiConnectAdminProfileInput, "slug" | "domain">
 ) {
   const slug =
     input.slug !== undefined
@@ -171,7 +203,7 @@ export async function createMaguiConnectProfileForUserAction(
 
 async function saveMaguiConnectProfile(
   targetUserId: string,
-  input: MaguiConnectProfileInput
+  input: MaguiConnectProfileInput | MaguiConnectAdminProfileInput
 ) {
   const existingProfile = await prisma.maguiConnectProfile.findUnique({
     where: { userId: targetUserId },
@@ -181,24 +213,77 @@ async function saveMaguiConnectProfile(
       domain: true,
       avatarUrl: true,
       bannerUrl: true,
+      faviconUrl: true,
+      logoUrl: true,
+      ogImageUrl: true,
+      twitterImageUrl: true,
     },
   })
 
-  const { slug, domain } = await ensureProfileUniqueFields(targetUserId, input)
+  const adminInput = input as Partial<MaguiConnectAdminProfileInput>
+  const isAdminInput =
+    "indexable" in input ||
+    "seoNoFollow" in input ||
+    "siteName" in input ||
+    "canonicalUrl" in input ||
+    "twitterHandle" in input ||
+    "themeColor" in input
+  const { slug, domain } = await ensureProfileUniqueFields(targetUserId, {
+    slug: isAdminInput ? adminInput.slug : undefined,
+    domain: isAdminInput ? adminInput.domain : undefined,
+  })
+  const fallbacks = pickProfileFallbacks({
+    title: input.title,
+    description: input.description,
+    heroKicker: input.heroKicker,
+    heroHeadline: input.heroHeadline,
+    heroDescription: input.heroDescription,
+    bio: input.bio,
+    avatarUrl: input.avatarUrl,
+    bannerUrl: input.bannerUrl,
+    professionalCategory: input.professionalCategory,
+    location: input.location,
+    companyName: adminInput.companyName,
+    publicEmail: input.publicEmail,
+    publicPhone: input.publicPhone,
+    whatsapp: input.whatsapp,
+    whatsappMessage: input.whatsappMessage,
+    primaryCtaLabel: input.primaryCtaLabel,
+    primaryCtaUrl: input.primaryCtaUrl,
+    secondaryCtaLabel: input.secondaryCtaLabel,
+    secondaryCtaUrl: input.secondaryCtaUrl,
+    themeAccent: input.themeAccent,
+    slug: adminInput.slug,
+    domain: adminInput.domain,
+    siteName: adminInput.siteName,
+    faviconUrl: adminInput.faviconUrl,
+    logoUrl: adminInput.logoUrl,
+    ogImageUrl: adminInput.ogImageUrl,
+    twitterImageUrl: adminInput.twitterImageUrl,
+    canonicalUrl: adminInput.canonicalUrl,
+    locale: adminInput.locale,
+    entityType: adminInput.entityType,
+    jobTitle: adminInput.jobTitle,
+    themeColor: adminInput.themeColor,
+    seoTitle: adminInput.seoTitle,
+    seoDescription: adminInput.seoDescription,
+    seoKeywords: adminInput.seoKeywords,
+    twitterHandle: adminInput.twitterHandle,
+    indexable: adminInput.indexable ?? true,
+    seoNoFollow: adminInput.seoNoFollow ?? false,
+  })
 
   const profileFields = {
-    displayName: input.title,
-    headline: toNullable(input.description),
+    displayName: fallbacks.displayName,
+    headline: fallbacks.headline,
     heroKicker: toNullable(input.heroKicker),
     heroHeadline: toNullable(input.heroHeadline),
     heroDescription: toNullable(input.heroDescription),
-    bio: toNullable(input.bio),
+    bio: fallbacks.bio,
     avatarUrl: toNullable(input.avatarUrl),
     bannerUrl: toNullable(input.bannerUrl),
-    ogImageUrl: toNullable(input.ogImageUrl),
     professionalCategory: toNullable(input.professionalCategory),
     location: toNullable(input.location),
-    companyName: toNullable(input.companyName),
     publicEmail: toNullable(input.publicEmail),
     publicPhone: toNullable(input.publicPhone),
     whatsapp: toNullable(input.whatsapp),
@@ -208,8 +293,55 @@ async function saveMaguiConnectProfile(
     secondaryCtaLabel: toNullable(input.secondaryCtaLabel),
     secondaryCtaUrl: toNullable(input.secondaryCtaUrl),
     themeAccent: toNullable(input.themeAccent),
-    seoTitle: toNullable(input.seoTitle),
-    seoDescription: toNullable(input.seoDescription),
+    ...(isAdminInput ? { siteName: fallbacks.siteName } : {}),
+    ...(adminInput.faviconUrl !== undefined
+      ? { faviconUrl: toNullable(adminInput.faviconUrl) }
+      : {}),
+    ...(adminInput.logoUrl !== undefined
+      ? { logoUrl: toNullable(adminInput.logoUrl) }
+      : {}),
+    ...(adminInput.ogImageUrl !== undefined || adminInput.bannerUrl !== undefined || adminInput.avatarUrl !== undefined
+      ? { ogImageUrl: fallbacks.ogImageUrl }
+      : {}),
+    ...(adminInput.twitterImageUrl !== undefined || adminInput.ogImageUrl !== undefined || adminInput.bannerUrl !== undefined || adminInput.avatarUrl !== undefined
+      ? { twitterImageUrl: fallbacks.twitterImageUrl }
+      : {}),
+    ...(adminInput.canonicalUrl !== undefined
+      ? { canonicalUrl: toNullable(adminInput.canonicalUrl) }
+      : {}),
+    ...(adminInput.locale !== undefined
+      ? { locale: toNullable(adminInput.locale) ?? "pt-BR" }
+      : {}),
+    ...(adminInput.entityType !== undefined
+      ? { entityType: adminInput.entityType }
+      : {}),
+    ...(adminInput.jobTitle !== undefined
+      ? { jobTitle: toNullable(adminInput.jobTitle) }
+      : {}),
+    companyName: isAdminInput
+      ? fallbacks.companyName
+      : toNullable(input.companyName),
+    ...(adminInput.themeColor !== undefined
+      ? { themeColor: toNullable(adminInput.themeColor) }
+      : {}),
+    ...(isAdminInput
+      ? { seoTitle: fallbacks.seoTitle }
+      : {}),
+    ...(isAdminInput
+      ? { seoDescription: fallbacks.seoDescription }
+      : {}),
+    ...(adminInput.seoKeywords !== undefined
+      ? { seoKeywords: toNullable(adminInput.seoKeywords) }
+      : {}),
+    ...(adminInput.twitterHandle !== undefined
+      ? { twitterHandle: toNullable(adminInput.twitterHandle) }
+      : {}),
+    ...(adminInput.indexable !== undefined
+      ? { indexable: adminInput.indexable }
+      : {}),
+    ...(adminInput.seoNoFollow !== undefined
+      ? { seoNoFollow: adminInput.seoNoFollow }
+      : {}),
     ...(slug !== undefined
       ? { slug }
       : existingProfile
@@ -238,6 +370,24 @@ async function saveMaguiConnectProfile(
       deleteOldUploadThingFile(
         existingProfile.bannerUrl,
         profileFields.bannerUrl
+      ),
+      deleteOldUploadThingFile(
+        existingProfile.faviconUrl,
+        "faviconUrl" in profileFields ? profileFields.faviconUrl : undefined
+      ),
+      deleteOldUploadThingFile(
+        existingProfile.logoUrl,
+        "logoUrl" in profileFields ? profileFields.logoUrl : undefined
+      ),
+      deleteOldUploadThingFile(
+        existingProfile.ogImageUrl,
+        "ogImageUrl" in profileFields ? profileFields.ogImageUrl : undefined
+      ),
+      deleteOldUploadThingFile(
+        existingProfile.twitterImageUrl,
+        "twitterImageUrl" in profileFields
+          ? profileFields.twitterImageUrl
+          : undefined
       ),
     ])
   } else {
@@ -274,7 +424,7 @@ export async function upsertOwnMaguiConnectProfileAction(
 
 export async function upsertMaguiConnectProfileForUserAction(
   targetUserId: string,
-  input: MaguiConnectProfileInput
+  input: MaguiConnectAdminProfileInput
 ) {
   const { user } = await ensureMaguiConnectAccess(targetUserId)
 

@@ -35,10 +35,10 @@ import {
   upsertMaguiConnectProfileForUserAction,
 } from "@/src/lib/actions/maguiConnect.actions"
 import {
+  type MaguiConnectAdminProfileInput,
   type MaguiConnectLinkInput,
-  type MaguiConnectProfileInput,
+  maguiConnectAdminProfileSchema,
   maguiConnectLinkSchema,
-  maguiConnectProfileSchema,
 } from "@/src/lib/validations/maguiConnect"
 
 import { MAGUI_CONNECT_LINK_KIND_PRESETS } from "@/src/config/magui-connect-presets"
@@ -56,22 +56,37 @@ interface MaguiConnectAdminViewProps {
         heroDescription: string | null
         bio: string | null
         avatarUrl: string | null
+        bannerUrl: string | null
+        siteName: string | null
+        faviconUrl: string | null
+        logoUrl: string | null
         ogImageUrl: string | null
+        twitterImageUrl: string | null
         slug: string | null
         domain: string | null
+        canonicalUrl: string | null
+        locale: string
         professionalCategory: string | null
         location: string | null
+        entityType: "PERSON" | "ORGANIZATION" | "BRAND"
+        jobTitle: string | null
         companyName: string | null
         publicEmail: string | null
         publicPhone: string | null
         whatsapp: string | null
+        whatsappMessage: string | null
         primaryCtaLabel: string | null
         primaryCtaUrl: string | null
         secondaryCtaLabel: string | null
         secondaryCtaUrl: string | null
         themeAccent: string | null
+        themeColor: string | null
         seoTitle: string | null
         seoDescription: string | null
+        seoKeywords: string | null
+        twitterHandle: string | null
+        indexable: boolean
+        seoNoFollow: boolean
       } & {
         links: Array<{
           id: string
@@ -98,7 +113,7 @@ export function MaguiConnectAdminView({
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [isOpen, setIsOpen] = useState(false)
-  const [formData, setFormData] = useState<MaguiConnectProfileInput>({
+  const [formData, setFormData] = useState<MaguiConnectAdminProfileInput>({
     title: profile?.displayName ?? clientName,
     description: profile?.headline ?? "",
     heroKicker: profile?.heroKicker ?? "",
@@ -106,22 +121,37 @@ export function MaguiConnectAdminView({
     heroDescription: profile?.heroDescription ?? "",
     bio: profile?.bio ?? "",
     avatarUrl: profile?.avatarUrl ?? "",
+    bannerUrl: profile?.bannerUrl ?? "",
+    siteName: profile?.siteName ?? "",
+    faviconUrl: profile?.faviconUrl ?? "",
+    logoUrl: profile?.logoUrl ?? "",
     ogImageUrl: profile?.ogImageUrl ?? "",
+    twitterImageUrl: profile?.twitterImageUrl ?? "",
     slug: profile?.slug ?? "",
     domain: profile?.domain ?? "",
+    canonicalUrl: profile?.canonicalUrl ?? "",
+    locale: profile?.locale ?? "pt-BR",
     professionalCategory: profile?.professionalCategory ?? "",
     location: profile?.location ?? "",
+    entityType: profile?.entityType ?? "PERSON",
+    jobTitle: profile?.jobTitle ?? "",
     companyName: profile?.companyName ?? "",
     publicEmail: profile?.publicEmail ?? "",
     publicPhone: profile?.publicPhone ?? "",
     whatsapp: profile?.whatsapp ?? "",
+    whatsappMessage: profile?.whatsappMessage ?? "",
     primaryCtaLabel: profile?.primaryCtaLabel ?? "",
     primaryCtaUrl: profile?.primaryCtaUrl ?? "",
     secondaryCtaLabel: profile?.secondaryCtaLabel ?? "",
     secondaryCtaUrl: profile?.secondaryCtaUrl ?? "",
     themeAccent: profile?.themeAccent ?? "",
+    themeColor: profile?.themeColor ?? "",
     seoTitle: profile?.seoTitle ?? "",
     seoDescription: profile?.seoDescription ?? "",
+    seoKeywords: profile?.seoKeywords ?? "",
+    twitterHandle: profile?.twitterHandle ?? "",
+    indexable: profile?.indexable ?? true,
+    seoNoFollow: profile?.seoNoFollow ?? false,
   })
   const [newLink, setNewLink] = useState<MaguiConnectLinkInput>({
     label: "",
@@ -150,6 +180,26 @@ export function MaguiConnectAdminView({
     "h-12 rounded-full bg-brand-primary px-7 text-[10px] font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-brand-primary/20 transition-all hover:scale-[1.02] hover:bg-brand-primary/90"
 
   const links = useMemo(() => profile?.links ?? [], [profile?.links])
+  const seoStatus = useMemo(() => {
+    if (!formData.indexable) return "NOINDEX"
+    const hasOg =
+      !!formData.ogImageUrl || !!formData.bannerUrl || !!formData.avatarUrl
+    const hasTitle = !!formData.seoTitle?.trim()
+    const hasDescription = !!formData.seoDescription?.trim()
+    const hasDomain = !!formData.domain?.trim()
+
+    return hasOg && hasTitle && hasDescription && hasDomain
+      ? "READY"
+      : "INCOMPLETE"
+  }, [
+    formData.avatarUrl,
+    formData.bannerUrl,
+    formData.domain,
+    formData.indexable,
+    formData.ogImageUrl,
+    formData.seoDescription,
+    formData.seoTitle,
+  ])
 
   if (!canAccess) {
     return (
@@ -582,7 +632,394 @@ export function MaguiConnectAdminView({
                   onClick={() =>
                     startTransition(async () => {
                       try {
-                        const parsed = maguiConnectProfileSchema.parse(formData)
+                        const parsed =
+                          maguiConnectAdminProfileSchema.parse(formData)
+                        await upsertMaguiConnectProfileForUserAction(
+                          userId,
+                          parsed
+                        )
+                        toast.success(t("adminUpdateSuccess"))
+                        router.refresh()
+                      } catch (error) {
+                        console.error(error)
+                        toast.error(
+                          error instanceof Error && error.message
+                            ? error.message
+                            : t("adminUpdateError")
+                        )
+                      }
+                    })
+                  }
+                >
+                  {t("save")}
+                </Button>
+              </div>
+            </section>
+
+            <section className="space-y-5 border-t border-border/20 pt-8">
+              <div className="space-y-1">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                  {t("adminSeoSectionTitle")}
+                </p>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  {t("adminSeoSectionDescription")}
+                </p>
+              </div>
+
+              <div className="rounded-3xl border border-border/30 bg-background/40 p-4">
+                <div className="flex flex-wrap items-center gap-3 text-sm">
+                  <span className="font-semibold text-foreground">
+                    {t("seoStatusLabel")}:
+                  </span>
+                  <span className="rounded-full border border-border/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {seoStatus === "READY"
+                      ? t("seoStatusReady")
+                      : seoStatus === "NOINDEX"
+                        ? t("seoStatusNoIndex")
+                        : t("seoStatusIncomplete")}
+                  </span>
+                </div>
+                {!formData.indexable ? (
+                  <p className="mt-3 text-sm text-amber-600">
+                    {t("adminSeoNoIndexWarning")}
+                  </p>
+                ) : null}
+                {!formData.domain?.trim() ? (
+                  <p className="mt-2 text-sm text-amber-600">
+                    {t("adminSeoMissingDomainWarning")}
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="flex items-center gap-3 rounded-2xl border border-border/30 px-4 py-3">
+                  <input
+                    checked={formData.indexable}
+                    type="checkbox"
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        indexable: e.target.checked,
+                      }))
+                    }
+                  />
+                  <span className="text-sm text-foreground">
+                    {t("indexableLabel")}
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-3 rounded-2xl border border-border/30 px-4 py-3">
+                  <input
+                    checked={formData.seoNoFollow}
+                    type="checkbox"
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        seoNoFollow: e.target.checked,
+                      }))
+                    }
+                  />
+                  <span className="text-sm text-foreground">
+                    {t("seoNoFollowLabel")}
+                  </span>
+                </label>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("siteNameLabel")}
+                  </Label>
+                  <Input
+                    className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    placeholder={t("siteNamePlaceholder")}
+                    value={formData.siteName ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        siteName: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("localeLabel")}
+                  </Label>
+                  <Input
+                    className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    placeholder="pt-BR"
+                    value={formData.locale ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        locale: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("canonicalUrlLabel")}
+                  </Label>
+                  <Input
+                    className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    placeholder="https://bio.exemplo.com"
+                    value={formData.canonicalUrl ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        canonicalUrl: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("twitterHandleLabel")}
+                  </Label>
+                  <Input
+                    className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    placeholder="@magui"
+                    value={formData.twitterHandle ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        twitterHandle: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("entityTypeLabel")}
+                  </Label>
+                  <select
+                    className="h-12 rounded-2xl border border-border/40 bg-background px-4 text-sm text-foreground shadow-none outline-none transition-colors focus:border-brand-primary"
+                    value={formData.entityType ?? "PERSON"}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        entityType: e.target.value as
+                          | "PERSON"
+                          | "ORGANIZATION"
+                          | "BRAND",
+                      }))
+                    }
+                  >
+                    <option className="bg-background text-foreground" value="PERSON">
+                      {t("entityTypePerson")}
+                    </option>
+                    <option
+                      className="bg-background text-foreground"
+                      value="ORGANIZATION"
+                    >
+                      {t("entityTypeOrganization")}
+                    </option>
+                    <option className="bg-background text-foreground" value="BRAND">
+                      {t("entityTypeBrand")}
+                    </option>
+                  </select>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("jobTitleLabel")}
+                  </Label>
+                  <Input
+                    className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    placeholder={t("jobTitlePlaceholder")}
+                    value={formData.jobTitle ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        jobTitle: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("faviconUrlLabel")}
+                  </Label>
+                  <Input
+                    className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    placeholder="https://cdn.exemplo.com/favicon.png"
+                    value={formData.faviconUrl ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        faviconUrl: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("logoUrlLabel")}
+                  </Label>
+                  <Input
+                    className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    placeholder="https://cdn.exemplo.com/logo.png"
+                    value={formData.logoUrl ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        logoUrl: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("ogImageUrlLabel")}
+                  </Label>
+                  <Input
+                    className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    placeholder="https://cdn.exemplo.com/og-image.jpg"
+                    value={formData.ogImageUrl ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        ogImageUrl: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("twitterImageUrlLabel")}
+                  </Label>
+                  <Input
+                    className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    placeholder="https://cdn.exemplo.com/twitter-image.jpg"
+                    value={formData.twitterImageUrl ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        twitterImageUrl: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                      {t("seoTitleLabel")}
+                    </Label>
+                    <span className="text-xs text-muted-foreground">
+                      {(formData.seoTitle ?? "").length}/70
+                    </span>
+                  </div>
+                  <Input
+                    className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    placeholder={t("seoTitlePlaceholder")}
+                    value={formData.seoTitle ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        seoTitle: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("themeColorLabel")}
+                  </Label>
+                  <Input
+                    className="h-12 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    placeholder="#0F172A"
+                    value={formData.themeColor ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        themeColor: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-2">
+                <div className="flex items-center justify-between gap-3">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("seoDescriptionLabel")}
+                  </Label>
+                  <span className="text-xs text-muted-foreground">
+                    {(formData.seoDescription ?? "").length}/160
+                  </span>
+                </div>
+                <Textarea
+                  className="min-h-28 rounded-2xl border-border/40 bg-transparent shadow-none"
+                  placeholder={t("seoDescriptionPlaceholder")}
+                  value={formData.seoDescription ?? ""}
+                  onChange={(e) =>
+                    setFormData((current) => ({
+                      ...current,
+                      seoDescription: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("seoKeywordsLabel")}
+                  </Label>
+                  <Textarea
+                    className="min-h-24 rounded-2xl border-border/40 bg-transparent shadow-none"
+                    placeholder={t("seoKeywordsPlaceholder")}
+                    value={formData.seoKeywords ?? ""}
+                    onChange={(e) =>
+                      setFormData((current) => ({
+                        ...current,
+                        seoKeywords: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("adminSeoAssetsNoteTitle")}
+                  </Label>
+                  <p className="rounded-2xl border border-border/30 px-4 py-3 text-sm leading-6 text-muted-foreground">
+                    {t("adminSeoAssetsNote")}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-start">
+                <Button
+                  className="h-10 rounded-full px-5 text-[11px] font-semibold uppercase tracking-[0.18em]"
+                  disabled={isPending}
+                  onClick={() =>
+                    startTransition(async () => {
+                      try {
+                        const parsed =
+                          maguiConnectAdminProfileSchema.parse(formData)
                         await upsertMaguiConnectProfileForUserAction(
                           userId,
                           parsed

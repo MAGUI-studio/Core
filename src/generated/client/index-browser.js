@@ -166,6 +166,7 @@ exports.Prisma.MaguiConnectProfileScalarFieldEnum = {
   userId: 'userId',
   slug: 'slug',
   displayName: 'displayName',
+  siteName: 'siteName',
   headline: 'headline',
   heroKicker: 'heroKicker',
   heroHeadline: 'heroHeadline',
@@ -173,10 +174,17 @@ exports.Prisma.MaguiConnectProfileScalarFieldEnum = {
   bio: 'bio',
   avatarUrl: 'avatarUrl',
   bannerUrl: 'bannerUrl',
+  faviconUrl: 'faviconUrl',
+  logoUrl: 'logoUrl',
   ogImageUrl: 'ogImageUrl',
+  twitterImageUrl: 'twitterImageUrl',
   domain: 'domain',
+  canonicalUrl: 'canonicalUrl',
+  locale: 'locale',
   professionalCategory: 'professionalCategory',
   location: 'location',
+  entityType: 'entityType',
+  jobTitle: 'jobTitle',
   companyName: 'companyName',
   publicEmail: 'publicEmail',
   publicPhone: 'publicPhone',
@@ -187,8 +195,13 @@ exports.Prisma.MaguiConnectProfileScalarFieldEnum = {
   secondaryCtaLabel: 'secondaryCtaLabel',
   secondaryCtaUrl: 'secondaryCtaUrl',
   themeAccent: 'themeAccent',
+  themeColor: 'themeColor',
   seoTitle: 'seoTitle',
   seoDescription: 'seoDescription',
+  seoKeywords: 'seoKeywords',
+  twitterHandle: 'twitterHandle',
+  indexable: 'indexable',
+  seoNoFollow: 'seoNoFollow',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -704,6 +717,12 @@ exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN',
   MEMBER: 'MEMBER',
   CLIENT: 'CLIENT'
+};
+
+exports.MaguiConnectEntityType = exports.$Enums.MaguiConnectEntityType = {
+  PERSON: 'PERSON',
+  ORGANIZATION: 'ORGANIZATION',
+  BRAND: 'BRAND'
 };
 
 exports.LeadStatus = exports.$Enums.LeadStatus = {

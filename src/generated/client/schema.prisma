@@ -123,6 +123,12 @@ enum LeadSource {
   OTHER
 }
 
+enum MaguiConnectEntityType {
+  PERSON
+  ORGANIZATION
+  BRAND
+}
+
 enum LeadActivityType {
   NOTE_CREATED
   STATUS_CHANGED
@@ -266,22 +272,30 @@ model User {
 }
 
 model MaguiConnectProfile {
-  id                   String   @id @default(cuid())
-  userId               String   @unique
-  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  slug                 String?  @unique
+  id                   String                 @id @default(cuid())
+  userId               String                 @unique
+  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  slug                 String?                @unique
   displayName          String
+  siteName             String?
   headline             String?
   heroKicker           String?
   heroHeadline         String?
-  heroDescription      String?  @db.Text
-  bio                  String?  @db.Text
+  heroDescription      String?                @db.Text
+  bio                  String?                @db.Text
   avatarUrl            String?
   bannerUrl            String?
+  faviconUrl           String?
+  logoUrl              String?
   ogImageUrl           String?
-  domain               String?  @unique
+  twitterImageUrl      String?
+  domain               String?                @unique
+  canonicalUrl         String?
+  locale               String                 @default("pt-BR")
   professionalCategory String?
   location             String?
+  entityType           MaguiConnectEntityType @default(PERSON)
+  jobTitle             String?
   companyName          String?
   publicEmail          String?
   publicPhone          String?
@@ -292,10 +306,15 @@ model MaguiConnectProfile {
   secondaryCtaLabel    String?
   secondaryCtaUrl      String?
   themeAccent          String?
+  themeColor           String?
   seoTitle             String?
   seoDescription       String?
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  seoKeywords          String?                @db.Text
+  twitterHandle        String?
+  indexable            Boolean                @default(true)
+  seoNoFollow          Boolean                @default(false)
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
 
   links       MaguiConnectLink[]
   sections    MaguiConnectSection[]

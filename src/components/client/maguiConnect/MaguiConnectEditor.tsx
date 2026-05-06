@@ -8,7 +8,6 @@ import Image from "next/image"
 import {
   ArrowRight,
   Camera,
-  Check,
   Globe,
   IdentificationCard,
   Image as ImageIcon,
@@ -59,8 +58,6 @@ interface MaguiConnectEditorProps {
     secondaryCtaLabel: string | null
     secondaryCtaUrl: string | null
     themeAccent: string | null
-    seoTitle: string | null
-    seoDescription: string | null
   } | null
 }
 
@@ -80,11 +77,6 @@ const editorTabs = [
     icon: Palette,
     index: "03",
   },
-  {
-    value: "seo",
-    icon: Check,
-    index: "04",
-  },
 ] as const
 
 export function MaguiConnectEditor({
@@ -101,11 +93,6 @@ export function MaguiConnectEditor({
     heroDescription: initialProfile?.heroDescription ?? "",
     bio: initialProfile?.bio ?? "",
     avatarUrl: initialProfile?.avatarUrl ?? "",
-    ogImageUrl: initialProfile?.ogImageUrl ?? "",
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    slug: undefined as any,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    domain: undefined as any,
     professionalCategory: initialProfile?.professionalCategory ?? "",
     location: initialProfile?.location ?? "",
     companyName: initialProfile?.companyName ?? "",
@@ -119,8 +106,6 @@ export function MaguiConnectEditor({
     secondaryCtaUrl: initialProfile?.secondaryCtaUrl ?? "",
     bannerUrl: initialProfile?.bannerUrl ?? "",
     themeAccent: initialProfile?.themeAccent ?? "#E5FF00",
-    seoTitle: initialProfile?.seoTitle ?? "",
-    seoDescription: initialProfile?.seoDescription ?? "",
   })
 
   // Helper to translate UploadThing errors
@@ -765,44 +750,6 @@ export function MaguiConnectEditor({
           </div>
         </TabsContent>
 
-        <TabsContent
-          value="seo"
-          className="mt-0 animate-in fade-in slide-in-from-bottom-2 duration-500 focus-visible:outline-none"
-        >
-          <div className="mb-12 space-y-2">
-            <h3 className="text-2xl font-black tracking-tight text-foreground">
-              {t("tabSEO")}
-            </h3>
-            <p className="max-w-2xl text-sm leading-6 text-muted-foreground/70">
-              Configure os metadados para motores de busca.
-            </p>
-          </div>
-
-          <div className="grid gap-8">
-            <div className="grid gap-4">
-              <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/70">
-                {t("seoTitleLabel")}
-              </Label>
-              <Input
-                className="h-12 rounded-none border-0 border-b border-border/40 bg-transparent px-0 text-lg font-normal shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all"
-                placeholder={t("seoTitlePlaceholder")}
-                value={formData.seoTitle ?? ""}
-                onChange={(e) => updateField("seoTitle", e.target.value)}
-              />
-            </div>
-            <div className="grid gap-4">
-              <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-primary/70">
-                {t("seoDescriptionLabel")}
-              </Label>
-              <Textarea
-                className="min-h-[100px] rounded-none border-0 border-b border-border/40 bg-transparent px-0 py-4 text-base font-normal leading-relaxed shadow-none placeholder:text-foreground/30 focus-visible:border-brand-primary focus-visible:ring-0 transition-all resize-none"
-                placeholder={t("seoDescriptionPlaceholder")}
-                value={formData.seoDescription ?? ""}
-                onChange={(e) => updateField("seoDescription", e.target.value)}
-              />
-            </div>
-          </div>
-        </TabsContent>
       </Tabs>
 
       <div className="flex justify-end pt-8 sm:pt-12 mt-12 sm:mt-16 border-t border-border/20">
