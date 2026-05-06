@@ -118,6 +118,8 @@ export function MaguiConnectLinkItem({
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false)
   const [openKind, setOpenKind] = React.useState(false)
 
+  const countdown = useCountdownLabel(link.expiresAt)
+
   React.useEffect(() => {
     setIsFeatured(link.isFeatured)
   }, [link.isFeatured])
@@ -126,7 +128,7 @@ export function MaguiConnectLinkItem({
     (p) => p.value === link.kind
   )
   const iconSrc = preset?.icon
-  const scheduleStatus = getLinkScheduleStatus(link, t)
+  const scheduleStatus = getLinkScheduleStatus(link, t, countdown)
 
   const {
     attributes,
@@ -610,26 +612,70 @@ function toDateTimeLocalValue(value: Date | string) {
   return local.toISOString().slice(0, 16)
 }
 
+function useCountdownLabel(expiresAtValue: string | Date | null) {
+  const [now, setNow] = React.useState(() => Date.now())
+
+  React.useEffect(() => {
+    if (!expiresAtValue) return
+
+    const interval = window.setInterval(() => {
+      setNow(Date.now())
+    }, 1000)
+
+    return () => window.clearInterval(interval)
+  }, [expiresAtValue])
+
+  if (!expiresAtValue) return null
+
+  const expiresAt = new Date(expiresAtValue).getTime()
+  const diff = expiresAt - now
+
+  if (diff <= 0) return null
+
+  const totalSeconds = Math.floor(diff / 1000)
+
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+
+  return `Encerra em ${hours} horas, ${minutes} minutos e ${seconds} segundos.`
+}
+
 function getLinkScheduleStatus(
   link: {
     startsAt: Date | null
     expiresAt: Date | null
   },
-  t: ReturnType<typeof useTranslations<"MaguiConnect">>
+  t: ReturnType<typeof useTranslations<"MaguiConnect">>,
+  countdown: string | null
 ) {
   const now = new Date()
   const startsAt = link.startsAt ? new Date(link.startsAt) : null
   const expiresAt = link.expiresAt ? new Date(link.expiresAt) : null
 
   const dateParts: string[] = []
+  const formatOptions: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }
+
   if (startsAt) {
     dateParts.push(
-      `${t("scheduleStartsLabel")}: ${startsAt.toLocaleDateString("pt-BR")}`
+      `${t("scheduleStartsLabel")}: ${startsAt.toLocaleString(
+        "pt-BR",
+        formatOptions
+      )}`
     )
   }
   if (expiresAt) {
     dateParts.push(
-      `${t("scheduleEndsLabel")}: ${expiresAt.toLocaleDateString("pt-BR")}`
+      `${t("scheduleEndsLabel")}: ${expiresAt.toLocaleString(
+        "pt-BR",
+        formatOptions
+      )}`
     )
   }
 
@@ -660,7 +706,7 @@ function getLinkScheduleStatus(
       return {
         tone: diffDays <= 7 ? ("warning" as const) : ("info" as const),
         dateLine: dateParts.join(" • "),
-        message: t("linkExpiresSoonMessage", { days: diffDays }),
+        message: countdown ?? t("linkExpiresSoonMessage", { days: diffDays }),
       }
     }
   }
