@@ -98,7 +98,7 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
       id: "diff-documentation",
       label: "Documentação e Rigor",
       content:
-        "Entrega com rigor técnico: código limpo, documentado e preparado para escala. Não entregamos apenas uma 'página', entregamos um ativo digital durável.",
+        "Entrega com rigor técnico: código limpo, documentado e preparado para escala. Não entregamos apenas uma página, entregamos um ativo digital durável.",
     },
     {
       id: "diff-seo",
@@ -126,7 +126,7 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
       id: "pay-kickoff",
       label: "Entrada + Entrega",
       content:
-        "50% na aprovação (reserva de agenda e início da estrutura) e 50% após a aprovação final e entrada em produção. Pagamento via PIX ou transferência bancária.",
+        "O pagamento será dividido em duas etapas: 50% no ato da aprovação/assinatura, para reserva de agenda e início da estruturação, e 50% após a aprovação final do projeto em ambiente de homologação, obrigatoriamente antes da publicação em ambiente de produção. O pagamento é processado pela plataforma via link seguro do Stripe, com opções de cartão de crédito e boleto bancário.",
     },
     {
       id: "pay-milestones",
@@ -154,7 +154,7 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
       id: "next-standard",
       label: "Checklist de Início",
       content:
-        "1. Aprovação desta proposta comercial;\n2. Assinatura do contrato digital;\n3. Confirmação do pagamento inicial;\n4. Preenchimento do briefing detalhado para início imediato.",
+        "1. Aprovação desta proposta comercial;\n2. Assinatura do contrato digital;\n3. Confirmação do pagamento inicial;\n4. Preenchimento do briefing detalhado e envio dos ativos obrigatórios pelo CRM;\n5. Publicação no domínio definitivo somente após a compensação do saldo final.",
     },
   ],
   acceptanceCriteria: [
@@ -182,7 +182,7 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
       id: "not-ads",
       label: "Tráfego e Gestão",
       content:
-        "- Configuração ou gestão de campanhas de tráfego pago (Google/Meta Ads);\n- Custos de hospedagem, domínio ou APIs de terceiros após o lançamento.",
+        "- Configuração ou gestão de campanhas de tráfego pago (Google/Meta Ads);\n- Licenciamento de ativos de terceiros com ônus financeiro e custos de APIs externas;\n- Após o primeiro ciclo de 12 meses, a renovação do domínio passa a ser de responsabilidade do cliente e a permanência da página em hospedagem da MAGUI.studio fica sujeita à taxa anual vigente de R$ 297,00.",
     },
   ],
   warranty: [
@@ -190,7 +190,7 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
       id: "war-30days",
       label: "30 Dias de Ajustes",
       content:
-        "Garantia de 30 dias após o lançamento para correções de bugs técnicos ou ajustes finos de layout que não descaracterizem o escopo original aprovado.",
+        "Cada etapa contempla 02 rodadas de ajustes consolidados por etapa durante a execução. Após o lançamento, a garantia de 30 dias cobre exclusivamente correções de bugs técnicos do escopo aprovado, sem incluir novas funcionalidades ou reformulações visuais fora do combinado.",
     },
   ],
   itemDescriptions: [

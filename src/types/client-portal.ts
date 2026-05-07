@@ -36,6 +36,7 @@ export interface ClientHomeProject {
   budget: number | null
   deadline: Date | null
   startDate: Date
+  scheduleData?: unknown
   liveUrl: string | null
   repositoryUrl: string | null
   category: ProjectCategory
@@ -81,7 +82,7 @@ export interface ClientHomeData {
 
 export type ClientProjectSummary = Pick<
   DashboardProject,
-  "id" | "name" | "status" | "progress" | "deadline" | "updatedAt"
+  "id" | "name" | "status" | "progress" | "deadline" | "scheduleData" | "updatedAt"
 > & {
   lastUpdate?: ClientPortalUpdate
   _count: {

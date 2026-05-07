@@ -44,13 +44,13 @@ export function ProjectKickoffChecklist({
       key: "access",
     },
     {
-      label: "Reunião de Kickoff",
+      label: "Kickoff assíncrono validado",
       completed: kickoff.firstMeetingDone,
       key: "meeting",
     },
   ]
 
-  const completedCount = checklistItems.filter((i) => i.completed).length
+  const completedCount = checklistItems.filter((item) => item.completed).length
   const progress = Math.round((completedCount / checklistItems.length) * 100)
 
   return (
@@ -146,9 +146,9 @@ export function ProjectKickoffChecklist({
             </h5>
             <p className="text-xs font-medium leading-relaxed text-muted-foreground">
               Garanta que todos os itens acima estejam marcados como pronto
-              antes de mover o projeto para a fase de Arquitetura. O
-              preenchimento do briefing e envio de logos é responsabilidade do
-              cliente via portal.
+              antes de mover o projeto para a fase de Arquitetura. O início
+              contratual depende da validação do briefing e do envio dos ativos
+              obrigatórios pelo cliente via portal.
             </p>
           </div>
         </div>

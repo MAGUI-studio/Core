@@ -22,6 +22,12 @@ import {
   getCurrentAppUser,
   getInternalNotificationRecipients,
 } from "@/src/lib/project-governance"
+import {
+  buildProjectScheduleView,
+  clearPendingClientApproval,
+  registerPendingClientApproval,
+  resolvePendingClientApproval,
+} from "@/src/lib/project-schedule"
 import { revalidateProjectTimeline } from "@/src/lib/revalidate"
 import {
   addProjectTimelineSchema,
@@ -144,6 +150,43 @@ export async function addProjectTimelineAction(
         },
       })
 
+      if (requiresApproval) {
+        const currentProject = await tx.project.findUnique({
+          where: { id: projectId },
+          select: { scheduleData: true, status: true },
+        })
+
+        if (currentProject) {
+          const nextSchedule = registerPendingClientApproval(
+            currentProject.scheduleData,
+            {
+              updateId: newUpdate.id,
+              title: newUpdate.title,
+              requestedAt: newUpdate.createdAt,
+            }
+          )
+          const scheduleView = buildProjectScheduleView(
+            nextSchedule,
+            currentProject.status
+          )
+
+          await tx.project.update({
+            where: { id: projectId },
+            data: {
+              scheduleData: {
+                ...nextSchedule,
+                clientDelayCalendarDays: scheduleView.clientDelayCalendarDays,
+                clientDelayBusinessDays: scheduleView.clientDelayBusinessDays,
+                currentForecastDate: scheduleView.currentForecastDate
+                  ? scheduleView.currentForecastDate.toISOString()
+                  : null,
+              },
+              deadline: scheduleView.currentForecastDate,
+            },
+          })
+        }
+      }
+
       await createAuditLog(
         {
           action: "update.created",
@@ -259,6 +302,10 @@ export async function approveUpdateAction(
     ])
 
     await prisma.$transaction(async (tx) => {
+      const currentProject = await tx.project.findUnique({
+        where: { id: projectId },
+        select: { scheduleData: true, status: true },
+      })
       const updatedUpdate = await tx.update.update({
         where: { id: updateId, projectId },
         data: {
@@ -274,6 +321,35 @@ export async function approveUpdateAction(
           },
         },
       })
+
+      if (currentProject) {
+        const nextSchedule = resolvePendingClientApproval(
+          currentProject.scheduleData,
+          {
+            updateId,
+            resolvedAt: updatedUpdate.approvedAt ?? new Date(),
+          }
+        )
+        const scheduleView = buildProjectScheduleView(
+          nextSchedule,
+          currentProject.status
+        )
+
+        await tx.project.update({
+          where: { id: projectId },
+          data: {
+            scheduleData: {
+              ...nextSchedule,
+              clientDelayCalendarDays: scheduleView.clientDelayCalendarDays,
+              clientDelayBusinessDays: scheduleView.clientDelayBusinessDays,
+              currentForecastDate: scheduleView.currentForecastDate
+                ? scheduleView.currentForecastDate.toISOString()
+                : null,
+            },
+            deadline: scheduleView.currentForecastDate,
+          },
+        })
+      }
 
       await createAuditLog(
         {
@@ -361,6 +437,10 @@ export async function rejectUpdateAction(input: {
     )
 
     await prisma.$transaction(async (tx) => {
+      const currentProject = await tx.project.findUnique({
+        where: { id: validated.data.projectId },
+        select: { scheduleData: true, status: true },
+      })
       const updatedUpdate = await tx.update.update({
         where: {
           id: validated.data.updateId,
@@ -379,6 +459,35 @@ export async function rejectUpdateAction(input: {
           },
         },
       })
+
+      if (currentProject) {
+        const nextSchedule = resolvePendingClientApproval(
+          currentProject.scheduleData,
+          {
+            updateId: validated.data.updateId,
+            resolvedAt: new Date(),
+          }
+        )
+        const scheduleView = buildProjectScheduleView(
+          nextSchedule,
+          currentProject.status
+        )
+
+        await tx.project.update({
+          where: { id: validated.data.projectId },
+          data: {
+            scheduleData: {
+              ...nextSchedule,
+              clientDelayCalendarDays: scheduleView.clientDelayCalendarDays,
+              clientDelayBusinessDays: scheduleView.clientDelayBusinessDays,
+              currentForecastDate: scheduleView.currentForecastDate
+                ? scheduleView.currentForecastDate.toISOString()
+                : null,
+            },
+            deadline: scheduleView.currentForecastDate,
+          },
+        })
+      }
 
       await createAuditLog(
         {
@@ -463,9 +572,39 @@ export async function deleteProjectTimelineAction(
 
   try {
     await prisma.$transaction(async (tx) => {
+      const currentProject = await tx.project.findUnique({
+        where: { id: projectId },
+        select: { scheduleData: true, status: true },
+      })
       const deletedUpdate = await tx.update.delete({
         where: { id: updateId, projectId },
       })
+
+      if (currentProject) {
+        const nextSchedule = clearPendingClientApproval(
+          currentProject.scheduleData,
+          updateId
+        )
+        const scheduleView = buildProjectScheduleView(
+          nextSchedule,
+          currentProject.status
+        )
+
+        await tx.project.update({
+          where: { id: projectId },
+          data: {
+            scheduleData: {
+              ...nextSchedule,
+              clientDelayCalendarDays: scheduleView.clientDelayCalendarDays,
+              clientDelayBusinessDays: scheduleView.clientDelayBusinessDays,
+              currentForecastDate: scheduleView.currentForecastDate
+                ? scheduleView.currentForecastDate.toISOString()
+                : null,
+            },
+            deadline: scheduleView.currentForecastDate,
+          },
+        })
+      }
 
       const actor = await getCurrentAppUser()
 

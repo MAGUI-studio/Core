@@ -11,20 +11,12 @@ import {
 import fs from "node:fs"
 import path from "node:path"
 
-// PDF Engine only supports Hex/RGB. Converting MAGUI brand colors.
-const BRAND_COLORS = {
-  primary: "#0093C8", // Official brand blue
-  background: "#0F172A",
-  text: "#0F172A",
-  textMuted: "#64748B",
-  border: "#E2E8F0",
-  ink: "#0F172A",
-  body: "#334155",
-  rule: "#D7E2EA",
-}
-
 const PAGE_WIDTH = 595.28
 const PAGE_HEIGHT = 841.89
+const CONTENT_TOP = 80
+const CONTENT_RIGHT = 50
+const CONTENT_BOTTOM = 70
+const CONTENT_LEFT = 50
 
 function imageToDataUri(dir: string, fileName: string) {
   const filePath = path.join(process.cwd(), "public", dir, fileName)
@@ -44,7 +36,7 @@ const styles = StyleSheet.create({
     width: PAGE_WIDTH,
     height: PAGE_HEIGHT,
     fontFamily: "Helvetica",
-    color: BRAND_COLORS.ink,
+    color: "#000000",
   },
   fullBleed: {
     position: "absolute",
@@ -61,229 +53,120 @@ const styles = StyleSheet.create({
     height: PAGE_HEIGHT,
   },
   content: {
-    position: "relative",
-    flex: 1,
-    paddingTop: 94, // Increased margin as requested (74 + 20)
-    paddingRight: 60,
-    paddingBottom: 64,
-    paddingLeft: 60,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "flex-start",
-    marginBottom: 20,
-  },
-  logo: {
-    width: 120,
-    height: "auto",
-  },
-  studioInfo: {
-    textAlign: "right",
-  },
-  studioName: {
-    fontSize: 10,
-    fontWeight: "bold",
-    color: BRAND_COLORS.primary,
-    textTransform: "uppercase",
-    marginBottom: 2,
-  },
-  studioDetails: {
-    fontSize: 7,
-    color: BRAND_COLORS.textMuted,
-  },
-  headerLine: {
-    width: 40,
-    height: 2,
-    borderRadius: 999,
-    backgroundColor: BRAND_COLORS.primary,
-    marginBottom: 10,
-  },
-  kicker: {
-    fontSize: 8,
-    textTransform: "uppercase",
-    letterSpacing: 2,
-    color: BRAND_COLORS.primary,
-    fontWeight: "bold",
-    marginBottom: 8,
+    position: "absolute",
+    top: CONTENT_TOP,
+    left: CONTENT_LEFT,
+    right: CONTENT_RIGHT,
+    bottom: CONTENT_BOTTOM,
   },
   title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    color: BRAND_COLORS.ink,
-    lineHeight: 1.1,
-    marginBottom: 8,
-    maxWidth: 440,
-  },
-  continuationTitle: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: BRAND_COLORS.ink,
-    lineHeight: 1.1,
-    marginBottom: 8,
+    lineHeight: 1.2,
+    marginBottom: 14,
+    color: "#000000",
+    fontFamily: "Helvetica-Bold",
+    textAlign: "center",
   },
-  leadLine: {
+  companyLine: {
     fontSize: 10,
-    fontWeight: "bold",
-    color: BRAND_COLORS.ink,
-    textTransform: "uppercase",
-    letterSpacing: 1,
-    marginBottom: 12,
-  },
-  intro: {
-    fontSize: 9.5,
-    lineHeight: 1.6,
-    color: BRAND_COLORS.body,
-    marginBottom: 8,
-    maxWidth: 450,
+    lineHeight: 1.4,
+    marginBottom: 10,
+    color: "#000000",
+    fontFamily: "Helvetica-Bold",
+    textAlign: "center",
   },
   metaRow: {
     flexDirection: "row",
-    gap: 20,
-    marginTop: 8,
-    marginBottom: 20,
+    justifyContent: "center",
+    gap: 18,
+    marginBottom: 18,
   },
   metaText: {
-    fontSize: 8,
-    color: BRAND_COLORS.textMuted,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  section: {
-    marginBottom: 18,
-    paddingTop: 12,
+    fontSize: 8.2,
+    lineHeight: 1.3,
+    color: "#000000",
   },
   sectionTitle: {
-    fontSize: 11,
-    fontWeight: "bold",
-    color: BRAND_COLORS.primary,
-    textTransform: "uppercase",
-    letterSpacing: 1.5,
-    marginBottom: 10,
+    fontSize: 9.6,
+    lineHeight: 1.5,
+    marginTop: 6,
+    marginBottom: 8,
+    color: "#000000",
+    fontFamily: "Helvetica-Bold",
+  },
+  clauseTitle: {
+    fontSize: 9.6,
+    lineHeight: 1.5,
+    marginTop: 18,
+    marginBottom: 8,
+    color: "#000000",
+    fontFamily: "Helvetica-Bold",
+  },
+  paragraph: {
+    fontSize: 9.4,
+    lineHeight: 1.55,
+    marginBottom: 7,
+    color: "#000000",
+    textAlign: "justify",
   },
   bulletRow: {
     flexDirection: "row",
     gap: 8,
-    marginBottom: 6,
-    paddingRight: 10,
+    marginBottom: 7,
   },
   bulletMark: {
-    width: 8,
-    fontSize: 9,
-    color: BRAND_COLORS.primary,
-    fontWeight: "bold",
+    width: 10,
+    fontSize: 9.4,
+    lineHeight: 1.55,
+    fontFamily: "Helvetica-Bold",
   },
   bulletText: {
     flex: 1,
-    fontSize: 9,
-    lineHeight: 1.5,
-    color: BRAND_COLORS.body,
+    fontSize: 9.4,
+    lineHeight: 1.55,
+    textAlign: "justify",
   },
-  paragraph: {
-    fontSize: 9,
-    lineHeight: 1.5,
-    color: BRAND_COLORS.body,
-    marginBottom: 7,
-  },
-  itemBlock: {
-    marginBottom: 12,
-  },
-  itemTitle: {
-    fontSize: 11,
-    fontWeight: "bold",
-    color: BRAND_COLORS.ink,
-    marginBottom: 5,
-  },
-  itemText: {
-    fontSize: 9,
-    lineHeight: 1.5,
-    color: BRAND_COLORS.body,
-  },
-  pricingRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 18,
-    marginBottom: 10,
-    paddingBottom: 10,
-  },
-  pricingLeft: {
-    flex: 1,
-    paddingRight: 10,
-  },
-  pricingRight: {
-    width: 140,
-    alignItems: "flex-end",
-  },
-  priceValue: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: BRAND_COLORS.ink,
-    marginBottom: 3,
-  },
-  priceMeta: {
-    fontSize: 8,
-    color: BRAND_COLORS.textMuted,
+  spacer: {
+    height: 10,
   },
   investmentBox: {
-    marginTop: 10,
-    marginBottom: 20,
-    padding: 20,
-    backgroundColor: BRAND_COLORS.background,
-    borderRadius: 12,
+    marginTop: 8,
+    marginBottom: 10,
+    paddingTop: 12,
+    paddingRight: 14,
+    paddingBottom: 12,
+    paddingLeft: 14,
+    borderWidth: 1,
+    borderColor: "#000000",
   },
-  investmentLabel: {
-    fontSize: 8,
-    textTransform: "uppercase",
-    letterSpacing: 2,
-    color: BRAND_COLORS.primary,
-    fontWeight: "bold",
+  investmentTitle: {
+    fontSize: 10,
+    lineHeight: 1.3,
+    fontFamily: "Helvetica-Bold",
     marginBottom: 8,
   },
   investmentValue: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-    lineHeight: 1,
-    marginBottom: 10,
+    fontSize: 17,
+    lineHeight: 1.1,
+    fontFamily: "Helvetica-Bold",
+    marginBottom: 8,
   },
-  investmentText: {
-    fontSize: 8.5,
+  investmentMeta: {
+    fontSize: 9.2,
     lineHeight: 1.5,
-    color: "#94A3B8",
-    maxWidth: 420,
-  },
-  investmentMiniGrid: {
-    flexDirection: "row",
-    gap: 18,
-    marginTop: 12,
-  },
-  investmentMiniCard: {
-    flex: 1,
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: "rgba(255,255,255,0.06)",
-  },
-  investmentMiniLabel: {
-    fontSize: 7,
-    color: "#94A3B8",
-    textTransform: "uppercase",
-    marginBottom: 4,
-  },
-  investmentMiniValue: {
-    fontSize: 11,
-    color: "#FFFFFF",
-    fontWeight: "bold",
   },
   footer: {
     position: "absolute",
-    bottom: 40,
-    left: 60,
-    right: 60,
+    left: CONTENT_LEFT,
+    right: CONTENT_RIGHT,
+    bottom: 34,
     flexDirection: "row",
     justifyContent: "space-between",
     fontSize: 7,
-    color: BRAND_COLORS.textMuted,
-    paddingTop: 10,
+    color: "#4B5563",
+  },
+  bold: {
+    fontFamily: "Helvetica-Bold",
   },
 })
 
@@ -313,7 +196,7 @@ interface MaguiProposalTemplateProps {
   lead: LeadData
 }
 
-interface ParsedNotes {
+type ParsedNotes = {
   executiveSummary: string[]
   objectives: string[]
   expectedImpact: string[]
@@ -326,41 +209,15 @@ interface ParsedNotes {
   platformFlow: string[]
   nextSteps: string[]
   additionalNotes: string[]
-  bonus: string[]
 }
 
-interface TextSectionBlock {
-  kind: "bullets" | "paragraphs"
-  title: string
-  lines: string[]
-}
-
-interface ItemSectionBlock {
-  kind: "items"
-  title: string
-  items: ProposalItem[]
-}
-
-interface PricingSectionBlock {
-  kind: "pricing"
-  title: string
-  items: ProposalItem[]
-  currency: string
-}
-
-interface InvestmentBlock {
-  kind: "investment"
-  totalValue: number
-  currency: string
-  itemCount: number
-  bonusInfo?: string | null
-}
-
-type ContentBlock =
-  | TextSectionBlock
-  | ItemSectionBlock
-  | PricingSectionBlock
-  | InvestmentBlock
+type Block =
+  | { type: "section"; text: string }
+  | { type: "clause"; text: string }
+  | { type: "paragraph"; text: string }
+  | { type: "bullets"; lines: string[] }
+  | { type: "investment"; proposal: ProposalData }
+  | { type: "spacer" }
 
 function toDateLabel(value?: Date | string | null) {
   if (!value) return "Não definido"
@@ -383,7 +240,60 @@ function splitContent(value?: string | null) {
     .filter(Boolean)
 }
 
-function splitParagraphIntoChunks(text: string, targetLength = 180) {
+function normalizeSectionKey(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .trim()
+}
+
+function parseProposalNotes(notes?: string | null): ParsedNotes {
+  const parsed: ParsedNotes = {
+    executiveSummary: [],
+    objectives: [],
+    expectedImpact: [],
+    differentials: [],
+    timeline: [],
+    paymentTerms: [],
+    acceptanceCriteria: [],
+    notIncluded: [],
+    warranty: [],
+    platformFlow: [],
+    nextSteps: [],
+    additionalNotes: [],
+  }
+
+  if (!notes?.trim()) return parsed
+
+  const sections = notes
+    .split(/\n(?=## )/)
+    .map((section) => section.trim())
+    .filter(Boolean)
+
+  sections.forEach((section) => {
+    const [rawTitle, ...rest] = section.split(/\r?\n/)
+    const title = normalizeSectionKey(rawTitle.replace(/^##\s*/, ""))
+    const lines = splitContent(rest.join("\n").trim())
+
+    if (title === "resumo executivo") parsed.executiveSummary = lines
+    else if (title === "objetivos do projeto") parsed.objectives = lines
+    else if (title === "impacto esperado") parsed.expectedImpact = lines
+    else if (title === "diferenciais da entrega") parsed.differentials = lines
+    else if (title === "prazo estimado") parsed.timeline = lines
+    else if (title === "condicoes de pagamento") parsed.paymentTerms = lines
+    else if (title === "criterios de aceite") parsed.acceptanceCriteria = lines
+    else if (title === "o que nao esta incluso") parsed.notIncluded = lines
+    else if (title === "garantia e ajustes") parsed.warranty = lines
+    else if (title === "operacao pela plataforma") parsed.platformFlow = lines
+    else if (title === "proximos passos") parsed.nextSteps = lines
+    else if (title === "observacoes adicionais") parsed.additionalNotes = lines
+  })
+
+  return parsed
+}
+
+function splitParagraphIntoChunks(text: string, targetLength = 220) {
   const normalized = text.replace(/\s+/g, " ").trim()
   if (!normalized) return []
 
@@ -407,7 +317,6 @@ function splitParagraphIntoChunks(text: string, targetLength = 180) {
   })
 
   if (current) chunks.push(current)
-
   return chunks
 }
 
@@ -415,470 +324,304 @@ function estimateLines(text: string, charsPerLine: number) {
   return Math.max(1, Math.ceil(text.length / charsPerLine))
 }
 
-function parseProposalNotes(notes?: string | null): ParsedNotes {
-  const parsed: ParsedNotes = {
-    executiveSummary: [],
-    objectives: [],
-    expectedImpact: [],
-    differentials: [],
-    timeline: [],
-    paymentTerms: [],
-    acceptanceCriteria: [],
-    notIncluded: [],
-    warranty: [],
-    platformFlow: [],
-    nextSteps: [],
-    additionalNotes: [],
-    bonus: [],
+function estimateBlockHeight(block: Block) {
+  if (block.type === "spacer") return 10
+  if (block.type === "section") return 24
+  if (block.type === "clause") return 34
+  if (block.type === "investment") return 126
+  if (block.type === "paragraph") {
+    return Math.max(18, estimateLines(block.text, 86) * 15)
   }
 
-  if (!notes?.trim()) return parsed
-
-  const sections = notes
-    .split(/\n(?=## )/)
-    .map((section) => section.trim())
-    .filter(Boolean)
-
-  sections.forEach((section) => {
-    const [rawTitle, ...rest] = section.split(/\r?\n/)
-    const title = rawTitle
-      .replace(/^##\s*/, "")
-      .trim()
-      .toLowerCase()
-    const content = rest.join("\n").trim()
-    const lines = splitContent(content)
-
-    if (title === "resumo executivo") parsed.executiveSummary = lines
-    else if (title === "objetivos do projeto") parsed.objectives = lines
-    else if (title === "impacto esperado") parsed.expectedImpact = lines
-    else if (title === "diferenciais da entrega") parsed.differentials = lines
-    else if (title === "prazo estimado") parsed.timeline = lines
-    else if (title === "condições de pagamento") parsed.paymentTerms = lines
-    else if (title === "critérios de aceite") parsed.acceptanceCriteria = lines
-    else if (title === "o que não está incluso") parsed.notIncluded = lines
-    else if (title === "garantia e ajustes") parsed.warranty = lines
-    else if (title === "operação pela plataforma") parsed.platformFlow = lines
-    else if (title === "próximos passos") parsed.nextSteps = lines
-    else if (title === "observações adicionais") parsed.additionalNotes = lines
-    else if (title === "bonus exclusivo") parsed.bonus = lines
-  })
-
-  if (
-    parsed.executiveSummary.length === 0 &&
-    parsed.objectives.length === 0 &&
-    parsed.expectedImpact.length === 0 &&
-    parsed.differentials.length === 0 &&
-    parsed.timeline.length === 0 &&
-    parsed.paymentTerms.length === 0 &&
-    parsed.acceptanceCriteria.length === 0 &&
-    parsed.notIncluded.length === 0 &&
-    parsed.warranty.length === 0 &&
-    parsed.platformFlow.length === 0 &&
-    parsed.nextSteps.length === 0 &&
-    parsed.additionalNotes.length === 0 &&
-    parsed.bonus.length === 0
-  ) {
-    parsed.additionalNotes = splitContent(notes)
-  }
-
-  return parsed
+  return 10 + block.lines.reduce((sum, line) => sum + estimateLines(line, 82) * 15, 0)
 }
 
-function buildFallbackSummary(proposal: ProposalData) {
-  const count = proposal.items.length
-
-  return [
-    `Esta proposta organiza ${count} ${
-      count === 1 ? "entrega principal" : "entregas principais"
-    } em uma leitura comercial clara, conectando escopo, critério de execução e investimento de forma objetiva.`,
-  ]
+function cleanPageBlocks(blocks: Block[]) {
+  const cleaned = [...blocks]
+  while (cleaned[0]?.type === "spacer") cleaned.shift()
+  while (cleaned.at(-1)?.type === "spacer") cleaned.pop()
+  return cleaned
 }
 
-function buildFallbackObjectives() {
-  return [
-    "Dar clareza ao que será entregue, como o trabalho será conduzido e qual leitura de valor sustenta a decisão.",
-    "Reduzir ambiguidades comerciais e aumentar confiança na aprovação.",
-  ]
-}
+function paginateBlocks(blocks: Block[]) {
+  const pages: Block[][] = []
+  let current: Block[] = []
+  let height = 0
+  const usableHeight = PAGE_HEIGHT - CONTENT_TOP - CONTENT_BOTTOM - 12
+  const firstPageUsableHeight = usableHeight - 112
 
-function buildFallbackImpact() {
-  return [
-    "Mais clareza sobre escopo, investimento e condução do projeto.",
-    "Percepção mais profissional da entrega e menor atrito operacional ao longo da execução.",
-  ]
-}
-
-function buildFallbackDifferentials() {
-  return [
-    "Leitura comercial estruturada por entregas, e não apenas por preço final.",
-    "Centralização de aprovações, materiais e histórico para diminuir retrabalho.",
-  ]
-}
-
-function buildFallbackPlatformFlow() {
-  return [
-    "Toda a comunicação, aprovações, centralização de arquivos e acompanhamento das etapas acontecem pela plataforma da MAGUI.",
-    "Esse fluxo reduz ruído operacional, preserva histórico e facilita a tomada de decisão durante o projeto.",
-  ]
-}
-
-function buildScopeParagraph(item: ProposalItem) {
-  if (item.longDescription?.trim()) return item.longDescription.trim()
-
-  return `${item.description} será conduzido(a) como uma frente dedicada do projeto, com alinhamento claro de entrega, critério de aprovação e foco em resultado final consistente.`
-}
-
-function buildDeliverableLine(item: ProposalItem) {
-  if (item.longDescription?.trim()) return item.longDescription.trim()
-  return `${item.description} com direcionamento claro de execução e entrega.`
-}
-
-function buildScopeParagraphs(item: ProposalItem) {
-  return splitParagraphIntoChunks(buildScopeParagraph(item), 180)
-}
-
-function buildDeliverableParagraphs(item: ProposalItem) {
-  return splitParagraphIntoChunks(buildDeliverableLine(item), 150)
-}
-
-function buildProcessLines(items: ProposalItem[], timeline: string[]) {
-  const lines = [
-    `O projeto foi dividido em ${items.length} ${
-      items.length === 1 ? "frente principal" : "frentes principais"
-    } para facilitar entendimento, aprovação e execução.`,
-    "Cada entrega foi separada para tornar o investimento mais tangível e a operação mais previsível.",
-  ]
-
-  if (timeline.length > 0) lines.push(...timeline)
-
-  return lines
-}
-
-function buildNextSteps(
-  validUntil?: Date | string | null,
-  customSteps?: string[]
-) {
-  if (customSteps && customSteps.length > 0) return customSteps
-
-  return [
-    "Aprovação desta proposta para consolidação do escopo e do investimento.",
-    "Alinhamento final de prioridades, cronograma e materiais de entrada.",
-    `Validade comercial deste documento: ${toDateLabel(validUntil)}.`,
-  ]
-}
-
-function createTextBlocks(
-  kind: "bullets" | "paragraphs",
-  title: string,
-  lines: string[],
-  maxBlockHeight: number
-): TextSectionBlock[] {
-  const charsPerLine = kind === "bullets" ? 54 : 58
-  const blocks: TextSectionBlock[] = []
-  let currentLines: string[] = []
-  let currentHeight = 28
-
-  lines.forEach((line) => {
-    const estimatedHeight = estimateLines(line, charsPerLine) * 11
-
-    if (
-      currentLines.length > 0 &&
-      currentHeight + estimatedHeight > maxBlockHeight
-    ) {
-      blocks.push({
-        kind,
-        title: blocks.length === 0 ? title : `${title} (continuação)`,
-        lines: currentLines,
-      })
-      currentLines = []
-      currentHeight = 28
-    }
-
-    currentLines.push(line)
-    currentHeight += estimatedHeight
-  })
-
-  if (currentLines.length > 0) {
-    blocks.push({
-      kind,
-      title: blocks.length === 0 ? title : `${title} (continuação)`,
-      lines: currentLines,
-    })
-  }
-
-  return blocks
-}
-
-function estimateBlockHeight(block: ContentBlock) {
-  if (block.kind === "investment") return 88
-
-  if (block.kind === "bullets") {
-    return (
-      28 +
-      block.lines.reduce((sum, line) => sum + estimateLines(line, 54) * 11, 0)
-    )
-  }
-
-  if (block.kind === "paragraphs") {
-    return (
-      28 +
-      block.lines.reduce((sum, line) => sum + estimateLines(line, 58) * 11, 0)
-    )
-  }
-
-  if (block.kind === "items") {
-    return (
-      28 +
-      block.items.reduce(
-        (sum, item) =>
-          sum +
-          12 +
-          buildScopeParagraphs(item).reduce(
-            (itemSum, paragraph) => itemSum + estimateLines(paragraph, 58) * 10,
-            0
-          ),
-        0
-      )
-    )
-  }
-
-  if (block.kind === "pricing") {
-    return (
-      28 +
-      block.items.reduce(
-        (sum: number, item: ProposalItem) =>
-          sum +
-          16 +
-          buildDeliverableParagraphs(item).reduce(
-            (itemSum, paragraph) => itemSum + estimateLines(paragraph, 42) * 10,
-            0
-          ),
-        0
-      )
-    )
-  }
-
-  return 0
-}
-
-function paginateBlocks(
-  blocks: ContentBlock[],
-  firstPageCapacity: number,
-  nextPageCapacity: number
-) {
-  const pages: ContentBlock[][] = []
-  let currentPage: ContentBlock[] = []
-  let currentHeight = 0
-  let currentCapacity = firstPageCapacity
-
-  blocks.forEach((block) => {
+  blocks.forEach((block, index) => {
     const blockHeight = estimateBlockHeight(block)
+    const currentLimit = pages.length === 0 ? firstPageUsableHeight : usableHeight
 
-    if (
-      currentPage.length > 0 &&
-      currentHeight + blockHeight > currentCapacity
-    ) {
-      pages.push(currentPage)
-      currentPage = []
-      currentHeight = 0
-      currentCapacity = nextPageCapacity
+    const nextBlock = blocks[index + 1]
+    const keepWithNext =
+      (block.type === "clause" || block.type === "section") &&
+      nextBlock &&
+      (nextBlock.type === "paragraph" || nextBlock.type === "bullets")
+        ? estimateBlockHeight(nextBlock)
+        : 0
+
+    if (current.length > 0 && height + blockHeight + keepWithNext > currentLimit) {
+      const cleaned = cleanPageBlocks(current)
+      if (cleaned.length > 0) pages.push(cleaned)
+      current = []
+      height = 0
     }
 
-    currentPage.push(block)
-    currentHeight += blockHeight
+    if (current.length === 0 && block.type === "spacer") return
+
+    current.push(block)
+    height += blockHeight
   })
 
-  if (currentPage.length > 0) pages.push(currentPage)
-
+  const cleaned = cleanPageBlocks(current)
+  if (cleaned.length > 0) pages.push(cleaned)
   return pages
 }
 
-function renderBlock(block: ContentBlock, currency: string) {
-  if (block.kind === "investment") {
-    return (
-      <View style={styles.investmentBox} wrap={false}>
-        <Text style={styles.investmentLabel}>Investimento total</Text>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "baseline",
-            marginBottom: 4,
-          }}
-        >
-          <Text style={styles.investmentValue}>
-            {formatCurrency(block.totalValue, block.currency)}
-          </Text>
-          {block.bonusInfo && (
-            <View
-              style={{
-                marginLeft: 15,
-                backgroundColor: BRAND_COLORS.primary,
-                paddingHorizontal: 8,
-                paddingVertical: 4,
-                borderRadius: 4,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 8,
-                  fontWeight: "black",
-                  color: "#FFFFFF",
-                  textTransform: "uppercase",
-                }}
-              >
-                + Bônus MAGUI Connect incluso
-              </Text>
-            </View>
-          )}
-        </View>
+function renderRichText(text: string, key: string) {
+  const parts = text.split(/(\*\*.*?\*\*)/g).filter(Boolean)
 
-        {block.bonusInfo && (
-          <Text
-            style={{
-              fontSize: 8,
-              color: BRAND_COLORS.primary,
-              marginBottom: 10,
-              fontWeight: "bold",
-            }}
-          >
-            {block.bonusInfo}
-          </Text>
-        )}
-
-        <Text style={styles.investmentText}>
-          Valor consolidado para todas as entregas previstas nesta proposta, com
-          leitura pensada para decisão comercial clara e condução mais
-          previsível do projeto.
+  return parts.map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return (
+        <Text key={`${key}-${index}`} style={styles.bold}>
+          {part.slice(2, -2)}
         </Text>
-        <View style={styles.investmentMiniGrid}>
-          <View style={styles.investmentMiniCard}>
-            <Text style={styles.investmentMiniLabel}>Itens previstos</Text>
-            <Text style={styles.investmentMiniValue}>
-              {String(block.itemCount).padStart(2, "0")}
-            </Text>
-          </View>
-          <View style={styles.investmentMiniCard}>
-            <Text style={styles.investmentMiniLabel}>Valor total</Text>
-            <Text style={styles.investmentMiniValue}>
-              {formatCurrency(block.totalValue, block.currency)}
-            </Text>
-          </View>
-        </View>
-      </View>
+      )
+    }
+
+    return <React.Fragment key={`${key}-${index}`}>{part}</React.Fragment>
+  })
+}
+
+function renderBlock(block: Block, index: number) {
+  if (block.type === "section") {
+    return (
+      <Text key={index} style={styles.sectionTitle}>
+        {block.text}
+      </Text>
     )
   }
 
-  if (block.kind === "bullets") {
+  if (block.type === "clause") {
     return (
-      <View style={styles.section} wrap={false}>
-        <Text style={styles.sectionTitle}>{block.title}</Text>
-        {block.lines.map((line, index) => (
-          <View key={`${block.title}-${index}`} style={styles.bulletRow}>
+      <Text key={index} style={styles.clauseTitle}>
+        {block.text}
+      </Text>
+    )
+  }
+
+  if (block.type === "paragraph") {
+    return (
+      <Text key={index} style={styles.paragraph}>
+        {renderRichText(block.text, `paragraph-${index}`)}
+      </Text>
+    )
+  }
+
+  if (block.type === "bullets") {
+    return (
+      <View key={index}>
+        {block.lines.map((line, lineIndex) => (
+          <View key={`${index}-${lineIndex}`} style={styles.bulletRow}>
             <Text style={styles.bulletMark}>-</Text>
-            <Text style={styles.bulletText}>{line}</Text>
+            <Text style={styles.bulletText}>
+              {renderRichText(line, `bullet-${index}-${lineIndex}`)}
+            </Text>
           </View>
         ))}
       </View>
     )
   }
 
-  if (block.kind === "paragraphs") {
+  if (block.type === "investment") {
+    const proposal = block.proposal
+
     return (
-      <View style={styles.section} wrap={false}>
-        <Text style={styles.sectionTitle}>{block.title}</Text>
-        {block.lines.map((line, index) => (
-          <Text key={`${block.title}-${index}`} style={styles.paragraph}>
-            {line}
-          </Text>
-        ))}
+      <View key={index} style={styles.investmentBox}>
+        <Text style={styles.investmentTitle}>INVESTIMENTO TOTAL</Text>
+        <Text style={styles.investmentValue}>
+          {formatCurrency(proposal.totalValue, proposal.currency || "BRL")}
+        </Text>
+        <Text style={styles.investmentMeta}>
+          {renderRichText(
+            "Este valor corresponde à **licença de uso da solução em produção**, à condução técnica da entrega e à estruturação comercial apresentada nesta proposta.",
+            `investment-${index}`
+          )}
+        </Text>
       </View>
     )
   }
 
-  if (block.kind === "items") {
-    return (
-      <View style={styles.section} wrap={false}>
-        <Text style={styles.sectionTitle}>{block.title}</Text>
-        {block.items.map((item, index) => (
-          <View key={`${item.description}-${index}`} style={styles.itemBlock}>
-            <Text style={styles.itemTitle}>{item.description}</Text>
-            {buildScopeParagraphs(item).map((paragraph, paragraphIndex) => (
-              <Text
-                key={`${item.description}-${index}-${paragraphIndex}`}
-                style={styles.itemText}
-              >
-                {paragraph}
-              </Text>
-            ))}
-          </View>
-        ))}
-      </View>
-    )
-  }
+  return <View key={index} style={styles.spacer} />
+}
 
-  if (block.kind === "pricing") {
-    return (
-      <View style={styles.section} wrap={false}>
-        <Text style={styles.sectionTitle}>{block.title}</Text>
-        {block.items.map((item: ProposalItem, index: number) => {
-          const subtotal = item.unitValue * item.quantity
+function buildProposalBlocks(proposal: ProposalData, lead: LeadData, notes: ParsedNotes): Block[] {
+  const summary = notes.executiveSummary.length
+    ? notes.executiveSummary
+    : [
+        `Esta proposta comercial apresenta a estrutura de entrega da MAGUI.studio para **${lead.companyName}**, com foco em clareza comercial, execução previsível e alinhamento total com o modelo operacional que será formalizado em contrato.`,
+      ]
 
-          return (
-            <View
-              key={`${item.description}-${index}`}
-              style={styles.pricingRow}
-            >
-              <View style={styles.pricingLeft}>
-                <Text style={styles.itemTitle}>{item.description}</Text>
-                {buildDeliverableParagraphs(item).map(
-                  (paragraph, paragraphIndex) => (
-                    <Text
-                      key={`${item.description}-${index}-${paragraphIndex}`}
-                      style={styles.itemText}
-                    >
-                      {paragraph}
-                    </Text>
-                  )
-                )}
-              </View>
-              <View style={styles.pricingRight}>
-                <Text style={styles.priceValue}>
-                  {formatCurrency(subtotal, currency)}
-                </Text>
-                <Text style={styles.priceMeta}>
-                  {item.quantity}x {formatCurrency(item.unitValue, currency)}
-                </Text>
-              </View>
-            </View>
-          )
-        })}
-      </View>
-    )
-  }
+  const objectives = notes.objectives.length
+    ? notes.objectives
+    : [
+        "Otimizar a presença digital, melhorar a leitura de valor da oferta e transformar a intenção comercial em uma entrega organizada e mensurável.",
+      ]
 
-  return null
+  const impact = notes.expectedImpact.length
+    ? notes.expectedImpact
+    : [
+        "Mais clareza na oferta, menos atrito no processo comercial e uma entrega digital percebida como séria, rápida e confiável.",
+      ]
+
+  const differentials = notes.differentials.length
+    ? notes.differentials
+    : [
+        "Condução técnica com alto rigor, comunicação assíncrona centralizada e escopo organizado para evitar ruídos e retrabalho.",
+      ]
+
+  const timeline = notes.timeline.length
+    ? notes.timeline
+    : [
+        "Estimativa em dias úteis, com início da contagem somente após briefing validado e materiais obrigatórios enviados pelo cliente via CRM.",
+      ]
+
+  const paymentTerms = notes.paymentTerms.length
+    ? notes.paymentTerms
+    : [
+        "Pagamento dividido em **50% no sinal** e **50% antes da publicação oficial**, sempre pela plataforma via link seguro.",
+      ]
+
+  const notIncluded = notes.notIncluded.length
+    ? notes.notIncluded
+    : [
+        "Redação publicitária, tráfego pago, redes sociais e licenciamento oneroso de ativos de terceiros não fazem parte do escopo padrão.",
+      ]
+
+  const platformFlow = notes.platformFlow.length
+    ? notes.platformFlow
+    : [
+        "Toda a comunicação, aprovações e envio de materiais acontecem pela plataforma oficial da MAGUI.studio, preservando histórico, segurança e rastreabilidade.",
+      ]
+
+  const nextSteps = notes.nextSteps.length
+    ? notes.nextSteps
+    : [
+        "Aprovação da proposta.",
+        "Assinatura do contrato digital.",
+        "Pagamento do sinal de 50%.",
+        "Acesso ao CRM para preenchimento do briefing.",
+      ]
+
+  const acceptance = notes.acceptanceCriteria.length
+    ? notes.acceptanceCriteria
+    : [
+        "Entrega validada com base em responsividade, integridade técnica, funcionamento do escopo aprovado e critérios combinados na proposta.",
+      ]
+
+  const warranty = notes.warranty.length
+    ? notes.warranty
+    : [
+        "Ajustes e garantia seguem o escopo aprovado, sem incluir novas funcionalidades fora do combinado inicial.",
+      ]
+
+  const extraNotes = notes.additionalNotes.length
+    ? notes.additionalNotes
+    : [
+        "O código-fonte e os arquivos editáveis permanecem sob propriedade intelectual da MAGUI.studio, sendo o valor desta proposta referente à licença de uso em produção.",
+        'A assinatura "Desenvolvido por MAGUI.studio" permanece no rodapé da entrega, salvo contratação específica de white label.',
+      ]
+
+  const scopeBullets = proposal.items.flatMap((item) => {
+    const description = item.longDescription?.trim()
+      ? `**${item.description}:** ${item.longDescription.trim()}`
+      : `**${item.description}:** entrega estruturada com foco em execução limpa, performance e resultado final consistente.`
+
+    return splitParagraphIntoChunks(description, 200)
+  })
+
+  return [
+    { type: "section", text: "I. SOBRE A MAGUI.STUDIO" },
+    {
+      type: "paragraph",
+      text: "A **MAGUI.studio** é um estúdio de arquitetura de interface, performance digital e engenharia frontend. Nossa atuação é focada em transformar demandas comerciais em ativos digitais claros, rápidos, confiáveis e visualmente sólidos.",
+    },
+    {
+      type: "paragraph",
+      text: "Trabalhamos com metodologia assíncrona, escopo técnico bem definido e comunicação centralizada via CRM. Isso cria previsibilidade para o cliente e protege a execução do projeto contra ruído, retrabalho e desalinhamento.",
+    },
+    { type: "clause", text: "1. IDENTIFICAÇÃO DAS PARTES E OBJETIVO DO PROJETO" },
+    {
+      type: "paragraph",
+      text: `Esta proposta comercial é apresentada pela **MAGUI.studio** para **${lead.companyName}**.`,
+    },
+    ...summary.flatMap((line) =>
+      splitParagraphIntoChunks(line, 220).map((text) => ({ type: "paragraph", text }) as Block)
+    ),
+    { type: "bullets", lines: objectives },
+    { type: "clause", text: "2. ESCOPO TÉCNICO DETALHADO" },
+    { type: "bullets", lines: scopeBullets },
+    { type: "clause", text: "3. IMPACTO ESPERADO E DIFERENCIAIS" },
+    { type: "bullets", lines: [...impact, ...differentials] },
+    { type: "clause", text: "4. INVESTIMENTO E CONDIÇÕES DE PAGAMENTO" },
+    { type: "bullets", lines: paymentTerms },
+    ...proposal.items.map(
+      (item) =>
+        ({
+          type: "paragraph",
+          text: `**${item.description}:** ${item.quantity}x ${formatCurrency(item.unitValue, proposal.currency || "BRL")} = **${formatCurrency(item.unitValue * item.quantity, proposal.currency || "BRL")}**`,
+        }) as Block
+    ),
+    { type: "investment", proposal },
+    {
+      type: "paragraph",
+      text: "A **publicação oficial em produção** ocorre somente após a compensação do saldo final, conforme a regra comercial e contratual da MAGUI.studio.",
+    },
+    { type: "clause", text: "5. PRAZO, GATILHO DE INÍCIO E METODOLOGIA DE TRABALHO" },
+    { type: "bullets", lines: timeline },
+    { type: "bullets", lines: platformFlow },
+    {
+      type: "paragraph",
+      text: "O prazo começa somente após o preenchimento do briefing e o envio dos ativos obrigatórios pelo CRM. A ausência de retorno do cliente impacta diretamente o cronograma, conforme a regra contratual.",
+    },
+    { type: "clause", text: "6. CRITÉRIOS DE ACEITE, EXCLUSÕES E TRANSPARÊNCIA DE ESCOPO" },
+    { type: "bullets", lines: acceptance },
+    { type: "bullets", lines: notIncluded },
+    { type: "bullets", lines: warranty },
+    { type: "clause", text: "7. INFRAESTRUTURA, CONTINUIDADE E CUSTOS FUTUROS" },
+    {
+      type: "paragraph",
+      text: "O primeiro ciclo de **12 meses** pode incluir domínio e hospedagem conforme o escopo comercial aprovado. Após esse período, a continuidade do projeto depende da renovação da infraestrutura e das condições de permanência aplicáveis.",
+    },
+    {
+      type: "paragraph",
+      text: "Para manter a página ativa após o primeiro ano, aplica-se a taxa anual vigente de **R$ 297,00**, além da renovação do domínio quando cabível. Esta informação é apresentada desde a proposta para garantir transparência total.",
+    },
+    { type: "clause", text: "8. PRÓXIMOS PASSOS" },
+    { type: "bullets", lines: nextSteps },
+    ...extraNotes.flatMap((line) =>
+      splitParagraphIntoChunks(line, 220).map((text) => ({ type: "paragraph", text }) as Block)
+    ),
+  ]
 }
 
 function InternalPage({
-  kicker,
   title,
   leadName,
-  summaryLines,
   createdAt,
   validUntil,
-  isContinuation,
+  isFirstPage,
   blocks,
-  currency,
 }: {
-  kicker: string
   title: string
-  leadName?: string
-  summaryLines?: string[]
+  leadName: string
   createdAt?: Date | string
   validUntil?: Date | string | null
-  isContinuation: boolean
-  blocks: ContentBlock[]
-  currency: string
+  isFirstPage: boolean
+  blocks: Block[]
 }) {
   return (
     <Page size="A4" style={styles.page}>
@@ -886,60 +629,23 @@ function InternalPage({
       <Image src={PAGE_IMAGE} style={styles.sheet} fixed />
 
       <View style={styles.content}>
-        {/* Brand Header */}
-        <View style={styles.header} fixed>
-          <View style={styles.studioInfo}>
-            <Text style={styles.studioDetails}>
-              Padrão de Autoridade Digital
-            </Text>
-            <Text style={styles.studioDetails}>
-              magui.studio | contato@magui.studio
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.headerLine} />
-        <Text style={styles.kicker}>{kicker}</Text>
-        <Text style={isContinuation ? styles.continuationTitle : styles.title}>
-          {isContinuation ? `${title} (continuação)` : title}
-        </Text>
-
-        {!isContinuation && leadName ? (
-          <Text style={styles.leadLine}>{leadName}</Text>
+        {isFirstPage ? (
+          <>
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.companyLine}>{leadName}</Text>
+            <View style={styles.metaRow}>
+              <Text style={styles.metaText}>Emitido em {toDateLabel(createdAt)}</Text>
+              <Text style={styles.metaText}>Válido até {toDateLabel(validUntil)}</Text>
+            </View>
+          </>
         ) : null}
 
-        {!isContinuation && summaryLines
-          ? summaryLines.map((line, index) => (
-              <Text key={`summary-${index}`} style={styles.intro}>
-                {line}
-              </Text>
-            ))
-          : null}
+        {blocks.map((block, index) => renderBlock(block, index))}
 
-        {!isContinuation && createdAt ? (
-          <View style={styles.metaRow}>
-            <Text style={styles.metaText}>
-              Emitido em: {toDateLabel(createdAt)}
-            </Text>
-            <Text style={styles.metaText}>
-              Validade: {toDateLabel(validUntil)}
-            </Text>
-          </View>
-        ) : null}
-
-        {blocks.map((block, index) => (
-          <React.Fragment key={`${block.kind}-${index}`}>
-            {renderBlock(block, currency)}
-          </React.Fragment>
-        ))}
-
-        {/* Brand Footer */}
         <View style={styles.footer} fixed>
-          <Text></Text>
+          <Text>MAGUI.studio</Text>
           <Text
-            render={({ pageNumber, totalPages }) =>
-              `${pageNumber} / ${totalPages}`
-            }
+            render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
           />
         </View>
       </View>
@@ -951,126 +657,9 @@ export function MaguiProposalTemplate({
   proposal,
   lead,
 }: MaguiProposalTemplateProps) {
-  const currency = proposal.currency || "BRL"
-  const parsedNotes = parseProposalNotes(proposal.notes)
-
-  const summaryLines =
-    parsedNotes.executiveSummary.length > 0
-      ? parsedNotes.executiveSummary
-      : buildFallbackSummary(proposal)
-  const objectives =
-    parsedNotes.objectives.length > 0
-      ? parsedNotes.objectives
-      : buildFallbackObjectives()
-  const expectedImpact =
-    parsedNotes.expectedImpact.length > 0
-      ? parsedNotes.expectedImpact
-      : buildFallbackImpact()
-  const differentials =
-    parsedNotes.differentials.length > 0
-      ? parsedNotes.differentials
-      : buildFallbackDifferentials()
-  const platformFlow =
-    parsedNotes.platformFlow.length > 0
-      ? parsedNotes.platformFlow
-      : buildFallbackPlatformFlow()
-  const processLines = buildProcessLines(proposal.items, parsedNotes.timeline)
-  const nextSteps = buildNextSteps(proposal.validUntil, parsedNotes.nextSteps)
-
-  const overviewBlocks: ContentBlock[] = [
-    ...createTextBlocks("bullets", "Objetivos desta proposta", objectives, 120),
-    ...(parsedNotes.paymentTerms.length > 0
-      ? createTextBlocks(
-          "bullets",
-          "Condicoes de pagamento",
-          parsedNotes.paymentTerms,
-          120
-        )
-      : []),
-    ...createTextBlocks("bullets", "Prazo e ativacao", processLines, 120),
-    ...proposal.items.map(
-      (item, index) =>
-        ({
-          kind: "items",
-          title:
-            index === 0
-              ? "Escopo da entrega"
-              : "Escopo da entrega (continuação)",
-          items: [item],
-        }) satisfies ItemSectionBlock
-    ),
-    ...createTextBlocks("bullets", "Impacto esperado", expectedImpact, 120),
-    ...createTextBlocks(
-      "bullets",
-      "Diferenciais da proposta",
-      differentials,
-      120
-    ),
-    ...(parsedNotes.acceptanceCriteria.length > 0
-      ? createTextBlocks(
-          "bullets",
-          "Critérios de aceite",
-          parsedNotes.acceptanceCriteria,
-          120
-        )
-      : []),
-  ]
-
-  const commercialBlocks: ContentBlock[] = [
-    ...createTextBlocks(
-      "bullets",
-      "Operação pela plataforma",
-      platformFlow,
-      120
-    ),
-    ...(parsedNotes.notIncluded.length > 0
-      ? createTextBlocks(
-          "bullets",
-          "O que não está incluso",
-          parsedNotes.notIncluded,
-          120
-        )
-      : []),
-    ...(parsedNotes.warranty.length > 0
-      ? createTextBlocks(
-          "bullets",
-          "Garantia e ajustes",
-          parsedNotes.warranty,
-          120
-        )
-      : []),
-    ...(parsedNotes.additionalNotes.length > 0
-      ? createTextBlocks(
-          "bullets",
-          "Observações importantes",
-          parsedNotes.additionalNotes,
-          120
-        )
-      : []),
-    ...proposal.items.map(
-      (item, index) =>
-        ({
-          kind: "pricing",
-          title:
-            index === 0
-              ? "Investimento por entrega"
-              : "Investimento por entrega (continuação)",
-          items: [item],
-          currency,
-        }) satisfies PricingSectionBlock
-    ),
-    {
-      kind: "investment",
-      totalValue: proposal.totalValue,
-      currency,
-      itemCount: proposal.items.length,
-      bonusInfo: parsedNotes.bonus.length > 0 ? parsedNotes.bonus[0] : null,
-    },
-    ...createTextBlocks("bullets", "Próximos passos", nextSteps, 120),
-  ]
-
-  const overviewPages = paginateBlocks(overviewBlocks, 320, 440)
-  const commercialPages = paginateBlocks(commercialBlocks, 300, 430)
+  const notes = parseProposalNotes(proposal.notes)
+  const blocks = buildProposalBlocks(proposal, lead, notes)
+  const pages = paginateBlocks(blocks)
 
   return (
     <Document title={proposal.title || "Proposta Comercial"}>
@@ -1079,29 +668,15 @@ export function MaguiProposalTemplate({
         <Image src={FRONT_IMAGE} style={styles.fullBleed} />
       </Page>
 
-      {overviewPages.map((blocks, index) => (
+      {pages.map((pageBlocks, index) => (
         <InternalPage
-          key={`overview-${index}`}
-          kicker="Proposta Comercial"
-          title={proposal.title || "Proposta Comercial"}
+          key={`proposal-${index}`}
+          title={proposal.title || "PROPOSTA COMERCIAL"}
           leadName={lead.companyName}
-          summaryLines={summaryLines}
           createdAt={proposal.createdAt}
           validUntil={proposal.validUntil}
-          isContinuation={index > 0}
-          blocks={blocks}
-          currency={currency}
-        />
-      ))}
-
-      {commercialPages.map((blocks, index) => (
-        <InternalPage
-          key={`commercial-${index}`}
-          kicker="Investimento"
-          title="Estrutura comercial e condições da proposta"
-          isContinuation={index > 0}
-          blocks={blocks}
-          currency={currency}
+          isFirstPage={index === 0}
+          blocks={pageBlocks}
         />
       ))}
 

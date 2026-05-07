@@ -1,12 +1,17 @@
 "use server"
 
-import { AuditActorType, ProposalStatus } from "@/src/generated/client"
+import {
+  AuditActorType,
+  Prisma,
+  ProposalStatus,
+} from "@/src/generated/client"
 import { z } from "zod"
 
 import { triggerProductEvent } from "@/src/lib/email/events"
 import { logger } from "@/src/lib/logger"
 import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
+import { buildProposalScheduleData } from "@/src/lib/project-schedule"
 import { createAuditLog, getCurrentAppUser } from "@/src/lib/project-governance"
 import { revalidateCrmLead } from "@/src/lib/revalidate"
 
@@ -16,6 +21,7 @@ const CreateProposalSchema = z.object({
   currency: z.string().default("BRL"),
   validUntil: z.string().optional(),
   notes: z.string().optional(),
+  executionBusinessDays: z.number().int().positive().optional(),
   items: z.array(
     z.object({
       description: z.string(),
@@ -51,6 +57,9 @@ export async function createProposalAction(
             : null,
           totalValue,
           notes: validated.notes,
+          scheduleData: buildProposalScheduleData({
+            executionBusinessDays: validated.executionBusinessDays ?? null,
+          }),
           items: {
             create: validated.items.map((item) => ({
               description: item.description,
@@ -166,7 +175,10 @@ export async function duplicateProposalAction(id: string) {
 
     const original = await prisma.proposal.findUnique({
       where: { id },
-      include: { items: true },
+      include: {
+        items: true,
+        lead: { select: { companyName: true } },
+      },
     })
 
     if (!original) throw new Error("Proposal not found")
@@ -181,6 +193,8 @@ export async function duplicateProposalAction(id: string) {
           totalValue: original.totalValue,
           currency: original.currency,
           notes: original.notes,
+          scheduleData:
+            (original.scheduleData ?? {}) as Prisma.InputJsonValue,
           items: {
             create: original.items.map((item) => ({
               description: item.description,
@@ -201,7 +215,7 @@ export async function duplicateProposalAction(id: string) {
           action: "proposal.duplicated",
           entityType: "Proposal",
           entityId: duplicated.id,
-          summary: `Proposta "${original.title}" duplicada para ${duplicated.lead.companyName}.`,
+          summary: `Proposta "${original.title}" duplicada para ${original.lead.companyName}.`,
           actorId: actor?.id,
           projectId: null,
           metadata: { originalId: id, totalValue: duplicated.totalValue },

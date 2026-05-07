@@ -116,6 +116,7 @@ export async function getClientProjects(userId: string) {
       status: true,
       progress: true,
       updatedAt: true,
+      scheduleData: true,
       client: {
         select: {
           name: true,
@@ -190,6 +191,7 @@ export async function getClientProjectOverview(id: string, userId: string) {
       status: true,
       progress: true,
       deadline: true,
+      scheduleData: true,
       updates: {
         where: {
           requiresApproval: true,

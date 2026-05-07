@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl"
 
 import { ProjectStatus } from "@/src/generated/client"
 import { CheckCircle, Gear } from "@phosphor-icons/react"
+import { toast } from "sonner"
 
 import { Button } from "@/src/components/ui/button"
 import { Field, FieldGroup, FieldLabel } from "@/src/components/ui/field"
@@ -44,7 +45,12 @@ export function UpdateStatusForm({
     formData.set("status", status)
     formData.set("progress", progress[0].toString())
 
-    await updateProjectStatusAction(formData)
+    const result = await updateProjectStatusAction(formData)
+    if (result.success) {
+      toast.success("Status do projeto atualizado com sucesso.")
+    } else {
+      toast.error(result.error ?? "Não foi possível atualizar o status.")
+    }
     setIsPending(false)
   }
 

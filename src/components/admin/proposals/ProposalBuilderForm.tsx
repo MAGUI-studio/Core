@@ -34,6 +34,7 @@ import { Switch } from "@/src/components/ui/switch"
 import { Textarea } from "@/src/components/ui/textarea"
 
 import { createProposalAction } from "@/src/lib/actions/proposal.actions"
+import { getExecutionDaysLabel } from "@/src/lib/project-schedule"
 
 import {
   PROPOSAL_PRESETS,
@@ -61,6 +62,17 @@ const EMPTY_ITEM: ProposalItemForm = {
 
 const DEFAULT_PLATFORM_FLOW =
   "Toda a comunicação, aprovações, centralização de arquivos e acompanhamento das etapas acontecem pela plataforma da MAGUI. Isso reduz ruído operacional, evita retrabalho e concentra histórico, decisões e materiais em um único ambiente."
+
+const DEFAULT_CONTRACT_ALIGNMENT_NOTES =
+  'O valor investido refere-se à licença de uso da solução em ambiente de produção. O código-fonte e os arquivos editáveis permanecem sob propriedade intelectual da MAGUI.studio, e a assinatura "Desenvolvido por MAGUI.studio" constará no rodapé da entrega, salvo contratação específica de white label.'
+
+function buildContractAlignedTimelineNarrative(days: number | null): string {
+  if (!days || days <= 0) {
+    return "Prazo contratual a definir, com contagem iniciada somente após a validação do briefing e envio dos ativos obrigatórios. A ausência de retorno do cliente por mais de 7 dias corridos suspende o projeto e reprograma a agenda."
+  }
+
+  return `Estimativa de ${days} dias úteis para conclusão total, com iní­cio da contagem apenas após a validação do briefing e do envio dos ativos obrigatórios pelo cliente. A ausência de retorno do cliente por mais de 7 dias corridos suspende o projeto e reprograma a agenda. O cronograma é monitorado em tempo real pela plataforma e pode ser recalculado automaticamente conforme a regra contratual de atraso do cliente.`
+}
 
 function parseCurrencyInput(value: string): number {
   const digits = value.replace(/\D/g, "")
@@ -99,7 +111,7 @@ export function ProposalBuilderForm({
   const [objectives, setObjectives] = React.useState("")
   const [expectedImpact, setExpectedImpact] = React.useState("")
   const [differentials, setDifferentials] = React.useState("")
-  const [timeline, setTimeline] = React.useState("")
+  const [executionBusinessDays, setExecutionBusinessDays] = React.useState(20)
   const [paymentTerms, setPaymentTerms] = React.useState("")
   const [acceptanceCriteria, setAcceptanceCriteria] = React.useState("")
   const [notIncluded, setNotIncluded] = React.useState("")
@@ -112,13 +124,21 @@ export function ProposalBuilderForm({
     { ...EMPTY_ITEM },
   ])
 
+  const timeline = React.useMemo(
+    () => buildContractAlignedTimelineNarrative(executionBusinessDays),
+    [executionBusinessDays]
+  )
+
   const requiredSections = [
     { label: t("builder.leadLabel"), ok: Boolean(selectedLeadId) },
-    { label: t("builder.narrativeTitle"), ok: executiveSummary.trim().length > 0 },
-    { label: t("Briefing.steps.businessGoals.label"), ok: objectives.trim().length > 0 },
-    { label: t("ActionItems.due_date", { date: "" }).replace(":", ""), ok: timeline.trim().length > 0 },
-    { label: t("Dashboard.client_home.links.financial"), ok: paymentTerms.trim().length > 0 },
-    { label: t("Briefing.next_step"), ok: nextSteps.trim().length > 0 },
+    {
+      label: t("builder.narrativeTitle"),
+      ok: executiveSummary.trim().length > 0,
+    },
+    { label: "Objetivos do projeto", ok: objectives.trim().length > 0 },
+    { label: "Prazo contratado", ok: executionBusinessDays > 0 },
+    { label: "Condições de pagamento", ok: paymentTerms.trim().length > 0 },
+    { label: "Próximos passos", ok: nextSteps.trim().length > 0 },
   ]
   const hasInvalidItems = items.some(
     (item) => !item.description.trim() || item.unitValue <= 0
@@ -208,6 +228,7 @@ export function ProposalBuilderForm({
           quantity: 1,
         },
       ])
+      setExecutionBusinessDays(20)
     } else if (category === "institucional") {
       setExecutiveSummary(
         PROPOSAL_PRESETS.executiveSummary[1].content.replace(
@@ -226,6 +247,7 @@ export function ProposalBuilderForm({
           quantity: 1,
         },
       ])
+      setExecutionBusinessDays(20)
     } else if (category === "booking") {
       setExecutiveSummary(
         PROPOSAL_PRESETS.executiveSummary[0].content.replace(
@@ -244,6 +266,7 @@ export function ProposalBuilderForm({
           quantity: 1,
         },
       ])
+      setExecutionBusinessDays(30)
     } else if (category === "estabilidade") {
       setExecutiveSummary(
         PROPOSAL_PRESETS.executiveSummary[2].content.replace(
@@ -262,16 +285,21 @@ export function ProposalBuilderForm({
           quantity: 1,
         },
       ])
+      setExecutionBusinessDays(30)
     }
 
     // Common presets for all categories
     setExpectedImpact(PROPOSAL_PRESETS.expectedImpact[0].content)
     setDifferentials(PROPOSAL_PRESETS.differentials[0].content)
-    setTimeline(PROPOSAL_PRESETS.timeline[0].content)
     setPaymentTerms(PROPOSAL_PRESETS.paymentTerms[0].content)
     setNextSteps(PROPOSAL_PRESETS.nextSteps[0].content)
     setAcceptanceCriteria(PROPOSAL_PRESETS.acceptanceCriteria[0].content)
+    setNotIncluded(
+      PROPOSAL_PRESETS.notIncluded.map((preset) => preset.content).join("\n")
+    )
+    setPlatformFlow(PROPOSAL_PRESETS.platformFlow[0].content)
     setWarranty(PROPOSAL_PRESETS.warranty[0].content)
+    setNotes(DEFAULT_CONTRACT_ALIGNMENT_NOTES)
   }
 
   const [includeConnectBonus, setIncludeConnectBonus] = React.useState(false)
@@ -315,7 +343,6 @@ export function ProposalBuilderForm({
       { value: objectives, label: "Objetivos do projeto" },
       { value: expectedImpact, label: "Impacto esperado" },
       { value: differentials, label: "Diferenciais da entrega" },
-      { value: timeline, label: "Prazo estimado" },
       { value: paymentTerms, label: "Condições de pagamento" },
       { value: platformFlow, label: "Operação pela plataforma" },
       { value: nextSteps, label: "Próximos passos" },
@@ -332,6 +359,11 @@ export function ProposalBuilderForm({
       return
     }
 
+    if (executionBusinessDays <= 0) {
+      toast.error('O campo "Prazo contratado (dias úteis)" é obrigatório')
+      return
+    }
+
     setIsSubmitting(true)
 
     const result = await createProposalAction({
@@ -340,6 +372,7 @@ export function ProposalBuilderForm({
       currency: currency,
       validUntil: validUntil || undefined,
       notes: buildProposalNotes() || undefined,
+      executionBusinessDays,
       items: items.map((item, order) => ({
         ...item,
         description: item.description.trim(),
@@ -381,7 +414,8 @@ export function ProposalBuilderForm({
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-2">
             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-              {t("builder.leadLabel")} <span className="text-destructive">*</span>
+              {t("builder.leadLabel")}{" "}
+              <span className="text-destructive">*</span>
             </Label>
             <Select value={selectedLeadId} onValueChange={setSelectedLeadId}>
               <SelectTrigger
@@ -405,7 +439,8 @@ export function ProposalBuilderForm({
 
           <div className="space-y-2">
             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-              {t("builder.categoryLabel")} <span className="text-destructive">*</span>
+              {t("builder.categoryLabel")}{" "}
+              <span className="text-destructive">*</span>
             </Label>
             <Select
               value={projectCategory}
@@ -436,7 +471,8 @@ export function ProposalBuilderForm({
 
           <div className="space-y-2">
             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-              {t("builder.documentTitleLabel")} <span className="text-destructive">*</span>
+              {t("builder.documentTitleLabel")}{" "}
+              <span className="text-destructive">*</span>
             </Label>
             <Input
               value={title}
@@ -473,7 +509,7 @@ export function ProposalBuilderForm({
           label={`${t("builder.narrativeTitle")} *`}
           value={executiveSummary}
           onChange={setExecutiveSummary}
-          placeholder="Apresente a leitura do momento, a oportunidade e a transformação que esta proposta pretende viabilizar."
+          placeholder={t("builder.narrativePlaceholder")}
           minHeightClassName="min-h-40"
           presets={PROPOSAL_PRESETS.executiveSummary}
           onApplyPreset={(content) =>
@@ -481,18 +517,18 @@ export function ProposalBuilderForm({
           }
         />
         <FieldBlock
-          label={`${t("Briefing.steps.businessGoals.label")} *`}
+          label={`${t("builder.projectGoal")} *`}
           value={objectives}
           onChange={setObjectives}
-          placeholder="Ex: estruturar a presença digital, elevar percepção de valor e melhorar a conversa comercial."
+          placeholder={t("builder.projectGoalPlaceholder")}
           presets={PROPOSAL_PRESETS.objectives}
           onApplyPreset={(content) => handleApplyPreset(setObjectives, content)}
         />
         <FieldBlock
-          label={`${t("Admin.crm.form.valueLabel")} *`}
+          label={`${t("builder.expectedImpact")} *`}
           value={expectedImpact}
           onChange={setExpectedImpact}
-          placeholder="Ex: mais clareza na oferta, melhor apresentação da marca e mais confiança no processo comercial."
+          placeholder={t("builder.expectedImpactPlaceholder")}
           presets={PROPOSAL_PRESETS.expectedImpact}
           onApplyPreset={(content) =>
             handleApplyPreset(setExpectedImpact, content)
@@ -502,28 +538,25 @@ export function ProposalBuilderForm({
 
       <section className="space-y-8">
         <FieldBlock
-          label="Diferenciais da entrega *"
+          label={`${t("builder.differentials")} *`}
           value={differentials}
           onChange={setDifferentials}
-          placeholder="Ex: condução centralizada, linguagem premium, aprovações organizadas e leitura mais profissional do projeto."
+          placeholder={t("builder.differentialsPlaceholder")}
           presets={PROPOSAL_PRESETS.differentials}
           onApplyPreset={(content) =>
             handleApplyPreset(setDifferentials, content)
           }
         />
-        <FieldBlock
-          label="Prazo estimado *"
-          value={timeline}
-          onChange={setTimeline}
-          placeholder="Ex: 20 dias úteis a partir da aprovação e recebimento dos materiais."
-          presets={PROPOSAL_PRESETS.timeline}
-          onApplyPreset={(content) => handleApplyPreset(setTimeline, content)}
+        <ExecutionDaysBlock
+          value={executionBusinessDays}
+          onChange={setExecutionBusinessDays}
+          preview={timeline}
         />
         <FieldBlock
-          label={`${t("Dashboard.client_home.links.financial")} *`}
+          label={`${t("builder.paymentConditions")} *`}
           value={paymentTerms}
           onChange={setPaymentTerms}
-          placeholder="Ex: 50% na aprovação e 50% na etapa final, via PIX ou transferência."
+          placeholder={t("builder.paymentConditionsPlaceholder")}
           presets={PROPOSAL_PRESETS.paymentTerms}
           onApplyPreset={(content) =>
             handleApplyPreset(setPaymentTerms, content)
@@ -539,33 +572,33 @@ export function ProposalBuilderForm({
 
       <section className="space-y-8">
         <FieldBlock
-          label="Critérios de aceite"
+          label={t("builder.acceptanceCriteria")}
           value={acceptanceCriteria}
           onChange={setAcceptanceCriteria}
-          description="O que define que o projeto foi entregue com sucesso."
-          placeholder="Ex: performance acima de 90, design fiel ao aprovado, sem erros técnicos."
+          description={t("builder.acceptanceCriteriaDescription")}
+          placeholder={t("builder.acceptanceCriteriaPlaceholder")}
           presets={PROPOSAL_PRESETS.acceptanceCriteria}
           onApplyPreset={(content) =>
             handleApplyPreset(setAcceptanceCriteria, content)
           }
         />
         <FieldBlock
-          label="O que não está incluso"
+          label={t("builder.notIncluded")}
           value={notIncluded}
           onChange={setNotIncluded}
-          description="Importante para evitar ruídos de expectativa."
-          placeholder="Ex: produção de fotos, gestão de tráfego pago, custos de APIs de terceiros."
+          description={t("builder.notIncludedDescription")}
+          placeholder={t("builder.notIncludedPlaceholder")}
           presets={PROPOSAL_PRESETS.notIncluded}
           onApplyPreset={(content) =>
             handleApplyPreset(setNotIncluded, content)
           }
         />
         <FieldBlock
-          label="Garantia e ajustes"
+          label={t("builder.warranty")}
           value={warranty}
           onChange={setWarranty}
-          description="Prazos e condições para correções após o lançamento."
-          placeholder="Ex: 30 dias de garantia para bugs técnicos."
+          description={t("builder.warrantyDescription")}
+          placeholder={t("builder.warrantyPlaceholder")}
           presets={PROPOSAL_PRESETS.warranty}
           onApplyPreset={(content) => handleApplyPreset(setWarranty, content)}
         />
@@ -607,7 +640,8 @@ export function ProposalBuilderForm({
               >
                 <div className="mb-4 flex items-center justify-between">
                   <p className="text-[10px] font-black uppercase tracking-[0.28em] text-muted-foreground/45">
-                    {t("builder.deliveryLabel")} {String(index + 1).padStart(2, "0")}
+                    {t("builder.deliveryLabel")}{" "}
+                    {String(index + 1).padStart(2, "0")}
                   </p>
                   {items.length > 1 ? (
                     <Button
@@ -633,7 +667,7 @@ export function ProposalBuilderForm({
                         onChange={(e) =>
                           handleItemChange(index, "description", e.target.value)
                         }
-                        placeholder="Ex: Landing page comercial"
+                        placeholder={t("builder.deliveryNamePlaceholder")}
                         className="h-12 rounded-2xl border-border/40 bg-muted/10 px-4 text-sm font-medium shadow-none focus-visible:ring-1 focus-visible:ring-brand-primary/30"
                       />
                       <div className="flex flex-wrap gap-1.5">
@@ -658,7 +692,8 @@ export function ProposalBuilderForm({
 
                   <div className="space-y-2 md:col-span-4">
                     <Label className="pl-1 text-[8px] font-bold uppercase tracking-widest text-muted-foreground/40">
-                      {t("builder.unitValueLabel")} <span className="text-destructive">*</span>
+                      {t("builder.unitValueLabel")}{" "}
+                      <span className="text-destructive">*</span>
                     </Label>
                     <div className="relative">
                       <Input
@@ -679,7 +714,8 @@ export function ProposalBuilderForm({
 
                   <div className="space-y-2 md:col-span-2">
                     <Label className="pl-1 text-[8px] font-bold uppercase tracking-widest text-muted-foreground/40">
-                      {t("builder.quantityLabel")} <span className="text-destructive">*</span>
+                      {t("builder.quantityLabel")}{" "}
+                      <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       type="number"
@@ -709,7 +745,9 @@ export function ProposalBuilderForm({
                             e.target.value
                           )
                         }
-                        placeholder={t("builder.commercialExplanationPlaceholder")}
+                        placeholder={t(
+                          "builder.commercialExplanationPlaceholder"
+                        )}
                         className="min-h-28 rounded-2xl border-border/40 bg-muted/10 px-4 py-3 text-sm font-medium shadow-none focus-visible:ring-1 focus-visible:ring-brand-primary/30"
                       />
                       <div className="flex flex-wrap gap-2">
@@ -856,6 +894,47 @@ function SectionHeading({
       <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground/70">
         {description}
       </p>
+    </div>
+  )
+}
+
+function ExecutionDaysBlock({
+  value,
+  onChange,
+  preview,
+}: {
+  value: number
+  onChange: (value: number) => void
+  preview: string
+}): React.JSX.Element {
+  const t = useTranslations("Proposals")
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-4">
+        <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+          {t("builder.executionDaysLabel")} *
+        </Label>
+        <div className="rounded-full bg-brand-primary/8 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-brand-primary">
+          {getExecutionDaysLabel(value)}
+        </div>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-[11rem_minmax(0,1fr)]">
+        <Input
+          type="number"
+          min={1}
+          step={1}
+          value={value}
+          onChange={(event) =>
+            onChange(Math.max(1, Number(event.target.value) || 1))
+          }
+          className="h-14 rounded-2xl border-border/40 bg-muted/10 px-5 text-sm font-black transition-all focus:border-brand-primary/50 focus:bg-muted/20"
+        />
+        <div className="rounded-2xl border border-border/40 bg-muted/10 px-5 py-4 text-sm leading-relaxed text-muted-foreground/75">
+          {preview}
+        </div>
+      </div>
     </div>
   )
 }

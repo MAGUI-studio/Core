@@ -12,6 +12,7 @@ import {
 import { logger } from "@/src/lib/logger"
 import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
+import { getExecutionDaysLabel, normalizeProposalScheduleData } from "@/src/lib/project-schedule"
 import { createAuditLog, getCurrentAppUser } from "@/src/lib/project-governance"
 
 type ContractClauseSeed = {
@@ -185,6 +186,8 @@ export async function getProposalContractPrefillAction(proposalId: string) {
         ? (existing.commercialData as Record<string, unknown>)
         : null
 
+    const proposalSchedule = normalizeProposalScheduleData(proposal.scheduleData)
+
     const prefill = {
       proposalId: proposal.id,
       proposalTitle: proposal.title,
@@ -216,7 +219,10 @@ export async function getProposalContractPrefillAction(proposalId: string) {
         "",
       renewalValue: String(existingCommercial?.renewalValue ?? ""),
       totalValueLabel: formatCurrencyBRL(proposal.totalValue, proposal.currency),
-      timelinePreview: parseProposalNotes(proposal.notes).timeline.join(" "),
+      timelinePreview:
+        proposalSchedule.executionBusinessDays
+          ? getExecutionDaysLabel(proposalSchedule.executionBusinessDays)
+          : parseProposalNotes(proposal.notes).timeline.join(" "),
     }
 
     return { success: true, prefill }
@@ -276,6 +282,7 @@ export async function createContractFromProposalAction(
         totalValue: proposal.totalValue,
         currency: proposal.currency,
         notes: proposal.notes,
+        scheduleData: proposal.scheduleData,
         items: proposal.items,
       },
       form: formData,
@@ -310,6 +317,8 @@ export async function createContractFromProposalAction(
       currency: proposal.currency,
       paymentTerms: parsedNotes.paymentTerms,
       timeline: parsedNotes.timeline,
+      executionBusinessDays:
+        normalizeProposalScheduleData(proposal.scheduleData).executionBusinessDays,
       renewalValue: data.renewalValue,
       contractDate: new Date().toISOString(),
     }

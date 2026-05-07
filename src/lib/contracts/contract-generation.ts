@@ -1,3 +1,5 @@
+import { getProposalExecutionDaysFromSchedule } from "@/src/lib/project-schedule"
+
 type ProposalItemInput = {
   description: string
   longDescription?: string | null
@@ -9,6 +11,7 @@ type ProposalSourceInput = {
   totalValue: number
   currency?: string | null
   notes?: string | null
+  scheduleData?: unknown
   items: ProposalItemInput[]
 }
 
@@ -210,7 +213,13 @@ function buildExcludedScopeClause(parsedNotes: ParsedProposalNotes) {
     .join("; ")}.`
 }
 
-function extractTimelineDays(parsedNotes: ParsedProposalNotes) {
+function extractTimelineDays(
+  parsedNotes: ParsedProposalNotes,
+  scheduleData?: unknown
+) {
+  const structuredDays = getProposalExecutionDaysFromSchedule(scheduleData)
+  if (structuredDays) return String(structuredDays)
+
   const timelineText = parsedNotes.timeline.join(" ")
   const match = timelineText.match(/(\d+(?:\s*a\s*\d+)?)\s*dias?\s*(?:úteis|uteis)?/i)
 
@@ -248,7 +257,7 @@ export function buildContractText({
 }: BuildContractTextInput) {
   const parsedNotes = parseProposalNotes(proposal.notes)
   const totalValue = formatCurrencyBRL(proposal.totalValue, proposal.currency ?? "BRL")
-  const executionDays = extractTimelineDays(parsedNotes)
+  const executionDays = extractTimelineDays(parsedNotes, proposal.scheduleData)
   const executionDaysLabel = buildExecutionDaysLabel(executionDays)
   const renewalValue = sanitizeCurrencyFragment(form.renewalValue)
   const clauseOne = buildObjectClauseOne(proposal.items, proposal.title)

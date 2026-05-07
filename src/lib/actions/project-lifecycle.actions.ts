@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server"
 
 import {
   AuditActorType,
+  InstallmentStatus,
   InvoiceKind,
   NotificationType,
   ProjectCategory,
@@ -15,6 +16,7 @@ import { addDays } from "date-fns"
 import { logger } from "@/src/lib/logger"
 import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
+import { buildInitialProjectScheduleData } from "@/src/lib/project-schedule"
 import {
   getAuditOriginLabel,
   getCurrentAppUser,
@@ -52,6 +54,7 @@ export async function createProjectAction(
     budget: formData.get("budget"),
     deadline: formData.get("deadline"),
     startDate: formData.get("startDate"),
+    executionBusinessDays: formData.get("executionBusinessDays"),
     category: formData.get("category"),
     serviceCategoryId: formData.get("serviceCategoryId"),
     customValue: formData.get("customValue"),
@@ -92,6 +95,13 @@ export async function createProjectAction(
         )
       : 0
 
+    const executionBusinessDays = data.executionBusinessDays
+      ? Number.parseInt(data.executionBusinessDays, 10)
+      : null
+    const scheduleData = buildInitialProjectScheduleData({
+      executionBusinessDays,
+    })
+
     const project = await prisma.$transaction(async (tx) => {
       const p = await tx.project.create({
         data: {
@@ -105,6 +115,7 @@ export async function createProjectAction(
           serviceCategoryId: data.serviceCategoryId || null,
           deadline: data.deadline ? new Date(data.deadline) : null,
           startDate: data.startDate ? new Date(data.startDate) : new Date(),
+          scheduleData,
           category: data.category as ProjectCategory,
           clientId: data.clientId,
           status: ProjectStatus.STRATEGY,
@@ -162,6 +173,7 @@ export async function createProjectAction(
               hasInternationalization: p.hasInternationalization,
               internationalizationFee: p.internationalizationFee,
               deadline: p.deadline?.toISOString() ?? null,
+              scheduleData,
             },
             relatedEntities: [
               {
@@ -298,6 +310,27 @@ export async function updateProjectStatusAction(
 
   try {
     await prisma.$transaction(async (tx) => {
+      if (status === ProjectStatus.LAUNCHED) {
+        const openInstallments = await tx.installment.count({
+          where: {
+            invoice: {
+              projectId: id,
+              kind: InvoiceKind.PROJECT,
+              status: { not: "CANCELLED" },
+            },
+            status: {
+              notIn: [InstallmentStatus.PAID, InstallmentStatus.WAIVED],
+            },
+          },
+        })
+
+        if (openInstallments > 0) {
+          throw new Error(
+            "Publicação bloqueada: quite a parcela final antes de marcar o projeto como lançado."
+          )
+        }
+      }
+
       const previousProject = await tx.project.findUnique({
         where: { id },
         select: {

@@ -28,6 +28,7 @@ import {
   PopoverTrigger,
 } from "@/src/components/ui/popover"
 
+import { buildProjectScheduleView } from "@/src/lib/project-schedule"
 import { formatLocalTime } from "@/src/lib/utils/utils"
 
 interface ProjectSwitcherProps {
@@ -96,37 +97,49 @@ export function ProjectSwitcher({
             </CommandEmpty>
             <CommandGroup className="p-3">
               {projects.map((project) => (
-                <CommandItem
-                  key={project.id}
-                  value={project.name}
-                  onSelect={() => {
-                    onProjectSelect(project.id)
-                    setOpen(false)
-                  }}
-                  className="group mb-1 flex cursor-pointer items-center justify-between rounded-2xl px-4 py-4 transition-all hover:bg-brand-primary/[0.04] aria-selected:bg-brand-primary/5"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted/15 text-muted-foreground/60 transition-colors group-hover:bg-brand-primary/10 group-hover:text-brand-primary">
-                      <FolderSimple weight="fill" className="size-5" />
-                    </div>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[11px] font-black uppercase tracking-tight text-foreground/80">
-                        {project.name}
-                      </span>
-                      <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground/40">
-                        {t("status.deadline")}:{" "}
-                        {project.deadline
-                          ? formatLocalTime(new Date(project.deadline), "UTC")
-                          : "---"}
-                      </span>
-                    </div>
-                  </div>
-                  {selectedProject?.id === project.id && (
-                    <div className="flex size-6 items-center justify-center rounded-full bg-brand-primary/10 text-brand-primary">
-                      <Check weight="bold" className="size-3" />
-                    </div>
-                  )}
-                </CommandItem>
+                (() => {
+                  const schedule = buildProjectScheduleView(
+                    project.scheduleData,
+                    project.status
+                  )
+
+                  return (
+                    <CommandItem
+                      key={project.id}
+                      value={project.name}
+                      onSelect={() => {
+                        onProjectSelect(project.id)
+                        setOpen(false)
+                      }}
+                      className="group mb-1 flex cursor-pointer items-center justify-between rounded-2xl px-4 py-4 transition-all hover:bg-brand-primary/[0.04] aria-selected:bg-brand-primary/5"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted/15 text-muted-foreground/60 transition-colors group-hover:bg-brand-primary/10 group-hover:text-brand-primary">
+                          <FolderSimple weight="fill" className="size-5" />
+                        </div>
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-[11px] font-black uppercase tracking-tight text-foreground/80">
+                            {project.name}
+                          </span>
+                          <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground/40">
+                            Previsão:{" "}
+                            {schedule.currentForecastDate
+                              ? formatLocalTime(
+                                  new Date(schedule.currentForecastDate),
+                                  "UTC"
+                                )
+                              : "aguardando briefing"}
+                          </span>
+                        </div>
+                      </div>
+                      {selectedProject?.id === project.id && (
+                        <div className="flex size-6 items-center justify-center rounded-full bg-brand-primary/10 text-brand-primary">
+                          <Check weight="bold" className="size-3" />
+                        </div>
+                      )}
+                    </CommandItem>
+                  )
+                })()
               ))}
             </CommandGroup>
           </CommandList>

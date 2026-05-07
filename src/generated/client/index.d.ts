@@ -423,7 +423,9 @@ export const ScheduledReminderType: {
   LEAD_STALLED: 'LEAD_STALLED',
   APPROVAL_PENDING: 'APPROVAL_PENDING',
   PROJECT_SILENT: 'PROJECT_SILENT',
-  ACTION_ITEM_OVERDUE: 'ACTION_ITEM_OVERDUE'
+  ACTION_ITEM_OVERDUE: 'ACTION_ITEM_OVERDUE',
+  CLIENT_ON_HOLD: 'CLIENT_ON_HOLD',
+  PROJECT_ABANDONED: 'PROJECT_ABANDONED'
 };
 
 export type ScheduledReminderType = (typeof ScheduledReminderType)[keyof typeof ScheduledReminderType]
@@ -20122,6 +20124,7 @@ export namespace Prisma {
     paymentMethod: number
     serviceCategoryId: number
     briefing: number
+    scheduleData: number
     startDate: number
     deadline: number
     liveUrl: number
@@ -20203,6 +20206,7 @@ export namespace Prisma {
     paymentMethod?: true
     serviceCategoryId?: true
     briefing?: true
+    scheduleData?: true
     startDate?: true
     deadline?: true
     liveUrl?: true
@@ -20313,6 +20317,7 @@ export namespace Prisma {
     paymentMethod: $Enums.PaymentMethod
     serviceCategoryId: string | null
     briefing: JsonValue | null
+    scheduleData: JsonValue | null
     startDate: Date
     deadline: Date | null
     liveUrl: string | null
@@ -20355,6 +20360,7 @@ export namespace Prisma {
     paymentMethod?: boolean
     serviceCategoryId?: boolean
     briefing?: boolean
+    scheduleData?: boolean
     startDate?: boolean
     deadline?: boolean
     liveUrl?: boolean
@@ -20394,6 +20400,7 @@ export namespace Prisma {
     paymentMethod?: boolean
     serviceCategoryId?: boolean
     briefing?: boolean
+    scheduleData?: boolean
     startDate?: boolean
     deadline?: boolean
     liveUrl?: boolean
@@ -20419,6 +20426,7 @@ export namespace Prisma {
     paymentMethod?: boolean
     serviceCategoryId?: boolean
     briefing?: boolean
+    scheduleData?: boolean
     startDate?: boolean
     deadline?: boolean
     liveUrl?: boolean
@@ -20444,6 +20452,7 @@ export namespace Prisma {
     paymentMethod?: boolean
     serviceCategoryId?: boolean
     briefing?: boolean
+    scheduleData?: boolean
     startDate?: boolean
     deadline?: boolean
     liveUrl?: boolean
@@ -20453,7 +20462,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "status" | "category" | "progress" | "budget" | "customValue" | "hasInternationalization" | "internationalizationFee" | "paymentMethod" | "serviceCategoryId" | "briefing" | "startDate" | "deadline" | "liveUrl" | "repositoryUrl" | "clientId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "status" | "category" | "progress" | "budget" | "customValue" | "hasInternationalization" | "internationalizationFee" | "paymentMethod" | "serviceCategoryId" | "briefing" | "scheduleData" | "startDate" | "deadline" | "liveUrl" | "repositoryUrl" | "clientId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     serviceCategory?: boolean | Project$serviceCategoryArgs<ExtArgs>
     briefingNotes?: boolean | Project$briefingNotesArgs<ExtArgs>
@@ -20514,6 +20523,7 @@ export namespace Prisma {
       paymentMethod: $Enums.PaymentMethod
       serviceCategoryId: string | null
       briefing: Prisma.JsonValue | null
+      scheduleData: Prisma.JsonValue | null
       startDate: Date
       deadline: Date | null
       liveUrl: string | null
@@ -20972,6 +20982,7 @@ export namespace Prisma {
     readonly paymentMethod: FieldRef<"Project", 'PaymentMethod'>
     readonly serviceCategoryId: FieldRef<"Project", 'String'>
     readonly briefing: FieldRef<"Project", 'Json'>
+    readonly scheduleData: FieldRef<"Project", 'Json'>
     readonly startDate: FieldRef<"Project", 'DateTime'>
     readonly deadline: FieldRef<"Project", 'DateTime'>
     readonly liveUrl: FieldRef<"Project", 'String'>
@@ -41569,6 +41580,7 @@ export namespace Prisma {
     totalValue: number
     currency: number
     notes: number
+    scheduleData: number
     acceptedAt: number
     acceptedIp: number
     leadId: number
@@ -41632,6 +41644,7 @@ export namespace Prisma {
     totalValue?: true
     currency?: true
     notes?: true
+    scheduleData?: true
     acceptedAt?: true
     acceptedIp?: true
     leadId?: true
@@ -41736,6 +41749,7 @@ export namespace Prisma {
     totalValue: number
     currency: string
     notes: string | null
+    scheduleData: JsonValue | null
     acceptedAt: Date | null
     acceptedIp: string | null
     leadId: string
@@ -41772,6 +41786,7 @@ export namespace Prisma {
     totalValue?: boolean
     currency?: boolean
     notes?: boolean
+    scheduleData?: boolean
     acceptedAt?: boolean
     acceptedIp?: boolean
     leadId?: boolean
@@ -41795,6 +41810,7 @@ export namespace Prisma {
     totalValue?: boolean
     currency?: boolean
     notes?: boolean
+    scheduleData?: boolean
     acceptedAt?: boolean
     acceptedIp?: boolean
     leadId?: boolean
@@ -41814,6 +41830,7 @@ export namespace Prisma {
     totalValue?: boolean
     currency?: boolean
     notes?: boolean
+    scheduleData?: boolean
     acceptedAt?: boolean
     acceptedIp?: boolean
     leadId?: boolean
@@ -41833,6 +41850,7 @@ export namespace Prisma {
     totalValue?: boolean
     currency?: boolean
     notes?: boolean
+    scheduleData?: boolean
     acceptedAt?: boolean
     acceptedIp?: boolean
     leadId?: boolean
@@ -41841,7 +41859,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProposalOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "title" | "status" | "validUntil" | "totalValue" | "currency" | "notes" | "acceptedAt" | "acceptedIp" | "leadId" | "projectId" | "createdAt" | "updatedAt", ExtArgs["result"]["proposal"]>
+  export type ProposalOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "title" | "status" | "validUntil" | "totalValue" | "currency" | "notes" | "scheduleData" | "acceptedAt" | "acceptedIp" | "leadId" | "projectId" | "createdAt" | "updatedAt", ExtArgs["result"]["proposal"]>
   export type ProposalInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     lead?: boolean | LeadDefaultArgs<ExtArgs>
     project?: boolean | Proposal$projectArgs<ExtArgs>
@@ -41877,6 +41895,7 @@ export namespace Prisma {
       totalValue: number
       currency: string
       notes: string | null
+      scheduleData: Prisma.JsonValue | null
       acceptedAt: Date | null
       acceptedIp: string | null
       leadId: string
@@ -42319,6 +42338,7 @@ export namespace Prisma {
     readonly totalValue: FieldRef<"Proposal", 'Int'>
     readonly currency: FieldRef<"Proposal", 'String'>
     readonly notes: FieldRef<"Proposal", 'String'>
+    readonly scheduleData: FieldRef<"Proposal", 'Json'>
     readonly acceptedAt: FieldRef<"Proposal", 'DateTime'>
     readonly acceptedIp: FieldRef<"Proposal", 'String'>
     readonly leadId: FieldRef<"Proposal", 'String'>
@@ -52471,6 +52491,7 @@ export namespace Prisma {
     paymentMethod: 'paymentMethod',
     serviceCategoryId: 'serviceCategoryId',
     briefing: 'briefing',
+    scheduleData: 'scheduleData',
     startDate: 'startDate',
     deadline: 'deadline',
     liveUrl: 'liveUrl',
@@ -52766,6 +52787,7 @@ export namespace Prisma {
     totalValue: 'totalValue',
     currency: 'currency',
     notes: 'notes',
+    scheduleData: 'scheduleData',
     acceptedAt: 'acceptedAt',
     acceptedIp: 'acceptedIp',
     leadId: 'leadId',
@@ -54633,6 +54655,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFilter<"Project"> | $Enums.PaymentMethod
     serviceCategoryId?: StringNullableFilter<"Project"> | string | null
     briefing?: JsonNullableFilter<"Project">
+    scheduleData?: JsonNullableFilter<"Project">
     startDate?: DateTimeFilter<"Project"> | Date | string
     deadline?: DateTimeNullableFilter<"Project"> | Date | string | null
     liveUrl?: StringNullableFilter<"Project"> | string | null
@@ -54671,6 +54694,7 @@ export namespace Prisma {
     paymentMethod?: SortOrder
     serviceCategoryId?: SortOrderInput | SortOrder
     briefing?: SortOrderInput | SortOrder
+    scheduleData?: SortOrderInput | SortOrder
     startDate?: SortOrder
     deadline?: SortOrderInput | SortOrder
     liveUrl?: SortOrderInput | SortOrder
@@ -54712,6 +54736,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFilter<"Project"> | $Enums.PaymentMethod
     serviceCategoryId?: StringNullableFilter<"Project"> | string | null
     briefing?: JsonNullableFilter<"Project">
+    scheduleData?: JsonNullableFilter<"Project">
     startDate?: DateTimeFilter<"Project"> | Date | string
     deadline?: DateTimeNullableFilter<"Project"> | Date | string | null
     liveUrl?: StringNullableFilter<"Project"> | string | null
@@ -54750,6 +54775,7 @@ export namespace Prisma {
     paymentMethod?: SortOrder
     serviceCategoryId?: SortOrderInput | SortOrder
     briefing?: SortOrderInput | SortOrder
+    scheduleData?: SortOrderInput | SortOrder
     startDate?: SortOrder
     deadline?: SortOrderInput | SortOrder
     liveUrl?: SortOrderInput | SortOrder
@@ -54781,6 +54807,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodWithAggregatesFilter<"Project"> | $Enums.PaymentMethod
     serviceCategoryId?: StringNullableWithAggregatesFilter<"Project"> | string | null
     briefing?: JsonNullableWithAggregatesFilter<"Project">
+    scheduleData?: JsonNullableWithAggregatesFilter<"Project">
     startDate?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     deadline?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
     liveUrl?: StringNullableWithAggregatesFilter<"Project"> | string | null
@@ -56228,6 +56255,7 @@ export namespace Prisma {
     totalValue?: IntFilter<"Proposal"> | number
     currency?: StringFilter<"Proposal"> | string
     notes?: StringNullableFilter<"Proposal"> | string | null
+    scheduleData?: JsonNullableFilter<"Proposal">
     acceptedAt?: DateTimeNullableFilter<"Proposal"> | Date | string | null
     acceptedIp?: StringNullableFilter<"Proposal"> | string | null
     leadId?: StringFilter<"Proposal"> | string
@@ -56250,6 +56278,7 @@ export namespace Prisma {
     totalValue?: SortOrder
     currency?: SortOrder
     notes?: SortOrderInput | SortOrder
+    scheduleData?: SortOrderInput | SortOrder
     acceptedAt?: SortOrderInput | SortOrder
     acceptedIp?: SortOrderInput | SortOrder
     leadId?: SortOrder
@@ -56275,6 +56304,7 @@ export namespace Prisma {
     totalValue?: IntFilter<"Proposal"> | number
     currency?: StringFilter<"Proposal"> | string
     notes?: StringNullableFilter<"Proposal"> | string | null
+    scheduleData?: JsonNullableFilter<"Proposal">
     acceptedAt?: DateTimeNullableFilter<"Proposal"> | Date | string | null
     acceptedIp?: StringNullableFilter<"Proposal"> | string | null
     leadId?: StringFilter<"Proposal"> | string
@@ -56297,6 +56327,7 @@ export namespace Prisma {
     totalValue?: SortOrder
     currency?: SortOrder
     notes?: SortOrderInput | SortOrder
+    scheduleData?: SortOrderInput | SortOrder
     acceptedAt?: SortOrderInput | SortOrder
     acceptedIp?: SortOrderInput | SortOrder
     leadId?: SortOrder
@@ -56322,6 +56353,7 @@ export namespace Prisma {
     totalValue?: IntWithAggregatesFilter<"Proposal"> | number
     currency?: StringWithAggregatesFilter<"Proposal"> | string
     notes?: StringNullableWithAggregatesFilter<"Proposal"> | string | null
+    scheduleData?: JsonNullableWithAggregatesFilter<"Proposal">
     acceptedAt?: DateTimeNullableWithAggregatesFilter<"Proposal"> | Date | string | null
     acceptedIp?: StringNullableWithAggregatesFilter<"Proposal"> | string | null
     leadId?: StringWithAggregatesFilter<"Proposal"> | string
@@ -58462,6 +58494,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -58499,6 +58532,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -58534,6 +58568,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58571,6 +58606,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58607,6 +58643,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -58629,6 +58666,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58651,6 +58689,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -60229,6 +60268,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     createdAt?: Date | string
@@ -60249,6 +60289,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     leadId: string
@@ -60269,6 +60310,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60289,6 +60331,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: StringFieldUpdateOperationsInput | string
@@ -60309,6 +60352,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     leadId: string
@@ -60326,6 +60370,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60341,6 +60386,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: StringFieldUpdateOperationsInput | string
@@ -62434,6 +62480,7 @@ export namespace Prisma {
     paymentMethod?: SortOrder
     serviceCategoryId?: SortOrder
     briefing?: SortOrder
+    scheduleData?: SortOrder
     startDate?: SortOrder
     deadline?: SortOrder
     liveUrl?: SortOrder
@@ -63610,6 +63657,7 @@ export namespace Prisma {
     totalValue?: SortOrder
     currency?: SortOrder
     notes?: SortOrder
+    scheduleData?: SortOrder
     acceptedAt?: SortOrder
     acceptedIp?: SortOrder
     leadId?: SortOrder
@@ -67763,6 +67811,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -67799,6 +67848,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -68447,6 +68497,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFilter<"Project"> | $Enums.PaymentMethod
     serviceCategoryId?: StringNullableFilter<"Project"> | string | null
     briefing?: JsonNullableFilter<"Project">
+    scheduleData?: JsonNullableFilter<"Project">
     startDate?: DateTimeFilter<"Project"> | Date | string
     deadline?: DateTimeNullableFilter<"Project"> | Date | string | null
     liveUrl?: StringNullableFilter<"Project"> | string | null
@@ -70049,6 +70100,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     createdAt?: Date | string
@@ -70068,6 +70120,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     projectId?: string | null
@@ -70275,6 +70328,7 @@ export namespace Prisma {
     totalValue?: IntFilter<"Proposal"> | number
     currency?: StringFilter<"Proposal"> | string
     notes?: StringNullableFilter<"Proposal"> | string | null
+    scheduleData?: JsonNullableFilter<"Proposal">
     acceptedAt?: DateTimeNullableFilter<"Proposal"> | Date | string | null
     acceptedIp?: StringNullableFilter<"Proposal"> | string | null
     leadId?: StringFilter<"Proposal"> | string
@@ -70816,6 +70870,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -70851,6 +70906,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -71272,6 +71328,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     createdAt?: Date | string
@@ -71291,6 +71348,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     leadId: string
@@ -72048,6 +72106,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -72084,6 +72143,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -72406,6 +72466,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -72442,6 +72503,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73023,6 +73085,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -73059,6 +73122,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -73094,6 +73158,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     createdAt?: Date | string
@@ -73113,6 +73178,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     leadId: string
@@ -73152,6 +73218,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73188,6 +73255,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73229,6 +73297,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -73248,6 +73317,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: StringFieldUpdateOperationsInput | string
@@ -73271,6 +73341,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -73307,6 +73378,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -73357,6 +73429,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73393,6 +73466,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73427,6 +73501,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -73463,6 +73538,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -73513,6 +73589,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73549,6 +73626,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73583,6 +73661,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -73619,6 +73698,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -73736,6 +73816,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73772,6 +73853,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73879,6 +73961,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -73915,6 +73998,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -74025,6 +74109,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74061,6 +74146,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74443,6 +74529,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -74479,6 +74566,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -74529,6 +74617,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74565,6 +74654,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74599,6 +74689,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -74635,6 +74726,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -74685,6 +74777,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74721,6 +74814,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74755,6 +74849,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -74791,6 +74886,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -74841,6 +74937,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74877,6 +74974,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74978,6 +75076,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -75014,6 +75113,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -75137,6 +75237,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75173,6 +75274,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75414,6 +75516,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -75450,6 +75553,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -75573,6 +75677,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75609,6 +75714,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75696,6 +75802,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -75732,6 +75839,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -75954,6 +76062,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75990,6 +76099,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76108,6 +76218,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     createdAt?: Date | string
@@ -76127,6 +76238,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     leadId: string
@@ -76162,6 +76274,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -76181,6 +76294,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: StringFieldUpdateOperationsInput | string
@@ -76344,6 +76458,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -76380,6 +76495,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -76482,6 +76598,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     createdAt?: Date | string
@@ -76501,6 +76618,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     leadId: string
@@ -76633,6 +76751,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76669,6 +76788,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76783,6 +76903,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -76802,6 +76923,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: StringFieldUpdateOperationsInput | string
@@ -77595,6 +77717,7 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -77769,6 +77892,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -77805,6 +77929,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -77840,6 +77965,7 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78601,6 +78727,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     projectId?: string | null
@@ -78686,6 +78813,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -78705,6 +78833,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78724,6 +78853,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78806,6 +78936,7 @@ export namespace Prisma {
     internationalizationFee?: number | null
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: Date | string
     deadline?: Date | string | null
     liveUrl?: string | null
@@ -78828,6 +78959,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78863,6 +78995,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78898,6 +79031,7 @@ export namespace Prisma {
     internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -79008,6 +79142,7 @@ export namespace Prisma {
     totalValue?: number
     currency?: string
     notes?: string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: Date | string | null
     acceptedIp?: string | null
     leadId: string
@@ -79339,6 +79474,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79358,6 +79494,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: StringFieldUpdateOperationsInput | string
@@ -79377,6 +79514,7 @@ export namespace Prisma {
     totalValue?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     acceptedIp?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: StringFieldUpdateOperationsInput | string

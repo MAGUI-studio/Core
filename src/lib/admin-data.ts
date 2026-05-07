@@ -12,9 +12,48 @@ import {
 
 import { cacheTags } from "@/src/lib/cache-tags"
 import prisma from "@/src/lib/prisma"
+import { buildProjectScheduleView } from "@/src/lib/project-schedule"
 import { getLeadHealth } from "@/src/lib/utils/lead-health"
 
 import { CACHE_TTL } from "@/src/config/cache"
+
+function getUpcomingScheduleProjects<T extends {
+  id: string
+  name: string
+  status: ProjectStatus
+  scheduleData?: unknown
+  deadline?: Date | null
+  progress?: number
+  client?: { name: string | null; email: string }
+}>(projects: T[], today: Date, nextSevenDays: Date) {
+  return projects
+    .map((project) => {
+      const schedule = buildProjectScheduleView(
+        project.scheduleData,
+        project.status
+      )
+      const forecastDate =
+        schedule.currentForecastDate ??
+        (project.deadline ? new Date(project.deadline) : null)
+
+      return {
+        ...project,
+        forecastDate,
+        schedule,
+      }
+    })
+    .filter(
+      (project) =>
+        project.forecastDate &&
+        project.forecastDate > today &&
+        project.forecastDate < nextSevenDays
+    )
+    .sort(
+      (a, b) =>
+        (a.forecastDate?.getTime() ?? Number.MAX_SAFE_INTEGER) -
+        (b.forecastDate?.getTime() ?? Number.MAX_SAFE_INTEGER)
+    )
+}
 
 const getAdminProjectRowsCached = (page: number = 1, limit: number = 20) =>
   unstable_cache(
@@ -116,13 +155,13 @@ const getAdminDashboardAttentionCached = unstable_cache(
     const today = new Date(todayIso)
     const nextSevenDays = new Date(today.getTime() + 7 * 86_400_000)
 
-    const [
-      pendingApprovals,
-      deadlineProjects,
-      stagnantLeads,
-      overdueActionItems,
-      silentProjects,
-    ] = await Promise.all([
+      const [
+        pendingApprovals,
+        deadlineProjectsRaw,
+        stagnantLeads,
+        overdueActionItems,
+        silentProjects,
+      ] = await Promise.all([
       prisma.update.findMany({
         where: {
           requiresApproval: true,
@@ -132,14 +171,18 @@ const getAdminDashboardAttentionCached = unstable_cache(
         orderBy: { createdAt: "desc" },
         take: 5,
       }),
-      prisma.project.findMany({
-        where: {
-          status: { not: ProjectStatus.LAUNCHED },
-          deadline: { gt: today, lt: nextSevenDays },
-        },
-        select: { id: true, name: true, deadline: true },
-        take: 5,
-      }),
+        prisma.project.findMany({
+          where: {
+            status: { not: ProjectStatus.LAUNCHED },
+          },
+          select: {
+            id: true,
+            name: true,
+            deadline: true,
+            status: true,
+            scheduleData: true,
+          },
+        }),
       prisma.lead.findMany({
         where: {
           status: { in: [LeadStatus.GARIMPAGEM, LeadStatus.CONTATO_REALIZADO] },
@@ -168,7 +211,13 @@ const getAdminDashboardAttentionCached = unstable_cache(
           },
         },
       }),
-    ])
+      ])
+
+    const deadlineProjects = getUpcomingScheduleProjects(
+      deadlineProjectsRaw,
+      today,
+      nextSevenDays
+    ).slice(0, 5)
 
     const projectsNeedingUpdates = silentProjects
       .filter((p) => {
@@ -198,20 +247,20 @@ const getAdminDashboardAgendaCached = unstable_cache(
     const today = new Date(todayIso)
     const nextSevenDays = new Date(today.getTime() + 7 * 86_400_000)
 
-    const [deadlines, actionItems] = await Promise.all([
+    const [deadlinesRaw, actionItems] = await Promise.all([
       prisma.project.findMany({
         where: {
           status: { not: ProjectStatus.LAUNCHED },
-          deadline: { gt: today, lt: nextSevenDays },
         },
         select: {
           id: true,
           name: true,
           deadline: true,
+          status: true,
+          scheduleData: true,
           progress: true,
           client: { select: { name: true, email: true } },
         },
-        take: 10,
       }),
       prisma.actionItem.findMany({
         where: {
@@ -223,6 +272,12 @@ const getAdminDashboardAgendaCached = unstable_cache(
         take: 10,
       }),
     ])
+
+    const deadlines = getUpcomingScheduleProjects(
+      deadlinesRaw,
+      today,
+      nextSevenDays
+    ).slice(0, 10)
 
     return { deadlines, actionItems }
   },

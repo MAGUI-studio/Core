@@ -64,7 +64,7 @@ export default async function ProposalsPage(): Promise<React.JSX.Element> {
 
         <Button
           asChild
-          className="h-12 rounded-full px-7 text-[10px] font-black uppercase tracking-[0.2em]"
+          className="h-12 rounded-full px-7 text-[10px] font-black uppercase tracking-[0.2em] text-white"
         >
           <Link href="/admin/crm/proposals/new">
             <Plus className="mr-2 size-4" />

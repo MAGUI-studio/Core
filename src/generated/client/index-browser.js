@@ -324,6 +324,7 @@ exports.Prisma.ProjectScalarFieldEnum = {
   paymentMethod: 'paymentMethod',
   serviceCategoryId: 'serviceCategoryId',
   briefing: 'briefing',
+  scheduleData: 'scheduleData',
   startDate: 'startDate',
   deadline: 'deadline',
   liveUrl: 'liveUrl',
@@ -565,6 +566,7 @@ exports.Prisma.ProposalScalarFieldEnum = {
   totalValue: 'totalValue',
   currency: 'currency',
   notes: 'notes',
+  scheduleData: 'scheduleData',
   acceptedAt: 'acceptedAt',
   acceptedIp: 'acceptedIp',
   leadId: 'leadId',
@@ -859,7 +861,9 @@ exports.ScheduledReminderType = exports.$Enums.ScheduledReminderType = {
   LEAD_STALLED: 'LEAD_STALLED',
   APPROVAL_PENDING: 'APPROVAL_PENDING',
   PROJECT_SILENT: 'PROJECT_SILENT',
-  ACTION_ITEM_OVERDUE: 'ACTION_ITEM_OVERDUE'
+  ACTION_ITEM_OVERDUE: 'ACTION_ITEM_OVERDUE',
+  CLIENT_ON_HOLD: 'CLIENT_ON_HOLD',
+  PROJECT_ABANDONED: 'PROJECT_ABANDONED'
 };
 
 exports.ScheduledReminderStatus = exports.$Enums.ScheduledReminderStatus = {

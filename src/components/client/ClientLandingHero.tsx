@@ -23,8 +23,8 @@ interface ClientLandingHeroAction {
 
 interface ClientLandingHeroMetric {
   label: string
-  value: string
-  detail?: string
+  value: React.ReactNode
+  detail?: React.ReactNode
 }
 
 interface ClientLandingHeroProps {

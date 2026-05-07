@@ -26,6 +26,7 @@ export interface DashboardProject {
   serviceCategoryId: string | null
   deadline: Date | null
   startDate: Date
+  scheduleData?: unknown
   liveUrl: string | null
   repositoryUrl: string | null
   category: ProjectCategory

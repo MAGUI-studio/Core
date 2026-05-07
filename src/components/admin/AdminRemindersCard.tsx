@@ -9,6 +9,7 @@ import {
   ClockCountdown,
   FolderOpen,
   NotePencil,
+  WarningCircle,
 } from "@phosphor-icons/react/dist/ssr"
 
 import { Button } from "@/src/components/ui/button"
@@ -34,6 +35,8 @@ const reminderIcon = {
   [ScheduledReminderType.APPROVAL_PENDING]: CheckCircle,
   [ScheduledReminderType.PROJECT_SILENT]: FolderOpen,
   [ScheduledReminderType.ACTION_ITEM_OVERDUE]: NotePencil,
+  [ScheduledReminderType.CLIENT_ON_HOLD]: WarningCircle,
+  [ScheduledReminderType.PROJECT_ABANDONED]: WarningCircle,
 }
 
 const reminderLabel = {
@@ -41,6 +44,8 @@ const reminderLabel = {
   [ScheduledReminderType.APPROVAL_PENDING]: "Aprovacao pendente",
   [ScheduledReminderType.PROJECT_SILENT]: "Projeto sem update",
   [ScheduledReminderType.ACTION_ITEM_OVERDUE]: "Tarefa vencida",
+  [ScheduledReminderType.CLIENT_ON_HOLD]: "Projeto suspenso",
+  [ScheduledReminderType.PROJECT_ABANDONED]: "Projeto abandonado",
 }
 
 export function AdminRemindersCard({

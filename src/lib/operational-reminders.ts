@@ -13,6 +13,7 @@ import { endOfDay, startOfDay, subDays } from "date-fns"
 
 import prisma from "@/src/lib/prisma"
 import { getInternalNotificationRecipients } from "@/src/lib/project-governance"
+import { buildProjectScheduleView } from "@/src/lib/project-schedule"
 
 type ReminderCandidate = {
   type: ScheduledReminderType
@@ -95,6 +96,8 @@ async function getReminderCandidates(): Promise<ReminderCandidate[]> {
         select: {
           id: true,
           name: true,
+          status: true,
+          scheduleData: true,
           updatedAt: true,
           client: {
             select: {
@@ -136,10 +139,24 @@ async function getReminderCandidates(): Promise<ReminderCandidate[]> {
       }),
     ])
 
-  const silentProjects = activeProjects.filter((project) => {
+  const scheduleProjects = activeProjects.map((project) => ({
+    ...project,
+    schedule: buildProjectScheduleView(project.scheduleData, project.status),
+  }))
+
+  const silentProjects = scheduleProjects.filter((project) => {
     const lastUpdateAt = project.updates[0]?.createdAt ?? project.updatedAt
-    return lastUpdateAt <= silentProjectThreshold
+    return (
+      lastUpdateAt <= silentProjectThreshold &&
+      project.schedule.executionState === "ACTIVE"
+    )
   })
+  const onHoldProjects = scheduleProjects.filter(
+    (project) => project.schedule.executionState === "ON_HOLD_CLIENT"
+  )
+  const abandonedProjects = scheduleProjects.filter(
+    (project) => project.schedule.executionState === "ABANDONED"
+  )
 
   return [
     ...stalledLeads.map((lead) => ({
@@ -178,6 +195,46 @@ async function getReminderCandidates(): Promise<ReminderCandidate[]> {
         scheduledFor: lastSignal,
         metadata: {
           projectId: project.id,
+        },
+      }
+    }),
+    ...onHoldProjects.map((project) => {
+      const waitingSince =
+        project.schedule.awaitingClientSince ??
+        project.schedule.suspensionStartedAt ??
+        new Date()
+      return {
+        type: ScheduledReminderType.CLIENT_ON_HOLD,
+        entityType: "Project",
+        entityId: project.id,
+        title: `${project.name} está suspenso por inatividade`,
+        message: `${project.client.name || project.client.email} não respondeu no prazo contratual. O projeto está em espera desde ${waitingSince.toLocaleDateString("pt-BR")}.`,
+        ctaPath: `/admin/projects/${project.id}`,
+        scheduledFor: project.schedule.suspensionStartedAt ?? waitingSince,
+        metadata: {
+          projectId: project.id,
+          executionState: project.schedule.executionState,
+          clientDelayCalendarDays: project.schedule.clientDelayCalendarDays,
+        },
+      }
+    }),
+    ...abandonedProjects.map((project) => {
+      const abandonedAt =
+        project.schedule.abandonedAt ??
+        project.schedule.awaitingClientSince ??
+        new Date()
+      return {
+        type: ScheduledReminderType.PROJECT_ABANDONED,
+        entityType: "Project",
+        entityId: project.id,
+        title: `${project.name} entrou em abandono contratual`,
+        message: `${project.client.name || project.client.email} ultrapassou 30 dias corridos sem retorno. Revise a rescisão por abandono no CRM.`,
+        ctaPath: `/admin/projects/${project.id}`,
+        scheduledFor: abandonedAt,
+        metadata: {
+          projectId: project.id,
+          executionState: project.schedule.executionState,
+          clientDelayCalendarDays: project.schedule.clientDelayCalendarDays,
         },
       }
     }),

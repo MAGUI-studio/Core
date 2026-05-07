@@ -20,6 +20,10 @@ import { logger } from "@/src/lib/logger"
 import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
 import {
+  buildInitialProjectScheduleData,
+  normalizeProposalScheduleData,
+} from "@/src/lib/project-schedule"
+import {
   createAuditLog,
   findOrCreateClientFromEmail,
   getCurrentAppUser,
@@ -289,7 +293,7 @@ export async function convertLeadToProjectAction(input: {
     name: string
     category: ProjectCategory
     budget?: string
-    deadline?: string
+    executionBusinessDays?: number
     paymentMethod?: "FIFTY_FIFTY" | "MONTHLY_INSTALLMENTS"
   }
 }): Promise<{ success: boolean; error?: string; projectId?: string }> {
@@ -301,7 +305,7 @@ export async function convertLeadToProjectAction(input: {
       where: { id: input.leadId },
       include: {
         proposals: {
-          select: { status: true },
+          select: { status: true, scheduleData: true },
         },
       },
     })
@@ -384,6 +388,14 @@ export async function convertLeadToProjectAction(input: {
       const budgetValue = budgetStr
         ? parseFloat(budgetStr.replace(/[^\d.,]/g, "").replace(",", "."))
         : null
+      const acceptedProposal = lead.proposals.find(
+        (proposal) => proposal.status === ProposalStatus.ACCEPTED
+      )
+      const scheduleSeed =
+        input.projectData.executionBusinessDays ??
+        normalizeProposalScheduleData(acceptedProposal?.scheduleData)
+          .executionBusinessDays ??
+        20
 
       const project = await tx.project.create({
         data: {
@@ -392,9 +404,9 @@ export async function convertLeadToProjectAction(input: {
           budget: budgetValue,
           paymentMethod:
             (input.projectData.paymentMethod as PaymentMethod) || "FIFTY_FIFTY",
-          deadline: input.projectData.deadline
-            ? new Date(input.projectData.deadline)
-            : null,
+          scheduleData: buildInitialProjectScheduleData({
+            executionBusinessDays: scheduleSeed,
+          }),
           clientId: finalUserId,
           status: ProjectStatus.STRATEGY,
           progress: 0,

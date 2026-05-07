@@ -28,6 +28,11 @@ import {
   approveUpdateAction,
   rejectUpdateAction,
 } from "@/src/lib/actions/project.actions"
+import { ProjectScheduleDelayTooltip } from "@/src/components/common/ProjectScheduleDelayTooltip"
+import {
+  buildProjectScheduleView,
+  getExecutionDaysLabel,
+} from "@/src/lib/project-schedule"
 import { cn, formatLocalTime } from "@/src/lib/utils/utils"
 
 import { Button } from "../ui/button"
@@ -150,6 +155,10 @@ export function DashboardSummary({
         year: "numeric",
       }),
     []
+  )
+  const schedule = buildProjectScheduleView(project.scheduleData, project.status)
+  const visibleDelayReasons = schedule.delayReasons.filter(
+    (reason) => reason.businessDaysAdded > 0
   )
 
   const handleApprove = async (updateId: string) => {
@@ -620,12 +629,22 @@ export function DashboardSummary({
 
               <div className="group rounded-2xl bg-muted/20 px-4 py-4 ring-1 ring-black/5 transition-all duration-300 hover:bg-muted/30 dark:ring-white/5">
                 <p className="text-[8px] font-black uppercase tracking-[0.25em] text-muted-foreground/45">
-                  {t("status.deadline")}
+                  Prazo contratado
                 </p>
-                <p className="mt-2 text-[11px] font-black uppercase leading-tight tracking-[0.1em] text-foreground/90">
-                  {project.deadline
-                    ? dateFormatter.format(new Date(project.deadline))
-                    : t("status.no_deadline")}
+                <div className="mt-2 flex items-center gap-2">
+                  <p className="text-[11px] font-black uppercase leading-tight tracking-[0.1em] text-foreground/90">
+                    {getExecutionDaysLabel(schedule.executionBusinessDays)}
+                  </p>
+                  {visibleDelayReasons.length > 0 ? (
+                    <ProjectScheduleDelayTooltip reasons={visibleDelayReasons} />
+                  ) : null}
+                </div>
+                <p className="mt-2 text-[10px] font-semibold leading-tight text-muted-foreground/65">
+                  {schedule.currentForecastDate
+                    ? `Previsão ${dateFormatter.format(
+                        new Date(schedule.currentForecastDate)
+                      )}`
+                    : "Contagem liberada após briefing e ativos validados."}
                 </p>
               </div>
             </div>

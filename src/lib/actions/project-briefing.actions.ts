@@ -24,6 +24,12 @@ import {
   revalidateProjectBriefing,
   revalidateProjectData,
 } from "@/src/lib/revalidate"
+import {
+  hasMinimumBrandAssets,
+  hasPrimaryBriefingData,
+  normalizeProjectScheduleData,
+  syncProjectScheduleFromBriefing,
+} from "@/src/lib/project-schedule"
 import { briefingSchema } from "@/src/lib/validations/project"
 
 import { cacheTags } from "../cache-tags"
@@ -139,12 +145,36 @@ export async function updateProjectBriefingAction(
     await prisma.$transaction(async (tx) => {
       const previousProject = await tx.project.findUnique({
         where: { id: projectId },
-        select: { briefing: true },
+        select: { briefing: true, scheduleData: true, status: true },
       })
+
+      const syncedSchedule = syncProjectScheduleFromBriefing(
+        previousProject?.scheduleData,
+        validatedBriefing.data,
+        previousProject?.status
+      )
 
       await tx.project.update({
         where: { id: projectId },
-        data: { briefing: validatedBriefing.data as Prisma.InputJsonValue },
+        data: {
+          briefing: validatedBriefing.data as Prisma.InputJsonValue,
+          scheduleData: syncedSchedule as Prisma.InputJsonValue,
+          deadline: syncedSchedule.currentForecastDate
+            ? new Date(syncedSchedule.currentForecastDate)
+            : null,
+          kickoff: {
+            upsert: {
+              create: {
+                briefingCompleted: hasPrimaryBriefingData(validatedBriefing.data),
+                brandAssetsSent: hasMinimumBrandAssets(validatedBriefing.data),
+              },
+              update: {
+                briefingCompleted: hasPrimaryBriefingData(validatedBriefing.data),
+                brandAssetsSent: hasMinimumBrandAssets(validatedBriefing.data),
+              },
+            },
+          },
+        },
       })
 
       // Verify missing critical data and create tasks
@@ -236,7 +266,7 @@ export async function savePartialBriefingAction(
     await prisma.$transaction(async (tx) => {
       const project = await tx.project.findUnique({
         where: { id: projectId },
-        select: { briefing: true },
+        select: { briefing: true, scheduleData: true, status: true },
       })
 
       if (!project) throw new Error("Project not found")
@@ -244,10 +274,21 @@ export async function savePartialBriefingAction(
       const currentBriefing =
         (project.briefing as Record<string, unknown>) || {}
       const updatedBriefing = { ...currentBriefing, ...validated.data }
+      const syncedSchedule = syncProjectScheduleFromBriefing(
+        project.scheduleData,
+        updatedBriefing,
+        project.status
+      )
 
       await tx.project.update({
         where: { id: projectId },
-        data: { briefing: updatedBriefing as Prisma.InputJsonValue },
+        data: {
+          briefing: updatedBriefing as Prisma.InputJsonValue,
+          scheduleData: syncedSchedule as Prisma.InputJsonValue,
+          deadline: syncedSchedule.currentForecastDate
+            ? new Date(syncedSchedule.currentForecastDate)
+            : null,
+        },
       })
     })
 
@@ -398,10 +439,37 @@ export async function resetProjectBriefingAction(
     ])
 
     await prisma.$transaction(async (tx) => {
+      const currentProject = await tx.project.findUnique({
+        where: { id: projectId },
+        select: { scheduleData: true },
+      })
+      const baseSchedule = normalizeProjectScheduleData(
+        currentProject?.scheduleData
+      )
+
       // Clear briefing data - Use empty object to ensure it's "not filled" but valid JSON
       await tx.project.update({
         where: { id: projectId },
-        data: { briefing: {} },
+        data: {
+          briefing: {},
+          scheduleData: {
+            ...baseSchedule,
+            executionState: "PENDING_INPUT",
+            materialValidatedAt: null,
+            executionStartAt: null,
+            awaitingClientSince: new Date().toISOString(),
+            currentForecastDate: null,
+            clientDelayCalendarDays: 0,
+            clientDelayBusinessDays: 0,
+            briefingValidatedAt: null,
+            assetsValidatedAt: null,
+            suspensionStartedAt: null,
+            abandonedAt: null,
+            delayEvents: [],
+            pendingClientApprovals: [],
+          },
+          deadline: null,
+        },
       })
 
       // Reset kickoff checklist (using upsert to avoid failure if not exists)

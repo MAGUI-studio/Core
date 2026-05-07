@@ -1,9 +1,11 @@
+import { buildProjectScheduleView } from "@/src/lib/project-schedule"
 import { ProjectStatus } from "@/src/generated/client"
 
 export interface ProjectHealthInput {
   status: ProjectStatus
   progress: number
   deadline: Date | string | null
+  scheduleData?: unknown
   updatedAt: Date | string
   lastUpdateAt: Date | string | null
   pendingApprovalCount: number
@@ -53,8 +55,19 @@ export function getProjectHealth(
     score -= 12
   }
 
-  if (input.deadline) {
-    const daysToDeadline = getDaysUntil(input.deadline)
+  const schedule = buildProjectScheduleView(input.scheduleData, input.status)
+  const forecastDate = schedule.currentForecastDate ?? (input.deadline ? new Date(input.deadline) : null)
+
+  if (schedule.executionState === "ON_HOLD_CLIENT") {
+    score -= 18
+  }
+
+  if (schedule.executionState === "ABANDONED") {
+    score -= 30
+  }
+
+  if (forecastDate) {
+    const daysToDeadline = getDaysUntil(forecastDate)
 
     if (daysToDeadline < 0) {
       score -= 28

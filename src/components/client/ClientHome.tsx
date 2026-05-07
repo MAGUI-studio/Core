@@ -15,6 +15,7 @@ import { differenceInCalendarDays, startOfDay } from "date-fns"
 
 import { Button } from "@/src/components/ui/button"
 
+import { buildProjectScheduleView } from "@/src/lib/project-schedule"
 import { toHref } from "@/src/lib/utils/navigation"
 
 import { ClientActionBanner } from "./ClientActionBanner"
@@ -38,6 +39,9 @@ export async function ClientHome({
   const t = await getTranslations("Dashboard.client_home")
 
   const activeProject = data.projects[0]
+  const activeProjectSchedule = activeProject
+    ? buildProjectScheduleView(activeProject.scheduleData, activeProject.status)
+    : null
 
   // New logical states for payment
   const allInstallments =
@@ -66,7 +70,35 @@ export async function ClientHome({
     label: t("cta.label.default"),
   }
 
-  if (shouldShowPaymentWarning && activeProject) {
+  if (
+    activeProject &&
+    activeProjectSchedule?.executionState === "ABANDONED"
+  ) {
+    nextAction = {
+      type: "task",
+      eyebrow: "Projeto interrompido",
+      title: "Projeto encerrado por abandono",
+      description:
+        "O prazo contratual foi ultrapassado sem retorno suficiente no CRM. Entre em contato para revisar a retomada ou formalizar um novo escopo.",
+      href: toHref(`/projects/${activeProject.id}`),
+      label: "Ver detalhes",
+      projectName: activeProject.name,
+    }
+  } else if (
+    activeProject &&
+    activeProjectSchedule?.executionState === "ON_HOLD_CLIENT"
+  ) {
+    nextAction = {
+      type: "task",
+      eyebrow: "Projeto suspenso",
+      title: "Projeto aguardando seu retorno",
+      description:
+        "O cronograma foi suspenso por inatividade contratual. Envie o briefing, ativos ou feedback pendente no CRM para reativar a contagem.",
+      href: toHref(`/projects/${activeProject.id}/briefing`),
+      label: "Retomar projeto",
+      projectName: activeProject.name,
+    }
+  } else if (shouldShowPaymentWarning && activeProject) {
     nextAction = {
       type: "payment",
       eyebrow: t("cta.type.payment"),
@@ -115,15 +147,22 @@ export async function ClientHome({
     | "on_track"
     | "awaiting_approval"
     | "need_shipment"
-    | "briefing_incomplete" = shouldShowPaymentWarning
-    ? "payment_pending"
-    : isBriefingEmpty
-      ? "briefing_incomplete"
-      : data.pendingApprovals.length > 0
-        ? "awaiting_approval"
-        : data.pendingTasks.length > 0
-          ? "need_shipment"
-          : "on_track"
+    | "briefing_incomplete"
+    | "on_hold_client"
+    | "abandoned" =
+    activeProjectSchedule?.executionState === "ABANDONED"
+      ? "abandoned"
+      : activeProjectSchedule?.executionState === "ON_HOLD_CLIENT"
+        ? "on_hold_client"
+        : shouldShowPaymentWarning
+          ? "payment_pending"
+          : isBriefingEmpty
+            ? "briefing_incomplete"
+            : data.pendingApprovals.length > 0
+              ? "awaiting_approval"
+              : data.pendingTasks.length > 0
+                ? "need_shipment"
+                : "on_track"
 
   const heroStatusLabel = {
     payment_pending: t("status.payment_pending"),
@@ -131,6 +170,8 @@ export async function ClientHome({
     awaiting_approval: t("status.awaiting_approval"),
     need_shipment: t("status.need_shipment"),
     briefing_incomplete: t("status.briefing_incomplete"),
+    on_hold_client: "Projeto suspenso",
+    abandoned: "Projeto abandonado",
   }[heroStatus]
 
   return (
@@ -200,6 +241,7 @@ export async function ClientHome({
                 status: activeProject.status,
                 progress: activeProject.progress,
                 deadline: activeProject.deadline,
+                scheduleData: activeProject.scheduleData,
                 updatedAt: activeProject.updatedAt,
                 lastUpdate: activeProject.updates?.[0],
                 _count: activeProject._count,

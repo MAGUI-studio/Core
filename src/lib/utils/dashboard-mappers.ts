@@ -20,6 +20,7 @@ type ProjectWithRelations = Prisma.ProjectGetPayload<{
     status: true
     progress: true
     deadline: true
+    scheduleData: true
     updatedAt: true
     client: { select: { name: true; email: true } }
     updates: { select: { createdAt: true } }
@@ -171,6 +172,7 @@ export function mapProjectHealth(projects: ProjectWithRelations[]) {
         status: project.status,
         progress: project.progress,
         deadline: project.deadline,
+        scheduleData: project.scheduleData,
         updatedAt: project.updatedAt,
         lastUpdateAt: project.updates[0]?.createdAt ?? null,
         pendingApprovalCount: project._count.updates,

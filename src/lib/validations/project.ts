@@ -23,6 +23,7 @@ export const createProjectSchema = z.object({
   budget: optionalFormString,
   deadline: optionalFormString,
   startDate: optionalFormString,
+  executionBusinessDays: optionalFormString,
   category: z.nativeEnum(ProjectCategory),
   serviceCategoryId: optionalFormString,
   customValue: z.string().transform((v) => v === "true"),

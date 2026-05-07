@@ -61,6 +61,10 @@ import {
 import { Textarea } from "@/src/components/ui/textarea"
 
 import { createProjectAction } from "@/src/lib/actions/project.actions"
+import {
+  buildTimelineNarrative,
+  getExecutionDaysLabel,
+} from "@/src/lib/project-schedule"
 import { getInternationalizationFeeCents } from "@/src/lib/utils/project-pricing"
 import {
   cn,
@@ -100,6 +104,8 @@ export function CreateProjectForm({
 
   const [deadline, setDeadline] = React.useState<Date | undefined>(undefined)
   const [startDate, setStartDate] = React.useState<Date | undefined>(new Date())
+  const [executionBusinessDays, setExecutionBusinessDays] =
+    React.useState<number>(20)
   const [budgetBaseValue, setBudgetBaseValue] = React.useState("")
 
   const [installments, setInstallments] = React.useState<
@@ -129,6 +135,22 @@ export function CreateProjectForm({
       )
     }
   }, [selectedService, customValue])
+
+  React.useEffect(() => {
+    if (!selectedService) return
+
+    if (
+      selectedService.name.includes("Agendamento") ||
+      selectedService.name.includes("Sistema") ||
+      selectedService.name.includes("Manutenção") ||
+      selectedService.name.includes("Estabilidade")
+    ) {
+      setExecutionBusinessDays(30)
+      return
+    }
+
+    setExecutionBusinessDays(20)
+  }, [selectedService])
 
   const baseBudgetCents = React.useMemo(
     () => parseCurrencyBRLToCents(budgetBaseValue),
@@ -225,8 +247,7 @@ export function CreateProjectForm({
       formData.set("budget", totalBudgetValue)
       formData.set("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone)
 
-      if (deadline) formData.set("deadline", deadline.toISOString())
-      if (startDate) formData.set("startDate", startDate.toISOString())
+      formData.set("executionBusinessDays", String(executionBusinessDays))
 
       // Add installments data
       if (installments.length > 0) {
@@ -263,12 +284,16 @@ export function CreateProjectForm({
     return <Shield className="size-5" weight="bold" />
   }
 
+  const schedulePreview = React.useMemo(
+    () => buildTimelineNarrative(executionBusinessDays),
+    [executionBusinessDays]
+  )
+
   return (
     <form action={formAction} className="mx-auto w-full">
       <FieldGroup className="gap-12">
         <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 italic">
-          Os campos marcados com <span className="text-red-500">*</span> sÃ£o
-          obrigatÃ³rios.
+          Os campos marcados com <span className="text-red-500">*</span> são obrigatórios.
         </p>
 
         <FieldSet>
@@ -377,7 +402,7 @@ export function CreateProjectForm({
               {t("project_info")}
             </FieldLegend>
             <FieldDescription className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
-              EstratÃ©gia comercial e parÃ¢metros de execuÃ§Ã£o
+              Estratégia comercial e parâmetros de execução
             </FieldDescription>
           </div>
 
@@ -567,7 +592,7 @@ export function CreateProjectForm({
             <Field>
               <div className="mb-2 flex items-center justify-between">
                 <FieldLabel className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">
-                  InternacionalizaÃ§Ã£o
+                  Internacionalização
                 </FieldLabel>
                 <div className="flex items-center gap-3">
                   <Checkbox
@@ -588,7 +613,7 @@ export function CreateProjectForm({
               </div>
               <div className="flex h-16 flex-col justify-center rounded-3xl border border-border/40 bg-muted/10 px-6">
                 <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">
-                  AcrÃ©scimo
+                  Acréscimo
                 </span>
                 <span className="font-mono text-lg font-black text-foreground">
                   {internationalizationFeeCents > 0
@@ -602,7 +627,7 @@ export function CreateProjectForm({
 
             <Field>
               <FieldLabel className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">
-                CondiÃ§Ã£o de Pagamento
+                Condição de Pagamento
               </FieldLabel>
               <div className="flex gap-3 h-16">
                 <Button
@@ -671,7 +696,7 @@ export function CreateProjectForm({
                 </h4>
                 <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/40">
                   {paymentMethod === PaymentMethod.FIFTY_FIFTY
-                    ? "As faturas serÃ£o geradas automaticamente baseadas no valor total."
+                    ? "As faturas serão geradas automaticamente baseadas no valor total."
                     : "Defina manualmente as parcelas mensais acordadas com o cliente."}
                 </p>
               </div>
@@ -791,7 +816,68 @@ export function CreateProjectForm({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 mt-12">
+          <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-[15rem_minmax(0,1fr)]">
+            <Field>
+              <FieldLabel className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">
+                Prazo contratado (dias úteis)
+              </FieldLabel>
+              <InputGroup className="h-16 rounded-3xl border-border/40 bg-muted/10 transition-all focus-within:bg-muted/20">
+                <InputGroupAddon>
+                  <Clock
+                    weight="bold"
+                    className="size-5 text-brand-primary/60"
+                  />
+                </InputGroupAddon>
+                <InputGroupInput
+                  type="number"
+                  min={1}
+                  step={1}
+                  value={executionBusinessDays}
+                  onChange={(event) =>
+                    setExecutionBusinessDays(
+                      Math.max(1, Number(event.target.value) || 1)
+                    )
+                  }
+                  disabled={isPending}
+                  className="font-mono text-lg font-black text-foreground"
+                />
+              </InputGroup>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                {[7, 14, 20, 30, 45, 60].map((days) => (
+                  <Badge
+                    key={days}
+                    variant="outline"
+                    className="cursor-pointer rounded-full border-border/40 bg-muted/5 px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all hover:border-brand-primary/40 hover:bg-brand-primary/5 hover:text-brand-primary"
+                    onClick={() => setExecutionBusinessDays(days)}
+                  >
+                    {days} dias
+                  </Badge>
+                ))}
+              </div>
+            </Field>
+
+            <Field>
+              <FieldLabel className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">
+                Leitura contratual do prazo
+              </FieldLabel>
+              <div className="rounded-[32px] border border-border/40 bg-muted/10 p-6">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-[10px] font-black uppercase tracking-[0.25em] text-brand-primary/70">
+                    {getExecutionDaysLabel(executionBusinessDays)}
+                  </span>
+                  <span className="rounded-full bg-brand-primary/10 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-brand-primary">
+                    Início após briefing
+                  </span>
+                </div>
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground/75">
+                  {schedulePreview}
+                </p>
+              </div>
+            </Field>
+          </div>
+
+          <div className="hidden grid grid-cols-1 gap-8 md:grid-cols-2 mt-12">
             <Field>
               <FieldLabel className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">
                 Data de InÃ­cio da OperaÃ§Ã£o

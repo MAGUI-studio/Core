@@ -5,6 +5,7 @@ import * as React from "react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 
+import { ProjectStatus } from "@/src/generated/client"
 import { Link } from "@/src/i18n/navigation"
 import {
   ArrowLeft,
@@ -14,10 +15,13 @@ import {
   ProjectorScreen,
   UserCircle,
 } from "@phosphor-icons/react"
-import dayjs from "dayjs"
-
+import { ProjectScheduleDelayTooltip } from "@/src/components/common/ProjectScheduleDelayTooltip"
 import { Button } from "@/src/components/ui/button"
 
+import {
+  buildProjectScheduleView,
+  getExecutionDaysLabel,
+} from "@/src/lib/project-schedule"
 import { formatCurrencyBRLFromCents } from "@/src/lib/utils/utils"
 
 interface ProjectDetailsHeaderProps {
@@ -28,6 +32,8 @@ interface ProjectDetailsHeaderProps {
     hasInternationalization?: boolean
     internationalizationFee?: number | null
     deadline: Date | null
+    scheduleData?: unknown
+    status: ProjectStatus
     client: {
       id: string
       name: string | null
@@ -39,22 +45,10 @@ interface ProjectDetailsHeaderProps {
 export function ProjectDetailsHeader({ project }: ProjectDetailsHeaderProps) {
   const t = useTranslations("Admin.projects.details")
   const router = useRouter()
-
-  const getDeadlineText = () => {
-    if (!project.deadline) return t("no_deadline")
-
-    const now = dayjs().startOf("day")
-    const deadline = dayjs(project.deadline).startOf("day")
-    const diffDays = deadline.diff(now, "day")
-
-    if (diffDays === 0) {
-      return "ENTREGA HOJE"
-    } else if (diffDays < 0) {
-      return `ATRASADO (${Math.abs(diffDays)} ${Math.abs(diffDays) === 1 ? "dia" : "dias"})`
-    } else {
-      return `FALTAM ${diffDays} ${diffDays === 1 ? "DIA" : "DIAS"}`
-    }
-  }
+  const schedule = buildProjectScheduleView(project.scheduleData, project.status)
+  const visibleDelayReasons = schedule.delayReasons.filter(
+    (reason) => reason.businessDaysAdded > 0
+  )
 
   const budgetDisplay = project.budget
     ? formatCurrencyBRLFromCents(project.budget)
@@ -142,20 +136,27 @@ export function ProjectDetailsHeader({ project }: ProjectDetailsHeaderProps) {
               </div>
               <div className="flex flex-col">
                 <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground/40">
-                  {t("deadline_label")}
+                  Prazo contratado
                 </span>
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-foreground">
-                    {project.deadline
-                      ? new Date(project.deadline).toLocaleDateString()
-                      : t("no_deadline")}
+                    {getExecutionDaysLabel(schedule.executionBusinessDays)}
                   </span>
-                  {project.deadline && (
+                  {schedule.currentForecastDate && (
                     <span className="rounded-full bg-brand-primary/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-brand-primary">
-                      {getDeadlineText()}
+                      previsão{" "}
+                      {new Date(schedule.currentForecastDate).toLocaleDateString()}
                     </span>
                   )}
+                  {visibleDelayReasons.length > 0 ? (
+                    <ProjectScheduleDelayTooltip reasons={visibleDelayReasons} />
+                  ) : null}
                 </div>
+                {schedule.clientDelayBusinessDays > 0 ? (
+                  <span className="text-[9px] font-black uppercase tracking-widest text-amber-600">
+                    +{schedule.clientDelayBusinessDays} dias úteis por atraso do cliente
+                  </span>
+                ) : null}
               </div>
             </div>
           </div>

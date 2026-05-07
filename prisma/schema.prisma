@@ -158,6 +158,8 @@ enum ScheduledReminderType {
   APPROVAL_PENDING
   PROJECT_SILENT
   ACTION_ITEM_OVERDUE
+  CLIENT_ON_HOLD
+  PROJECT_ABANDONED
 }
 
 enum ScheduledReminderStatus {
@@ -496,6 +498,7 @@ model Project {
 
   briefing      Json?           @default("{}")
   briefingNotes BriefingEntry[]
+  scheduleData  Json?           @default("{}")
 
   startDate     DateTime  @default(now())
   deadline      DateTime?
@@ -892,6 +895,7 @@ model Proposal {
   totalValue Int            @default(0) // cents
   currency   String         @default("BRL")
   notes      String?        @db.Text
+  scheduleData Json?        @default("{}")
 
   acceptedAt DateTime?
   acceptedIp String?

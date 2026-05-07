@@ -58,7 +58,7 @@ export function ConvertLeadDialog({
     ProjectCategory.LANDING_PAGE
   )
   const [budget, setBudget] = React.useState(lead.value || "")
-  const [deadline] = React.useState("")
+  const [executionBusinessDays, setExecutionBusinessDays] = React.useState(20)
   const hasAcceptedProposal = (lead.acceptedProposalCount ?? 0) > 0
   const hasAnyProposal = (lead.proposalCount ?? 0) > 0
   const readinessChecks = [
@@ -104,7 +104,7 @@ export function ConvertLeadDialog({
         name: projectName,
         category,
         budget,
-        deadline: deadline || undefined,
+        executionBusinessDays,
         paymentMethod: "FIFTY_FIFTY",
       },
     })
@@ -282,6 +282,24 @@ export function ConvertLeadDialog({
                     value={budget}
                     onChange={(e) => setBudget(e.target.value)}
                     placeholder={t("budget_placeholder")}
+                    className="h-12 rounded-xl"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-tight ml-1">
+                    Prazo contratado (dias úteis)
+                  </Label>
+                  <Input
+                    type="number"
+                    min={1}
+                    step={1}
+                    value={executionBusinessDays}
+                    onChange={(e) =>
+                      setExecutionBusinessDays(
+                        Math.max(1, Number(e.target.value) || 1)
+                      )
+                    }
                     className="h-12 rounded-xl"
                   />
                 </div>

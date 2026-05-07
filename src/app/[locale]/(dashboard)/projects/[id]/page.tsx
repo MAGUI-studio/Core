@@ -17,9 +17,14 @@ import { ClientActionBanner } from "@/src/components/client/ClientActionBanner"
 import { ClientFeatureLink } from "@/src/components/client/ClientFeatureLink"
 import { ClientLandingHero } from "@/src/components/client/ClientLandingHero"
 import { ClientSectionHeader } from "@/src/components/client/ClientSectionHeader"
+import { ProjectScheduleDelayTooltip } from "@/src/components/common/ProjectScheduleDelayTooltip"
 
 import { getClientProjectOverview } from "@/src/lib/client-projects"
 import prisma from "@/src/lib/prisma"
+import {
+  buildProjectScheduleView,
+  getExecutionDaysLabel,
+} from "@/src/lib/project-schedule"
 import { toHref } from "@/src/lib/utils/navigation"
 
 export const dynamic = "force-dynamic"
@@ -50,6 +55,10 @@ export default async function ProjectDetailPage({
   const tStatus = await getTranslations("Dashboard.status")
   const tDetail = await getTranslations("Dashboard.project_detail")
   const statusLabel = tStatus(project.status)
+  const schedule = buildProjectScheduleView(project.scheduleData, project.status)
+  const visibleDelayReasons = schedule.delayReasons.filter(
+    (reason) => reason.businessDaysAdded > 0
+  )
   const pendingApprovals = project.updates
   const clientTasks = project.actionItems ?? []
   const hasPendingPayment = project._count.invoices > 0
@@ -96,14 +105,47 @@ export default async function ProjectDetailPage({
             detail: tDetail("metrics.validate_detail"),
           },
           {
-            label: tDetail("metrics.deadline"),
-            value: project.deadline
-              ? new Date(project.deadline).toLocaleDateString()
-              : tDetail("no_deadline"),
-            detail: tDetail("metrics.deadline_detail"),
+            label: "Prazo contratado",
+            value: (
+              <span className="inline-flex items-center gap-2">
+                <span>{getExecutionDaysLabel(schedule.executionBusinessDays)}</span>
+                {visibleDelayReasons.length > 0 ? (
+                  <ProjectScheduleDelayTooltip reasons={visibleDelayReasons} />
+                ) : null}
+              </span>
+            ),
+            detail: schedule.currentForecastDate
+              ? `Previsão atual: ${new Date(
+                  schedule.currentForecastDate
+                ).toLocaleDateString()}`
+              : "Contagem liberada após briefing e ativos validados.",
           },
         ]}
       />
+
+      {schedule.executionState === "ABANDONED" && (
+        <ClientActionBanner
+          type="task"
+          eyebrow="Projeto abandonado"
+          title="Prazo contratual encerrado por abandono"
+          description="O projeto ultrapassou 30 dias corridos sem retorno suficiente no CRM. Entre em contato com a MAGUI.studio para revisar uma retomada formal."
+          href={toHref(`/projects/${project.id}/briefing`)}
+          label="Revisar pendências"
+          projectName={project.name}
+        />
+      )}
+
+      {schedule.executionState === "ON_HOLD_CLIENT" && (
+        <ClientActionBanner
+          type="task"
+          eyebrow="Projeto suspenso"
+          title="Cronograma aguardando seu retorno"
+          description="O projeto entrou em espera por inatividade contratual. Envie o briefing, os ativos ou o feedback pendente pelo CRM para reativar a contagem."
+          href={toHref(`/projects/${project.id}/briefing`)}
+          label="Retomar pelo CRM"
+          projectName={project.name}
+        />
+      )}
 
       {hasPendingPayment && (
         <ClientActionBanner

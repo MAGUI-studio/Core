@@ -11,7 +11,12 @@ import {
   FolderOpen,
 } from "@phosphor-icons/react/dist/ssr"
 
+import { ProjectScheduleDelayTooltip } from "@/src/components/common/ProjectScheduleDelayTooltip"
 import { Progress } from "@/src/components/ui/progress"
+import {
+  buildProjectScheduleView,
+  getExecutionDaysLabel,
+} from "@/src/lib/project-schedule"
 
 interface ClientProjectCardProps {
   project: ClientProjectSummary
@@ -24,6 +29,10 @@ export async function ClientProjectCard({
   const tStatus = await getTranslations("Dashboard.status")
   const locale = await getLocale()
   const statusLabel = tStatus(project.status)
+  const schedule = buildProjectScheduleView(project.scheduleData, project.status)
+  const visibleDelayReasons = schedule.delayReasons.filter(
+    (reason) => reason.businessDaysAdded > 0
+  )
 
   return (
     <Link
@@ -111,7 +120,7 @@ export async function ClientProjectCard({
 
               <div className="rounded-2xl bg-muted/5 p-5">
                 <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/45">
-                  {t("deadline")}
+                  Prazo contratual
                 </p>
                 <div className="mt-2 flex items-center gap-2">
                   <Calendar
@@ -119,11 +128,20 @@ export async function ClientProjectCard({
                     className="size-4 text-muted-foreground/45"
                   />
                   <p className="font-heading text-lg font-black uppercase tracking-tight">
-                    {project.deadline
-                      ? new Date(project.deadline).toLocaleDateString(locale)
-                      : t("no_deadline")}
+                    {getExecutionDaysLabel(schedule.executionBusinessDays)}
                   </p>
+                  {visibleDelayReasons.length > 0 ? (
+                    <ProjectScheduleDelayTooltip reasons={visibleDelayReasons} />
+                  ) : null}
                 </div>
+                {schedule.currentForecastDate ? (
+                  <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/55">
+                    Previsão:{" "}
+                    {new Date(schedule.currentForecastDate).toLocaleDateString(
+                      locale
+                    )}
+                  </p>
+                ) : null}
               </div>
             </div>
           </div>
