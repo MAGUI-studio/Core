@@ -27,6 +27,8 @@ function imageToDataUri(dir: string, fileName: string) {
   return `data:${mimeType};base64,${file.toString("base64")}`
 }
 
+const FRONT_IMAGE = imageToDataUri("images", "contract_front.png")
+const BACK_IMAGE = imageToDataUri("images", "proposal_back.png")
 const PAGE_IMAGE = imageToDataUri("images", "proposal_page.png")
 
 const styles = StyleSheet.create({
@@ -36,6 +38,13 @@ const styles = StyleSheet.create({
     height: PAGE_HEIGHT,
     fontFamily: "Helvetica",
     color: "#000000",
+  },
+  fullBleed: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: PAGE_WIDTH,
+    height: PAGE_HEIGHT,
   },
   sheet: {
     position: "absolute",
@@ -468,6 +477,10 @@ export function MaguiContractTemplate({
 
   return (
     <Document title={document.title}>
+      <Page size="A4" style={styles.page}>
+        <Image src={FRONT_IMAGE} style={styles.fullBleed} />
+      </Page>
+
       {pages.map((pageBlocks, pageIndex) => (
         <Page key={pageIndex} size="A4" style={styles.page}>
           <Image src={PAGE_IMAGE} style={styles.sheet} fixed />
@@ -481,6 +494,10 @@ export function MaguiContractTemplate({
           </View>
         </Page>
       ))}
+
+      <Page size="A4" style={styles.page}>
+        <Image src={BACK_IMAGE} style={styles.fullBleed} />
+      </Page>
     </Document>
   )
 }
