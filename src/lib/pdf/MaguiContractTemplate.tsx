@@ -3,6 +3,7 @@ import * as React from "react"
 import {
   Document,
   Image,
+  Link,
   Page,
   StyleSheet,
   Text,
@@ -84,6 +85,42 @@ const styles = StyleSheet.create({
   spacer: {
     height: 10,
   },
+  signatureBlock: {
+    marginTop: 22,
+  },
+  signatureDate: {
+    fontSize: 10,
+    lineHeight: 1.4,
+    marginBottom: 42,
+    textAlign: "center",
+  },
+  signatureRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 28,
+  },
+  signatureItem: {
+    width: "46%",
+    alignItems: "center",
+  },
+  signatureLine: {
+    width: "100%",
+    borderTopWidth: 1,
+    borderTopColor: "#000000",
+    marginBottom: 10,
+  },
+  signatureRole: {
+    fontSize: 10,
+    lineHeight: 1.3,
+    fontFamily: "Helvetica-Bold",
+    marginBottom: 4,
+    textAlign: "center",
+  },
+  signatureName: {
+    fontSize: 10,
+    lineHeight: 1.3,
+    textAlign: "center",
+  },
 })
 
 interface ContractClause {
@@ -94,6 +131,8 @@ interface ContractClause {
 interface ContractDocumentData {
   title: string
   clauses: ContractClause[]
+  contractingData?: unknown
+  commercialData?: unknown
 }
 
 type Block =
@@ -101,6 +140,7 @@ type Block =
   | { type: "clause"; text: string }
   | { type: "paragraph"; text: string }
   | { type: "spacer" }
+  | { type: "signature"; signerName: string; contractDateLabel: string }
 
 function isNumberedLine(line: string) {
   return /^\d+\.\d+\./.test(line)
@@ -112,16 +152,6 @@ function isClauseTitle(line: string) {
 
 function isSectionTitle(line: string) {
   return line === "I. DAS PARTES"
-}
-
-function isStandaloneLine(line: string) {
-  return (
-    isSectionTitle(line) ||
-    isClauseTitle(line) ||
-    isNumberedLine(line) ||
-    line.startsWith("CONTRATADA:") ||
-    line.startsWith("CONTRATANTE:")
-  )
 }
 
 function normalizeParagraphLines(lines: string[]) {
@@ -169,7 +199,7 @@ function buildBlocks(text: string): Block[] {
       line.startsWith("CONTRATANTE:")
     ) {
       flushParagraph()
-      blocks.push({ type: "paragraph", text: line })
+      paragraphBuffer = [line]
       return
     }
 
@@ -190,6 +220,7 @@ function estimateBlockHeight(block: Block) {
   if (block.type === "spacer") return 10
   if (block.type === "section") return 22
   if (block.type === "clause") return 34
+  if (block.type === "signature") return 145
   return Math.max(18, Math.ceil(block.text.length / 108) * 15)
 }
 
@@ -242,23 +273,80 @@ function paginateBlocks(blocks: Block[]) {
   return pages
 }
 
-function renderHighlightedTokens(text: string) {
-  const withMarkers = text
-    .replaceAll("CONTRATADA", "__BOLD__CONTRATADA__END__")
-    .replaceAll("CONTRATANTE", "__BOLD__CONTRATANTE__END__")
+function formatContractDate(value?: string | null) {
+  if (!value) {
+    const now = new Date()
+    const formattedNow = new Intl.DateTimeFormat("pt-BR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(now)
 
-  return withMarkers
-    .split(/(__BOLD__.*?__END__)/g)
-    .filter(Boolean)
-    .map((part, index) =>
-      part.startsWith("__BOLD__") ? (
-        <Text key={index} style={{ fontFamily: "Helvetica-Bold" }}>
-          {part.replace("__BOLD__", "").replace("__END__", "")}
-        </Text>
-      ) : (
-        <Text key={index}>{part}</Text>
+    return `São José dos Campos/SP, ${formattedNow}.`
+  }
+
+  const date = new Date(value)
+  const formatted = new Intl.DateTimeFormat("pt-BR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date)
+
+  return `São José dos Campos/SP, ${formatted}.`
+}
+
+function renderHighlightedTokens(text: string) {
+  const normalizedText = text.replace(
+    /https:\/\/\s+([^\s),]+)/g,
+    "https://$1"
+  )
+  const tokenPattern =
+    /https?:\/\/[^\s),]+|2 \(dois\) dias úteis|1 \(um\) dia de atraso|\d+(?:\s*a\s*\d+)? dias úteis|01 \(um\)|12 meses|CONTRATADA ?|CONTRATANTE ?/gi
+
+  const parts: React.ReactNode[] = []
+  let lastIndex = 0
+
+  for (const match of normalizedText.matchAll(tokenPattern)) {
+    const matchText = match[0]
+    const matchIndex = match.index ?? 0
+
+    if (matchIndex > lastIndex) {
+      parts.push(normalizedText.slice(lastIndex, matchIndex))
+    }
+
+    if (/^https?:\/\//i.test(matchText)) {
+      parts.push(
+        <Link
+          key={`link-${matchIndex}`}
+          src={matchText}
+          style={{ color: "#000000", textDecoration: "none" }}
+        >
+          {matchText}
+        </Link>
       )
-    )
+    } else {
+      const boldText = matchText.endsWith(" ")
+        ? `${matchText.slice(0, -1)}\u00A0`
+        : matchText
+
+      parts.push(
+        <Text
+          key={`bold-${matchIndex}`}
+          style={{ fontFamily: "Helvetica-Bold" }}
+        >
+          {boldText}
+        </Text>
+      )
+    }
+
+    lastIndex = matchIndex + matchText.length
+  }
+
+  if (lastIndex < normalizedText.length) {
+    parts.push(normalizedText.slice(lastIndex))
+  }
+
+  return parts
 }
 
 function renderParagraphText(text: string, key: string) {
@@ -278,6 +366,30 @@ function renderParagraphText(text: string, key: string) {
     <Text key={key} style={styles.paragraph}>
       {renderHighlightedTokens(text)}
     </Text>
+  )
+}
+
+function renderSignatureBlock(
+  signerName: string,
+  contractDateLabel: string,
+  key: string
+) {
+  return (
+    <View key={key} style={styles.signatureBlock}>
+      <Text style={styles.signatureDate}>{contractDateLabel}</Text>
+      <View style={styles.signatureRow}>
+        <View style={styles.signatureItem}>
+          <View style={styles.signatureLine} />
+          <Text style={styles.signatureRole}>MAGUI.studio</Text>
+          <Text style={styles.signatureName}>GUILHERME BUSTAMANTE</Text>
+        </View>
+        <View style={styles.signatureItem}>
+          <View style={styles.signatureLine} />
+          <Text style={styles.signatureRole}>CONTRATANTE</Text>
+          <Text style={styles.signatureName}>{signerName}</Text>
+        </View>
+      </View>
+    </View>
   )
 }
 
@@ -302,7 +414,44 @@ function renderBlock(block: Block, key: string) {
     )
   }
 
+  if (block.type === "signature") {
+    return renderSignatureBlock(block.signerName, block.contractDateLabel, key)
+  }
+
   return renderParagraphText(block.text, key)
+}
+
+function getSignatureBlock(document: ContractDocumentData): Block {
+  const contractingData =
+    document.contractingData && typeof document.contractingData === "object"
+      ? (document.contractingData as Record<string, unknown>)
+      : {}
+
+  const commercialData =
+    document.commercialData && typeof document.commercialData === "object"
+      ? (document.commercialData as Record<string, unknown>)
+      : {}
+
+  const signerName =
+    typeof contractingData.legalName === "string" &&
+    contractingData.legalName.trim().length > 0
+      ? contractingData.legalName
+      : typeof contractingData.signerName === "string" &&
+          contractingData.signerName.trim().length > 0
+        ? contractingData.signerName
+      : "[Nome do Responsável]"
+
+  const contractDateLabel = formatContractDate(
+    typeof commercialData.contractDate === "string"
+      ? commercialData.contractDate
+      : null
+  )
+
+  return {
+    type: "signature",
+    signerName,
+    contractDateLabel,
+  }
 }
 
 export function MaguiContractTemplate({
@@ -311,7 +460,8 @@ export function MaguiContractTemplate({
   document: ContractDocumentData
 }) {
   const exactText = document.clauses[0]?.content || ""
-  const blocks = buildBlocks(exactText)
+  const signatureBlock = getSignatureBlock(document)
+  const blocks = [...buildBlocks(exactText), signatureBlock]
   const pages = paginateBlocks(blocks)
 
   return (

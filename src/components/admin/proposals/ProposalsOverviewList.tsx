@@ -52,7 +52,7 @@ import {
   duplicateProposalAction,
   updateProposalStatusAction,
 } from "@/src/lib/actions/proposal.actions"
-import { createContractFromProposalAction } from "@/src/lib/actions/document.actions"
+import { ProposalContractDrawer } from "@/src/components/admin/proposals/ProposalContractDrawer"
 
 interface ProposalRecord {
   id: string
@@ -91,6 +91,12 @@ export function ProposalsOverviewList({
     key: "date",
     direction: "desc",
   })
+  const [selectedProposalForContract, setSelectedProposalForContract] =
+    React.useState<{
+      id: string
+      title: string
+      companyName: string
+    } | null>(null)
 
   const handleDelete = async (id: string) => {
     const result = await deleteProposalAction(id)
@@ -129,20 +135,12 @@ export function ProposalsOverviewList({
     }
   }
 
-  const handleGenerateContract = async (id: string) => {
-    const result = await createContractFromProposalAction(id)
-
-    if (result.success && result.documentId) {
-      toast.success(
-        result.reused
-          ? "Contrato existente aberto com sucesso."
-          : "Contrato gerado com sucesso."
-      )
-      window.open(`/api/documents/${result.documentId}/pdf`, "_blank", "noopener,noreferrer")
-      return
-    }
-
-    toast.error(result.error || "Erro ao gerar contrato")
+  const handleGenerateContract = (proposal: ProposalRecord) => {
+    setSelectedProposalForContract({
+      id: proposal.id,
+      title: proposal.title,
+      companyName: proposal.lead.companyName,
+    })
   }
 
   const handleSort = (key: SortConfig["key"]) => {
@@ -496,7 +494,7 @@ export function ProposalsOverviewList({
                             <Copy className="mr-2 size-4" /> {tList("duplicate")}
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => handleGenerateContract(proposal.id)}
+                            onClick={() => handleGenerateContract(proposal)}
                             className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
                           >
                             <ArrowSquareOut className="mr-2 size-4" /> Gerar contrato
@@ -558,6 +556,14 @@ export function ProposalsOverviewList({
           </p>
         </div>
       </Card>
+
+      <ProposalContractDrawer
+        proposal={selectedProposalForContract}
+        open={Boolean(selectedProposalForContract)}
+        onOpenChange={(open) => {
+          if (!open) setSelectedProposalForContract(null)
+        }}
+      />
     </div>
   )
 }
