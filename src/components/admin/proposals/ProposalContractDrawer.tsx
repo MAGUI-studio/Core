@@ -33,10 +33,11 @@ type ContractPrefill = {
   proposalId: string
   proposalTitle: string
   companyName: string
+  contractingPartyType: "INDIVIDUAL" | "COMPANY"
   contractingLegalName: string
-  contractingDocumentType: "CPF" | "CNPJ"
   contractingDocumentNumber: string
   contractingAddress: string
+  contractingCityState: string
   contractingSignerName: string
   renewalValue: string
   totalValueLabel: string
@@ -53,10 +54,11 @@ const EMPTY_FORM: ContractPrefill = {
   proposalId: "",
   proposalTitle: "",
   companyName: "",
+  contractingPartyType: "COMPANY",
   contractingLegalName: "",
-  contractingDocumentType: "CNPJ",
   contractingDocumentNumber: "",
   contractingAddress: "",
+  contractingCityState: "",
   contractingSignerName: "",
   renewalValue: "",
   totalValueLabel: "",
@@ -90,7 +92,14 @@ export function ProposalContractDrawer({
         return
       }
 
-      setForm(result.prefill)
+      setForm({
+        ...EMPTY_FORM,
+        ...result.prefill,
+        contractingPartyType:
+          result.prefill.contractingPartyType === "INDIVIDUAL"
+            ? "INDIVIDUAL"
+            : "COMPANY",
+      })
       setIsLoading(false)
     }
 
@@ -114,12 +123,13 @@ export function ProposalContractDrawer({
     setIsSubmitting(true)
     const result = await createContractFromProposalAction({
       proposalId: proposal.id,
-      contractingLegalName: form.contractingLegalName,
-      contractingDocumentType: form.contractingDocumentType,
-      contractingDocumentNumber: form.contractingDocumentNumber,
-      contractingAddress: form.contractingAddress,
-      contractingSignerName: form.contractingSignerName,
-      renewalValue: form.renewalValue,
+      contractingPartyType: form.contractingPartyType ?? "COMPANY",
+      contractingLegalName: form.contractingLegalName ?? "",
+      contractingDocumentNumber: form.contractingDocumentNumber ?? "",
+      contractingAddress: form.contractingAddress ?? "",
+      contractingCityState: form.contractingCityState ?? "",
+      contractingSignerName: form.contractingSignerName ?? "",
+      renewalValue: form.renewalValue ?? "",
     })
 
     setIsSubmitting(false)
@@ -195,83 +205,51 @@ export function ProposalContractDrawer({
               <div className="space-y-5">
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                    Nome completo ou razão social
+                    Tipo de contratante
                   </Label>
-                  <Input
-                    value={form.contractingLegalName}
-                    onChange={(event) =>
-                      updateField("contractingLegalName", event.target.value)
-                    }
-                    className="h-12 rounded-2xl border-border/40 bg-muted/10"
-                    placeholder="Ex.: Empresa Exemplo LTDA"
-                  />
+                  <div className="grid grid-cols-2 gap-2">
+                    {([
+                      { value: "COMPANY", label: "Empresa" },
+                      { value: "INDIVIDUAL", label: "Pessoa Física" },
+                    ] as const).map((option) => (
+                      <Button
+                        key={option.value}
+                        type="button"
+                        variant={
+                          form.contractingPartyType === option.value
+                            ? "default"
+                            : "outline"
+                        }
+                        className="h-12 rounded-2xl text-[10px] font-black uppercase tracking-widest"
+                        onClick={() =>
+                          updateField("contractingPartyType", option.value)
+                        }
+                      >
+                        {option.label}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="grid gap-5 sm:grid-cols-[140px_minmax(0,1fr)]">
+                {form.contractingPartyType === "COMPANY" ? (
                   <div className="space-y-2">
                     <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                      Documento
-                    </Label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {(["CPF", "CNPJ"] as const).map((type) => (
-                        <Button
-                          key={type}
-                          type="button"
-                          variant={
-                            form.contractingDocumentType === type
-                              ? "default"
-                              : "outline"
-                          }
-                          className="h-12 rounded-2xl text-[10px] font-black uppercase tracking-widest"
-                          onClick={() =>
-                            updateField("contractingDocumentType", type)
-                          }
-                        >
-                          {type}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                      Número do documento
+                      Nome da empresa
                     </Label>
                     <Input
-                      value={form.contractingDocumentNumber}
+                      value={form.contractingLegalName}
                       onChange={(event) =>
-                        updateField(
-                          "contractingDocumentNumber",
-                          event.target.value
-                        )
+                        updateField("contractingLegalName", event.target.value)
                       }
                       className="h-12 rounded-2xl border-border/40 bg-muted/10"
-                      placeholder={
-                        form.contractingDocumentType === "CPF"
-                          ? "000.000.000-00"
-                          : "00.000.000/0000-00"
-                      }
+                      placeholder="Ex.: 1k Salgados"
                     />
                   </div>
-                </div>
+                ) : null}
 
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                    Endereço completo
-                  </Label>
-                  <Textarea
-                    value={form.contractingAddress}
-                    onChange={(event) =>
-                      updateField("contractingAddress", event.target.value)
-                    }
-                    className="min-h-28 rounded-2xl border-border/40 bg-muted/10"
-                    placeholder="Rua, número, complemento, bairro, cidade, estado e CEP"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                    Nome para assinatura
+                    Nome completo do dono
                   </Label>
                   <Input
                     value={form.contractingSignerName}
@@ -280,6 +258,51 @@ export function ProposalContractDrawer({
                     }
                     className="h-12 rounded-2xl border-border/40 bg-muted/10"
                     placeholder="Ex.: João da Silva"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                    CPF do responsável
+                  </Label>
+                  <Input
+                    value={form.contractingDocumentNumber}
+                    onChange={(event) =>
+                      updateField(
+                        "contractingDocumentNumber",
+                        event.target.value
+                      )
+                    }
+                    className="h-12 rounded-2xl border-border/40 bg-muted/10"
+                    placeholder="000.000.000-00"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                    Endereço
+                  </Label>
+                  <Textarea
+                    value={form.contractingAddress}
+                    onChange={(event) =>
+                      updateField("contractingAddress", event.target.value)
+                    }
+                    className="min-h-24 rounded-2xl border-border/40 bg-muted/10"
+                    placeholder="Rua Exemplo, Jardim Exemplo, Nº 123"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                    Cidade / UF
+                  </Label>
+                  <Input
+                    value={form.contractingCityState}
+                    onChange={(event) =>
+                      updateField("contractingCityState", event.target.value)
+                    }
+                    className="h-12 rounded-2xl border-border/40 bg-muted/10"
+                    placeholder="Ex.: São José dos Campos/SP"
                   />
                 </div>
 
@@ -296,8 +319,7 @@ export function ProposalContractDrawer({
                     placeholder="Ex.: 189,90"
                   />
                   <p className="text-xs text-muted-foreground/65">
-                    Este valor será usado na cláusula de renovação de domínio e
-                    hospedagem.
+                    Este valor será usado na cláusula de renovação de domínio.
                   </p>
                 </div>
               </div>

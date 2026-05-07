@@ -19,51 +19,75 @@ type ContractClauseSeed = {
   content: string
 }
 
-const ContractGenerationSchema = z.object({
-  proposalId: z.string(),
-  contractingLegalName: z.string().trim().min(1, "Informe o nome da contratante."),
-  contractingDocumentType: z.enum(["CPF", "CNPJ"]),
-  contractingDocumentNumber: z.string().trim().min(1, "Informe o CPF ou CNPJ."),
-  contractingAddress: z.string().trim().min(1, "Informe o endereço completo."),
-  contractingSignerName: z.string().trim().min(1, "Informe o nome para assinatura."),
-  renewalValue: z.string().trim().min(1, "Informe o valor de renovação."),
-})
-
-function inferDocumentType(value?: string | null): "CPF" | "CNPJ" {
-  const digits = value?.replace(/\D/g, "") ?? ""
-  return digits.length > 11 ? "CNPJ" : "CPF"
-}
+const ContractGenerationSchema = z
+  .object({
+    proposalId: z.string(),
+    contractingPartyType: z.enum(["INDIVIDUAL", "COMPANY"]),
+    contractingLegalName: z.preprocess(
+      (value) => (typeof value === "string" ? value.trim() : ""),
+      z.string()
+    ),
+    contractingDocumentNumber: z.preprocess(
+      (value) => (typeof value === "string" ? value.trim() : ""),
+      z.string().min(1, "Informe o CPF do responsável.")
+    ),
+    contractingAddress: z.preprocess(
+      (value) => (typeof value === "string" ? value.trim() : ""),
+      z.string().min(1, "Informe o endereço.")
+    ),
+    contractingCityState: z.preprocess(
+      (value) => (typeof value === "string" ? value.trim() : ""),
+      z.string().min(1, "Informe cidade e estado.")
+    ),
+    contractingSignerName: z.preprocess(
+      (value) => (typeof value === "string" ? value.trim() : ""),
+      z.string().min(1, "Informe o nome completo do dono.")
+    ),
+    renewalValue: z.preprocess(
+      (value) => (typeof value === "string" ? value.trim() : ""),
+      z.string().min(1, "Informe o valor de renovação.")
+    ),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.contractingPartyType === "COMPANY" &&
+      data.contractingLegalName.trim().length === 0
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["contractingLegalName"],
+        message: "Informe o nome da empresa.",
+      })
+    }
+  })
 
 function buildAddressFromBillingProfile(profile?: {
   addressStreet?: string | null
   addressNumber?: string | null
   addressComplement?: string | null
   addressDistrict?: string | null
-  addressCity?: string | null
-  addressState?: string | null
-  addressZipCode?: string | null
 } | null) {
   if (!profile) return ""
 
-  const firstLine = [profile.addressStreet, profile.addressNumber]
+  const firstLine = [
+    profile.addressStreet,
+    profile.addressDistrict,
+    profile.addressNumber ? `Nº ${profile.addressNumber}` : null,
+  ]
     .filter(Boolean)
     .join(", ")
 
-  const secondLine = [profile.addressComplement, profile.addressDistrict]
-    .filter(Boolean)
-    .join(" - ")
+  const secondLine = [profile.addressComplement].filter(Boolean).join(", ")
 
-  const cityLine = [profile.addressCity, profile.addressState]
-    .filter(Boolean)
-    .join("/")
+  return [firstLine, secondLine].filter(Boolean).join(", ")
+}
 
-  const parts = [firstLine, secondLine, cityLine]
-    .filter(Boolean)
-    .join(", ")
-
-  return profile.addressZipCode
-    ? `${parts}${parts ? " - " : ""}CEP ${profile.addressZipCode}`
-    : parts
+function buildCityStateFromBillingProfile(profile?: {
+  addressCity?: string | null
+  addressState?: string | null
+} | null) {
+  if (!profile) return ""
+  return [profile.addressCity, profile.addressState].filter(Boolean).join("/")
 }
 
 function buildExactContractClauses(content: string): ContractClauseSeed[] {
@@ -165,17 +189,15 @@ export async function getProposalContractPrefillAction(proposalId: string) {
       proposalId: proposal.id,
       proposalTitle: proposal.title,
       companyName: proposal.lead.companyName,
+      contractingPartyType:
+        String(existingContracting?.partyType ?? "") === "INDIVIDUAL"
+          ? "INDIVIDUAL"
+          : "COMPANY",
       contractingLegalName:
         String(existingContracting?.legalName ?? "") ||
         billingProfile?.legalName ||
         client?.companyName ||
-        client?.name ||
         proposal.lead.companyName,
-      contractingDocumentType: inferDocumentType(
-        String(existingContracting?.documentNumber ?? "") ||
-          billingProfile?.taxId ||
-          client?.taxId
-      ),
       contractingDocumentNumber:
         String(existingContracting?.documentNumber ?? "") ||
         billingProfile?.taxId ||
@@ -184,6 +206,9 @@ export async function getProposalContractPrefillAction(proposalId: string) {
       contractingAddress:
         String(existingContracting?.address ?? "") ||
         buildAddressFromBillingProfile(billingProfile),
+      contractingCityState:
+        String(existingContracting?.cityState ?? "") ||
+        buildCityStateFromBillingProfile(billingProfile),
       contractingSignerName:
         String(existingContracting?.signerName ?? "") ||
         client?.name ||
@@ -236,10 +261,11 @@ export async function createContractFromProposalAction(
     })
 
     const formData: ContractDynamicFormData = {
+      contractingPartyType: data.contractingPartyType,
       contractingLegalName: data.contractingLegalName,
-      contractingDocumentType: data.contractingDocumentType,
       contractingDocumentNumber: data.contractingDocumentNumber,
       contractingAddress: data.contractingAddress,
+      contractingCityState: data.contractingCityState,
       contractingSignerName: data.contractingSignerName,
       renewalValue: data.renewalValue,
     }
@@ -266,10 +292,12 @@ export async function createContractFromProposalAction(
     }
 
     const contractingData = {
+      partyType: data.contractingPartyType,
       legalName: data.contractingLegalName,
-      documentType: data.contractingDocumentType,
+      documentType: "CPF",
       documentNumber: data.contractingDocumentNumber,
       address: data.contractingAddress,
+      cityState: data.contractingCityState,
       signerName: data.contractingSignerName,
       email: proposal.project?.client?.email ?? proposal.lead.email ?? null,
       phone: proposal.project?.client?.phone ?? proposal.lead.phone ?? null,
@@ -382,7 +410,10 @@ export async function createContractFromProposalAction(
   } catch (error) {
     logger.error({ error }, "Create Contract From Proposal Error")
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.issues[0]?.message ?? "Dados inválidos." }
+      return {
+        success: false,
+        error: error.issues[0]?.message ?? "Dados inválidos.",
+      }
     }
 
     return { success: false, error: "Falha ao gerar contrato." }

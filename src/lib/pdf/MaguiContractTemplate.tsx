@@ -16,7 +16,7 @@ const PAGE_WIDTH = 595.28
 const PAGE_HEIGHT = 841.89
 const CONTENT_TOP = 80
 const CONTENT_RIGHT = 50
-const CONTENT_BOTTOM = 80
+const CONTENT_BOTTOM = 70
 const CONTENT_LEFT = 50
 
 function imageToDataUri(dir: string, fileName: string) {
@@ -301,7 +301,7 @@ function renderHighlightedTokens(text: string) {
     "https://$1"
   )
   const tokenPattern =
-    /https?:\/\/[^\s),]+|2 \(dois\) dias úteis|1 \(um\) dia de atraso|\d+(?:\s*a\s*\d+)? dias úteis|01 \(um\)|12 meses|CONTRATADA ?|CONTRATANTE ?/gi
+    /https?:\/\/[^\s),]+|02 \(dois\) dias úteis|01 \(um\) dia de atraso|2 \(dois\) dias úteis|1 \(um\) dia de atraso|\d+(?:\s*a\s*\d+)? dias úteis|01 \(um\)|12 meses|CONTRATADA ?|CONTRATANTE ?/gi
 
   const parts: React.ReactNode[] = []
   let lastIndex = 0
@@ -374,6 +374,8 @@ function renderSignatureBlock(
   contractDateLabel: string,
   key: string
 ) {
+  const upperSignerName = signerName.toLocaleUpperCase("pt-BR")
+
   return (
     <View key={key} style={styles.signatureBlock}>
       <Text style={styles.signatureDate}>{contractDateLabel}</Text>
@@ -386,7 +388,7 @@ function renderSignatureBlock(
         <View style={styles.signatureItem}>
           <View style={styles.signatureLine} />
           <Text style={styles.signatureRole}>CONTRATANTE</Text>
-          <Text style={styles.signatureName}>{signerName}</Text>
+          <Text style={styles.signatureName}>{upperSignerName}</Text>
         </View>
       </View>
     </View>
@@ -433,12 +435,12 @@ function getSignatureBlock(document: ContractDocumentData): Block {
       : {}
 
   const signerName =
-    typeof contractingData.legalName === "string" &&
-    contractingData.legalName.trim().length > 0
-      ? contractingData.legalName
-      : typeof contractingData.signerName === "string" &&
-          contractingData.signerName.trim().length > 0
-        ? contractingData.signerName
+    typeof contractingData.signerName === "string" &&
+    contractingData.signerName.trim().length > 0
+      ? contractingData.signerName
+      : typeof contractingData.legalName === "string" &&
+          contractingData.legalName.trim().length > 0
+        ? contractingData.legalName
       : "[Nome do Responsável]"
 
   const contractDateLabel = formatContractDate(
