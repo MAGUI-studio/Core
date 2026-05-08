@@ -217,6 +217,13 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica-Bold",
     textDecoration: "underline",
   },
+  studioInlineLink: {
+    fontSize: 9.4,
+    lineHeight: 1.55,
+    color: "#0A84C6",
+    fontFamily: "Helvetica-Bold",
+    textDecoration: "underline",
+  },
   connectBonusOldPrice: {
     fontSize: 11,
     fontFamily: "Helvetica-Bold",
@@ -287,6 +294,7 @@ type ParsedNotes = {
 
 type Block =
   | { type: "section"; text: string }
+  | { type: "aboutStudio" }
   | { type: "clause"; text: string }
   | { type: "paragraph"; text: string }
   | { type: "bullets"; lines: string[] }
@@ -408,6 +416,15 @@ function estimateBlockHeight(block: Block) {
   if (block.type === "clause") return 34
   if (block.type === "investment") return 126
   if (block.type === "connectBonus") return 120
+  if (block.type === "aboutStudio") {
+    return Math.max(
+      18,
+      estimateLines(
+        "MAGUI.studio é um estúdio de arquitetura de interface, performance digital e engenharia frontend. Nossa atuação é focada em transformar demandas comerciais em ativos digitais claros, rápidos, confiáveis e visualmente sólidos.",
+        86
+      ) * 15
+    )
+  }
   if (block.type === "paragraph") {
     return Math.max(18, estimateLines(block.text, 86) * 15)
   }
@@ -484,6 +501,17 @@ function renderBlock(block: Block, index: number) {
     )
   }
 
+  if (block.type === "aboutStudio") {
+    return (
+      <Text key={index} style={styles.paragraph}>
+        <Link src="https://magui.studio" style={styles.studioInlineLink}>
+          MAGUI.studio
+        </Link>{" "}
+        é um estúdio de arquitetura de interface, performance digital e engenharia frontend. Nossa atuação é focada em transformar demandas comerciais em ativos digitais claros, rápidos, confiáveis e visualmente sólidos.
+      </Text>
+    )
+  }
+
   if (block.type === "clause") {
     return (
       <Text key={index} style={styles.clauseTitle}>
@@ -546,12 +574,9 @@ function renderBlock(block: Block, index: number) {
         </View>
         <Text style={styles.connectBonusText}>
           {renderRichText(
-            "O **MAGUI Connect** é um benefício complementar da operação MAGUI.studio voltado para continuidade de relacionamento, prioridade comercial e centralização de suporte estratégico. Nesta proposta, ele está sendo concedido em condição promocional **100% gratuita**.",
+            "O **MAGUI Connect** é uma página no estilo Linktree, criada para reunir os principais links, canais de contato e pontos de acesso da marca em um único lugar, com apresentação mais profissional. Nesta proposta, ele está sendo concedido como **bônus 100% gratuito**.",
             `connect-title-${index}`
           )}
-        </Text>
-        <Text style={styles.connectBonusFeatureText}>
-          O MAGUI Connect é uma página no estilo Linktree, criada para reunir os principais links, canais de contato e pontos de acesso da marca em um único lugar, com apresentação mais profissional e alinhada à identidade da MAGUI.studio.
         </Text>
         <View style={styles.connectBonusPriceRow}>
           <Text>
@@ -567,7 +592,12 @@ function renderBlock(block: Block, index: number) {
   return <View key={index} style={styles.spacer} />
 }
 
-function buildProposalBlocks(proposal: ProposalData, lead: LeadData, notes: ParsedNotes): Block[] {
+function buildProposalBlocks(
+  proposal: ProposalData,
+  lead: LeadData,
+  notes: ParsedNotes,
+  validUntil?: Date | string | null
+): Block[] {
   const summary = notes.executiveSummary.length
     ? notes.executiveSummary
     : [
@@ -637,14 +667,10 @@ function buildProposalBlocks(proposal: ProposalData, lead: LeadData, notes: Pars
         "Ajustes e garantia seguem o escopo aprovado, sem incluir novas funcionalidades fora do combinado inicial.",
       ]
 
-  const extraNotes = notes.additionalNotes.length
-    ? notes.additionalNotes
-    : [
-        "O código-fonte e os arquivos editáveis permanecem sob propriedade intelectual da MAGUI.studio, sendo o valor desta proposta referente à licença de uso em produção.",
-        'A assinatura "Desenvolvido por MAGUI.studio" permanece no rodapé da entrega, salvo contratação específica de white label.',
-      ]
-
   const hasConnectBonus = notes.connectBonus.length > 0
+  const proposalValidity = validUntil
+    ? toDateLabel(validUntil)
+    : "a data indicada nesta proposta"
 
   const scopeBullets = proposal.items.flatMap((item) => {
     const description = item.longDescription?.trim()
@@ -656,10 +682,7 @@ function buildProposalBlocks(proposal: ProposalData, lead: LeadData, notes: Pars
 
   return [
     { type: "section", text: "I. SOBRE A MAGUI.STUDIO" },
-    {
-      type: "paragraph",
-      text: "A **MAGUI.studio** é um estúdio de arquitetura de interface, performance digital e engenharia frontend. Nossa atuação é focada em transformar demandas comerciais em ativos digitais claros, rápidos, confiáveis e visualmente sólidos.",
-    },
+    { type: "aboutStudio" },
     {
       type: "paragraph",
       text: "Trabalhamos com metodologia assíncrona, escopo técnico bem definido e comunicação centralizada via CRM. Isso cria previsibilidade para o cliente e protege a execução do projeto contra ruído, retrabalho e desalinhamento.",
@@ -677,6 +700,10 @@ function buildProposalBlocks(proposal: ProposalData, lead: LeadData, notes: Pars
     { type: "bullets", lines: scopeBullets },
     { type: "clause", text: "3. IMPACTO ESPERADO E DIFERENCIAIS" },
     { type: "bullets", lines: [...impact, ...differentials] },
+    {
+      type: "paragraph",
+      text: "Quando a presença digital é lenta, confusa ou visualmente fraca, a operação comercial perde tempo explicando o básico e desperdiça oportunidades que já chegaram com intenção de compra. Esta proposta existe para transformar esse ponto de contato em um ativo mais convincente, mais rápido e mais profissional.",
+    },
     { type: "clause", text: "4. INVESTIMENTO E CONDIÇÕES DE PAGAMENTO" },
     { type: "bullets", lines: paymentTerms },
     ...proposal.items.map(
@@ -691,6 +718,10 @@ function buildProposalBlocks(proposal: ProposalData, lead: LeadData, notes: Pars
     {
       type: "paragraph",
       text: "A **publicação oficial em produção** ocorre somente após a compensação do saldo final, conforme a regra comercial e contratual da MAGUI.studio.",
+    },
+    {
+      type: "paragraph",
+      text: `Esta proposta permanece válida até **${proposalValidity}**. A reserva de agenda só é confirmada após aprovação formal e pagamento do sinal, garantindo previsibilidade real de início e entrega.`,
     },
     { type: "clause", text: "5. PRAZO, GATILHO DE INÍCIO E METODOLOGIA DE TRABALHO" },
     { type: "bullets", lines: timeline },
@@ -712,11 +743,8 @@ function buildProposalBlocks(proposal: ProposalData, lead: LeadData, notes: Pars
       type: "paragraph",
       text: "Para manter a página ativa após o primeiro ano, aplica-se a taxa anual vigente de **R$ 297,00**, além da renovação do domínio quando cabível. Esta informação é apresentada desde a proposta para garantir transparência total.",
     },
-    { type: "clause", text: "8. PRÓXIMOS PASSOS" },
+    { type: "clause", text: "8. PRÓXIMOS PASSOS E FORMALIZAÇÃO" },
     { type: "bullets", lines: nextSteps },
-    ...extraNotes.flatMap((line) =>
-      splitParagraphIntoChunks(line, 220).map((text) => ({ type: "paragraph", text }) as Block)
-    ),
   ]
 }
 
@@ -770,7 +798,7 @@ export function MaguiProposalTemplate({
   lead,
 }: MaguiProposalTemplateProps) {
   const notes = parseProposalNotes(proposal.notes)
-  const blocks = buildProposalBlocks(proposal, lead, notes)
+  const blocks = buildProposalBlocks(proposal, lead, notes, proposal.validUntil)
   const pages = paginateBlocks(blocks)
 
   return (
@@ -799,3 +827,4 @@ export function MaguiProposalTemplate({
     </Document>
   )
 }
+
