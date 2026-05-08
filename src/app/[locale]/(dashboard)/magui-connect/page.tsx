@@ -16,7 +16,10 @@ import {
 
 import { MaguiConnectLockedState } from "@/src/components/client/maguiConnect/MaguiConnectLockedState"
 
-import { getOwnMaguiConnectProfile } from "@/src/lib/maguiConnectData"
+import {
+  getOwnMaguiConnectAccessState,
+  getOwnMaguiConnectProfile,
+} from "@/src/lib/maguiConnectData"
 import { getCurrentAppUser } from "@/src/lib/project-governance"
 
 export async function generateMetadata() {
@@ -32,7 +35,12 @@ export default async function MaguiConnectOverviewPage() {
   if (!user) return null
 
   if (!user.canAccessMaguiConnect) {
-    return <MaguiConnectLockedState />
+    const accessState = await getOwnMaguiConnectAccessState(
+      user.id,
+      user.canAccessMaguiConnect
+    )
+
+    return <MaguiConnectLockedState accessState={accessState} />
   }
 
   const t = await getTranslations("MaguiConnect")

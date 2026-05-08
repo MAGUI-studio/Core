@@ -21,11 +21,42 @@ import { toast } from "sonner"
 import { Button } from "@/src/components/ui/button"
 
 import { requestMaguiConnectAccessAction } from "@/src/lib/actions/maguiConnect.actions"
+import { type MaguiConnectAccessState } from "@/src/lib/maguiConnectData"
 
-export function MaguiConnectLockedState() {
+export function MaguiConnectLockedState({
+  accessState = { mode: "REQUESTABLE" },
+}: {
+  accessState?: MaguiConnectAccessState
+}) {
   const t = useTranslations("MaguiConnect")
   const [isPending, startTransition] = React.useTransition()
   const [requested, setRequested] = React.useState(false)
+  const isBonusPending = accessState.mode === "BONUS_PENDING"
+  const primaryHref = isBonusPending
+    ? `/projects/${accessState.projectId}`
+    : "/"
+  const primaryLabel = isBonusPending
+    ? t("bonusPendingProjectButton")
+    : t("lockedBackHome")
+  const title = isBonusPending ? t("bonusPendingTitle") : t("lockedTitle")
+  const description = isBonusPending
+    ? t("bonusPendingDescription", { projectName: accessState.projectName })
+    : t("lockedDescription")
+  const priceLabel = isBonusPending
+    ? t("bonusPendingPriceLabel")
+    : t("lockedPriceLabel")
+  const priceValue = isBonusPending
+    ? t("bonusPendingPriceValue")
+    : t("lockedPriceValue")
+  const ctaDescription = isBonusPending
+    ? t("bonusPendingCtaDescription")
+    : t("lockedCtaDescription")
+  const blockerLines = isBonusPending
+    ? [
+        accessState.awaitingLaunch ? t("bonusPendingAwaitingLaunch") : null,
+        accessState.awaitingPayment ? t("bonusPendingAwaitingPayment") : null,
+      ].filter(Boolean)
+    : []
 
   const handleRequest = () =>
     startTransition(async () => {
@@ -63,51 +94,57 @@ export function MaguiConnectLockedState() {
 
             <div className="space-y-5">
               <p className="text-[10px] font-black uppercase tracking-[0.35em] text-brand-primary/70">
-                {t("lockedEyebrow")}
+                {isBonusPending ? t("bonusPendingEyebrow") : t("lockedEyebrow")}
               </p>
               <h1 className="max-w-5xl text-5xl font-black leading-[0.9] tracking-[-0.07em] lg:text-8xl">
-                {t("lockedTitle")}
+                {title}
               </h1>
               <p className="max-w-3xl text-lg leading-8 text-muted-foreground/75 lg:text-2xl">
-                {t("lockedDescription")}
+                {description}
               </p>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-3">
-              <HighlightCard
-                icon={<LinkSimple size={24} weight="duotone" />}
-                title={t("lockedBenefitOneTitle")}
-                description={t("lockedBenefitOneDescription")}
-              />
-              <HighlightCard
-                icon={<CursorClick size={24} weight="duotone" />}
-                title={t("lockedBenefitTwoTitle")}
-                description={t("lockedBenefitTwoDescription")}
-              />
-              <HighlightCard
-                icon={<ChartBar size={24} weight="duotone" />}
-                title={t("lockedBenefitThreeTitle")}
-                description={t("lockedBenefitThreeDescription")}
-              />
-            </div>
+            {!isBonusPending ? (
+              <div className="grid gap-4 sm:grid-cols-3">
+                <HighlightCard
+                  icon={<LinkSimple size={24} weight="duotone" />}
+                  title={t("lockedBenefitOneTitle")}
+                  description={t("lockedBenefitOneDescription")}
+                />
+                <HighlightCard
+                  icon={<CursorClick size={24} weight="duotone" />}
+                  title={t("lockedBenefitTwoTitle")}
+                  description={t("lockedBenefitTwoDescription")}
+                />
+                <HighlightCard
+                  icon={<ChartBar size={24} weight="duotone" />}
+                  title={t("lockedBenefitThreeTitle")}
+                  description={t("lockedBenefitThreeDescription")}
+                />
+              </div>
+            ) : null}
 
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <Button
-                className="h-14 rounded-full bg-brand-primary px-8 text-[11px] font-black uppercase tracking-[0.24em] text-white shadow-none"
-                disabled={isPending || requested}
-                onClick={handleRequest}
-              >
-                <PaperPlaneTilt size={18} weight="bold" className="mr-2" />
-                {requested ? t("lockedRequestSent") : t("lockedRequestButton")}
-              </Button>
+              {!isBonusPending ? (
+                <Button
+                  className="h-14 rounded-full bg-brand-primary px-8 text-[11px] font-black uppercase tracking-[0.24em] text-white shadow-none"
+                  disabled={isPending || requested}
+                  onClick={handleRequest}
+                >
+                  <PaperPlaneTilt size={18} weight="bold" className="mr-2" />
+                  {requested
+                    ? t("lockedRequestSent")
+                    : t("lockedRequestButton")}
+                </Button>
+              ) : null}
 
               <Button
                 asChild
                 variant="ghost"
                 className="h-14 rounded-full px-8 text-[11px] font-black uppercase tracking-[0.24em]"
               >
-                <Link href="/">
-                  {t("lockedBackHome")}
+                <Link href={primaryHref}>
+                  {primaryLabel}
                   <ArrowRight size={18} weight="bold" className="ml-2" />
                 </Link>
               </Button>
@@ -119,10 +156,10 @@ export function MaguiConnectLockedState() {
               <div className="flex items-start justify-between gap-6">
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-[0.35em] text-background/55">
-                    {t("lockedPriceLabel")}
+                    {priceLabel}
                   </p>
                   <p className="mt-4 text-5xl font-black tracking-[-0.07em] lg:text-7xl">
-                    {t("lockedPriceValue")}
+                    {priceValue}
                   </p>
                 </div>
 
@@ -132,29 +169,61 @@ export function MaguiConnectLockedState() {
               </div>
 
               <p className="mt-6 max-w-md text-sm leading-7 text-background/68">
-                {t("lockedCtaDescription")}
+                {ctaDescription}
               </p>
+
+              {blockerLines.length > 0 ? (
+                <div className="mt-6 grid gap-2">
+                  {blockerLines.map((line) => (
+                    <p
+                      key={line}
+                      className="text-sm leading-6 text-background/72"
+                    >
+                      {line}
+                    </p>
+                  ))}
+                </div>
+              ) : null}
             </div>
 
             <div className="grid gap-4">
-              <CompactFeature
-                title={t("lockedFeatureOneTitle")}
-                description={t("lockedFeatureOneDescription")}
-              />
-              <CompactFeature
-                title={t("lockedFeatureTwoTitle")}
-                description={t("lockedFeatureTwoDescription")}
-              />
-              <CompactFeature
-                title={t("lockedFeatureFourTitle")}
-                description={t("lockedFeatureFourDescription")}
-              />
+              {isBonusPending ? (
+                <>
+                  <CompactFeature
+                    title={t("bonusPendingProjectButton")}
+                    description={t("bonusPendingCtaDescription")}
+                  />
+                  {blockerLines.map((line, index) => (
+                    <CompactFeature
+                      key={`${line}-${index}`}
+                      title={t("bonusPendingStatusTitle")}
+                      description={line}
+                    />
+                  ))}
+                </>
+              ) : (
+                <>
+                  <CompactFeature
+                    title={t("lockedFeatureOneTitle")}
+                    description={t("lockedFeatureOneDescription")}
+                  />
+                  <CompactFeature
+                    title={t("lockedFeatureTwoTitle")}
+                    description={t("lockedFeatureTwoDescription")}
+                  />
+                  <CompactFeature
+                    title={t("lockedFeatureFourTitle")}
+                    description={t("lockedFeatureFourDescription")}
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="w-full px-6 py-16 lg:px-12 lg:py-20">
+      {!isBonusPending ? (
+        <section className="w-full px-6 py-16 lg:px-12 lg:py-20">
         <div className="space-y-10">
           <div className="max-w-3xl space-y-4">
             <p className="text-[10px] font-black uppercase tracking-[0.35em] text-brand-primary/70">
@@ -193,9 +262,11 @@ export function MaguiConnectLockedState() {
             />
           </div>
         </div>
-      </section>
+        </section>
+      ) : null}
 
-      <section className="w-full px-6 py-16 lg:px-12 lg:py-22">
+      {!isBonusPending ? (
+        <section className="w-full px-6 py-16 lg:px-12 lg:py-22">
         <div className="grid w-full gap-10 bg-muted/10 px-8 py-10 lg:grid-cols-[1fr_auto] lg:items-end lg:px-12 lg:py-14">
           <div className="space-y-4">
             <p className="text-[10px] font-black uppercase tracking-[0.35em] text-brand-primary/70">
@@ -215,19 +286,34 @@ export function MaguiConnectLockedState() {
 
           <div className="space-y-6 lg:text-right">
             <p className="text-5xl font-black tracking-[-0.07em] text-foreground lg:text-7xl">
-              {t("lockedPriceValue")}
+              {priceValue}
             </p>
-            <Button
-              className="h-14 rounded-full bg-brand-primary px-8 text-[11px] font-black uppercase tracking-[0.24em] text-white shadow-none"
-              disabled={isPending || requested}
-              onClick={handleRequest}
-            >
-              <PaperPlaneTilt size={18} weight="bold" className="mr-2" />
-              {requested ? t("lockedRequestSent") : t("lockedRequestButton")}
-            </Button>
+            {!isBonusPending ? (
+              <Button
+                className="h-14 rounded-full bg-brand-primary px-8 text-[11px] font-black uppercase tracking-[0.24em] text-white shadow-none"
+                disabled={isPending || requested}
+                onClick={handleRequest}
+              >
+                <PaperPlaneTilt size={18} weight="bold" className="mr-2" />
+                {requested
+                  ? t("lockedRequestSent")
+                  : t("lockedRequestButton")}
+              </Button>
+            ) : (
+              <Button
+                asChild
+                className="h-14 rounded-full bg-brand-primary px-8 text-[11px] font-black uppercase tracking-[0.24em] text-white shadow-none"
+              >
+                <Link href={primaryHref}>
+                  {primaryLabel}
+                  <ArrowRight size={18} weight="bold" className="ml-2" />
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
-      </section>
+        </section>
+      ) : null}
     </main>
   )
 }

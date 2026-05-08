@@ -7,6 +7,28 @@ import { CACHE_TTL } from "@/src/config/cache"
 import { cacheTags } from "./cache-tags"
 import prisma from "./prisma"
 
+export type MaguiConnectAccessState =
+  | { mode: "REQUESTABLE" }
+  | {
+      mode: "BONUS_PENDING"
+      projectId: string
+      projectName: string
+      awaitingPayment: boolean
+      awaitingLaunch: boolean
+    }
+
+function proposalIncludesComplimentaryConnect(notes?: string | null) {
+  const normalized = (notes ?? "").toLowerCase()
+
+  return (
+    normalized.includes("magui connect") &&
+    (normalized.includes("100% gratuito") ||
+      normalized.includes("100% gratuita") ||
+      normalized.includes("r$ 0,00") ||
+      normalized.includes("sem custo"))
+  )
+}
+
 function normalizeDomain(domain: string) {
   return domain
     .trim()
@@ -265,6 +287,73 @@ export async function getOwnMaguiConnectProfile(userId: string) {
       tags: [cacheTags.maguiConnectProfile(userId)],
     }
   )()
+}
+
+export async function getOwnMaguiConnectAccessState(
+  userId: string,
+  canAccessMaguiConnect: boolean
+): Promise<MaguiConnectAccessState> {
+  if (canAccessMaguiConnect) {
+    return { mode: "REQUESTABLE" }
+  }
+
+  const projects = await prisma.project.findMany({
+    where: { clientId: userId },
+    orderBy: { updatedAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      status: true,
+      proposals: {
+        select: {
+          id: true,
+          status: true,
+          notes: true,
+        },
+      },
+      invoices: {
+        where: {
+          kind: "PROJECT",
+          status: { not: "CANCELLED" },
+        },
+        select: {
+          installments: {
+            select: {
+              status: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
+  const bonusProject = projects.find((project) =>
+    project.proposals.some(
+      (proposal) =>
+        proposal.status === "ACCEPTED" &&
+        proposalIncludesComplimentaryConnect(proposal.notes)
+    )
+  )
+
+  if (!bonusProject) {
+    return { mode: "REQUESTABLE" }
+  }
+
+  const awaitingLaunch = bonusProject.status !== "LAUNCHED"
+  const awaitingPayment = bonusProject.invoices.some((invoice) =>
+    invoice.installments.some(
+      (installment) =>
+        installment.status !== "PAID" && installment.status !== "WAIVED"
+    )
+  )
+
+  return {
+    mode: "BONUS_PENDING",
+    projectId: bonusProject.id,
+    projectName: bonusProject.name,
+    awaitingLaunch,
+    awaitingPayment,
+  }
 }
 
 export async function getOwnMaguiConnectAnalytics(userId: string) {
