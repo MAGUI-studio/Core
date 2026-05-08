@@ -574,17 +574,14 @@ function renderBlock(block: Block, index: number) {
         </View>
         <Text style={styles.connectBonusText}>
           {renderRichText(
-            "O **MAGUI Connect** é uma página no estilo Linktree, criada para reunir os principais links, canais de contato e pontos de acesso da marca em um único lugar, com apresentação mais profissional. Nesta proposta, ele está sendo concedido como **bônus 100% gratuito**.",
+            "O **MAGUI Connect** é uma página no estilo Linktree, criada para reunir os principais links, canais de contato e pontos de acesso da marca em um único lugar, com apresentação mais profissional. Nesta proposta, ele está sendo concedido como **bônus 100% gratuito**",
             `connect-title-${index}`
           )}
+          {" de "}
+          <Text style={styles.bold}>R$ 497,00</Text>
+          {" por "}
+          <Text style={styles.bold}>R$ 0,00.</Text>
         </Text>
-        <View style={styles.connectBonusPriceRow}>
-          <Text>
-            <Text style={styles.connectBonusOldPrice}>R$ 497,00</Text>
-            <Text> por </Text>
-            <Text style={styles.connectBonusFreePrice}>R$ 0,00</Text>
-          </Text>
-        </View>
       </View>
     )
   }
