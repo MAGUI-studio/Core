@@ -26,219 +26,167 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
       id: "exec-performance",
       label: "Performance e Conversão",
       content:
-        "A MAGUI.studio propõe uma entrega premium focada em performance e conversão para a [Empresa]. O objetivo é estruturar uma experiência digital que não apenas apresente a marca, mas conduza o usuário para a próxima ação com clareza, velocidade e uma narrativa comercial consistente, eliminando ruídos que impedem a decisão.",
+        "A MAGUI.studio propõe uma entrega premium focada em performance e conversão para a [Empresa]. O objetivo é estruturar uma experiência digital que não apenas apresente a marca, mas conduza o usuário para a próxima ação com clareza, velocidade e uma narrativa comercial consistente.",
     },
     {
       id: "exec-institucional",
       label: "Institucional e Autoridade",
       content:
-        "Esta proposta foca em elevar o posicionamento e a percepção de autoridade da [Empresa]. Estruturamos uma presença digital que comunica clareza, confiança e rigor técnico, garantindo que a primeira impressão do cliente seja de total profissionalismo e alinhamento com o valor da marca.",
+        "Esta proposta foi desenhada para elevar o posicionamento e a percepção de autoridade da [Empresa]. Estruturamos uma presença digital séria, clara e tecnicamente consistente, alinhada com a experiência que o cliente final espera de uma marca confiável.",
     },
     {
-      id: "exec-estabilidade",
-      label: "Operação e Estabilidade",
+      id: "exec-growth",
+      label: "Estrutura para Crescimento",
       content:
-        "Esta proposta foca em previsibilidade operacional para a [Empresa]: performance contínua, ajustes evolutivos e redução de débitos técnicos. A intenção é manter a presença digital estável, rápida e sempre pronta para a operação comercial, permitindo que o time foque no negócio enquanto cuidamos da tecnologia.",
+        "Esta proposta organiza a presença digital da [Empresa] como um ativo comercial sólido, preparado para comunicar valor com clareza, reduzir ruído operacional e sustentar crescimento com uma base técnica confiável.",
     },
   ],
   objectives: [
     {
       id: "obj-lp",
-      label: "Landing Page (Conversão)",
+      label: "Landing Page",
       content:
-        "Otimizar o fluxo de conversão e velocidade de resposta, reduzindo o custo de aquisição e aumentando a taxa de contato direto com uma página focada em um único objetivo comercial claro.",
+        "O objetivo deste projeto é otimizar a conversão e a velocidade de resposta, apresentando a oferta da [Empresa] com clareza e conduzindo o visitante para uma ação comercial direta sem distrações desnecessárias.",
     },
     {
       id: "obj-inst",
-      label: "Institucional (Posicionamento)",
+      label: "Institucional",
       content:
-        "Garantir clareza de posicionamento e facilidade de navegação, permitindo que o cliente encontre o que precisa rapidamente e entenda a proposta de valor da [Empresa] sem ruídos.",
-    },
-    {
-      id: "obj-booking",
-      label: "Booking (Fluxo de Agendamento)",
-      content:
-        "Reduzir a fricção no agendamento e automatizar etapas de confirmação, garantindo que o fluxo de agendamento seja intuitivo e resulte em uma taxa maior de comparecimento.",
-    },
-    {
-      id: "obj-stability",
-      label: "Estabilidade (Continuidade)",
-      content:
-        "Manter performance de elite, segurança atualizada e evolução constante, garantindo que a plataforma cresça junto com as demandas do negócio de forma previsível.",
+        "O objetivo deste projeto é consolidar a presença institucional da [Empresa], organizar a apresentação dos serviços e transmitir uma percepção imediata de profissionalismo, autoridade e confiança.",
     },
   ],
   expectedImpact: [
     {
       id: "imp-clarity",
-      label: "Clareza e Confiança",
+      label: "Clareza e confiança",
       content:
-        "Aumento imediato na percepção de valor por parte do cliente final, resultando em menos tempo gasto explicando o básico e mais tempo fechando negócios de alto valor.",
+        "A expectativa é aumentar a percepção de valor da marca, facilitar a tomada de decisão do cliente final e reduzir o atrito comercial causado por comunicação confusa ou estrutura digital fraca.",
     },
     {
       id: "imp-speed",
-      label: "Velocidade de Decisão",
+      label: "Velocidade de decisão",
       content:
-        "Redução no ciclo de vendas: uma experiência fluida e sem erros técnicos transmite segurança, acelerando a decisão do cliente que sente que está em boas mãos.",
+        "Com uma experiência mais objetiva, rápida e bem organizada, o ciclo de resposta tende a ficar menor e a jornada de contato se torna mais eficiente para o visitante.",
     },
     {
-      id: "imp-abandonment",
-      label: "Redução de Abandono",
+      id: "imp-positioning",
+      label: "Posicionamento premium",
       content:
-        "Melhoria direta nas métricas de retenção e conversão (Core Web Vitals), garantindo que o usuário não abandone o site por lentidão ou falta de clareza visual.",
+        "A entrega fortalece o posicionamento da empresa ao apresentar a marca com linguagem visual mais madura, melhor leitura de valor e uma experiência compatível com um serviço profissional.",
     },
   ],
   differentials: [
     {
       id: "diff-governance",
-      label: "Governança e Cadência",
+      label: "Governança e cadência",
       content:
-        "Processo com checkpoints claros e critérios de aceite objetivos. Você sabe exatamente o que está sendo feito, quando será entregue e como validar cada etapa.",
+        "A condução do projeto acontece com checkpoints claros, critérios de aceite objetivos e uma rotina operacional documentada, o que reduz ruído, retrabalho e ambiguidades durante a execução.",
     },
     {
       id: "diff-documentation",
-      label: "Documentação e Rigor",
+      label: "Rigor técnico",
       content:
-        "Entrega com rigor técnico: código limpo, documentado e preparado para escala. Não entregamos apenas uma página, entregamos um ativo digital durável.",
+        "A MAGUI.studio não entrega apenas uma página final pronta. Entrega uma estrutura técnica sólida, com foco em performance, previsibilidade de manutenção e padrão profissional de implementação.",
     },
     {
-      id: "diff-seo",
-      label: "Performance e SEO",
+      id: "diff-performance",
+      label: "Performance e experiência",
       content:
-        "Foco obsessivo em performance e estrutura semântica. O projeto nasce otimizado para motores de busca e com tempos de carregamento que superam a média do mercado.",
+        "O projeto é pensado para carregar rápido, funcionar bem em dispositivos móveis e transmitir seriedade desde o primeiro contato, sem depender de soluções improvisadas ou visuais genéricos.",
     },
   ],
   timeline: [
     {
       id: "time-standard",
-      label: "Padrão 20 dias úteis",
+      label: "Padrão comercial",
       content:
-        "Estimativa de 20 dias úteis para conclusão total, dependendo do envio ágil de materiais e feedbacks nos checkpoints. O cronograma é monitorado em tempo real pela plataforma.",
-    },
-    {
-      id: "time-complex",
-      label: "Padrão 30-45 dias úteis",
-      content:
-        "Ciclo de 30 a 45 dias úteis para projetos de maior complexidade, estruturado em sprints de design, desenvolvimento e QA final para garantir zero erros no lançamento.",
+        "O cronograma é contado em dias úteis e só começa após a validação do briefing e o envio dos ativos obrigatórios pelo cliente no CRM da MAGUI.studio.",
     },
   ],
   paymentTerms: [
     {
       id: "pay-kickoff",
-      label: "Entrada + Entrega",
+      label: "Entrada + saldo final",
       content:
-        "O pagamento será dividido em duas etapas: 50% no ato da aprovação/assinatura, para reserva de agenda e início da estruturação, e 50% após a aprovação final do projeto em ambiente de homologação, obrigatoriamente antes da publicação em ambiente de produção. O pagamento é processado pela plataforma via link seguro do Stripe, com opções de cartão de crédito e boleto bancário.",
-    },
-    {
-      id: "pay-milestones",
-      label: "Marcos de Produção",
-      content:
-        "40% na aprovação, 30% na aprovação do design/UX e 30% na entrega final. Este modelo vincula o investimento ao progresso real e visível das etapas do projeto.",
-    },
-    {
-      id: "pay-recurring",
-      label: "Recorrência Mensal",
-      content:
-        "Investimento mensal fixo com vencimento no início de cada ciclo de 30 dias. Garante prioridade de agenda para melhorias e monitoramento ativo da plataforma.",
+        "O pagamento é dividido em duas etapas: 50% no ato da aprovação e assinatura, para reserva de agenda e início da estruturação, e 50% após a aprovação final em homologação, obrigatoriamente antes da publicação em produção. A cobrança é realizada pela plataforma via link seguro do Stripe, com opções como cartão de crédito e boleto bancário.",
     },
   ],
   platformFlow: [
     {
       id: "plat-default",
-      label: "Centralização e Histórico",
+      label: "Fluxo oficial pelo CRM",
       content:
-        "Toda a comunicação, aprovações e entrega de arquivos acontecem exclusivamente pela plataforma MAGUI. Isso garante que nenhuma decisão se perca em e-mails ou WhatsApp, criando um histórico seguro e auditável para ambos os lados.",
+        "Toda a comunicação, aprovações, envio de materiais e acompanhamento das etapas acontece pela plataforma oficial da MAGUI.studio. Isso preserva histórico, reduz ruído operacional e garante rastreabilidade real de tudo o que foi solicitado, aprovado e entregue.",
     },
   ],
   nextSteps: [
     {
       id: "next-standard",
-      label: "Checklist de Início",
+      label: "Fechamento e início",
       content:
-        "1. Aprovação desta proposta comercial;\n2. Assinatura do contrato digital;\n3. Confirmação do pagamento inicial;\n4. Preenchimento do briefing detalhado e envio dos ativos obrigatórios pelo CRM;\n5. Publicação no domínio definitivo somente após a compensação do saldo final.",
+        "A sequência prevista para início do projeto é simples e objetiva: aprovação da proposta comercial, assinatura do contrato digital, pagamento do sinal de 50%, preenchimento do briefing no CRM e envio dos ativos obrigatórios para liberação oficial do cronograma.",
     },
   ],
   acceptanceCriteria: [
     {
-      id: "acc-perf",
-      label: "Performance e SEO",
+      id: "acc-operational",
+      label: "Entrega validada",
       content:
-        "- Notas de performance acima de 90 no Lighthouse (mobile/desktop);\n- SEO base configurado (meta tags, semântica, sitemap);\n- Responsividade validada em navegadores modernos.",
+        "A entrega será considerada aprovada quando a solução refletir o escopo validado nos checkpoints, apresentar funcionamento correto em dispositivos modernos, manter consistência visual com a direção aprovada e cumprir os objetivos comerciais definidos para a proposta.",
     },
     {
-      id: "acc-visual",
-      label: "Fidelidade Visual",
+      id: "acc-quality",
+      label: "Qualidade técnica",
       content:
-        "- Interface fiel ao design aprovado no checkpoint de UX;\n- Interações e animações fluidas e sem erros de layout;\n- Links e formulários testados e integrados.",
+        "Os critérios de aceite consideram estabilidade da interface, responsividade, funcionamento de links e formulários, integridade dos blocos visuais e coerência entre a proposta aprovada e a entrega publicada em ambiente de homologação.",
     },
   ],
   notIncluded: [
     {
-      id: "not-content",
-      label: "Criação de Conteúdo",
+      id: "not-scope",
+      label: "Escopo excluído",
       content:
-        "- Produção de fotos ou vídeos profissionais;\n- Redação de textos (copywriting) além do estrutural acordado;\n- Compra de fontes ou bancos de imagens premium pagos.",
+        "Não fazem parte do escopo padrão a gestão de redes sociais, a criação contínua de posts e artes, o gerenciamento de tráfego pago, a redação publicitária integral e o licenciamento de ativos de terceiros que envolvam custo adicional para a operação.",
     },
     {
-      id: "not-ads",
-      label: "Tráfego e Gestão",
+      id: "not-infra",
+      label: "Custos externos e continuidade",
       content:
-        "- Configuração ou gestão de campanhas de tráfego pago (Google/Meta Ads);\n- Licenciamento de ativos de terceiros com ônus financeiro e custos de APIs externas;\n- Após o primeiro ciclo de 12 meses, a renovação do domínio passa a ser de responsabilidade do cliente e a permanência da página em hospedagem da MAGUI.studio fica sujeita à taxa anual vigente de R$ 297,00.",
+        "Custos de plataformas externas, APIs pagas, ativos premium e renovações futuras não estão incluídos além do que estiver explicitamente descrito nesta proposta. Após o primeiro ciclo de 12 meses, a continuidade da estrutura depende das regras comerciais de renovação e permanência vigentes.",
     },
   ],
   warranty: [
     {
       id: "war-30days",
-      label: "30 Dias de Ajustes",
+      label: "Garantia e ajustes",
       content:
-        "Cada etapa contempla 02 rodadas de ajustes consolidados por etapa durante a execução. Após o lançamento, a garantia de 30 dias cobre exclusivamente correções de bugs técnicos do escopo aprovado, sem incluir novas funcionalidades ou reformulações visuais fora do combinado.",
+        "Cada etapa contempla 02 rodadas de ajustes consolidados durante a execução. Após o lançamento, a garantia de 30 dias cobre exclusivamente correções de bugs técnicos dentro do escopo aprovado, sem incluir novas funcionalidades ou mudanças estratégicas fora do combinado.",
     },
   ],
   itemDescriptions: [
     {
       id: "item-desc-lp",
       label: "Landing Page",
-      content: "Landing page comercial (copy + UX + performance)",
+      content: "Landing page comercial de alta conversão",
     },
     {
       id: "item-desc-inst",
       label: "Institucional",
-      content: "Website institucional (estrutura + páginas + SEO base)",
-    },
-    {
-      id: "item-desc-booking",
-      label: "Booking",
-      content: "Plataforma de agendamento (fluxo + integrações)",
-    },
-    {
-      id: "item-desc-stability",
-      label: "Estabilidade",
-      content: "Plano de estabilidade (monitoramento + melhorias)",
+      content: "Website institucional com foco em autoridade",
     },
   ],
   itemLongDescriptions: [
     {
       id: "item-long-lp",
-      label: "Landing Page Detalhada",
+      label: "Landing Page detalhada",
       content:
-        "Foco em conversão direta. Inclui arquitetura de persuasão, design responsivo de alta performance, integração com formulários/WhatsApp e otimização para carregamento instantâneo em dispositivos móveis.",
+        "Estrutura pensada para conversão direta, com narrativa comercial clara, design responsivo, integração com formulários ou WhatsApp e otimização para desempenho rápido em dispositivos móveis.",
     },
     {
       id: "item-long-inst",
-      label: "Institucional Detalhado",
+      label: "Institucional detalhado",
       content:
-        "Presença digital completa com narrativa de autoridade. Inclui mapeamento de serviços, páginas de conversão, estrutura preparada para SEO e painel administrativo para gestão básica de conteúdo.",
-    },
-    {
-      id: "item-long-booking",
-      label: "Booking Detalhado",
-      content:
-        "Fluxo inteligente de agendamento com redução de etapas. Inclui integração com calendários (Google/Outlook), automação de e-mails de confirmação e interface desenhada para evitar abandono no checkout.",
-    },
-    {
-      id: "item-long-stability",
-      label: "Estabilidade Detalhado",
-      content:
-        "Acompanhamento técnico contínuo. Inclui monitoramento de uptime, correções de bugs, pequenas evoluções de UI/UX mensais e consultoria técnica para novas demandas do negócio.",
+        "Presença digital institucional com organização clara dos serviços, leitura de autoridade da marca, páginas estratégicas e estrutura técnica preparada para performance, confiança e boa navegação.",
     },
   ],
 }

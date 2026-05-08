@@ -3,6 +3,7 @@ import * as React from "react"
 import {
   Document,
   Image,
+  Link,
   Page,
   StyleSheet,
   Text,
@@ -132,28 +133,100 @@ const styles = StyleSheet.create({
   investmentBox: {
     marginTop: 8,
     marginBottom: 10,
-    paddingTop: 12,
-    paddingRight: 14,
-    paddingBottom: 12,
-    paddingLeft: 14,
+    paddingTop: 14,
+    paddingRight: 16,
+    paddingBottom: 14,
+    paddingLeft: 16,
     borderWidth: 1,
-    borderColor: "#000000",
+    borderColor: "#0A84C6",
+    backgroundColor: "#0A84C6",
+    borderRadius: 8,
   },
   investmentTitle: {
     fontSize: 10,
     lineHeight: 1.3,
     fontFamily: "Helvetica-Bold",
     marginBottom: 8,
+    color: "#FFFFFF",
   },
   investmentValue: {
-    fontSize: 17,
+    fontSize: 20,
     lineHeight: 1.1,
     fontFamily: "Helvetica-Bold",
     marginBottom: 8,
+    color: "#FFFFFF",
   },
   investmentMeta: {
     fontSize: 9.2,
     lineHeight: 1.5,
+    color: "#EAF6FD",
+  },
+  connectBonusBox: {
+    marginTop: 8,
+    marginBottom: 10,
+    paddingTop: 0,
+    paddingRight: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
+  },
+  connectBonusEyebrow: {
+    fontSize: 8,
+    lineHeight: 1.3,
+    marginBottom: 4,
+    fontFamily: "Helvetica-Bold",
+    color: "#0A84C6",
+  },
+  connectBonusTitle: {
+    fontSize: 13,
+    lineHeight: 1.2,
+    fontFamily: "Helvetica-Bold",
+    color: "#111827",
+  },
+  connectBonusHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 7,
+  },
+  connectBonusText: {
+    fontSize: 9.2,
+    lineHeight: 1.5,
+    marginBottom: 8,
+    textAlign: "justify",
+    color: "#1F2937",
+  },
+  connectBonusFeatureText: {
+    fontSize: 8.8,
+    lineHeight: 1.45,
+    marginBottom: 10,
+    color: "#000000",
+    textAlign: "justify",
+  },
+  connectBonusPriceRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    fontSize: 11,
+    lineHeight: 1.4,
+    color: "#000000",
+    marginBottom: 2,
+  },
+  connectBonusLink: {
+    fontSize: 9,
+    lineHeight: 1.4,
+    color: "#0A84C6",
+    fontFamily: "Helvetica-Bold",
+    textDecoration: "underline",
+  },
+  connectBonusOldPrice: {
+    fontSize: 11,
+    fontFamily: "Helvetica-Bold",
+    textDecoration: "line-through",
+    color: "#000000",
+  },
+  connectBonusFreePrice: {
+    fontSize: 16,
+    fontFamily: "Helvetica-Bold",
+    color: "#0A84C6",
   },
   footer: {
     position: "absolute",
@@ -209,6 +282,7 @@ type ParsedNotes = {
   platformFlow: string[]
   nextSteps: string[]
   additionalNotes: string[]
+  connectBonus: string[]
 }
 
 type Block =
@@ -217,6 +291,7 @@ type Block =
   | { type: "paragraph"; text: string }
   | { type: "bullets"; lines: string[] }
   | { type: "investment"; proposal: ProposalData }
+  | { type: "connectBonus" }
   | { type: "spacer" }
 
 function toDateLabel(value?: Date | string | null) {
@@ -262,6 +337,7 @@ function parseProposalNotes(notes?: string | null): ParsedNotes {
     platformFlow: [],
     nextSteps: [],
     additionalNotes: [],
+    connectBonus: [],
   }
 
   if (!notes?.trim()) return parsed
@@ -288,6 +364,8 @@ function parseProposalNotes(notes?: string | null): ParsedNotes {
     else if (title === "operacao pela plataforma") parsed.platformFlow = lines
     else if (title === "proximos passos") parsed.nextSteps = lines
     else if (title === "observacoes adicionais") parsed.additionalNotes = lines
+    else if (title === "magui connect" || title === "bonus magui connect")
+      parsed.connectBonus = lines
   })
 
   return parsed
@@ -329,6 +407,7 @@ function estimateBlockHeight(block: Block) {
   if (block.type === "section") return 24
   if (block.type === "clause") return 34
   if (block.type === "investment") return 126
+  if (block.type === "connectBonus") return 120
   if (block.type === "paragraph") {
     return Math.max(18, estimateLines(block.text, 86) * 15)
   }
@@ -455,6 +534,36 @@ function renderBlock(block: Block, index: number) {
     )
   }
 
+  if (block.type === "connectBonus") {
+    return (
+      <View key={index} style={styles.connectBonusBox}>
+        <Text style={styles.connectBonusEyebrow}>BÔNUS COMERCIAL</Text>
+        <View style={styles.connectBonusHeaderRow}>
+          <Text style={styles.connectBonusTitle}>MAGUI Connect</Text>
+          <Link src="https://bio.magui.studio" style={styles.connectBonusLink}>
+            Ver demonstração
+          </Link>
+        </View>
+        <Text style={styles.connectBonusText}>
+          {renderRichText(
+            "O **MAGUI Connect** é um benefício complementar da operação MAGUI.studio voltado para continuidade de relacionamento, prioridade comercial e centralização de suporte estratégico. Nesta proposta, ele está sendo concedido em condição promocional **100% gratuita**.",
+            `connect-title-${index}`
+          )}
+        </Text>
+        <Text style={styles.connectBonusFeatureText}>
+          O MAGUI Connect é uma página no estilo Linktree, criada para reunir os principais links, canais de contato e pontos de acesso da marca em um único lugar, com apresentação mais profissional e alinhada à identidade da MAGUI.studio.
+        </Text>
+        <View style={styles.connectBonusPriceRow}>
+          <Text>
+            <Text style={styles.connectBonusOldPrice}>R$ 497,00</Text>
+            <Text> por </Text>
+            <Text style={styles.connectBonusFreePrice}>R$ 0,00</Text>
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
   return <View key={index} style={styles.spacer} />
 }
 
@@ -535,6 +644,8 @@ function buildProposalBlocks(proposal: ProposalData, lead: LeadData, notes: Pars
         'A assinatura "Desenvolvido por MAGUI.studio" permanece no rodapé da entrega, salvo contratação específica de white label.',
       ]
 
+  const hasConnectBonus = notes.connectBonus.length > 0
+
   const scopeBullets = proposal.items.flatMap((item) => {
     const description = item.longDescription?.trim()
       ? `**${item.description}:** ${item.longDescription.trim()}`
@@ -576,6 +687,7 @@ function buildProposalBlocks(proposal: ProposalData, lead: LeadData, notes: Pars
         }) as Block
     ),
     { type: "investment", proposal },
+    ...(hasConnectBonus ? ([{ type: "connectBonus" }] as Block[]) : []),
     {
       type: "paragraph",
       text: "A **publicação oficial em produção** ocorre somente após a compensação do saldo final, conforme a regra comercial e contratual da MAGUI.studio.",

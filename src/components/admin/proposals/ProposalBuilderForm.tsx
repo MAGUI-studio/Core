@@ -66,6 +66,9 @@ const DEFAULT_PLATFORM_FLOW =
 const DEFAULT_CONTRACT_ALIGNMENT_NOTES =
   'O valor investido refere-se à licença de uso da solução em ambiente de produção. O código-fonte e os arquivos editáveis permanecem sob propriedade intelectual da MAGUI.studio, e a assinatura "Desenvolvido por MAGUI.studio" constará no rodapé da entrega, salvo contratação específica de white label.'
 
+const CONNECT_BONUS_NOTE =
+  "O projeto inclui, como bônus comercial, o MAGUI Connect em condição promocional integralmente gratuita no momento da contratação."
+
 function buildContractAlignedTimelineNarrative(days: number | null): string {
   if (!days || days <= 0) {
     return "Prazo contratual a definir, com contagem iniciada somente após a validação do briefing e envio dos ativos obrigatórios. A ausência de retorno do cliente por mais de 7 dias corridos suspende o projeto e reprograma a agenda."
@@ -99,8 +102,7 @@ export function ProposalBuilderForm({
   const [selectedLeadId, setSelectedLeadId] = React.useState(
     initialLead?.id ?? ""
   )
-  const [projectCategory, setProjectCategory] =
-    React.useState<string>("landing-page")
+  const [projectCategory, setProjectCategory] = React.useState<string>("")
   const [title, setTitle] = React.useState(
     initialLead
       ? `${t("builder.title")} - ${initialLead.companyName}`
@@ -123,6 +125,15 @@ export function ProposalBuilderForm({
   const [items, setItems] = React.useState<ProposalItemForm[]>([
     { ...EMPTY_ITEM },
   ])
+
+  const setProposalValidityDays = (days: number) => {
+    const date = new Date()
+    date.setDate(date.getDate() + days)
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, "0")
+    const day = String(date.getDate()).padStart(2, "0")
+    setValidUntil(`${year}-${month}-${day}`)
+  }
 
   const timeline = React.useMemo(
     () => buildContractAlignedTimelineNarrative(executionBusinessDays),
@@ -248,26 +259,7 @@ export function ProposalBuilderForm({
         },
       ])
       setExecutionBusinessDays(20)
-    } else if (category === "booking") {
-      setExecutiveSummary(
-        PROPOSAL_PRESETS.executiveSummary[0].content.replace(
-          /\[Empresa\]/g,
-          company
-        )
-      )
-      setObjectives(
-        PROPOSAL_PRESETS.objectives[2].content.replace(/\[Empresa\]/g, company)
-      )
-      setItems([
-        {
-          description: PROPOSAL_PRESETS.itemDescriptions[2].content,
-          longDescription: PROPOSAL_PRESETS.itemLongDescriptions[2].content,
-          unitValue: 0,
-          quantity: 1,
-        },
-      ])
-      setExecutionBusinessDays(30)
-    } else if (category === "estabilidade") {
+    } else {
       setExecutiveSummary(
         PROPOSAL_PRESETS.executiveSummary[2].content.replace(
           /\[Empresa\]/g,
@@ -275,12 +267,12 @@ export function ProposalBuilderForm({
         )
       )
       setObjectives(
-        PROPOSAL_PRESETS.objectives[3].content.replace(/\[Empresa\]/g, company)
+        PROPOSAL_PRESETS.objectives[1].content.replace(/\[Empresa\]/g, company)
       )
       setItems([
         {
-          description: PROPOSAL_PRESETS.itemDescriptions[3].content,
-          longDescription: PROPOSAL_PRESETS.itemLongDescriptions[3].content,
+          description: PROPOSAL_PRESETS.itemDescriptions[1].content,
+          longDescription: PROPOSAL_PRESETS.itemLongDescriptions[1].content,
           unitValue: 0,
           quantity: 1,
         },
@@ -294,9 +286,7 @@ export function ProposalBuilderForm({
     setPaymentTerms(PROPOSAL_PRESETS.paymentTerms[0].content)
     setNextSteps(PROPOSAL_PRESETS.nextSteps[0].content)
     setAcceptanceCriteria(PROPOSAL_PRESETS.acceptanceCriteria[0].content)
-    setNotIncluded(
-      PROPOSAL_PRESETS.notIncluded.map((preset) => preset.content).join("\n")
-    )
+    setNotIncluded(PROPOSAL_PRESETS.notIncluded[0].content)
     setPlatformFlow(PROPOSAL_PRESETS.platformFlow[0].content)
     setWarranty(PROPOSAL_PRESETS.warranty[0].content)
     setNotes(DEFAULT_CONTRACT_ALIGNMENT_NOTES)
@@ -321,7 +311,7 @@ export function ProposalBuilderForm({
       [
         t("builder.connectBonusTitle"),
         includeConnectBonus
-          ? `Incluso: MAGUI Connect (${t("builder.professionalProfileLabel")}). De R$ 497,00 por R$ 0,00.`
+          ? CONNECT_BONUS_NOTE
           : "",
       ],
     ]
@@ -459,12 +449,6 @@ export function ProposalBuilderForm({
                 <SelectItem value="institucional">
                   {t("builder.categories.institucional")}
                 </SelectItem>
-                <SelectItem value="booking">
-                  {t("builder.categories.booking")}
-                </SelectItem>
-                <SelectItem value="estabilidade">
-                  {t("builder.categories.estabilidade")}
-                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -488,12 +472,32 @@ export function ProposalBuilderForm({
             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
               {t("builder.validityLabel")}
             </Label>
-            <Input
-              type="date"
-              value={validUntil}
-              onChange={(e) => setValidUntil(e.target.value)}
-              className="h-14 rounded-2xl border-border/40 bg-muted/10 px-5 text-sm font-semibold transition-all focus:border-brand-primary/50 focus:bg-muted/20"
-            />
+            <div className="flex items-center gap-2">
+              <Input
+                type="date"
+                value={validUntil}
+                onChange={(e) => setValidUntil(e.target.value)}
+                className="h-14 rounded-2xl border-border/40 bg-muted/10 px-5 text-sm font-semibold transition-all focus:border-brand-primary/50 focus:bg-muted/20"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-14 rounded-2xl px-4 text-[10px] font-black uppercase tracking-widest"
+                onClick={() => setProposalValidityDays(7)}
+              >
+                7 dias
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-14 rounded-2xl px-4 text-[10px] font-black uppercase tracking-widest"
+                onClick={() => setProposalValidityDays(14)}
+              >
+                14 dias
+              </Button>
+            </div>
           </div>
         </div>
       </section>
@@ -841,18 +845,6 @@ export function ProposalBuilderForm({
           </div>
         </aside>
       </section>
-
-      <SectionHeading
-        icon={ClockCountdown}
-        title={t("builder.conditionsTitle")}
-        description={t("builder.conditionsDescription")}
-      />
-
-      <SectionHeading
-        icon={ListChecks}
-        title={t("builder.investmentTitle")}
-        description={t("builder.investmentDescription")}
-      />
 
       <div className="flex items-center justify-end gap-4 border-t border-border/10 pt-8">
         <Button

@@ -46,6 +46,17 @@ export type ParsedProposalNotes = {
   bonus: string[]
 }
 
+function hasComplimentaryMaguiConnect(parsedNotes: ParsedProposalNotes) {
+  const bonusText = parsedNotes.bonus.join(" ").toLowerCase()
+
+  return (
+    bonusText.includes("magui connect") &&
+    (bonusText.includes("gratuit") ||
+      bonusText.includes("r$ 0,00") ||
+      bonusText.includes("sem custo"))
+  )
+}
+
 function normalizeSectionTitle(value: string) {
   return value
     .normalize("NFD")
@@ -105,7 +116,12 @@ export function parseProposalNotes(notes?: string | null): ParsedProposalNotes {
     else if (title === "operacao pela plataforma") parsed.platformFlow = lines
     else if (title === "proximos passos") parsed.nextSteps = lines
     else if (title === "observacoes adicionais") parsed.additionalNotes = lines
-    else if (title === "bonus exclusivo") parsed.bonus = lines
+    else if (
+      title === "bonus exclusivo" ||
+      title === "bonus magui connect" ||
+      title === "magui connect"
+    )
+      parsed.bonus = lines
   })
 
   if (
@@ -263,6 +279,14 @@ export function buildContractText({
   const clauseOne = buildObjectClauseOne(proposal.items, proposal.title)
   const clauseTwo = buildObjectClauseTwo(parsedNotes, proposal.items)
   const clauseThree = buildExcludedScopeClause(parsedNotes)
+  const includesComplimentaryMaguiConnect =
+    hasComplimentaryMaguiConnect(parsedNotes)
+  const optionalClauseOneFour = includesComplimentaryMaguiConnect
+    ? "\n1.4. Bônus Cortesia: Como parte desta oferta, a CONTRATADA entregará o módulo MAGUI Connect (Perfil profissional de centralização de links), sem custo adicional de desenvolvimento, condicionado à permanência do projeto na infraestrutura da CONTRATADA."
+    : ""
+  const optionalClauseSixSix = includesComplimentaryMaguiConnect
+    ? "\n6.6. Abrangência da Manutenção: O valor de manutenção anual (Taxa de Permanência) abrange a hospedagem e disponibilidade técnica tanto da Landing Page quanto do módulo MAGUI Connect, garantindo a unidade e integridade do ecossistema digital do CONTRATANTE na infraestrutura da CONTRATADA."
+    : ""
   const contractingPartyLine =
     form.contractingPartyType === "INDIVIDUAL"
       ? `CONTRATANTE: ${form.contractingSignerName}, brasileiro(a), portador(a) do CPF nº ${form.contractingDocumentNumber}, residente e domiciliado(a) na ${form.contractingAddress}, ${form.contractingCityState}.`
@@ -276,7 +300,7 @@ ${contractingPartyLine}
 CLÁUSULA 1. DO OBJETO TÉCNICO
 1.1. ${clauseOne}
 1.2. ${clauseTwo}
-1.3. ${clauseThree}
+1.3. ${clauseThree}${optionalClauseOneFour}
 CLÁUSULA 2. DO CRONOGRAMA E DO "GARGALO DE CONTEÚDO"
 2.1. O prazo de execução será de ${executionDaysLabel}, contados a partir da validação do material inicial enviado pelo CONTRATANTE, que consiste obrigatoriamente no preenchimento do briefing e envio de ativos através do CRM da CONTRATADA (https://dashboard.magui.studio).
 
@@ -322,7 +346,7 @@ Parágrafo Único: Caso o CONTRATANTE opte por extensões diferentes das citadas
 
 6.4. Taxa de Permanência (Anuidade): Para manter a página ativa no servidor da CONTRATADA após o 12º mês, o CONTRATANTE deverá pagar uma taxa anual de R$ 297,00 (duzentos e noventa e sete reais). Este valor refere-se exclusivamente à manutenção do serviço de hospedagem e disponibilidade técnica, não incluindo a renovação do domínio citada na cláusula 6.2.
 
-6.5. Suspensão por Inadimplência: O atraso superior a 05 (cinco) dias no pagamento da Taxa de Permanência (6.4) ou a falta de renovação do domínio por parte do CONTRATANTE (6.2) resultará na suspensão imediata da página e dos serviços vinculados.
+6.5. Suspensão por Inadimplência: O atraso superior a 05 (cinco) dias no pagamento da Taxa de Permanência (6.4) ou a falta de renovação do domínio por parte do CONTRATANTE (6.2) resultará na suspensão imediata da página e dos serviços vinculados.${optionalClauseSixSix}
 
 CLÁUSULA 7. GARANTIA TÉCNICA E BUGS
 7.1. A CONTRATADA oferece uma garantia de 30 (trinta) dias após a entrega final para correção de eventuais erros de codificação (bugs) que impeçam o pleno funcionamento do escopo aprovado.
