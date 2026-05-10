@@ -240,7 +240,6 @@ export async function ClientHome({
                 name: activeProject.name,
                 status: activeProject.status,
                 progress: activeProject.progress,
-                deadline: activeProject.deadline,
                 scheduleData: activeProject.scheduleData,
                 updatedAt: activeProject.updatedAt,
                 lastUpdate: activeProject.updates?.[0],

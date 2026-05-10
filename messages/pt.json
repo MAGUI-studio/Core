@@ -309,6 +309,7 @@
       "empty": "Nenhum item encontrado para os filtros atuais.",
       "kinds": {
         "approval": "Aprovações",
+        "forecast": "PrevisÃµes",
         "deadline": "Prazos",
         "lead": "Comercial",
         "project": "Projetos",
@@ -447,6 +448,13 @@
         "client_name_label": "Nome do Cliente",
         "client_email_label": "E-mail de Contato",
         "open_client": "Abrir cliente",
+        "magui_connect_bonus_pending": "Bônus MAGUI Connect pendente",
+        "magui_connect_bonus_released": "Bônus MAGUI Connect liberado",
+        "magui_connect_bonus_cancelled": "Bônus MAGUI Connect cancelado",
+        "renewal_kind_domain": "domínio",
+        "renewal_kind_hosting": "permanência",
+        "renewal_upcoming": "{kind} vence em {days} dia(s)",
+        "renewal_suspension_risk": "{kind} vencida há {days} dia(s)",
         "not_available": "N/A",
         "no_budget": "Sem orçamento",
         "no_deadline": "Sem prazo definido",
@@ -605,6 +613,16 @@
         "label": "Concorrentes",
         "slug": "concorrentes",
         "placeholder": "Quais marcas operam no mesmo mercado que o seu?"
+      },
+      "assetOwnershipAccepted": {
+        "label": "Responsabilidade sobre ativos enviados",
+        "slug": "responsabilidade-ativos",
+        "placeholder": "Confirmo que textos, imagens, logos, marcas e demais ativos enviados possuem autorização de uso e que a responsabilidade jurídica sobre esses materiais é do contratante."
+      },
+      "contentResponsibilityAccepted": {
+        "label": "Responsabilidade sobre conteúdo e ofertas",
+        "slug": "responsabilidade-conteudo",
+        "placeholder": "Confirmo que ofertas, promessas comerciais, informações institucionais e demais conteúdos enviados são verdadeiros, legais e de responsabilidade do contratante."
       },
       "desiredPerceptions": {
         "label": "Percepção Desejada",
@@ -1089,6 +1107,8 @@
       "DESIGN": "Design",
       "ENGINEERING": "Desenvolvimento",
       "QA": "Qualidade",
+      "ON_HOLD_CLIENT": "Suspenso pelo cliente",
+      "ABANDONED": "Abandonado",
       "LAUNCHED": "Finalizado"
     },
     "timeline": {

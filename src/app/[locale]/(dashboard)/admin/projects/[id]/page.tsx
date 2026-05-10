@@ -112,7 +112,6 @@ export default async function AdminProjectDetailPage({
     budget: project.budget,
     hasInternationalization: project.hasInternationalization,
     internationalizationFee: project.internationalizationFee,
-    deadline: project.deadline,
     scheduleData: project.scheduleData,
     status: project.status,
     client: {

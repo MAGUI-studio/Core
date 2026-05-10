@@ -1,13 +1,43 @@
-import { ProjectStatus } from "@/src/generated/client"
+import { ProjectCategory, ProjectStatus } from "@/src/generated/client"
+
+const OPERATIONAL_PROJECT_STATUSES = [
+  ProjectStatus.STRATEGY,
+  ProjectStatus.ARCHITECTURE,
+  ProjectStatus.DESIGN,
+  ProjectStatus.ENGINEERING,
+  ProjectStatus.QA,
+] as const
+
+type OperationalProjectStatus = (typeof OPERATIONAL_PROJECT_STATUSES)[number]
+
+function isOperationalProjectStatus(
+  value: unknown
+): value is OperationalProjectStatus {
+  return OPERATIONAL_PROJECT_STATUSES.includes(
+    value as OperationalProjectStatus
+  )
+}
 
 export type ProposalScheduleData = {
+  projectCategory: ProjectCategory | null
   executionBusinessDays: number | null
   delayMultiplier: number
   suspensionAfterCalendarDays: number
   abandonmentAfterCalendarDays: number
   requiresBriefing: boolean
   requiresBrandAssets: boolean
+  includesMaguiConnectBonus: boolean
+  exposeInPortfolio: boolean
+  keepFooterCredit: boolean
+  whiteLabelFeeCents: number
+  annualRenewalFeeCents: number
 }
+
+export type MaguiConnectBonusStatus =
+  | "NOT_INCLUDED"
+  | "PENDING_RELEASE"
+  | "RELEASED"
+  | "CANCELLED"
 
 export type ProjectScheduleState =
   | "PENDING_INPUT"
@@ -37,6 +67,9 @@ export type PendingClientApproval = {
 }
 
 export type ProjectScheduleData = ProposalScheduleData & {
+  operationalStatus: OperationalProjectStatus
+  sourceProposalId: string | null
+  maguiConnectBonusStatus: MaguiConnectBonusStatus
   executionState: ProjectScheduleState
   briefingRequestedAt: string | null
   briefingValidatedAt: string | null
@@ -51,6 +84,9 @@ export type ProjectScheduleData = ProposalScheduleData & {
   abandonedAt: string | null
   delayEvents: ProjectDelayEvent[]
   pendingClientApprovals: PendingClientApproval[]
+  renewalCycleStartedAt: string | null
+  domainRenewalDueAt: string | null
+  hostingRenewalDueAt: string | null
 }
 
 export type ProjectScheduleReasonView = {
@@ -66,6 +102,15 @@ export type ProjectScheduleReasonView = {
   isActive: boolean
 }
 
+export type ProjectRenewalKind = "DOMAIN" | "HOSTING"
+
+export type ProjectRenewalSignal = {
+  kind: ProjectRenewalKind
+  dueAt: Date
+  daysUntilDue: number
+  status: "UPCOMING" | "OVERDUE" | "SUSPENSION_RISK"
+}
+
 export type ProjectScheduleView = {
   executionBusinessDays: number | null
   delayMultiplier: number
@@ -73,6 +118,9 @@ export type ProjectScheduleView = {
   abandonmentAfterCalendarDays: number
   requiresBriefing: boolean
   requiresBrandAssets: boolean
+  includesMaguiConnectBonus: boolean
+  sourceProposalId: string | null
+  maguiConnectBonusStatus: MaguiConnectBonusStatus
   executionState: ProjectScheduleState
   executionStartAt: Date | null
   materialValidatedAt: Date | null
@@ -85,6 +133,20 @@ export type ProjectScheduleView = {
   suspensionStartedAt: Date | null
   abandonedAt: Date | null
   delayReasons: ProjectScheduleReasonView[]
+}
+
+export type ProjectSchedulePersistence = {
+  executionBusinessDays: number | null
+  executionStartAt: Date | null
+  briefingRequestedAt: Date | null
+  briefingValidatedAt: Date | null
+  deliveryForecastAt: Date | null
+  suspendedAt: Date | null
+  abandonedAt: Date | null
+  lastClientDependencyAt: Date | null
+  lastClientResponseAt: Date | null
+  clientDelayCalendarDays: number
+  clientDelayBusinessDays: number
 }
 
 const DEFAULT_DELAY_MULTIPLIER = 2
@@ -282,6 +344,13 @@ export function normalizeProposalScheduleData(
     value && typeof value === "object" ? (value as Record<string, unknown>) : {}
 
   return {
+    projectCategory:
+      source.projectCategory === ProjectCategory.LANDING_PAGE ||
+      source.projectCategory === ProjectCategory.INSTITUTIONAL_SITE ||
+      source.projectCategory === ProjectCategory.BOOKING_PLATFORM ||
+      source.projectCategory === ProjectCategory.STABILITY_PLAN
+        ? source.projectCategory
+        : null,
     executionBusinessDays: parsePositiveInt(source.executionBusinessDays),
     delayMultiplier: Math.max(
       1,
@@ -303,6 +372,17 @@ export function normalizeProposalScheduleData(
     ),
     requiresBriefing: parseBoolean(source.requiresBriefing, true),
     requiresBrandAssets: parseBoolean(source.requiresBrandAssets, true),
+    includesMaguiConnectBonus: parseBoolean(
+      source.includesMaguiConnectBonus,
+      false
+    ),
+    exposeInPortfolio: parseBoolean(source.exposeInPortfolio, true),
+    keepFooterCredit: parseBoolean(source.keepFooterCredit, true),
+    whiteLabelFeeCents: parseNonNegativeInt(source.whiteLabelFeeCents),
+    annualRenewalFeeCents: parseNonNegativeInt(
+      source.annualRenewalFeeCents,
+      29_700
+    ),
   }
 }
 
@@ -317,6 +397,22 @@ export function normalizeProjectScheduleData(
 
   return {
     ...proposalDefaults,
+    operationalStatus: isOperationalProjectStatus(source.operationalStatus)
+      ? source.operationalStatus
+      : ProjectStatus.STRATEGY,
+    sourceProposalId:
+      typeof source.sourceProposalId === "string" &&
+      source.sourceProposalId.trim().length > 0
+        ? source.sourceProposalId
+        : null,
+    maguiConnectBonusStatus:
+      source.maguiConnectBonusStatus === "PENDING_RELEASE" ||
+      source.maguiConnectBonusStatus === "RELEASED" ||
+      source.maguiConnectBonusStatus === "CANCELLED"
+        ? source.maguiConnectBonusStatus
+        : proposalDefaults.includesMaguiConnectBonus
+          ? "PENDING_RELEASE"
+          : "NOT_INCLUDED",
     executionState:
       executionState === "ACTIVE" ||
       executionState === "ON_HOLD_CLIENT" ||
@@ -335,6 +431,9 @@ export function normalizeProjectScheduleData(
     currentForecastDate: toIsoString(parseDate(source.currentForecastDate)),
     suspensionStartedAt: toIsoString(parseDate(source.suspensionStartedAt)),
     abandonedAt: toIsoString(parseDate(source.abandonedAt)),
+    renewalCycleStartedAt: toIsoString(parseDate(source.renewalCycleStartedAt)),
+    domainRenewalDueAt: toIsoString(parseDate(source.domainRenewalDueAt)),
+    hostingRenewalDueAt: toIsoString(parseDate(source.hostingRenewalDueAt)),
     delayEvents: Array.isArray(source.delayEvents)
       ? source.delayEvents
           .map((item) => normalizeDelayEvent(item))
@@ -349,14 +448,21 @@ export function normalizeProjectScheduleData(
 }
 
 export function buildProposalScheduleData(input?: {
+  projectCategory?: ProjectCategory | null
   executionBusinessDays?: number | null
   delayMultiplier?: number
   suspensionAfterCalendarDays?: number
   abandonmentAfterCalendarDays?: number
   requiresBriefing?: boolean
   requiresBrandAssets?: boolean
+  includesMaguiConnectBonus?: boolean
+  exposeInPortfolio?: boolean
+  keepFooterCredit?: boolean
+  whiteLabelFeeCents?: number
+  annualRenewalFeeCents?: number
 }): ProposalScheduleData {
   return normalizeProposalScheduleData({
+    projectCategory: input?.projectCategory ?? null,
     executionBusinessDays: input?.executionBusinessDays ?? null,
     delayMultiplier: input?.delayMultiplier ?? DEFAULT_DELAY_MULTIPLIER,
     suspensionAfterCalendarDays:
@@ -365,6 +471,11 @@ export function buildProposalScheduleData(input?: {
       input?.abandonmentAfterCalendarDays ?? DEFAULT_ABANDONMENT_AFTER_DAYS,
     requiresBriefing: input?.requiresBriefing ?? true,
     requiresBrandAssets: input?.requiresBrandAssets ?? true,
+    includesMaguiConnectBonus: input?.includesMaguiConnectBonus ?? false,
+    exposeInPortfolio: input?.exposeInPortfolio ?? true,
+    keepFooterCredit: input?.keepFooterCredit ?? true,
+    whiteLabelFeeCents: input?.whiteLabelFeeCents ?? 20_000,
+    annualRenewalFeeCents: input?.annualRenewalFeeCents ?? 29_700,
   })
 }
 
@@ -376,12 +487,24 @@ export function buildInitialProjectScheduleData(input?: {
   abandonmentAfterCalendarDays?: number
   requiresBriefing?: boolean
   requiresBrandAssets?: boolean
+  includesMaguiConnectBonus?: boolean
+  sourceProposalId?: string | null
+  maguiConnectBonusStatus?: MaguiConnectBonusStatus
+  exposeInPortfolio?: boolean
+  keepFooterCredit?: boolean
+  whiteLabelFeeCents?: number
+  annualRenewalFeeCents?: number
 }): ProjectScheduleData {
   const now = input?.now ?? new Date()
   const base = buildProposalScheduleData(input)
 
   return {
     ...base,
+    operationalStatus: ProjectStatus.STRATEGY,
+    sourceProposalId: input?.sourceProposalId ?? null,
+    maguiConnectBonusStatus:
+      input?.maguiConnectBonusStatus ??
+      (base.includesMaguiConnectBonus ? "PENDING_RELEASE" : "NOT_INCLUDED"),
     executionState: "PENDING_INPUT",
     briefingRequestedAt: now.toISOString(),
     briefingValidatedAt: null,
@@ -396,6 +519,9 @@ export function buildInitialProjectScheduleData(input?: {
     abandonedAt: null,
     delayEvents: [],
     pendingClientApprovals: [],
+    renewalCycleStartedAt: null,
+    domainRenewalDueAt: null,
+    hostingRenewalDueAt: null,
   }
 }
 
@@ -833,6 +959,9 @@ export function buildProjectScheduleView(
     abandonmentAfterCalendarDays: schedule.abandonmentAfterCalendarDays,
     requiresBriefing: schedule.requiresBriefing,
     requiresBrandAssets: schedule.requiresBrandAssets,
+    includesMaguiConnectBonus: schedule.includesMaguiConnectBonus,
+    sourceProposalId: schedule.sourceProposalId,
+    maguiConnectBonusStatus: schedule.maguiConnectBonusStatus,
     executionState: effectiveState,
     executionStartAt,
     materialValidatedAt,
@@ -850,6 +979,157 @@ export function buildProjectScheduleView(
 
 export function getProposalExecutionDaysFromSchedule(rawSchedule: unknown) {
   return normalizeProposalScheduleData(rawSchedule).executionBusinessDays
+}
+
+export function proposalIncludesMaguiConnectBonus(rawSchedule: unknown) {
+  return normalizeProposalScheduleData(rawSchedule).includesMaguiConnectBonus
+}
+
+export function getProjectMaguiConnectBonusStatus(rawSchedule: unknown) {
+  return normalizeProjectScheduleData(rawSchedule).maguiConnectBonusStatus
+}
+
+export function ensureProjectRenewalSchedule(
+  rawSchedule: unknown,
+  launchedAt: Date = new Date()
+) {
+  const schedule = normalizeProjectScheduleData(rawSchedule)
+  const cycleStartedAt = schedule.renewalCycleStartedAt ?? launchedAt.toISOString()
+  const nextRenewalDate = new Date(cycleStartedAt)
+  nextRenewalDate.setFullYear(nextRenewalDate.getFullYear() + 1)
+
+  return normalizeProjectScheduleData({
+    ...schedule,
+    renewalCycleStartedAt: cycleStartedAt,
+    domainRenewalDueAt:
+      schedule.domainRenewalDueAt ?? nextRenewalDate.toISOString(),
+    hostingRenewalDueAt:
+      schedule.hostingRenewalDueAt ?? nextRenewalDate.toISOString(),
+  })
+}
+
+export function getProjectRenewalSignals(
+  rawSchedule: unknown,
+  now: Date = new Date()
+): ProjectRenewalSignal[] {
+  const schedule = normalizeProjectScheduleData(rawSchedule)
+  const candidates: Array<{
+    kind: ProjectRenewalKind
+    dueAt: Date | null
+  }> = [
+    {
+      kind: "DOMAIN",
+      dueAt: parseDate(schedule.domainRenewalDueAt),
+    },
+    {
+      kind: "HOSTING",
+      dueAt: parseDate(schedule.hostingRenewalDueAt),
+    },
+  ]
+
+  return candidates
+    .flatMap((candidate) => {
+      if (!candidate.dueAt) return []
+
+      const daysUntilDue = Math.round(
+        (startOfDay(candidate.dueAt).getTime() - startOfDay(now).getTime()) /
+          86_400_000
+      )
+
+      if (daysUntilDue > 30) return []
+
+      const status =
+        daysUntilDue < -5
+          ? "SUSPENSION_RISK"
+          : daysUntilDue < 0
+            ? "OVERDUE"
+            : "UPCOMING"
+
+      return [
+        {
+          kind: candidate.kind,
+          dueAt: candidate.dueAt,
+          daysUntilDue,
+          status,
+        } satisfies ProjectRenewalSignal,
+      ]
+    })
+    .sort((a, b) => a.dueAt.getTime() - b.dueAt.getTime())
+}
+
+export function setProjectOperationalStatus(
+  rawSchedule: unknown,
+  status: ProjectStatus
+) {
+  const schedule = normalizeProjectScheduleData(rawSchedule)
+
+  if (!isOperationalProjectStatus(status)) {
+    return schedule
+  }
+
+  return normalizeProjectScheduleData({
+    ...schedule,
+    operationalStatus: status,
+  })
+}
+
+export function resolveProjectStatusFromSchedule(
+  rawSchedule: unknown,
+  currentStatus: ProjectStatus
+) {
+  const schedule = normalizeProjectScheduleData(rawSchedule)
+
+  if (currentStatus === ProjectStatus.LAUNCHED) {
+    return ProjectStatus.LAUNCHED
+  }
+
+  if (schedule.executionState === "ABANDONED") {
+    return ProjectStatus.ABANDONED
+  }
+
+  if (schedule.executionState === "ON_HOLD_CLIENT") {
+    return ProjectStatus.ON_HOLD_CLIENT
+  }
+
+  if (currentStatus === ProjectStatus.ON_HOLD_CLIENT) {
+    return schedule.operationalStatus
+  }
+
+  if (currentStatus === ProjectStatus.ABANDONED) {
+    return schedule.operationalStatus
+  }
+
+  return currentStatus
+}
+
+export function buildProjectSchedulePersistence(
+  rawSchedule: unknown,
+  projectStatus?: ProjectStatus
+): ProjectSchedulePersistence {
+  const schedule = normalizeProjectScheduleData(rawSchedule)
+  const view = buildProjectScheduleView(schedule, projectStatus)
+
+  const briefingRequestedAt = parseDate(schedule.briefingRequestedAt)
+  const briefingValidatedAt = parseDate(schedule.briefingValidatedAt)
+  const awaitingClientSince = parseDate(schedule.awaitingClientSince)
+  const lastResolvedDelay = [...schedule.delayEvents]
+    .sort((a, b) => b.resolvedAt.localeCompare(a.resolvedAt))[0]
+
+  return {
+    executionBusinessDays: schedule.executionBusinessDays,
+    executionStartAt: view.executionStartAt,
+    briefingRequestedAt,
+    briefingValidatedAt,
+    deliveryForecastAt: view.currentForecastDate,
+    suspendedAt: view.suspensionStartedAt,
+    abandonedAt: view.abandonedAt,
+    lastClientDependencyAt: awaitingClientSince,
+    lastClientResponseAt: lastResolvedDelay
+      ? new Date(lastResolvedDelay.resolvedAt)
+      : briefingValidatedAt,
+    clientDelayCalendarDays: view.clientDelayCalendarDays,
+    clientDelayBusinessDays: view.clientDelayBusinessDays,
+  }
 }
 
 export function getExecutionDaysLabel(days: number | null) {

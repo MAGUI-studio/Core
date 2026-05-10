@@ -80,6 +80,8 @@ export function UpdateStatusForm({
                 "DESIGN",
                 "ENGINEERING",
                 "QA",
+                "ON_HOLD_CLIENT",
+                "ABANDONED",
                 "LAUNCHED",
               ].map((s) => (
                 <SelectItem

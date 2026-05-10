@@ -309,6 +309,7 @@
       "empty": "No items found for current filters.",
       "kinds": {
         "approval": "Approvals",
+        "forecast": "Forecasts",
         "deadline": "Deadlines",
         "lead": "Commercial",
         "project": "Projects",
@@ -447,6 +448,13 @@
         "client_name_label": "Client Name",
         "client_email_label": "Contact Email",
         "open_client": "Open client",
+        "magui_connect_bonus_pending": "MAGUI Connect bonus pending",
+        "magui_connect_bonus_released": "MAGUI Connect bonus released",
+        "magui_connect_bonus_cancelled": "MAGUI Connect bonus cancelled",
+        "renewal_kind_domain": "domain",
+        "renewal_kind_hosting": "retainer",
+        "renewal_upcoming": "{kind} due in {days} day(s)",
+        "renewal_suspension_risk": "{kind} overdue by {days} day(s)",
         "not_available": "N/A",
         "no_budget": "No budget",
         "no_deadline": "No deadline defined",
@@ -605,6 +613,16 @@
         "label": "Competitors",
         "slug": "competitors",
         "placeholder": "Which brands operate in the same market as yours?"
+      },
+      "assetOwnershipAccepted": {
+        "label": "Responsibility for submitted assets",
+        "slug": "asset-responsibility",
+        "placeholder": "I confirm that all submitted texts, images, logos, brands, and other assets are authorized for use and that legal responsibility for these materials belongs to the contracting party."
+      },
+      "contentResponsibilityAccepted": {
+        "label": "Responsibility for content and offers",
+        "slug": "content-responsibility",
+        "placeholder": "I confirm that submitted offers, commercial promises, institutional information, and other content are truthful, lawful, and the responsibility of the contracting party."
       },
       "desiredPerceptions": {
         "label": "Desired Perception",
@@ -1089,6 +1107,8 @@
       "DESIGN": "Design",
       "ENGINEERING": "Development",
       "QA": "Quality",
+      "ON_HOLD_CLIENT": "On hold by client",
+      "ABANDONED": "Abandoned",
       "LAUNCHED": "Finished"
     },
     "timeline": {

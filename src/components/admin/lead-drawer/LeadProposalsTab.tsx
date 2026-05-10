@@ -9,6 +9,7 @@ import { Lead } from "@/src/types/crm"
 import {
   ArrowSquareOut,
   DotsThreeVertical,
+  DownloadSimple,
   FilePdf,
 } from "@phosphor-icons/react"
 import { toast } from "sonner"
@@ -27,91 +28,114 @@ import {
   getLeadProposalsAction,
   updateProposalStatusAction,
 } from "@/src/lib/actions/proposal.actions"
+import { formatCurrencyBRLFromCents } from "@/src/lib/utils/utils"
 
 import { CreateProposalDrawer } from "./CreateProposalDrawer"
-
-interface LeadProposalsTabProps {
-  lead: Lead
-  showHeader?: boolean
-}
 
 type LeadProposalsResult = Awaited<ReturnType<typeof getLeadProposalsAction>>
 type LeadProposalRecord = LeadProposalsResult["proposals"][number]
 
+interface LeadProposalsTabProps {
+  lead: Lead
+  showHeader?: boolean
+  proposals?: LeadProposalRecord[]
+  onProposalChanged?: () => void
+}
+
 export function LeadProposalsTab({
   lead,
   showHeader = true,
+  proposals: providedProposals,
+  onProposalChanged,
 }: LeadProposalsTabProps) {
   const t = useTranslations("Proposals.status")
-  const [proposals, setProposals] = React.useState<LeadProposalRecord[]>([])
-  const [isLoading, setIsLoading] = React.useState(true)
+  const [proposals, setProposals] = React.useState<LeadProposalRecord[]>(
+    providedProposals ?? []
+  )
+  const [isLoading, setIsLoading] = React.useState(!providedProposals)
 
   const loadProposals = React.useCallback(async () => {
+    if (providedProposals) {
+      setProposals(providedProposals)
+      setIsLoading(false)
+      return
+    }
+
     setIsLoading(true)
     const result = await getLeadProposalsAction(lead.id)
+
     if (result.success) {
       setProposals(result.proposals)
     } else {
       toast.error(result.error)
     }
+
     setIsLoading(false)
-  }, [lead.id])
+  }, [lead.id, providedProposals])
 
   React.useEffect(() => {
-    loadProposals()
+    void loadProposals()
   }, [loadProposals])
 
   const handleDelete = async (id: string) => {
     const result = await deleteProposalAction(id)
+
     if (result.success) {
-      toast.success("Proposta excluída")
-      setProposals((curr) => curr.filter((p) => p.id !== id))
-    } else {
-      toast.error("Erro ao excluir proposta")
+      toast.success("Proposta excluida")
+      setProposals((current) => current.filter((proposal) => proposal.id !== id))
+      onProposalChanged?.()
+      return
     }
+
+    toast.error("Erro ao excluir proposta")
   }
 
   const handleStatusChange = async (id: string, status: ProposalStatus) => {
     const result = await updateProposalStatusAction(id, status)
+
     if (result.success) {
       toast.success("Status atualizado")
-      setProposals((curr) =>
-        curr.map((p) => (p.id === id ? { ...p, status } : p))
+      setProposals((current) =>
+        current.map((proposal) =>
+          proposal.id === id ? { ...proposal, status } : proposal
+        )
       )
-    } else {
-      toast.error("Erro ao atualizar status")
+      onProposalChanged?.()
+      return
     }
+
+    toast.error("Erro ao atualizar status")
   }
 
   const getStatusBadge = (status: ProposalStatus) => {
     switch (status) {
       case "ACCEPTED":
         return (
-          <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 uppercase text-[8px] font-black">
+          <Badge className="border-emerald-500/20 bg-emerald-500/10 text-[8px] font-black uppercase text-emerald-600">
             {t("ACCEPTED")}
           </Badge>
         )
       case "REJECTED":
         return (
-          <Badge className="bg-red-500/10 text-red-600 border-red-500/20 uppercase text-[8px] font-black">
+          <Badge className="border-red-500/20 bg-red-500/10 text-[8px] font-black uppercase text-red-600">
             {t("REJECTED")}
           </Badge>
         )
       case "SENT":
         return (
-          <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20 uppercase text-[8px] font-black">
+          <Badge className="border-blue-500/20 bg-blue-500/10 text-[8px] font-black uppercase text-blue-600">
             {t("SENT")}
           </Badge>
         )
       case "EXPIRED":
         return (
-          <Badge className="bg-muted text-muted-foreground border-border/50 uppercase text-[8px] font-black">
+          <Badge className="border-border/50 bg-muted text-[8px] font-black uppercase text-muted-foreground">
             {t("EXPIRED")}
           </Badge>
         )
       default:
         return (
-          <Badge variant="outline" className="uppercase text-[8px] font-black">
+          <Badge variant="outline" className="text-[8px] font-black uppercase">
             {t("DRAFT")}
           </Badge>
         )
@@ -119,9 +143,9 @@ export function LeadProposalsTab({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="min-w-0 space-y-4">
       {showHeader ? (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.22em] text-muted-foreground/50">
               Propostas Comerciais
@@ -134,9 +158,9 @@ export function LeadProposalsTab({
         </div>
       ) : null}
 
-      <div className="grid gap-4">
+      <div className="grid min-w-0 gap-2.5">
         {isLoading ? (
-          <div className="py-10 text-center text-muted-foreground/40 animate-pulse">
+          <div className="animate-pulse py-10 text-center text-muted-foreground/40">
             Carregando propostas...
           </div>
         ) : proposals.length === 0 ? (
@@ -152,19 +176,19 @@ export function LeadProposalsTab({
           proposals.map((proposal) => (
             <div
               key={proposal.id}
-              className="group relative flex flex-col gap-5 rounded-3xl border border-border/40 bg-background/50 p-6 transition-all hover:border-brand-primary/30 hover:bg-muted/5"
+              className="min-w-0 overflow-hidden rounded-[1.35rem] border border-border/10 bg-transparent p-3.5 sm:p-4"
             >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-center gap-4 overflow-hidden">
-                  <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary">
-                    <FilePdf weight="duotone" className="size-6" />
+              <div className="flex min-w-0 flex-col gap-3.5">
+                <div className="flex min-w-0 items-start gap-3">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-[0.9rem] bg-brand-primary/8 text-brand-primary">
+                    <FilePdf weight="duotone" className="size-5" />
                   </div>
-                  <div className="flex flex-col overflow-hidden gap-1">
-                    <span className="truncate text-sm font-black uppercase tracking-tight text-foreground">
+                  <div className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-black tracking-tight text-foreground">
                       {proposal.title}
                     </span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-muted-foreground/50">
+                    <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/45">
                         #{proposal.number}
                       </span>
                       {getStatusBadge(proposal.status)}
@@ -172,53 +196,44 @@ export function LeadProposalsTab({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="sm"
-                    className="rounded-full border-border/40 bg-background/50 px-4 text-[9px] font-black uppercase tracking-widest hover:bg-brand-primary hover:text-white transition-all"
-                  >
-                    <a
-                      href={`/api/proposals/${proposal.id}/pdf`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Abrir PDF <ArrowSquareOut className="ml-1.5 size-3.5" />
-                    </a>
-                  </Button>
-
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="sm"
-                    className="rounded-full border-border/40 bg-background/50 px-4 text-[9px] font-black uppercase tracking-widest hover:bg-brand-primary hover:text-white transition-all"
-                  >
-                    <a
-                      href={`/api/proposals/${proposal.id}/pdf?download=1`}
-                      download={`proposta-${proposal.number}.pdf`}
-                    >
-                      Baixar PDF
-                    </a>
-                  </Button>
-
+                <div className="flex items-center justify-end">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="size-8 rounded-full text-muted-foreground/40 hover:bg-muted/10"
+                        className="size-8 rounded-full border border-transparent text-muted-foreground/40 hover:border-border/15 hover:bg-background"
                       >
                         <DotsThreeVertical weight="bold" className="size-5" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                       align="end"
-                      className="w-48 rounded-2xl border-border/40 bg-background/95 p-1.5 backdrop-blur-xl shadow-2xl"
+                      className="w-56 rounded-2xl border-border/20 bg-background p-1.5"
                     >
+                      <DropdownMenuItem asChild className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight">
+                        <a
+                          href={`/api/proposals/${proposal.id}/pdf`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <ArrowSquareOut className="mr-2 size-4" />
+                          Abrir PDF
+                        </a>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight">
+                        <a
+                          href={`/api/proposals/${proposal.id}/pdf?download=1`}
+                          download={`proposta-${proposal.number}.pdf`}
+                        >
+                          <DownloadSimple className="mr-2 size-4" />
+                          Baixar PDF
+                        </a>
+                      </DropdownMenuItem>
+                      <div className="my-1 h-px bg-border/10" />
                       <DropdownMenuItem
                         onClick={() => handleStatusChange(proposal.id, "SENT")}
-                        className="rounded-xl px-3 py-2 cursor-pointer text-[10px] font-bold uppercase tracking-tight focus:bg-blue-500/10 focus:text-blue-600"
+                        className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-blue-500/10 focus:text-blue-600"
                       >
                         Marcar como {t("SENT")}
                       </DropdownMenuItem>
@@ -226,7 +241,7 @@ export function LeadProposalsTab({
                         onClick={() =>
                           handleStatusChange(proposal.id, "ACCEPTED")
                         }
-                        className="rounded-xl px-3 py-2 cursor-pointer text-[10px] font-bold uppercase tracking-tight focus:bg-emerald-500/10 focus:text-emerald-600"
+                        className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-emerald-500/10 focus:text-emerald-600"
                       >
                         Marcar como {t("ACCEPTED")}
                       </DropdownMenuItem>
@@ -234,13 +249,13 @@ export function LeadProposalsTab({
                         onClick={() =>
                           handleStatusChange(proposal.id, "REJECTED")
                         }
-                        className="rounded-xl px-3 py-2 cursor-pointer text-[10px] font-bold uppercase tracking-tight focus:bg-red-500/10 focus:text-red-600"
+                        className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-red-500/10 focus:text-red-600"
                       >
                         Marcar como {t("REJECTED")}
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => handleDelete(proposal.id)}
-                        className="rounded-xl px-3 py-2 cursor-pointer text-[10px] font-bold uppercase tracking-tight text-destructive focus:bg-destructive/10 focus:text-destructive"
+                        className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight text-destructive focus:bg-destructive/10 focus:text-destructive"
                       >
                         Excluir Proposta
                       </DropdownMenuItem>
@@ -249,17 +264,14 @@ export function LeadProposalsTab({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between border-t border-border/10 pt-4">
-                <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-end justify-between gap-3 border-t border-border/10 pt-3">
+                <div className="flex flex-wrap items-center gap-5">
                   <div className="flex flex-col gap-0.5">
                     <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/40">
                       Investimento
                     </span>
                     <span className="text-sm font-black text-foreground/80">
-                      {new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: proposal.currency,
-                      }).format(proposal.totalValue)}
+                      {formatCurrencyBRLFromCents(proposal.totalValue)}
                     </span>
                   </div>
                   <div className="flex flex-col gap-0.5">
@@ -275,7 +287,7 @@ export function LeadProposalsTab({
                     </span>
                   </div>
                 </div>
-                <span className="text-[8px] font-bold uppercase tracking-tighter text-muted-foreground/30 italic">
+                <span className="text-[8px] font-bold uppercase tracking-[0.16em] text-muted-foreground/30">
                   Criada em{" "}
                   {new Date(proposal.createdAt).toLocaleDateString("pt-BR")}
                 </span>

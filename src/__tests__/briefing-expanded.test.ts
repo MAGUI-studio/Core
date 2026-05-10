@@ -27,6 +27,8 @@ describe("Briefing Schema Expansion", () => {
         primary: "#101010",
         secondary: "#FFFFFF",
       },
+      assetOwnershipAccepted: true,
+      contentResponsibilityAccepted: true,
     }
     const result = briefingSchema.safeParse(fullData)
     if (!result.success) {

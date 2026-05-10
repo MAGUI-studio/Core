@@ -21,7 +21,7 @@ export interface AdminAgendaItem {
   dateLabel: string
   dateValue?: string | Date
   context: string
-  kind: "deadline" | "task" | "lead"
+  kind: "forecast" | "task" | "lead"
   href:
     | string
     | {
@@ -107,7 +107,7 @@ export function AdminOperationsAgenda({
                 Agenda operacional
               </CardTitle>
               <CardDescription>
-                Prazos, retornos e compromissos previstos.
+                Previsoes, retornos e compromissos previstos.
               </CardDescription>
             </div>
 
@@ -142,11 +142,11 @@ export function AdminOperationsAgenda({
             </Button>
             <Button
               type="button"
-              variant={activeKind === "deadline" ? "default" : "outline"}
+              variant={activeKind === "forecast" ? "default" : "outline"}
               className="rounded-full px-4 text-[10px] font-black uppercase tracking-[0.18em]"
-              onClick={() => setActiveKind("deadline")}
+              onClick={() => setActiveKind("forecast")}
             >
-              Prazos
+              Previsoes
             </Button>
             <Button
               type="button"

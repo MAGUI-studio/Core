@@ -26,6 +26,7 @@ import {
   addProjectTimelineAction as addProjectTimelineActionImpl,
   approveUpdateAction as approveUpdateActionImpl,
   rejectUpdateAction as rejectUpdateActionImpl,
+  requestScopeChangeAction as requestScopeChangeActionImpl,
 } from "./project-timeline.actions"
 
 export async function createProjectAction(
@@ -62,6 +63,12 @@ export async function rejectUpdateAction(
   ...args: Parameters<typeof rejectUpdateActionImpl>
 ): ReturnType<typeof rejectUpdateActionImpl> {
   return rejectUpdateActionImpl(...args)
+}
+
+export async function requestScopeChangeAction(
+  ...args: Parameters<typeof requestScopeChangeActionImpl>
+): ReturnType<typeof requestScopeChangeActionImpl> {
+  return requestScopeChangeActionImpl(...args)
 }
 
 export async function deleteProjectAssetAction(

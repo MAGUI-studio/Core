@@ -6,6 +6,7 @@ import { Prisma } from "@/src/generated/client"
 import {
   AuditActorType,
   NotificationType,
+  ProjectStatus,
   UserRole,
 } from "@/src/generated/client"
 import { addDays } from "date-fns"
@@ -13,6 +14,7 @@ import { addDays } from "date-fns"
 import { triggerProductEvent } from "@/src/lib/email/events"
 import { logger } from "@/src/lib/logger"
 import prisma from "@/src/lib/prisma"
+import { cancelProjectBonusIfNeeded } from "@/src/lib/invoice-fulfillment"
 import {
   createAuditLog,
   createNotificationsMany,
@@ -25,9 +27,11 @@ import {
   revalidateProjectData,
 } from "@/src/lib/revalidate"
 import {
+  buildProjectSchedulePersistence,
   hasMinimumBrandAssets,
   hasPrimaryBriefingData,
   normalizeProjectScheduleData,
+  resolveProjectStatusFromSchedule,
   syncProjectScheduleFromBriefing,
 } from "@/src/lib/project-schedule"
 import { briefingSchema } from "@/src/lib/validations/project"
@@ -153,15 +157,24 @@ export async function updateProjectBriefingAction(
         validatedBriefing.data,
         previousProject?.status
       )
+      const schedulePersistence = buildProjectSchedulePersistence(
+        syncedSchedule,
+        previousProject?.status
+      )
+      const resolvedStatus = previousProject?.status
+        ? resolveProjectStatusFromSchedule(
+            syncedSchedule,
+            previousProject.status
+          )
+        : undefined
 
       await tx.project.update({
         where: { id: projectId },
         data: {
           briefing: validatedBriefing.data as Prisma.InputJsonValue,
           scheduleData: syncedSchedule as Prisma.InputJsonValue,
-          deadline: syncedSchedule.currentForecastDate
-            ? new Date(syncedSchedule.currentForecastDate)
-            : null,
+          ...schedulePersistence,
+          ...(resolvedStatus ? { status: resolvedStatus } : {}),
           kickoff: {
             upsert: {
               create: {
@@ -176,6 +189,10 @@ export async function updateProjectBriefingAction(
           },
         },
       })
+
+      if (resolvedStatus === ProjectStatus.ABANDONED) {
+        await cancelProjectBonusIfNeeded(tx, projectId)
+      }
 
       // Verify missing critical data and create tasks
       await verifyAndCreateMissingBriefingTasks(
@@ -279,17 +296,28 @@ export async function savePartialBriefingAction(
         updatedBriefing,
         project.status
       )
+      const schedulePersistence = buildProjectSchedulePersistence(
+        syncedSchedule,
+        project.status
+      )
+      const resolvedStatus = resolveProjectStatusFromSchedule(
+        syncedSchedule,
+        project.status
+      )
 
       await tx.project.update({
         where: { id: projectId },
         data: {
           briefing: updatedBriefing as Prisma.InputJsonValue,
           scheduleData: syncedSchedule as Prisma.InputJsonValue,
-          deadline: syncedSchedule.currentForecastDate
-            ? new Date(syncedSchedule.currentForecastDate)
-            : null,
+          ...schedulePersistence,
+          status: resolvedStatus,
         },
       })
+
+      if (resolvedStatus === ProjectStatus.ABANDONED) {
+        await cancelProjectBonusIfNeeded(tx, projectId)
+      }
     })
 
     revalidateProjectBriefing(projectId)
@@ -441,10 +469,31 @@ export async function resetProjectBriefingAction(
     await prisma.$transaction(async (tx) => {
       const currentProject = await tx.project.findUnique({
         where: { id: projectId },
-        select: { scheduleData: true },
+        select: { scheduleData: true, status: true },
       })
       const baseSchedule = normalizeProjectScheduleData(
         currentProject?.scheduleData
+      )
+      const resetSchedule = {
+        ...baseSchedule,
+        executionState: "PENDING_INPUT",
+        materialValidatedAt: null,
+        executionStartAt: null,
+        awaitingClientSince: new Date().toISOString(),
+        currentForecastDate: null,
+        clientDelayCalendarDays: 0,
+        clientDelayBusinessDays: 0,
+        briefingValidatedAt: null,
+        assetsValidatedAt: null,
+        suspensionStartedAt: null,
+        abandonedAt: null,
+        delayEvents: [],
+        pendingClientApprovals: [],
+      }
+      const schedulePersistence = buildProjectSchedulePersistence(resetSchedule)
+      const resolvedStatus = resolveProjectStatusFromSchedule(
+        resetSchedule,
+        currentProject?.status ?? ProjectStatus.STRATEGY
       )
 
       // Clear briefing data - Use empty object to ensure it's "not filled" but valid JSON
@@ -452,25 +501,15 @@ export async function resetProjectBriefingAction(
         where: { id: projectId },
         data: {
           briefing: {},
-          scheduleData: {
-            ...baseSchedule,
-            executionState: "PENDING_INPUT",
-            materialValidatedAt: null,
-            executionStartAt: null,
-            awaitingClientSince: new Date().toISOString(),
-            currentForecastDate: null,
-            clientDelayCalendarDays: 0,
-            clientDelayBusinessDays: 0,
-            briefingValidatedAt: null,
-            assetsValidatedAt: null,
-            suspensionStartedAt: null,
-            abandonedAt: null,
-            delayEvents: [],
-            pendingClientApprovals: [],
-          },
-          deadline: null,
+          scheduleData: resetSchedule,
+          ...schedulePersistence,
+          status: resolvedStatus,
         },
       })
+
+      if (resolvedStatus === ProjectStatus.ABANDONED) {
+        await cancelProjectBonusIfNeeded(tx, projectId)
+      }
 
       // Reset kickoff checklist (using upsert to avoid failure if not exists)
       await tx.projectKickoffChecklist.upsert({

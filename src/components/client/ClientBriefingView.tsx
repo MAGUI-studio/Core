@@ -6,6 +6,7 @@ import Image from "next/image"
 import {
   ChartLineUp,
   Eye,
+  FileText,
   Image as ImageIcon,
   Lightbulb,
   Megaphone,
@@ -207,6 +208,29 @@ export async function ClientBriefingView({
               )}
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="rounded-[1.75rem] bg-muted/5 p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
+            <FileText weight="duotone" className="size-5" />
+          </div>
+          <h3 className="font-heading text-base font-black uppercase tracking-tight text-foreground/75">
+            Aceites contratuais
+          </h3>
+        </div>
+        <div className="grid gap-3">
+          <p className="text-sm font-medium leading-relaxed text-muted-foreground/75">
+            {data.assetOwnershipAccepted
+              ? "Responsabilidade sobre textos, imagens, logos e demais ativos confirmada no briefing."
+              : "Responsabilidade sobre ativos ainda nao confirmada."}
+          </p>
+          <p className="text-sm font-medium leading-relaxed text-muted-foreground/75">
+            {data.contentResponsibilityAccepted
+              ? "Responsabilidade sobre ofertas, promessas e conteudo confirmada no briefing."
+              : "Responsabilidade sobre conteudo ainda nao confirmada."}
+          </p>
         </div>
       </div>
     </div>

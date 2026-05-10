@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { Trash, Warning } from "@phosphor-icons/react"
+import { Trash } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
 import { Button } from "@/src/components/ui/button"
@@ -71,32 +71,42 @@ export function LeadDeleteDialog({
             <Trash className="mr-2 size-4" /> Excluir lead
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-xl overflow-hidden rounded-[2.5rem] border-none bg-background/95 p-0 text-left shadow-2xl">
-          <div className="bg-red-600/10 p-10 pb-6">
-            <DialogHeader className="gap-5">
-              <div className="flex size-16 items-center justify-center rounded-[1.25rem] bg-red-600 text-white shadow-xl shadow-red-600/20">
-                <Warning weight="bold" className="size-8" />
+        <DialogContent className="w-[min(96vw,72rem)] max-w-[72rem] rounded-[2.5rem] border border-border/30 bg-background p-8 text-left shadow-2xl sm:p-10">
+          <DialogHeader className="gap-3">
+            <DialogTitle className="font-heading text-3xl font-black tracking-tight text-foreground">
+              Excluir lead
+            </DialogTitle>
+            <DialogDescription className="max-w-none text-sm leading-relaxed text-muted-foreground/75">
+              Essa acao remove o lead da empresa {companyName} em definitivo.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-8 grid gap-4">
+            <div className="grid gap-3 rounded-[1.5rem] border border-border/30 bg-muted/30 p-4 text-sm text-foreground/80">
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/55">
+                  Empresa
+                </span>
+                <span className="text-right font-black uppercase">
+                  {companyName}
+                </span>
               </div>
-              <div className="flex flex-col gap-1.5">
-                <DialogTitle className="font-heading text-3xl font-black tracking-tight text-red-600">
-                  Excluir lead
-                </DialogTitle>
-                <DialogDescription className="text-xs font-black uppercase tracking-[0.2em] text-red-600/60">
-                  Acao critica e irreversivel
-                </DialogDescription>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/55">
+                  Validacao
+                </span>
+                <span className="font-mono text-sm font-black tracking-[0.25em] text-foreground">
+                  {code}
+                </span>
               </div>
-            </DialogHeader>
-          </div>
-          <div className="p-10 pt-6">
-            <p className="mb-10 text-base font-medium leading-relaxed text-muted-foreground/80">
-              Essa acao remove {companyName} em definitivo.
-            </p>
+            </div>
+
             <div className="flex flex-col gap-4">
               <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
                 Confirme o codigo:
               </Label>
-              <div className="flex items-center justify-center rounded-[1.5rem] border-2 border-dashed border-red-600/20 bg-red-600/5 py-10">
-                <span className="font-mono text-5xl font-black tracking-[0.5em] text-red-600">
+              <div className="flex items-center justify-center rounded-[1.5rem] border border-border/30 bg-muted/20 py-8">
+                <span className="font-mono text-4xl font-black tracking-[0.5em] text-foreground">
                   {code}
                 </span>
               </div>
@@ -107,7 +117,7 @@ export function LeadDeleteDialog({
                   setError(false)
                 }}
                 placeholder="DIGITE O CODIGO ACIMA"
-                className="h-20 rounded-[1.5rem] border-border/40 bg-muted/10 text-center font-mono text-3xl font-black uppercase tracking-[0.3em]"
+                className="h-16 rounded-[1.5rem] border-border/40 bg-muted/10 text-center font-mono text-2xl font-black uppercase tracking-[0.3em]"
               />
               {error && (
                 <p className="text-center text-[10px] font-black uppercase tracking-widest text-red-600">
@@ -115,17 +125,18 @@ export function LeadDeleteDialog({
                 </p>
               )}
             </div>
-            <div className="mt-12 grid grid-cols-2 gap-5">
+
+            <div className="mt-6 grid grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] gap-5">
               <DialogClose asChild>
                 <Button
-                  variant="ghost"
-                  className="h-16 rounded-[1.25rem] font-black uppercase tracking-widest"
+                  variant="outline"
+                  className="h-16 rounded-[1.25rem] border-border/30 bg-background px-6 text-base font-black uppercase tracking-widest"
                 >
                   Cancelar
                 </Button>
               </DialogClose>
               <Button
-                className="h-16 rounded-[1.25rem] bg-red-600 font-black uppercase tracking-widest text-white shadow-xl shadow-red-600/20 hover:bg-red-700"
+                className="h-16 rounded-[1.25rem] bg-red-600 px-6 text-base font-black uppercase tracking-widest text-white hover:bg-red-700"
                 onClick={handleDelete}
                 disabled={isDeleting || confirmValue.toUpperCase() !== code}
               >

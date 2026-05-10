@@ -19,6 +19,8 @@ import {
 } from "@/src/components/ui/select"
 import { Textarea } from "@/src/components/ui/textarea"
 
+import { formatCurrencyBRL } from "@/src/lib/utils/utils"
+
 type LeadSourceValue =
   | "REFERRAL"
   | "ORGANIC"
@@ -133,7 +135,12 @@ export function LeadEditForm({ lead, onSave, isSaving }: LeadEditFormProps) {
           </Label>
           <Input
             value={form.value}
-            onChange={(e) => setForm((f) => ({ ...f, value: e.target.value }))}
+            onChange={(e) =>
+              setForm((f) => ({
+                ...f,
+                value: formatCurrencyBRL(e.target.value),
+              }))
+            }
             placeholder="Ex: R$ 12.000"
             className="h-12 rounded-[1rem]"
           />

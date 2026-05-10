@@ -198,6 +198,47 @@ export function BriefingStepEditor({
     return renderListInput((value as string[]) || [""])
   }
 
+  if (
+    currentStepId === "assetOwnershipAccepted" ||
+    currentStepId === "contentResponsibilityAccepted"
+  ) {
+    const title = t(`steps.${currentStepId}.label`)
+    const description = t(`steps.${currentStepId}.placeholder`)
+    const checked = value === true
+
+    return (
+      <button
+        type="button"
+        onClick={() => onValueChange(!checked)}
+        className={`w-full rounded-[2rem] border p-8 text-left transition-all ${
+          checked
+            ? "border-brand-primary/40 bg-brand-primary/5"
+            : "border-border/30 bg-muted/5 hover:border-brand-primary/20"
+        }`}
+      >
+        <div className="flex items-start gap-5">
+          <div
+            className={`mt-1 flex size-7 shrink-0 items-center justify-center rounded-full border ${
+              checked
+                ? "border-brand-primary bg-brand-primary text-white"
+                : "border-border/40 bg-background"
+            }`}
+          >
+            {checked ? "✓" : ""}
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-2xl font-black tracking-tight text-foreground">
+              {title}
+            </h3>
+            <p className="max-w-3xl text-base leading-relaxed text-muted-foreground/75">
+              {description}
+            </p>
+          </div>
+        </div>
+      </button>
+    )
+  }
+
   return (
     <textarea
       value={value as string}

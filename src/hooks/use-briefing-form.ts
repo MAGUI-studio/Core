@@ -22,6 +22,8 @@ export const stepsConfig = [
   { id: "visualReferences", min: 0 },
   { id: "dislikedReferences", min: 0 },
   { id: "competitors", min: 0 },
+  { id: "assetOwnershipAccepted", min: 1 },
+  { id: "contentResponsibilityAccepted", min: 1 },
 ] as const
 
 export type StepId = (typeof stepsConfig)[number]["id"]
@@ -45,6 +47,8 @@ export interface BriefingFormData {
   visualReferences: string[]
   dislikedReferences: string[]
   competitors: string[]
+  assetOwnershipAccepted: boolean
+  contentResponsibilityAccepted: boolean
 }
 
 export function useBriefingForm(
@@ -79,6 +83,8 @@ export function useBriefingForm(
       ? data.dislikedReferences
       : [""],
     competitors: Array.isArray(data?.competitors) ? data.competitors : [""],
+    assetOwnershipAccepted: Boolean(data?.assetOwnershipAccepted),
+    contentResponsibilityAccepted: Boolean(data?.contentResponsibilityAccepted),
   })
 
   const [isLoading, setIsLoading] = React.useState(false)
@@ -100,6 +106,13 @@ export function useBriefingForm(
       const hasPrimary = logos?.primary?.url
       const hasSecondary = logos?.secondary?.url
       return !hasPrimary && !hasSecondary
+    }
+
+    if (
+      id === "assetOwnershipAccepted" ||
+      id === "contentResponsibilityAccepted"
+    ) {
+      return val !== true
     }
 
     if (typeof val === "string") return val.trim().length < config.min

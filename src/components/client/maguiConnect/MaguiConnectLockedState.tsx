@@ -55,7 +55,7 @@ export function MaguiConnectLockedState({
     ? [
         accessState.awaitingLaunch ? t("bonusPendingAwaitingLaunch") : null,
         accessState.awaitingPayment ? t("bonusPendingAwaitingPayment") : null,
-      ].filter(Boolean)
+      ].filter((line): line is string => Boolean(line))
     : []
 
   const handleRequest = () =>

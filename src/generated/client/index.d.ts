@@ -279,6 +279,8 @@ export const ProjectStatus: {
   DESIGN: 'DESIGN',
   ENGINEERING: 'ENGINEERING',
   QA: 'QA',
+  ON_HOLD_CLIENT: 'ON_HOLD_CLIENT',
+  ABANDONED: 'ABANDONED',
   LAUNCHED: 'LAUNCHED'
 };
 
@@ -425,7 +427,9 @@ export const ScheduledReminderType: {
   PROJECT_SILENT: 'PROJECT_SILENT',
   ACTION_ITEM_OVERDUE: 'ACTION_ITEM_OVERDUE',
   CLIENT_ON_HOLD: 'CLIENT_ON_HOLD',
-  PROJECT_ABANDONED: 'PROJECT_ABANDONED'
+  PROJECT_ABANDONED: 'PROJECT_ABANDONED',
+  RENEWAL_UPCOMING: 'RENEWAL_UPCOMING',
+  RENEWAL_SUSPENSION_RISK: 'RENEWAL_SUSPENSION_RISK'
 };
 
 export type ScheduledReminderType = (typeof ScheduledReminderType)[keyof typeof ScheduledReminderType]
@@ -20058,12 +20062,18 @@ export namespace Prisma {
     progress: number | null
     budget: number | null
     internationalizationFee: number | null
+    executionBusinessDays: number | null
+    clientDelayCalendarDays: number | null
+    clientDelayBusinessDays: number | null
   }
 
   export type ProjectSumAggregateOutputType = {
     progress: number | null
     budget: number | null
     internationalizationFee: number | null
+    executionBusinessDays: number | null
+    clientDelayCalendarDays: number | null
+    clientDelayBusinessDays: number | null
   }
 
   export type ProjectMinAggregateOutputType = {
@@ -20079,8 +20089,17 @@ export namespace Prisma {
     internationalizationFee: number | null
     paymentMethod: $Enums.PaymentMethod | null
     serviceCategoryId: string | null
-    startDate: Date | null
-    deadline: Date | null
+    executionBusinessDays: number | null
+    executionStartAt: Date | null
+    briefingRequestedAt: Date | null
+    briefingValidatedAt: Date | null
+    deliveryForecastAt: Date | null
+    suspendedAt: Date | null
+    abandonedAt: Date | null
+    lastClientDependencyAt: Date | null
+    lastClientResponseAt: Date | null
+    clientDelayCalendarDays: number | null
+    clientDelayBusinessDays: number | null
     liveUrl: string | null
     repositoryUrl: string | null
     clientId: string | null
@@ -20101,8 +20120,17 @@ export namespace Prisma {
     internationalizationFee: number | null
     paymentMethod: $Enums.PaymentMethod | null
     serviceCategoryId: string | null
-    startDate: Date | null
-    deadline: Date | null
+    executionBusinessDays: number | null
+    executionStartAt: Date | null
+    briefingRequestedAt: Date | null
+    briefingValidatedAt: Date | null
+    deliveryForecastAt: Date | null
+    suspendedAt: Date | null
+    abandonedAt: Date | null
+    lastClientDependencyAt: Date | null
+    lastClientResponseAt: Date | null
+    clientDelayCalendarDays: number | null
+    clientDelayBusinessDays: number | null
     liveUrl: string | null
     repositoryUrl: string | null
     clientId: string | null
@@ -20125,8 +20153,17 @@ export namespace Prisma {
     serviceCategoryId: number
     briefing: number
     scheduleData: number
-    startDate: number
-    deadline: number
+    executionBusinessDays: number
+    executionStartAt: number
+    briefingRequestedAt: number
+    briefingValidatedAt: number
+    deliveryForecastAt: number
+    suspendedAt: number
+    abandonedAt: number
+    lastClientDependencyAt: number
+    lastClientResponseAt: number
+    clientDelayCalendarDays: number
+    clientDelayBusinessDays: number
     liveUrl: number
     repositoryUrl: number
     clientId: number
@@ -20140,12 +20177,18 @@ export namespace Prisma {
     progress?: true
     budget?: true
     internationalizationFee?: true
+    executionBusinessDays?: true
+    clientDelayCalendarDays?: true
+    clientDelayBusinessDays?: true
   }
 
   export type ProjectSumAggregateInputType = {
     progress?: true
     budget?: true
     internationalizationFee?: true
+    executionBusinessDays?: true
+    clientDelayCalendarDays?: true
+    clientDelayBusinessDays?: true
   }
 
   export type ProjectMinAggregateInputType = {
@@ -20161,8 +20204,17 @@ export namespace Prisma {
     internationalizationFee?: true
     paymentMethod?: true
     serviceCategoryId?: true
-    startDate?: true
-    deadline?: true
+    executionBusinessDays?: true
+    executionStartAt?: true
+    briefingRequestedAt?: true
+    briefingValidatedAt?: true
+    deliveryForecastAt?: true
+    suspendedAt?: true
+    abandonedAt?: true
+    lastClientDependencyAt?: true
+    lastClientResponseAt?: true
+    clientDelayCalendarDays?: true
+    clientDelayBusinessDays?: true
     liveUrl?: true
     repositoryUrl?: true
     clientId?: true
@@ -20183,8 +20235,17 @@ export namespace Prisma {
     internationalizationFee?: true
     paymentMethod?: true
     serviceCategoryId?: true
-    startDate?: true
-    deadline?: true
+    executionBusinessDays?: true
+    executionStartAt?: true
+    briefingRequestedAt?: true
+    briefingValidatedAt?: true
+    deliveryForecastAt?: true
+    suspendedAt?: true
+    abandonedAt?: true
+    lastClientDependencyAt?: true
+    lastClientResponseAt?: true
+    clientDelayCalendarDays?: true
+    clientDelayBusinessDays?: true
     liveUrl?: true
     repositoryUrl?: true
     clientId?: true
@@ -20207,8 +20268,17 @@ export namespace Prisma {
     serviceCategoryId?: true
     briefing?: true
     scheduleData?: true
-    startDate?: true
-    deadline?: true
+    executionBusinessDays?: true
+    executionStartAt?: true
+    briefingRequestedAt?: true
+    briefingValidatedAt?: true
+    deliveryForecastAt?: true
+    suspendedAt?: true
+    abandonedAt?: true
+    lastClientDependencyAt?: true
+    lastClientResponseAt?: true
+    clientDelayCalendarDays?: true
+    clientDelayBusinessDays?: true
     liveUrl?: true
     repositoryUrl?: true
     clientId?: true
@@ -20318,8 +20388,17 @@ export namespace Prisma {
     serviceCategoryId: string | null
     briefing: JsonValue | null
     scheduleData: JsonValue | null
-    startDate: Date
-    deadline: Date | null
+    executionBusinessDays: number | null
+    executionStartAt: Date | null
+    briefingRequestedAt: Date | null
+    briefingValidatedAt: Date | null
+    deliveryForecastAt: Date | null
+    suspendedAt: Date | null
+    abandonedAt: Date | null
+    lastClientDependencyAt: Date | null
+    lastClientResponseAt: Date | null
+    clientDelayCalendarDays: number
+    clientDelayBusinessDays: number
     liveUrl: string | null
     repositoryUrl: string | null
     clientId: string
@@ -20361,8 +20440,17 @@ export namespace Prisma {
     serviceCategoryId?: boolean
     briefing?: boolean
     scheduleData?: boolean
-    startDate?: boolean
-    deadline?: boolean
+    executionBusinessDays?: boolean
+    executionStartAt?: boolean
+    briefingRequestedAt?: boolean
+    briefingValidatedAt?: boolean
+    deliveryForecastAt?: boolean
+    suspendedAt?: boolean
+    abandonedAt?: boolean
+    lastClientDependencyAt?: boolean
+    lastClientResponseAt?: boolean
+    clientDelayCalendarDays?: boolean
+    clientDelayBusinessDays?: boolean
     liveUrl?: boolean
     repositoryUrl?: boolean
     clientId?: boolean
@@ -20401,8 +20489,17 @@ export namespace Prisma {
     serviceCategoryId?: boolean
     briefing?: boolean
     scheduleData?: boolean
-    startDate?: boolean
-    deadline?: boolean
+    executionBusinessDays?: boolean
+    executionStartAt?: boolean
+    briefingRequestedAt?: boolean
+    briefingValidatedAt?: boolean
+    deliveryForecastAt?: boolean
+    suspendedAt?: boolean
+    abandonedAt?: boolean
+    lastClientDependencyAt?: boolean
+    lastClientResponseAt?: boolean
+    clientDelayCalendarDays?: boolean
+    clientDelayBusinessDays?: boolean
     liveUrl?: boolean
     repositoryUrl?: boolean
     clientId?: boolean
@@ -20427,8 +20524,17 @@ export namespace Prisma {
     serviceCategoryId?: boolean
     briefing?: boolean
     scheduleData?: boolean
-    startDate?: boolean
-    deadline?: boolean
+    executionBusinessDays?: boolean
+    executionStartAt?: boolean
+    briefingRequestedAt?: boolean
+    briefingValidatedAt?: boolean
+    deliveryForecastAt?: boolean
+    suspendedAt?: boolean
+    abandonedAt?: boolean
+    lastClientDependencyAt?: boolean
+    lastClientResponseAt?: boolean
+    clientDelayCalendarDays?: boolean
+    clientDelayBusinessDays?: boolean
     liveUrl?: boolean
     repositoryUrl?: boolean
     clientId?: boolean
@@ -20453,8 +20559,17 @@ export namespace Prisma {
     serviceCategoryId?: boolean
     briefing?: boolean
     scheduleData?: boolean
-    startDate?: boolean
-    deadline?: boolean
+    executionBusinessDays?: boolean
+    executionStartAt?: boolean
+    briefingRequestedAt?: boolean
+    briefingValidatedAt?: boolean
+    deliveryForecastAt?: boolean
+    suspendedAt?: boolean
+    abandonedAt?: boolean
+    lastClientDependencyAt?: boolean
+    lastClientResponseAt?: boolean
+    clientDelayCalendarDays?: boolean
+    clientDelayBusinessDays?: boolean
     liveUrl?: boolean
     repositoryUrl?: boolean
     clientId?: boolean
@@ -20462,7 +20577,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "status" | "category" | "progress" | "budget" | "customValue" | "hasInternationalization" | "internationalizationFee" | "paymentMethod" | "serviceCategoryId" | "briefing" | "scheduleData" | "startDate" | "deadline" | "liveUrl" | "repositoryUrl" | "clientId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "status" | "category" | "progress" | "budget" | "customValue" | "hasInternationalization" | "internationalizationFee" | "paymentMethod" | "serviceCategoryId" | "briefing" | "scheduleData" | "executionBusinessDays" | "executionStartAt" | "briefingRequestedAt" | "briefingValidatedAt" | "deliveryForecastAt" | "suspendedAt" | "abandonedAt" | "lastClientDependencyAt" | "lastClientResponseAt" | "clientDelayCalendarDays" | "clientDelayBusinessDays" | "liveUrl" | "repositoryUrl" | "clientId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     serviceCategory?: boolean | Project$serviceCategoryArgs<ExtArgs>
     briefingNotes?: boolean | Project$briefingNotesArgs<ExtArgs>
@@ -20524,8 +20639,17 @@ export namespace Prisma {
       serviceCategoryId: string | null
       briefing: Prisma.JsonValue | null
       scheduleData: Prisma.JsonValue | null
-      startDate: Date
-      deadline: Date | null
+      executionBusinessDays: number | null
+      executionStartAt: Date | null
+      briefingRequestedAt: Date | null
+      briefingValidatedAt: Date | null
+      deliveryForecastAt: Date | null
+      suspendedAt: Date | null
+      abandonedAt: Date | null
+      lastClientDependencyAt: Date | null
+      lastClientResponseAt: Date | null
+      clientDelayCalendarDays: number
+      clientDelayBusinessDays: number
       liveUrl: string | null
       repositoryUrl: string | null
       clientId: string
@@ -20983,8 +21107,17 @@ export namespace Prisma {
     readonly serviceCategoryId: FieldRef<"Project", 'String'>
     readonly briefing: FieldRef<"Project", 'Json'>
     readonly scheduleData: FieldRef<"Project", 'Json'>
-    readonly startDate: FieldRef<"Project", 'DateTime'>
-    readonly deadline: FieldRef<"Project", 'DateTime'>
+    readonly executionBusinessDays: FieldRef<"Project", 'Int'>
+    readonly executionStartAt: FieldRef<"Project", 'DateTime'>
+    readonly briefingRequestedAt: FieldRef<"Project", 'DateTime'>
+    readonly briefingValidatedAt: FieldRef<"Project", 'DateTime'>
+    readonly deliveryForecastAt: FieldRef<"Project", 'DateTime'>
+    readonly suspendedAt: FieldRef<"Project", 'DateTime'>
+    readonly abandonedAt: FieldRef<"Project", 'DateTime'>
+    readonly lastClientDependencyAt: FieldRef<"Project", 'DateTime'>
+    readonly lastClientResponseAt: FieldRef<"Project", 'DateTime'>
+    readonly clientDelayCalendarDays: FieldRef<"Project", 'Int'>
+    readonly clientDelayBusinessDays: FieldRef<"Project", 'Int'>
     readonly liveUrl: FieldRef<"Project", 'String'>
     readonly repositoryUrl: FieldRef<"Project", 'String'>
     readonly clientId: FieldRef<"Project", 'String'>
@@ -52492,8 +52625,17 @@ export namespace Prisma {
     serviceCategoryId: 'serviceCategoryId',
     briefing: 'briefing',
     scheduleData: 'scheduleData',
-    startDate: 'startDate',
-    deadline: 'deadline',
+    executionBusinessDays: 'executionBusinessDays',
+    executionStartAt: 'executionStartAt',
+    briefingRequestedAt: 'briefingRequestedAt',
+    briefingValidatedAt: 'briefingValidatedAt',
+    deliveryForecastAt: 'deliveryForecastAt',
+    suspendedAt: 'suspendedAt',
+    abandonedAt: 'abandonedAt',
+    lastClientDependencyAt: 'lastClientDependencyAt',
+    lastClientResponseAt: 'lastClientResponseAt',
+    clientDelayCalendarDays: 'clientDelayCalendarDays',
+    clientDelayBusinessDays: 'clientDelayBusinessDays',
     liveUrl: 'liveUrl',
     repositoryUrl: 'repositoryUrl',
     clientId: 'clientId',
@@ -54656,8 +54798,17 @@ export namespace Prisma {
     serviceCategoryId?: StringNullableFilter<"Project"> | string | null
     briefing?: JsonNullableFilter<"Project">
     scheduleData?: JsonNullableFilter<"Project">
-    startDate?: DateTimeFilter<"Project"> | Date | string
-    deadline?: DateTimeNullableFilter<"Project"> | Date | string | null
+    executionBusinessDays?: IntNullableFilter<"Project"> | number | null
+    executionStartAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    briefingRequestedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    briefingValidatedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    deliveryForecastAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    suspendedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    abandonedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    lastClientDependencyAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    lastClientResponseAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    clientDelayCalendarDays?: IntFilter<"Project"> | number
+    clientDelayBusinessDays?: IntFilter<"Project"> | number
     liveUrl?: StringNullableFilter<"Project"> | string | null
     repositoryUrl?: StringNullableFilter<"Project"> | string | null
     clientId?: StringFilter<"Project"> | string
@@ -54695,8 +54846,17 @@ export namespace Prisma {
     serviceCategoryId?: SortOrderInput | SortOrder
     briefing?: SortOrderInput | SortOrder
     scheduleData?: SortOrderInput | SortOrder
-    startDate?: SortOrder
-    deadline?: SortOrderInput | SortOrder
+    executionBusinessDays?: SortOrderInput | SortOrder
+    executionStartAt?: SortOrderInput | SortOrder
+    briefingRequestedAt?: SortOrderInput | SortOrder
+    briefingValidatedAt?: SortOrderInput | SortOrder
+    deliveryForecastAt?: SortOrderInput | SortOrder
+    suspendedAt?: SortOrderInput | SortOrder
+    abandonedAt?: SortOrderInput | SortOrder
+    lastClientDependencyAt?: SortOrderInput | SortOrder
+    lastClientResponseAt?: SortOrderInput | SortOrder
+    clientDelayCalendarDays?: SortOrder
+    clientDelayBusinessDays?: SortOrder
     liveUrl?: SortOrderInput | SortOrder
     repositoryUrl?: SortOrderInput | SortOrder
     clientId?: SortOrder
@@ -54737,8 +54897,17 @@ export namespace Prisma {
     serviceCategoryId?: StringNullableFilter<"Project"> | string | null
     briefing?: JsonNullableFilter<"Project">
     scheduleData?: JsonNullableFilter<"Project">
-    startDate?: DateTimeFilter<"Project"> | Date | string
-    deadline?: DateTimeNullableFilter<"Project"> | Date | string | null
+    executionBusinessDays?: IntNullableFilter<"Project"> | number | null
+    executionStartAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    briefingRequestedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    briefingValidatedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    deliveryForecastAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    suspendedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    abandonedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    lastClientDependencyAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    lastClientResponseAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    clientDelayCalendarDays?: IntFilter<"Project"> | number
+    clientDelayBusinessDays?: IntFilter<"Project"> | number
     liveUrl?: StringNullableFilter<"Project"> | string | null
     repositoryUrl?: StringNullableFilter<"Project"> | string | null
     clientId?: StringFilter<"Project"> | string
@@ -54776,8 +54945,17 @@ export namespace Prisma {
     serviceCategoryId?: SortOrderInput | SortOrder
     briefing?: SortOrderInput | SortOrder
     scheduleData?: SortOrderInput | SortOrder
-    startDate?: SortOrder
-    deadline?: SortOrderInput | SortOrder
+    executionBusinessDays?: SortOrderInput | SortOrder
+    executionStartAt?: SortOrderInput | SortOrder
+    briefingRequestedAt?: SortOrderInput | SortOrder
+    briefingValidatedAt?: SortOrderInput | SortOrder
+    deliveryForecastAt?: SortOrderInput | SortOrder
+    suspendedAt?: SortOrderInput | SortOrder
+    abandonedAt?: SortOrderInput | SortOrder
+    lastClientDependencyAt?: SortOrderInput | SortOrder
+    lastClientResponseAt?: SortOrderInput | SortOrder
+    clientDelayCalendarDays?: SortOrder
+    clientDelayBusinessDays?: SortOrder
     liveUrl?: SortOrderInput | SortOrder
     repositoryUrl?: SortOrderInput | SortOrder
     clientId?: SortOrder
@@ -54808,8 +54986,17 @@ export namespace Prisma {
     serviceCategoryId?: StringNullableWithAggregatesFilter<"Project"> | string | null
     briefing?: JsonNullableWithAggregatesFilter<"Project">
     scheduleData?: JsonNullableWithAggregatesFilter<"Project">
-    startDate?: DateTimeWithAggregatesFilter<"Project"> | Date | string
-    deadline?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+    executionBusinessDays?: IntNullableWithAggregatesFilter<"Project"> | number | null
+    executionStartAt?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+    briefingRequestedAt?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+    briefingValidatedAt?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+    deliveryForecastAt?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+    suspendedAt?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+    abandonedAt?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+    lastClientDependencyAt?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+    lastClientResponseAt?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+    clientDelayCalendarDays?: IntWithAggregatesFilter<"Project"> | number
+    clientDelayBusinessDays?: IntWithAggregatesFilter<"Project"> | number
     liveUrl?: StringNullableWithAggregatesFilter<"Project"> | string | null
     repositoryUrl?: StringNullableWithAggregatesFilter<"Project"> | string | null
     clientId?: StringWithAggregatesFilter<"Project"> | string
@@ -58495,8 +58682,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -58533,8 +58729,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -58569,8 +58774,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -58607,8 +58821,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -58644,8 +58867,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -58667,8 +58899,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -58690,8 +58931,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -62481,8 +62731,17 @@ export namespace Prisma {
     serviceCategoryId?: SortOrder
     briefing?: SortOrder
     scheduleData?: SortOrder
-    startDate?: SortOrder
-    deadline?: SortOrder
+    executionBusinessDays?: SortOrder
+    executionStartAt?: SortOrder
+    briefingRequestedAt?: SortOrder
+    briefingValidatedAt?: SortOrder
+    deliveryForecastAt?: SortOrder
+    suspendedAt?: SortOrder
+    abandonedAt?: SortOrder
+    lastClientDependencyAt?: SortOrder
+    lastClientResponseAt?: SortOrder
+    clientDelayCalendarDays?: SortOrder
+    clientDelayBusinessDays?: SortOrder
     liveUrl?: SortOrder
     repositoryUrl?: SortOrder
     clientId?: SortOrder
@@ -62494,6 +62753,9 @@ export namespace Prisma {
     progress?: SortOrder
     budget?: SortOrder
     internationalizationFee?: SortOrder
+    executionBusinessDays?: SortOrder
+    clientDelayCalendarDays?: SortOrder
+    clientDelayBusinessDays?: SortOrder
   }
 
   export type ProjectMaxOrderByAggregateInput = {
@@ -62509,8 +62771,17 @@ export namespace Prisma {
     internationalizationFee?: SortOrder
     paymentMethod?: SortOrder
     serviceCategoryId?: SortOrder
-    startDate?: SortOrder
-    deadline?: SortOrder
+    executionBusinessDays?: SortOrder
+    executionStartAt?: SortOrder
+    briefingRequestedAt?: SortOrder
+    briefingValidatedAt?: SortOrder
+    deliveryForecastAt?: SortOrder
+    suspendedAt?: SortOrder
+    abandonedAt?: SortOrder
+    lastClientDependencyAt?: SortOrder
+    lastClientResponseAt?: SortOrder
+    clientDelayCalendarDays?: SortOrder
+    clientDelayBusinessDays?: SortOrder
     liveUrl?: SortOrder
     repositoryUrl?: SortOrder
     clientId?: SortOrder
@@ -62531,8 +62802,17 @@ export namespace Prisma {
     internationalizationFee?: SortOrder
     paymentMethod?: SortOrder
     serviceCategoryId?: SortOrder
-    startDate?: SortOrder
-    deadline?: SortOrder
+    executionBusinessDays?: SortOrder
+    executionStartAt?: SortOrder
+    briefingRequestedAt?: SortOrder
+    briefingValidatedAt?: SortOrder
+    deliveryForecastAt?: SortOrder
+    suspendedAt?: SortOrder
+    abandonedAt?: SortOrder
+    lastClientDependencyAt?: SortOrder
+    lastClientResponseAt?: SortOrder
+    clientDelayCalendarDays?: SortOrder
+    clientDelayBusinessDays?: SortOrder
     liveUrl?: SortOrder
     repositoryUrl?: SortOrder
     clientId?: SortOrder
@@ -62544,6 +62824,9 @@ export namespace Prisma {
     progress?: SortOrder
     budget?: SortOrder
     internationalizationFee?: SortOrder
+    executionBusinessDays?: SortOrder
+    clientDelayCalendarDays?: SortOrder
+    clientDelayBusinessDays?: SortOrder
   }
 
   export type EnumProjectStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -67812,8 +68095,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -67849,8 +68141,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -68498,8 +68799,17 @@ export namespace Prisma {
     serviceCategoryId?: StringNullableFilter<"Project"> | string | null
     briefing?: JsonNullableFilter<"Project">
     scheduleData?: JsonNullableFilter<"Project">
-    startDate?: DateTimeFilter<"Project"> | Date | string
-    deadline?: DateTimeNullableFilter<"Project"> | Date | string | null
+    executionBusinessDays?: IntNullableFilter<"Project"> | number | null
+    executionStartAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    briefingRequestedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    briefingValidatedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    deliveryForecastAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    suspendedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    abandonedAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    lastClientDependencyAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    lastClientResponseAt?: DateTimeNullableFilter<"Project"> | Date | string | null
+    clientDelayCalendarDays?: IntFilter<"Project"> | number
+    clientDelayBusinessDays?: IntFilter<"Project"> | number
     liveUrl?: StringNullableFilter<"Project"> | string | null
     repositoryUrl?: StringNullableFilter<"Project"> | string | null
     clientId?: StringFilter<"Project"> | string
@@ -70871,8 +71181,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -70907,8 +71226,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -72107,8 +72435,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -72144,8 +72481,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -72467,8 +72813,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -72504,8 +72859,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -73086,8 +73450,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -73123,8 +73496,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -73219,8 +73601,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -73256,8 +73647,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -73342,8 +73742,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -73379,8 +73788,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -73430,8 +73848,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -73467,8 +73894,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -73502,8 +73938,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -73539,8 +73984,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -73590,8 +74044,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -73627,8 +74090,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -73662,8 +74134,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -73699,8 +74180,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -73817,8 +74307,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -73854,8 +74353,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -73962,8 +74470,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -73999,8 +74516,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -74110,8 +74636,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -74147,8 +74682,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -74530,8 +75074,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -74567,8 +75120,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -74618,8 +75180,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -74655,8 +75226,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -74690,8 +75270,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -74727,8 +75316,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -74778,8 +75376,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -74815,8 +75422,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -74850,8 +75466,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -74887,8 +75512,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -74938,8 +75572,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -74975,8 +75618,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -75077,8 +75729,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -75114,8 +75775,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -75238,8 +75908,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -75275,8 +75954,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -75517,8 +76205,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -75554,8 +76251,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -75678,8 +76384,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -75715,8 +76430,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -75803,8 +76527,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -75840,8 +76573,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -76063,8 +76805,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -76100,8 +76851,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -76459,8 +77219,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -76496,8 +77265,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -76752,8 +77530,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -76789,8 +77576,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -77718,8 +78514,17 @@ export namespace Prisma {
     serviceCategoryId?: string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     createdAt?: Date | string
@@ -77893,8 +78698,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -77930,8 +78744,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -77966,8 +78789,17 @@ export namespace Prisma {
     serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -78937,8 +79769,17 @@ export namespace Prisma {
     paymentMethod?: $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: Date | string
-    deadline?: Date | string | null
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
     liveUrl?: string | null
     repositoryUrl?: string | null
     clientId: string
@@ -78960,8 +79801,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -78996,8 +79846,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
@@ -79032,8 +79891,17 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     briefing?: NullableJsonNullValueInput | InputJsonValue
     scheduleData?: NullableJsonNullValueInput | InputJsonValue
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
     liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string

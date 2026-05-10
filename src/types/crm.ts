@@ -2,6 +2,7 @@ import {
   LeadActivityType,
   LeadSource,
   LeadStatus,
+  ProjectCategory,
 } from "@/src/generated/client"
 
 export interface Lead {
@@ -21,9 +22,33 @@ export interface Lead {
   assignedToId: string | null
   proposalCount?: number
   acceptedProposalCount?: number
+  acceptedProposals?: Array<{
+    id: string
+    title: string
+    totalValue: number
+    projectCategory: ProjectCategory | null
+    executionBusinessDays: number | null
+    includesMaguiConnectBonus: boolean
+  }>
+  proposals?: Array<{
+    id: string
+    title: string
+    status: string
+    totalValue: number
+    createdAt: Date | string
+    validUntil?: Date | string | null
+  }>
 
   convertedProjectId: string | null
   convertedAt: Date | string | null
+  client?: {
+    id: string
+    name: string | null
+    email: string
+    companyName: string | null
+    phone: string | null
+    position: string | null
+  } | null
 
   activities?: LeadActivity[]
   followUpNotes?: LeadNote[]

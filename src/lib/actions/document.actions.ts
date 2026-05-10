@@ -12,8 +12,16 @@ import {
 import { logger } from "@/src/lib/logger"
 import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
-import { getExecutionDaysLabel, normalizeProposalScheduleData } from "@/src/lib/project-schedule"
+import {
+  getExecutionDaysLabel,
+  normalizeProposalScheduleData,
+  proposalIncludesMaguiConnectBonus,
+} from "@/src/lib/project-schedule"
 import { createAuditLog, getCurrentAppUser } from "@/src/lib/project-governance"
+import {
+  formatCurrencyBRL as formatCurrencyBRLInput,
+  formatCurrencyBRLFromCents,
+} from "@/src/lib/utils/utils"
 
 type ContractClauseSeed = {
   title: string
@@ -187,6 +195,12 @@ export async function getProposalContractPrefillAction(proposalId: string) {
         : null
 
     const proposalSchedule = normalizeProposalScheduleData(proposal.scheduleData)
+    const renewalValueFallback = proposalSchedule.annualRenewalFeeCents
+      ? formatCurrencyBRL(
+          proposalSchedule.annualRenewalFeeCents / 100,
+          proposal.currency
+        )
+      : ""
 
     const prefill = {
       proposalId: proposal.id,
@@ -217,12 +231,15 @@ export async function getProposalContractPrefillAction(proposalId: string) {
         client?.name ||
         proposal.lead.contactName ||
         "",
-      renewalValue: String(existingCommercial?.renewalValue ?? ""),
-      totalValueLabel: formatCurrencyBRL(proposal.totalValue, proposal.currency),
-      timelinePreview:
-        proposalSchedule.executionBusinessDays
-          ? getExecutionDaysLabel(proposalSchedule.executionBusinessDays)
-          : parseProposalNotes(proposal.notes).timeline.join(" "),
+      renewalValue: (() => {
+        const value =
+          String(existingCommercial?.renewalValue ?? "") || renewalValueFallback
+        return value ? formatCurrencyBRLInput(value) : ""
+      })(),
+      totalValueLabel: formatCurrencyBRLFromCents(proposal.totalValue),
+      timelinePreview: proposalSchedule.executionBusinessDays
+        ? getExecutionDaysLabel(proposalSchedule.executionBusinessDays)
+        : "Prazo nao definido",
     }
 
     return { success: true, prefill }
@@ -319,6 +336,18 @@ export async function createContractFromProposalAction(
       timeline: parsedNotes.timeline,
       executionBusinessDays:
         normalizeProposalScheduleData(proposal.scheduleData).executionBusinessDays,
+      includesMaguiConnectBonus: proposalIncludesMaguiConnectBonus(
+        proposal.scheduleData
+      ),
+      exposeInPortfolio: normalizeProposalScheduleData(proposal.scheduleData)
+        .exposeInPortfolio,
+      keepFooterCredit: normalizeProposalScheduleData(proposal.scheduleData)
+        .keepFooterCredit,
+      whiteLabelFeeCents: normalizeProposalScheduleData(proposal.scheduleData)
+        .whiteLabelFeeCents,
+      annualRenewalFeeCents:
+        normalizeProposalScheduleData(proposal.scheduleData)
+          .annualRenewalFeeCents,
       renewalValue: data.renewalValue,
       contractDate: new Date().toISOString(),
     }

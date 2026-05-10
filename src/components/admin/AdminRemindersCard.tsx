@@ -37,6 +37,8 @@ const reminderIcon = {
   [ScheduledReminderType.ACTION_ITEM_OVERDUE]: NotePencil,
   [ScheduledReminderType.CLIENT_ON_HOLD]: WarningCircle,
   [ScheduledReminderType.PROJECT_ABANDONED]: WarningCircle,
+  [ScheduledReminderType.RENEWAL_UPCOMING]: ClockCountdown,
+  [ScheduledReminderType.RENEWAL_SUSPENSION_RISK]: WarningCircle,
 }
 
 const reminderLabel = {
@@ -46,6 +48,8 @@ const reminderLabel = {
   [ScheduledReminderType.ACTION_ITEM_OVERDUE]: "Tarefa vencida",
   [ScheduledReminderType.CLIENT_ON_HOLD]: "Projeto suspenso",
   [ScheduledReminderType.PROJECT_ABANDONED]: "Projeto abandonado",
+  [ScheduledReminderType.RENEWAL_UPCOMING]: "Renovacao proxima",
+  [ScheduledReminderType.RENEWAL_SUSPENSION_RISK]: "Risco de suspensao",
 }
 
 export function AdminRemindersCard({

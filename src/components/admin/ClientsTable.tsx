@@ -17,20 +17,21 @@ import {
 } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/src/components/ui/alert-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar"
 import { Badge } from "@/src/components/ui/badge"
 import { Button } from "@/src/components/ui/button"
 import { Card } from "@/src/components/ui/card"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/src/components/ui/dialog"
 import { Input } from "@/src/components/ui/input"
 import {
   Table,
@@ -148,14 +149,16 @@ export function ClientsTable({
       if (result.success) {
         toast.success("Cliente removido do Clerk e da dashboard.")
       } else {
-        toast.error(result.error ?? "Não foi possível remover o cliente.")
+        toast.error(result.error ?? "Nao foi possivel remover o cliente.")
       }
     })
   }
 
   const getSortIcon = (key: SortConfig["key"]) => {
-    if (sort.key !== key || !sort.direction)
+    if (sort.key !== key || !sort.direction) {
       return <CaretUpDown className="size-3 opacity-30" />
+    }
+
     return sort.direction === "asc" ? (
       <CaretUp className="size-3 text-brand-primary" />
     ) : (
@@ -210,7 +213,7 @@ export function ClientsTable({
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div className="relative flex-1 group">
+        <div className="group relative flex-1">
           <MagnifyingGlass
             weight="duotone"
             className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-brand-primary"
@@ -219,7 +222,7 @@ export function ClientsTable({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t("search_placeholder")}
-            className="h-14 rounded-2xl border-border/40 bg-muted/20 pl-12 pr-4 font-sans font-bold transition-all focus-visible:ring-brand-primary/20 focus-visible:bg-muted/30"
+            className="h-14 rounded-2xl border-border/40 bg-muted/20 pl-12 pr-4 font-sans font-bold transition-all focus-visible:bg-muted/30 focus-visible:ring-brand-primary/20"
           />
         </div>
       </div>
@@ -227,9 +230,9 @@ export function ClientsTable({
       <Card className="overflow-hidden rounded-3xl border-border/40 bg-muted/10 backdrop-blur-md">
         <Table>
           <TableHeader className="bg-muted/30">
-            <TableRow className="hover:bg-transparent border-border/40">
+            <TableRow className="border-border/40 hover:bg-transparent">
               <TableHead
-                className="px-8 h-16 text-[10px] font-black uppercase tracking-widest text-muted-foreground cursor-pointer"
+                className="h-16 cursor-pointer px-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground"
                 onClick={() => handleSort("name")}
               >
                 <div className="flex items-center gap-2">
@@ -237,11 +240,11 @@ export function ClientsTable({
                   {getSortIcon("name")}
                 </div>
               </TableHead>
-              <TableHead className="px-8 h-16 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+              <TableHead className="h-16 px-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                 {t("table.id")}
               </TableHead>
               <TableHead
-                className="px-8 h-16 text-[10px] font-black uppercase tracking-widest text-muted-foreground cursor-pointer"
+                className="h-16 cursor-pointer px-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground"
                 onClick={() => handleSort("role")}
               >
                 <div className="flex items-center gap-2">
@@ -250,7 +253,7 @@ export function ClientsTable({
                 </div>
               </TableHead>
               <TableHead
-                className="px-8 h-16 text-[10px] font-black uppercase tracking-widest text-muted-foreground cursor-pointer"
+                className="h-16 cursor-pointer px-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground"
                 onClick={() => handleSort("projects")}
               >
                 <div className="flex items-center gap-2">
@@ -258,7 +261,7 @@ export function ClientsTable({
                   {getSortIcon("projects")}
                 </div>
               </TableHead>
-              <TableHead className="px-8 h-16 text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+              <TableHead className="h-16 px-8 text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                 {t("table.actions")}
               </TableHead>
             </TableRow>
@@ -299,7 +302,7 @@ export function ClientsTable({
                           <span className="font-heading text-sm font-black uppercase tracking-tight text-foreground">
                             {user.firstName} {user.lastName}
                           </span>
-                          <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
                             @{user.username || "client"}
                           </span>
                         </div>
@@ -313,7 +316,7 @@ export function ClientsTable({
                     <TableCell className="px-8 py-6">
                       <Badge
                         variant="secondary"
-                        className="bg-brand-primary/5 text-brand-primary hover:bg-brand-primary/10 border-brand-primary/20 text-[9px] font-black uppercase tracking-widest py-1 px-3"
+                        className="border-brand-primary/20 bg-brand-primary/5 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-brand-primary hover:bg-brand-primary/10"
                       >
                         {t(`roles.${user.publicMetadata?.role || "client"}`)}
                       </Badge>
@@ -334,7 +337,7 @@ export function ClientsTable({
                           asChild
                           variant="ghost"
                           size="sm"
-                          className="rounded-full h-10 px-6 text-[10px] font-black uppercase tracking-widest transition-all hover:bg-brand-primary hover:text-white"
+                          className="h-10 rounded-full px-6 text-[10px] font-black uppercase tracking-widest transition-all hover:bg-brand-primary hover:text-white"
                         >
                           <Link
                             href={{
@@ -347,58 +350,65 @@ export function ClientsTable({
                         </Button>
 
                         {!isAdmin && (
-                          <Dialog>
-                            <DialogTrigger asChild>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="rounded-full h-10 px-5 border-red-500/20 text-red-500 hover:bg-red-500/10"
+                                className="h-10 rounded-full border-red-500/20 px-5 text-red-500 hover:bg-red-500/10"
                               >
                                 <Trash size={14} className="mr-2" />
                                 Excluir
                               </Button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-xl rounded-4xl">
-                              <DialogHeader>
-                                <DialogTitle className="font-heading text-2xl font-black uppercase tracking-tight">
+                            </AlertDialogTrigger>
+                            <AlertDialogContent
+                              size="default"
+                              className="max-w-xl rounded-4xl border border-border/40 bg-background p-7 text-foreground shadow-2xl shadow-foreground/10 sm:max-w-xl"
+                            >
+                              <AlertDialogHeader className="gap-4 text-left sm:text-left">
+                                <AlertDialogTitle className="font-heading text-2xl font-black uppercase tracking-tight text-foreground">
                                   Remover cliente do sistema
-                                </DialogTitle>
-                                <DialogDescription>
-                                  Isso remove o usuário do Clerk, encerra acesso
+                                </AlertDialogTitle>
+                                <AlertDialogDescription className="max-w-none text-sm leading-relaxed text-muted-foreground/75">
+                                  Isso remove o usuario do Clerk, encerra o acesso
                                   ao painel e apaga o cadastro local. Projetos
-                                  vinculados também serão removidos por cascata.
-                                </DialogDescription>
-                              </DialogHeader>
-                              <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 text-sm leading-relaxed text-foreground/75">
-                                Cliente:{" "}
-                                <span className="font-black uppercase">
-                                  {user.firstName} {user.lastName}
-                                </span>
-                                <br />
-                                Projetos vinculados:{" "}
-                                <span className="font-black">
-                                  {user.projectCount}
-                                </span>
+                                  vinculados tambem serao removidos por cascata.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+
+                              <div className="grid gap-3 rounded-[1.5rem] border border-border/30 bg-muted/30 p-4 text-sm text-foreground/80">
+                                <div className="flex items-center justify-between gap-4">
+                                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/55">
+                                    Cliente
+                                  </span>
+                                  <span className="text-right font-black uppercase">
+                                    {user.firstName} {user.lastName}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between gap-4">
+                                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/55">
+                                    Projetos vinculados
+                                  </span>
+                                  <span className="font-black">
+                                    {user.projectCount}
+                                  </span>
+                                </div>
                               </div>
-                              <DialogFooter>
-                                <DialogClose asChild>
-                                  <Button
-                                    variant="outline"
-                                    className="rounded-full"
-                                  >
-                                    Cancelar
-                                  </Button>
-                                </DialogClose>
-                                <Button
+
+                              <AlertDialogFooter className="pt-2">
+                                <AlertDialogCancel className="rounded-full border-border/30 bg-background">
+                                  Cancelar
+                                </AlertDialogCancel>
+                                <AlertDialogAction
                                   onClick={() => handleDelete(user.id)}
                                   disabled={pendingDeletion}
-                                  className="rounded-full bg-red-500 hover:bg-red-500/90"
+                                  className="rounded-full bg-red-500 text-white hover:bg-red-500/90"
                                 >
-                                  Confirmar exclusão
-                                </Button>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
+                                  Confirmar exclusao
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         )}
                       </div>
                     </TableCell>

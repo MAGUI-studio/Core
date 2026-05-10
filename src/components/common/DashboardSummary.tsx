@@ -27,6 +27,7 @@ import { toast } from "sonner"
 import {
   approveUpdateAction,
   rejectUpdateAction,
+  requestScopeChangeAction,
 } from "@/src/lib/actions/project.actions"
 import { ProjectScheduleDelayTooltip } from "@/src/components/common/ProjectScheduleDelayTooltip"
 import {
@@ -120,6 +121,13 @@ export function DashboardSummary({
   >(null)
   const [approvalComment, setApprovalComment] = React.useState("")
   const [feedback, setFeedback] = React.useState("")
+  const [scopeDialogUpdateId, setScopeDialogUpdateId] = React.useState<
+    string | null
+  >(null)
+  const [scopeReason, setScopeReason] = React.useState("")
+  const [isRequestingScope, setIsRequestingScope] = React.useState<
+    string | null
+  >(null)
   const [visibleUpdatesCount, setVisibleUpdatesCount] = React.useState(5)
 
   const pendingApprovalCount = React.useMemo(
@@ -196,6 +204,25 @@ export function DashboardSummary({
     }
 
     setIsRejecting(null)
+  }
+
+  const handleScopeChange = async (updateId: string) => {
+    setIsRequestingScope(updateId)
+    const result = await requestScopeChangeAction({
+      updateId,
+      projectId: project.id,
+      justification: scopeReason,
+    })
+
+    if (result.success) {
+      toast.success("Novo escopo solicitado com sucesso.")
+      setScopeReason("")
+      setScopeDialogUpdateId(null)
+    } else {
+      toast.error(result.error ?? "Erro ao solicitar novo escopo.")
+    }
+
+    setIsRequestingScope(null)
   }
 
   return (
@@ -488,6 +515,73 @@ export function DashboardSummary({
                             </div>
                           </div>
                         </motion.div>
+                      )}
+
+                      {isApproved && (
+                        <Sheet
+                          open={scopeDialogUpdateId === update.id}
+                          onOpenChange={(open) => {
+                            setScopeDialogUpdateId(open ? update.id : null)
+                            if (!open) setScopeReason("")
+                          }}
+                        >
+                          <SheetTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="h-11 rounded-full border-transparent bg-background px-6 font-mono text-[10px] font-black uppercase tracking-[0.24em] text-foreground/82 shadow-none hover:bg-background"
+                            >
+                              <NotePencil className="mr-2 size-4" />
+                              Solicitar novo escopo
+                            </Button>
+                          </SheetTrigger>
+                          <SheetContent
+                            side="right"
+                            className="w-[94vw] border-l border-border/30 bg-background/95 p-0 sm:min-w-[38rem] sm:max-w-[40vw]"
+                          >
+                            <SheetHeader className="border-b border-border/20 bg-gradient-to-b from-brand-primary/6 to-transparent px-7 py-7 text-left">
+                              <SheetTitle className="font-heading text-3xl font-black uppercase tracking-tight text-foreground">
+                                Formalizar novo escopo
+                              </SheetTitle>
+                              <SheetDescription className="mt-3 text-sm font-medium leading-relaxed text-muted-foreground/60 text-left">
+                                Use este fluxo quando a etapa ja foi aprovada, mas voce precisa solicitar mudancas que extrapolam o combinado original.
+                              </SheetDescription>
+                            </SheetHeader>
+
+                            <div className="flex-1 overflow-y-auto px-6 py-6 sm:px-8">
+                              <Textarea
+                                value={scopeReason}
+                                onChange={(event) =>
+                                  setScopeReason(event.target.value)
+                                }
+                                className="min-h-[220px] max-h-[46svh] resize-none overflow-y-auto rounded-3xl border-border/40 bg-muted/10 p-6 text-base leading-relaxed"
+                                placeholder="Descreva o que mudou, por que isso sai do escopo aprovado e o que voce espera que seja reavaliado."
+                              />
+                            </div>
+
+                            <SheetFooter className="border-t border-border/20 bg-background/80 px-6 py-5 sm:px-8">
+                              <SheetClose asChild>
+                                <Button
+                                  variant="ghost"
+                                  className="rounded-full font-mono text-[10px] font-black uppercase tracking-[0.24em]"
+                                >
+                                  Cancelar
+                                </Button>
+                              </SheetClose>
+                              <Button
+                                onClick={() => handleScopeChange(update.id)}
+                                disabled={isRequestingScope === update.id}
+                                className="rounded-full bg-foreground font-mono text-[10px] font-black uppercase tracking-[0.24em] text-background"
+                              >
+                                {isRequestingScope === update.id ? (
+                                  <CircleNotch className="mr-2 size-4 animate-spin" />
+                                ) : (
+                                  <NotePencil className="mr-2 size-4" />
+                                )}
+                                Formalizar pedido
+                              </Button>
+                            </SheetFooter>
+                          </SheetContent>
+                        </Sheet>
                       )}
 
                       <div className="flex items-end justify-end gap-4 pt-1">

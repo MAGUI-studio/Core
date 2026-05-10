@@ -22,6 +22,7 @@ import {
   createContractFromProposalAction,
   getProposalContractPrefillAction,
 } from "@/src/lib/actions/document.actions"
+import { formatCurrencyBRL } from "@/src/lib/utils/utils"
 
 type SelectedProposal = {
   id: string
@@ -313,10 +314,13 @@ export function ProposalContractDrawer({
                   <Input
                     value={form.renewalValue}
                     onChange={(event) =>
-                      updateField("renewalValue", event.target.value)
+                      updateField(
+                        "renewalValue",
+                        formatCurrencyBRL(event.target.value)
+                      )
                     }
                     className="h-12 rounded-2xl border-border/40 bg-muted/10"
-                    placeholder="Ex.: 189,90"
+                    placeholder="Ex.: R$ 189,90"
                   />
                   <p className="text-xs text-muted-foreground/65">
                     Este valor será usado na cláusula de renovação de domínio.

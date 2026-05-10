@@ -13,7 +13,10 @@ import { endOfDay, startOfDay, subDays } from "date-fns"
 
 import prisma from "@/src/lib/prisma"
 import { getInternalNotificationRecipients } from "@/src/lib/project-governance"
-import { buildProjectScheduleView } from "@/src/lib/project-schedule"
+import {
+  buildProjectScheduleView,
+  getProjectRenewalSignals,
+} from "@/src/lib/project-schedule"
 
 type ReminderCandidate = {
   type: ScheduledReminderType
@@ -45,7 +48,13 @@ async function getReminderCandidates(): Promise<ReminderCandidate[]> {
   const silentProjectThreshold = subDays(now, 7)
   const overdueStart = startOfDay(now)
 
-  const [stalledLeads, pendingApprovals, activeProjects, overdueActionItems] =
+  const [
+    stalledLeads,
+    pendingApprovals,
+    activeProjects,
+    overdueActionItems,
+    launchedProjects,
+  ] =
     await Promise.all([
       prisma.lead.findMany({
         where: {
@@ -137,6 +146,25 @@ async function getReminderCandidates(): Promise<ReminderCandidate[]> {
         take: 20,
         orderBy: { dueDate: "asc" },
       }),
+      prisma.project.findMany({
+        where: {
+          status: ProjectStatus.LAUNCHED,
+        },
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          scheduleData: true,
+          client: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+        take: 50,
+        orderBy: { updatedAt: "desc" },
+      }),
     ])
 
   const scheduleProjects = activeProjects.map((project) => ({
@@ -157,6 +185,22 @@ async function getReminderCandidates(): Promise<ReminderCandidate[]> {
   const abandonedProjects = scheduleProjects.filter(
     (project) => project.schedule.executionState === "ABANDONED"
   )
+  const renewalCandidates = launchedProjects
+    .map((project) => ({
+      ...project,
+      signals: getProjectRenewalSignals(project.scheduleData, now),
+    }))
+    .filter((project) => project.signals.length > 0)
+  const renewalUpcomingProjects = renewalCandidates
+    .filter((project) =>
+      project.signals.some((signal) => signal.status === "UPCOMING")
+    )
+    .slice(0, 20)
+  const renewalSuspensionRiskProjects = renewalCandidates
+    .filter((project) =>
+      project.signals.some((signal) => signal.status === "SUSPENSION_RISK")
+    )
+    .slice(0, 20)
 
   return [
     ...stalledLeads.map((lead) => ({
@@ -235,6 +279,54 @@ async function getReminderCandidates(): Promise<ReminderCandidate[]> {
           projectId: project.id,
           executionState: project.schedule.executionState,
           clientDelayCalendarDays: project.schedule.clientDelayCalendarDays,
+        },
+      }
+    }),
+    ...renewalUpcomingProjects.map((project) => {
+      const nextSignal = project.signals.find(
+        (signal) => signal.status === "UPCOMING"
+      )!
+      const renewalLabel =
+        nextSignal.kind === "DOMAIN"
+          ? "renovação de domínio"
+          : "taxa anual de permanência"
+
+      return {
+        type: ScheduledReminderType.RENEWAL_UPCOMING,
+        entityType: "Project",
+        entityId: project.id,
+        title: `${project.name} tem ${renewalLabel} próxima`,
+        message: `${project.client.name || project.client.email} precisa de acompanhamento: ${renewalLabel} vence em ${Math.max(0, nextSignal.daysUntilDue)} dia(s).`,
+        ctaPath: `/admin/projects/${project.id}/financial`,
+        scheduledFor: nextSignal.dueAt,
+        metadata: {
+          projectId: project.id,
+          renewalKind: nextSignal.kind,
+          daysUntilDue: nextSignal.daysUntilDue,
+        },
+      }
+    }),
+    ...renewalSuspensionRiskProjects.map((project) => {
+      const criticalSignal = project.signals.find(
+        (signal) => signal.status === "SUSPENSION_RISK"
+      )!
+      const renewalLabel =
+        criticalSignal.kind === "DOMAIN"
+          ? "renovação de domínio"
+          : "taxa anual de permanência"
+
+      return {
+        type: ScheduledReminderType.RENEWAL_SUSPENSION_RISK,
+        entityType: "Project",
+        entityId: project.id,
+        title: `${project.name} está em risco de suspensão`,
+        message: `${project.client.name || project.client.email} está com ${renewalLabel} vencida há ${Math.abs(criticalSignal.daysUntilDue)} dia(s). Revise a suspensão contratual da operação publicada.`,
+        ctaPath: `/admin/projects/${project.id}/financial`,
+        scheduledFor: criticalSignal.dueAt,
+        metadata: {
+          projectId: project.id,
+          renewalKind: criticalSignal.kind,
+          daysOverdue: Math.abs(criticalSignal.daysUntilDue),
         },
       }
     }),

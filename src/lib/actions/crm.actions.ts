@@ -14,6 +14,7 @@ import {
   ProposalStatus,
 } from "@/src/generated/client"
 import { LeadActivity, LeadNote } from "@/src/types/crm"
+import { addDays } from "date-fns"
 import { z } from "zod"
 
 import { logger } from "@/src/lib/logger"
@@ -21,7 +22,10 @@ import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
 import {
   buildInitialProjectScheduleData,
+  buildProjectSchedulePersistence,
+  getProposalExecutionDaysFromSchedule,
   normalizeProposalScheduleData,
+  proposalIncludesMaguiConnectBonus,
 } from "@/src/lib/project-schedule"
 import {
   createAuditLog,
@@ -36,6 +40,7 @@ import {
   revalidateCrmViews,
   revalidateProjectData,
 } from "@/src/lib/revalidate"
+import { createInvoiceAction } from "@/src/lib/actions/financial.actions"
 
 const LeadSchema = z.object({
   companyName: z.string().min(2),
@@ -283,15 +288,17 @@ export async function addLeadNote(
 
 export async function convertLeadToProjectAction(input: {
   leadId: string
+  acceptedProposalId?: string
   userId?: string // If existing user
   newUserData?: {
     email: string
     name: string
+    username?: string
     password?: string
   }
   projectData: {
     name: string
-    category: ProjectCategory
+    category?: ProjectCategory
     budget?: string
     executionBusinessDays?: number
     paymentMethod?: "FIFTY_FIFTY" | "MONTHLY_INSTALLMENTS"
@@ -305,7 +312,13 @@ export async function convertLeadToProjectAction(input: {
       where: { id: input.leadId },
       include: {
         proposals: {
-          select: { status: true, scheduleData: true },
+          select: {
+            id: true,
+            title: true,
+            status: true,
+            scheduleData: true,
+            totalValue: true,
+          },
         },
       },
     })
@@ -313,11 +326,11 @@ export async function convertLeadToProjectAction(input: {
     if (!lead) return { success: false, error: "Lead not found" }
 
     const trimmedProjectName = input.projectData.name.trim()
-    const hasAcceptedProposal = lead.proposals.some(
+    const acceptedProposals = lead.proposals.filter(
       (proposal) => proposal.status === ProposalStatus.ACCEPTED
     )
+    const hasAcceptedProposal = acceptedProposals.length > 0
     const hasAnyProposal = lead.proposals.length > 0
-    const budgetStr = input.projectData.budget || lead.value
 
     if (!trimmedProjectName) {
       return { success: false, error: "Defina o nome do projeto." }
@@ -337,19 +350,41 @@ export async function convertLeadToProjectAction(input: {
       }
     }
 
-    if (!input.projectData.category) {
-      return { success: false, error: "Selecione a categoria do projeto." }
-    }
-
-    if (!budgetStr && !hasAcceptedProposal) {
+    if (!hasAcceptedProposal) {
       return {
         success: false,
         error:
-          "Informe um valor estimado ou vincule uma proposta aceita antes de converter.",
+          "Converta o lead apenas a partir de uma proposta aceita vinculada.",
+      }
+    }
+
+    const selectedAcceptedProposal =
+      acceptedProposals.length === 1
+        ? acceptedProposals[0]
+        : acceptedProposals.find(
+            (proposal) => proposal.id === input.acceptedProposalId
+          )
+
+    if (!selectedAcceptedProposal) {
+      return {
+        success: false,
+        error:
+          acceptedProposals.length > 1
+            ? "Selecione explicitamente qual proposta aceita originara o projeto."
+            : "Nao foi possivel localizar a proposta aceita vinculada.",
       }
     }
 
     const result = await prisma.$transaction(async (tx) => {
+      const currentLead = await tx.lead.findUnique({
+        where: { id: input.leadId },
+        select: { convertedProjectId: true },
+      })
+
+      if (currentLead?.convertedProjectId) {
+        return { id: currentLead.convertedProjectId }
+      }
+
       let finalUserId = input.userId
 
       if (!finalUserId && input.newUserData) {
@@ -365,6 +400,8 @@ export async function convertLeadToProjectAction(input: {
             name:
               input.newUserData.name || lead.contactName || lead.companyName,
             companyName: lead.companyName,
+            username: input.newUserData.username,
+            password: input.newUserData.password,
           },
           tx
         )
@@ -385,34 +422,91 @@ export async function convertLeadToProjectAction(input: {
 
       if (!finalUserId) throw new Error("Client must be selected.")
 
-      const budgetValue = budgetStr
-        ? parseFloat(budgetStr.replace(/[^\d.,]/g, "").replace(",", "."))
-        : null
-      const acceptedProposal = lead.proposals.find(
-        (proposal) => proposal.status === ProposalStatus.ACCEPTED
+      const targetClient = await tx.user.findUnique({
+        where: { id: finalUserId },
+        select: {
+          id: true,
+          canAccessMaguiConnect: true,
+        },
+      })
+
+      if (!targetClient) {
+        throw new Error("Client not found.")
+      }
+
+      const budgetValue = selectedAcceptedProposal.totalValue
+      const proposalSchedule = normalizeProposalScheduleData(
+        selectedAcceptedProposal.scheduleData
       )
+      const resolvedProjectCategory =
+        proposalSchedule.projectCategory ?? ProjectCategory.LANDING_PAGE
       const scheduleSeed =
         input.projectData.executionBusinessDays ??
-        normalizeProposalScheduleData(acceptedProposal?.scheduleData)
-          .executionBusinessDays ??
+        getProposalExecutionDaysFromSchedule(selectedAcceptedProposal.scheduleData) ??
         20
+      const includesMaguiConnectBonus = proposalIncludesMaguiConnectBonus(
+        selectedAcceptedProposal.scheduleData
+      )
+      const maguiConnectBonusStatus = includesMaguiConnectBonus
+        ? targetClient.canAccessMaguiConnect
+          ? "RELEASED"
+          : "PENDING_RELEASE"
+        : "NOT_INCLUDED"
+      const initialScheduleData = buildInitialProjectScheduleData({
+        executionBusinessDays: scheduleSeed,
+        includesMaguiConnectBonus,
+        sourceProposalId: selectedAcceptedProposal.id,
+        maguiConnectBonusStatus,
+        exposeInPortfolio: proposalSchedule.exposeInPortfolio,
+        keepFooterCredit: proposalSchedule.keepFooterCredit,
+        whiteLabelFeeCents: proposalSchedule.whiteLabelFeeCents,
+        annualRenewalFeeCents: proposalSchedule.annualRenewalFeeCents,
+      })
+      const schedulePersistence =
+        buildProjectSchedulePersistence(initialScheduleData)
 
       const project = await tx.project.create({
         data: {
           name: input.projectData.name,
-          category: input.projectData.category || ProjectCategory.LANDING_PAGE,
+          category: resolvedProjectCategory,
           budget: budgetValue,
           paymentMethod:
             (input.projectData.paymentMethod as PaymentMethod) || "FIFTY_FIFTY",
-          scheduleData: buildInitialProjectScheduleData({
-            executionBusinessDays: scheduleSeed,
-          }),
+          scheduleData: initialScheduleData,
+          ...schedulePersistence,
           clientId: finalUserId,
           status: ProjectStatus.STRATEGY,
           progress: 0,
           description: lead.notes,
         },
       })
+
+      await tx.proposal.update({
+        where: { id: selectedAcceptedProposal.id },
+        data: {
+          projectId: project.id,
+        },
+      })
+
+      await createAuditLog(
+        {
+          action: "proposal.linked_to_project",
+          entityType: "Proposal",
+          entityId: selectedAcceptedProposal.id,
+          projectId: project.id,
+          summary: `Proposta ${selectedAcceptedProposal.title} vinculada ao projeto ${project.name}.`,
+          actorId: actor?.id,
+          actorType: actor ? AuditActorType.USER : AuditActorType.SYSTEM,
+          metadata: {
+            leadId: input.leadId,
+            projectId: project.id,
+            projectCategory: resolvedProjectCategory,
+            executionBusinessDays: scheduleSeed,
+            includesMaguiConnectBonus,
+          },
+        },
+        tx
+      )
 
       await tx.lead.update({
         where: { id: input.leadId },
@@ -431,8 +525,8 @@ export async function convertLeadToProjectAction(input: {
           content: `Projeto "${project.name}" criado com sucesso.`,
           metadata: {
             projectId: project.id,
-            convertedWithoutAcceptedProposal: !hasAcceptedProposal,
-            proposalContext: hasAnyProposal ? "existing" : "missing",
+            proposalId: selectedAcceptedProposal.id,
+            proposalContext: hasAnyProposal ? "accepted" : "missing",
           },
           authorId: actor?.id,
         },
@@ -445,13 +539,93 @@ export async function convertLeadToProjectAction(input: {
           entityId: input.leadId,
           projectId: project.id,
           summary: `Lead ${lead.companyName} convertido no projeto ${project.name}.`,
-          metadata: { projectId: project.id, clientId: finalUserId },
+          metadata: {
+            projectId: project.id,
+            clientId: finalUserId,
+            proposalId: selectedAcceptedProposal.id,
+            includesMaguiConnectBonus,
+          },
         },
         tx
       )
 
+      if (includesMaguiConnectBonus) {
+        await createAuditLog(
+          {
+            action: "magui_connect.bonus_attached_to_project",
+            entityType: "Project",
+            entityId: project.id,
+            projectId: project.id,
+            summary: `Bonus MAGUI Connect estruturado no projeto ${project.name}.`,
+            actorId: actor?.id,
+            actorType: actor ? AuditActorType.USER : AuditActorType.SYSTEM,
+            metadata: {
+              proposalId: selectedAcceptedProposal.id,
+              clientId: finalUserId,
+              status: maguiConnectBonusStatus,
+              alreadyPurchased: targetClient.canAccessMaguiConnect,
+            },
+          },
+          tx
+        )
+      }
+
       return project
     })
+
+    const paymentMethod =
+      (input.projectData.paymentMethod as PaymentMethod) || "FIFTY_FIFTY"
+    const projectBudgetCents = selectedAcceptedProposal.totalValue
+
+    if (projectBudgetCents > 0) {
+      try {
+        const now = new Date()
+        const firstInstallmentDueDate = addDays(now, 7)
+        const installments =
+          paymentMethod === PaymentMethod.FIFTY_FIFTY
+            ? (() => {
+                const firstAmount = Math.floor(projectBudgetCents / 2)
+                const secondAmount = projectBudgetCents - firstAmount
+
+                return [
+                  {
+                    number: 1,
+                    amount: firstAmount,
+                    dueDate: firstInstallmentDueDate,
+                  },
+                  {
+                    number: 2,
+                    amount: secondAmount,
+                    dueDate: addDays(firstInstallmentDueDate, 30),
+                  },
+                ]
+              })()
+            : [
+                {
+                  number: 1,
+                  amount: projectBudgetCents,
+                  dueDate: firstInstallmentDueDate,
+                },
+              ]
+
+        await createInvoiceAction({
+          projectId: result.id,
+          kind: "PROJECT",
+          title: `Pagamento Inicial - ${input.projectData.name}`,
+          description: `Fatura automatica gerada a partir da conversao do lead ${lead.companyName}.`,
+          totalAmount: projectBudgetCents,
+          currency: "BRL",
+          dueDate: installments[0].dueDate,
+          installments,
+          proposalId: selectedAcceptedProposal.id,
+        })
+      } catch (billingError) {
+        logger.error(
+          { billingError, leadId: input.leadId, projectId: result.id },
+          "Failed to create automatic invoice during lead conversion"
+        )
+      }
+    }
 
     revalidateCrmLeads()
     revalidateProjectData()
@@ -576,6 +750,126 @@ export async function getLeadActivitiesAction(leadId: string): Promise<{
   } catch (error) {
     logger.error({ error }, "Get Lead Activities Error")
     return { success: false, error: "Failed to fetch activities" }
+  }
+}
+
+export async function getLeadSnapshotAction(leadId: string): Promise<{
+  success: boolean
+  error?: string
+  lead?: {
+    id: string
+    status: LeadStatus
+    updatedAt: string
+    proposalCount: number
+    acceptedProposalCount: number
+    acceptedProposals: Array<{
+      id: string
+      title: string
+      totalValue: number
+        executionBusinessDays: number | null
+        projectCategory: ProjectCategory | null
+        includesMaguiConnectBonus: boolean
+    }>
+    proposals: Array<{
+      id: string
+      title: string
+      status: ProposalStatus
+      totalValue: number
+      createdAt: string
+      validUntil: string | null
+    }>
+    client: {
+      id: string
+      name: string | null
+      email: string
+      companyName: string | null
+      phone: string | null
+      position: string | null
+    } | null
+  }
+}> {
+  try {
+    await protect("admin")
+
+    const lead = await prisma.lead.findUnique({
+      where: { id: leadId },
+      include: {
+        proposals: {
+          select: {
+            id: true,
+            title: true,
+            status: true,
+            totalValue: true,
+            validUntil: true,
+            createdAt: true,
+            scheduleData: true,
+          },
+          orderBy: { createdAt: "desc" },
+        },
+      },
+    })
+
+    if (!lead) {
+      return { success: false, error: "Lead not found" }
+    }
+
+    const acceptedProposals = lead.proposals
+      .filter((proposal) => proposal.status === ProposalStatus.ACCEPTED)
+      .map((proposal) => ({
+        id: proposal.id,
+        title: proposal.title,
+        totalValue: proposal.totalValue,
+        projectCategory: normalizeProposalScheduleData(proposal.scheduleData)
+          .projectCategory,
+        executionBusinessDays: getProposalExecutionDaysFromSchedule(
+          proposal.scheduleData
+        ),
+        includesMaguiConnectBonus: proposalIncludesMaguiConnectBonus(
+          proposal.scheduleData
+        ),
+      }))
+
+    const convertedProjectClient = lead.convertedProjectId
+      ? await prisma.project.findUnique({
+          where: { id: lead.convertedProjectId },
+          select: {
+            client: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                companyName: true,
+                phone: true,
+                position: true,
+              },
+            },
+          },
+        })
+      : null
+
+    return {
+      success: true,
+      lead: {
+        id: lead.id,
+        status: lead.status,
+        updatedAt: lead.updatedAt.toISOString(),
+        proposalCount: lead.proposals.length,
+        acceptedProposalCount: acceptedProposals.length,
+        acceptedProposals,
+        proposals: lead.proposals.map((proposal) => ({
+          id: proposal.id,
+          title: proposal.title,
+          status: proposal.status,
+          totalValue: proposal.totalValue,
+          createdAt: proposal.createdAt.toISOString(),
+          validUntil: proposal.validUntil?.toISOString() ?? null,
+        })),
+        client: convertedProjectClient?.client ?? null,
+      },
+    }
+  } catch (error) {
+    logger.error({ error }, "Get Lead Snapshot Error")
+    return { success: false, error: "Failed to fetch lead snapshot" }
   }
 }
 

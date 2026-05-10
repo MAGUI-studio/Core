@@ -8,7 +8,11 @@ import { useRouter } from "next/navigation"
 import {
   ArrowRight,
   Buildings,
+  Copy,
+  Checks,
   EnvelopeSimple,
+  Eye,
+  EyeSlash,
   Fingerprint,
   IdentificationCard,
   LockKey,
@@ -33,9 +37,49 @@ import { Separator } from "@/src/components/ui/separator"
 
 import { createClientAction } from "@/src/lib/actions/user.actions"
 
+function generateStrongPassword(length: number = 16): string {
+  const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ"
+  const lower = "abcdefghijkmnopqrstuvwxyz"
+  const digits = "23456789"
+  const symbols = "!@#$%&*()-_=+?"
+  const all = `${upper}${lower}${digits}${symbols}`
+
+  const getRandom = (max: number) => {
+    if (typeof crypto !== "undefined" && "getRandomValues" in crypto) {
+      const array = new Uint32Array(1)
+      crypto.getRandomValues(array)
+      return array[0] % max
+    }
+
+    return Math.floor(Math.random() * max)
+  }
+
+  const passwordChars = [
+    upper[getRandom(upper.length)],
+    lower[getRandom(lower.length)],
+    digits[getRandom(digits.length)],
+    symbols[getRandom(symbols.length)],
+  ]
+
+  while (passwordChars.length < length) {
+    passwordChars.push(all[getRandom(all.length)])
+  }
+
+  for (let i = passwordChars.length - 1; i > 0; i -= 1) {
+    const j = getRandom(i + 1)
+    ;[passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]]
+  }
+
+  return passwordChars.join("")
+}
+
 export function CreateClientForm() {
   const t = useTranslations("Admin.clients.form")
   const router = useRouter()
+  const [username, setUsername] = React.useState("")
+  const [password, setPassword] = React.useState("")
+  const [showPassword, setShowPassword] = React.useState(false)
+  const [credentialsCopied, setCredentialsCopied] = React.useState(false)
 
   const [state, formAction, isPending] = React.useActionState(
     async (_prevState: unknown, formData: FormData) => {
@@ -48,6 +92,31 @@ export function CreateClientForm() {
     },
     { success: false, error: null }
   )
+
+  React.useEffect(() => {
+    if (!credentialsCopied) return
+
+    const timeout = window.setTimeout(() => {
+      setCredentialsCopied(false)
+    }, 2200)
+
+    return () => window.clearTimeout(timeout)
+  }, [credentialsCopied])
+
+  const handleCopyCredentials = async () => {
+    if (!username.trim() || !password.trim()) {
+      return
+    }
+
+    const message = `Bem-vindo(a)! Seu acesso a plataforma da MAGUI ja esta pronto.\n\nAqui estao seus dados para entrar:\n\nPlataforma: https://dashboard.magui.studio\nUsuario: ${username.trim()}\nSenha: ${password}\n\nSe precisar de apoio no primeiro acesso, pode nos chamar por aqui.`
+
+    try {
+      await navigator.clipboard.writeText(message)
+      setCredentialsCopied(true)
+    } catch {
+      // ignore clipboard failure here; submit flow remains unaffected
+    }
+  }
 
   return (
     <form action={formAction} className="flex flex-col gap-12 text-left">
@@ -80,7 +149,8 @@ export function CreateClientForm() {
             >
               {t("firstName")} <span className="text-red-500">*</span>
             </Label>
-            <div className="relative group">
+            <div className="flex items-center gap-2">
+              <div className="relative group flex-1">
               <User
                 weight="bold"
                 className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/40 transition-colors group-focus-within:text-brand-primary"
@@ -250,6 +320,8 @@ export function CreateClientForm() {
               placeholder="johndoe"
               required
               disabled={isPending}
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
               className="h-14 rounded-2xl border-border/40 bg-muted/10 px-4 font-sans font-bold transition-all focus-visible:ring-brand-primary/20 focus-visible:bg-muted/20"
             />
           </div>
@@ -271,17 +343,55 @@ export function CreateClientForm() {
               <Input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 required
                 minLength={8}
                 disabled={isPending}
-                className="h-14 rounded-2xl border-border/40 bg-muted/10 pl-11 font-sans font-bold transition-all focus-visible:ring-brand-primary/20 focus-visible:bg-muted/20"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                className="h-14 rounded-2xl border-border/40 bg-muted/10 pr-32 pl-11 font-sans font-bold transition-all focus-visible:ring-brand-primary/20 focus-visible:bg-muted/20"
               />
+                <button
+                  type="button"
+                  className="absolute top-1/2 right-11 flex h-8 -translate-y-1/2 items-center rounded-full px-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 transition-none hover:text-foreground focus:outline-none"
+                  onClick={() => setPassword(generateStrongPassword())}
+                >
+                  Gerar
+                </button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute top-1/2 right-2 size-8 -translate-y-1/2 rounded-full text-muted-foreground/60 hover:bg-transparent hover:text-foreground"
+                onClick={() => setShowPassword((current) => !current)}
+              >
+                {showPassword ? (
+                  <EyeSlash className="size-4" weight="bold" />
+                ) : (
+                  <Eye className="size-4" weight="bold" />
+                )}
+              </Button>
             </div>
             <p className="ml-1 text-[9px] font-bold text-muted-foreground/30 uppercase tracking-tighter">
               {t("password_hint")}
             </p>
+            <div className="flex justify-end pt-1">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-10 rounded-full border-border/20 bg-background px-4 text-[10px] font-black uppercase tracking-widest"
+                onClick={handleCopyCredentials}
+                disabled={!username.trim() || !password.trim()}
+              >
+                {credentialsCopied ? (
+                  <Checks className="mr-2 size-4" weight="bold" />
+                ) : (
+                  <Copy className="mr-2 size-4" weight="bold" />
+                )}
+                {credentialsCopied ? "Copiado" : "Copiar acesso"}
+              </Button>
+            </div>
           </div>
           <div className="flex flex-col gap-3">
             <Label
@@ -326,6 +436,7 @@ export function CreateClientForm() {
             </Select>
           </div>
         </div>
+      </div>
       </div>
 
       <div className="flex flex-col gap-6 pt-6">

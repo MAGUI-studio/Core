@@ -22,7 +22,6 @@ import { toast } from "sonner"
 
 import { Badge } from "@/src/components/ui/badge"
 import { Button } from "@/src/components/ui/button"
-import { Card } from "@/src/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,6 +52,7 @@ import {
   updateProposalStatusAction,
 } from "@/src/lib/actions/proposal.actions"
 import { ProposalContractDrawer } from "@/src/components/admin/proposals/ProposalContractDrawer"
+import { formatCurrencyBRLFromCents } from "@/src/lib/utils/utils"
 
 interface ProposalRecord {
   id: string
@@ -72,6 +72,14 @@ interface ProposalRecord {
 interface ProposalsOverviewListProps {
   proposals: ProposalRecord[]
 }
+
+const PROPOSAL_STATUS_OPTIONS: ProposalStatus[] = [
+  "DRAFT",
+  "SENT",
+  "ACCEPTED",
+  "REJECTED",
+  "EXPIRED",
+]
 
 type SortConfig = {
   key: "title" | "company" | "value" | "date" | "status"
@@ -122,6 +130,16 @@ export function ProposalsOverviewList({
   }
 
   const handleStatusChange = async (id: string, status: ProposalStatus) => {
+    const currentProposal = items.find((proposal) => proposal.id === id)
+    if (
+      !currentProposal ||
+      currentProposal.status === "ACCEPTED" ||
+      currentProposal.status === "REJECTED" ||
+      currentProposal.status === status
+    ) {
+      return
+    }
+
     const result = await updateProposalStatusAction(id, status)
     if (result.success) {
       toast.success(tList("messages.statusSuccess"))
@@ -287,44 +305,23 @@ export function ProposalsOverviewList({
               >
                 {tList("statusAll")}
               </SelectItem>
-              <SelectItem
-                value="DRAFT"
-                className="text-[10px] font-black uppercase tracking-widest"
-              >
-                {t("DRAFT")}
-              </SelectItem>
-              <SelectItem
-                value="SENT"
-                className="text-[10px] font-black uppercase tracking-widest"
-              >
-                {t("SENT")}
-              </SelectItem>
-              <SelectItem
-                value="ACCEPTED"
-                className="text-[10px] font-black uppercase tracking-widest"
-              >
-                {t("ACCEPTED")}
-              </SelectItem>
-              <SelectItem
-                value="REJECTED"
-                className="text-[10px] font-black uppercase tracking-widest"
-              >
-                {t("REJECTED")}
-              </SelectItem>
-              <SelectItem
-                value="EXPIRED"
-                className="text-[10px] font-black uppercase tracking-widest"
-              >
-                {t("EXPIRED")}
-              </SelectItem>
+              {PROPOSAL_STATUS_OPTIONS.map((status) => (
+                <SelectItem
+                  key={status}
+                  value={status}
+                  className="text-[10px] font-black uppercase tracking-widest"
+                >
+                  {t(status)}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      <Card className="overflow-hidden rounded-[2.5rem] border-border/40 bg-muted/5 backdrop-blur-md">
+      <div className="overflow-x-auto">
         <Table>
-          <TableHeader className="bg-muted/10">
+          <TableHeader>
             <TableRow className="border-border/40 hover:bg-transparent">
               <TableHead
                 className="h-16 cursor-pointer px-8 text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 transition-colors hover:text-foreground"
@@ -382,11 +379,16 @@ export function ProposalsOverviewList({
                 </TableCell>
               </TableRow>
             ) : (
-              filteredAndSortedItems.map((proposal) => (
-                <TableRow
-                  key={proposal.id}
-                  className="group border-border/15 transition-all hover:bg-brand-primary/[0.02]"
-                >
+              filteredAndSortedItems.map((proposal) => {
+                const isLockedStatus =
+                  proposal.status === "ACCEPTED" ||
+                  proposal.status === "REJECTED"
+
+                return (
+                  <TableRow
+                    key={proposal.id}
+                    className="group border-border/15 transition-all hover:bg-brand-primary/[0.02]"
+                  >
                   <TableCell className="px-8 py-6">
                     <Link
                       href={{
@@ -413,10 +415,7 @@ export function ProposalsOverviewList({
                   </TableCell>
                   <TableCell className="px-8 py-6">
                     <span className="font-sans text-xs font-black text-foreground/90">
-                      {new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: proposal.currency,
-                      }).format(proposal.totalValue)}
+                      {formatCurrencyBRLFromCents(proposal.totalValue)}
                     </span>
                   </TableCell>
                   <TableCell className="px-8 py-6">
@@ -436,8 +435,8 @@ export function ProposalsOverviewList({
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="px-8 py-6 text-right">
-                    <div className="flex items-center justify-end gap-2">
+                    <TableCell className="px-8 py-6 text-right">
+                      <div className="flex items-center justify-end gap-2">
                       <Button
                         asChild
                         variant="ghost"
@@ -508,26 +507,29 @@ export function ProposalsOverviewList({
                             </p>
                           </div>
                           <DropdownMenuItem
+                            disabled={isLockedStatus || proposal.status === "SENT"}
                             onClick={() =>
                               handleStatusChange(proposal.id, "SENT")
                             }
-                            className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-blue-500/10 focus:text-blue-600"
+                            className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-blue-500/10 focus:text-blue-600 data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
                           >
                             {tList("markAs", { status: t("SENT") })}
                           </DropdownMenuItem>
                           <DropdownMenuItem
+                            disabled={isLockedStatus || proposal.status === "ACCEPTED"}
                             onClick={() =>
                               handleStatusChange(proposal.id, "ACCEPTED")
                             }
-                            className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-emerald-500/10 focus:text-emerald-600"
+                            className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-emerald-500/10 focus:text-emerald-600 data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
                           >
                             {tList("markAs", { status: t("ACCEPTED") })}
                           </DropdownMenuItem>
                           <DropdownMenuItem
+                            disabled={isLockedStatus || proposal.status === "REJECTED"}
                             onClick={() =>
                               handleStatusChange(proposal.id, "REJECTED")
                             }
-                            className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-red-500/10 focus:text-red-600"
+                            className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-red-500/10 focus:text-red-600 data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
                           >
                             {tList("markAs", { status: t("REJECTED") })}
                           </DropdownMenuItem>
@@ -542,20 +544,21 @@ export function ProposalsOverviewList({
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )
+              })
             )}
           </TableBody>
         </Table>
 
-        <div className="flex items-center justify-between border-t border-border/15 bg-muted/10 px-8 py-4">
+        <div className="flex items-center justify-between border-t border-border/15 px-8 py-4">
           <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
             {tList("summary", { count: filteredAndSortedItems.length })}
           </p>
         </div>
-      </Card>
+      </div>
 
       <ProposalContractDrawer
         proposal={selectedProposalForContract}

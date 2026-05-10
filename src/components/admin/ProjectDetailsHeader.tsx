@@ -12,6 +12,7 @@ import {
   ArrowSquareOut,
   Calendar,
   CurrencyDollar,
+  Gift,
   ProjectorScreen,
   UserCircle,
 } from "@phosphor-icons/react"
@@ -21,6 +22,7 @@ import { Button } from "@/src/components/ui/button"
 import {
   buildProjectScheduleView,
   getExecutionDaysLabel,
+  getProjectRenewalSignals,
 } from "@/src/lib/project-schedule"
 import { formatCurrencyBRLFromCents } from "@/src/lib/utils/utils"
 
@@ -31,7 +33,6 @@ interface ProjectDetailsHeaderProps {
     budget: number | null
     hasInternationalization?: boolean
     internationalizationFee?: number | null
-    deadline: Date | null
     scheduleData?: unknown
     status: ProjectStatus
     client: {
@@ -46,9 +47,51 @@ export function ProjectDetailsHeader({ project }: ProjectDetailsHeaderProps) {
   const t = useTranslations("Admin.projects.details")
   const router = useRouter()
   const schedule = buildProjectScheduleView(project.scheduleData, project.status)
+  const renewalSignals = getProjectRenewalSignals(project.scheduleData)
   const visibleDelayReasons = schedule.delayReasons.filter(
     (reason) => reason.businessDaysAdded > 0
   )
+  const showBonusBadge = schedule.includesMaguiConnectBonus
+  const bonusTone =
+    schedule.maguiConnectBonusStatus === "RELEASED"
+      ? "bg-emerald-500/10 text-emerald-700"
+      : schedule.maguiConnectBonusStatus === "CANCELLED"
+        ? "bg-rose-500/10 text-rose-700"
+        : "bg-amber-500/10 text-amber-700"
+  const bonusLabel =
+    schedule.maguiConnectBonusStatus === "RELEASED"
+      ? t("magui_connect_bonus_released")
+      : schedule.maguiConnectBonusStatus === "CANCELLED"
+        ? t("magui_connect_bonus_cancelled")
+        : t("magui_connect_bonus_pending")
+  const renewalRiskSignal = renewalSignals.find(
+    (signal) => signal.status === "SUSPENSION_RISK"
+  )
+  const renewalUpcomingSignal = renewalSignals.find(
+    (signal) => signal.status === "UPCOMING"
+  )
+  const renewalTone = renewalRiskSignal
+    ? "bg-rose-500/10 text-rose-700"
+    : renewalUpcomingSignal
+      ? "bg-sky-500/10 text-sky-700"
+      : null
+  const renewalLabel = renewalRiskSignal
+    ? t("renewal_suspension_risk", {
+        kind:
+          renewalRiskSignal.kind === "DOMAIN"
+            ? t("renewal_kind_domain")
+            : t("renewal_kind_hosting"),
+        days: Math.abs(renewalRiskSignal.daysUntilDue),
+      })
+    : renewalUpcomingSignal
+      ? t("renewal_upcoming", {
+          kind:
+            renewalUpcomingSignal.kind === "DOMAIN"
+              ? t("renewal_kind_domain")
+              : t("renewal_kind_hosting"),
+          days: renewalUpcomingSignal.daysUntilDue,
+        })
+      : null
 
   const budgetDisplay = project.budget
     ? formatCurrencyBRLFromCents(project.budget)
@@ -81,6 +124,22 @@ export function ProjectDetailsHeader({ project }: ProjectDetailsHeaderProps) {
                   <UserCircle className="size-4 text-brand-primary/70" />
                   {project.client.name || project.client.email}
                 </span>
+                {showBonusBadge ? (
+                  <span
+                    className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[9px] font-black uppercase tracking-[0.18em] ${bonusTone}`}
+                  >
+                    <Gift className="size-3.5" />
+                    {bonusLabel}
+                  </span>
+                ) : null}
+                {renewalTone && renewalLabel ? (
+                  <span
+                    className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[9px] font-black uppercase tracking-[0.18em] ${renewalTone}`}
+                  >
+                    <Calendar className="size-3.5" />
+                    {renewalLabel}
+                  </span>
+                ) : null}
                 <Button
                   asChild
                   variant="ghost"
@@ -160,6 +219,10 @@ export function ProjectDetailsHeader({ project }: ProjectDetailsHeaderProps) {
               </div>
             </div>
           </div>
+
+          <p className="pl-1 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/45">
+            CRM como canal oficial. WhatsApp apenas como apoio informativo.
+          </p>
         </div>
       </div>
     </div>

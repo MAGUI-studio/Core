@@ -6,6 +6,7 @@ import { CACHE_TTL } from "@/src/config/cache"
 
 import { cacheTags } from "./cache-tags"
 import prisma from "./prisma"
+import { normalizeProjectScheduleData } from "./project-schedule"
 
 export type MaguiConnectAccessState =
   | { mode: "REQUESTABLE" }
@@ -16,18 +17,6 @@ export type MaguiConnectAccessState =
       awaitingPayment: boolean
       awaitingLaunch: boolean
     }
-
-function proposalIncludesComplimentaryConnect(notes?: string | null) {
-  const normalized = (notes ?? "").toLowerCase()
-
-  return (
-    normalized.includes("magui connect") &&
-    (normalized.includes("100% gratuito") ||
-      normalized.includes("100% gratuita") ||
-      normalized.includes("r$ 0,00") ||
-      normalized.includes("sem custo"))
-  )
-}
 
 function normalizeDomain(domain: string) {
   return domain
@@ -304,13 +293,7 @@ export async function getOwnMaguiConnectAccessState(
       id: true,
       name: true,
       status: true,
-      proposals: {
-        select: {
-          id: true,
-          status: true,
-          notes: true,
-        },
-      },
+      scheduleData: true,
       invoices: {
         where: {
           kind: "PROJECT",
@@ -327,13 +310,13 @@ export async function getOwnMaguiConnectAccessState(
     },
   })
 
-  const bonusProject = projects.find((project) =>
-    project.proposals.some(
-      (proposal) =>
-        proposal.status === "ACCEPTED" &&
-        proposalIncludesComplimentaryConnect(proposal.notes)
+  const bonusProject = projects.find((project) => {
+    const schedule = normalizeProjectScheduleData(project.scheduleData)
+    return (
+      schedule.includesMaguiConnectBonus &&
+      schedule.maguiConnectBonusStatus === "PENDING_RELEASE"
     )
-  )
+  })
 
   if (!bonusProject) {
     return { mode: "REQUESTABLE" }

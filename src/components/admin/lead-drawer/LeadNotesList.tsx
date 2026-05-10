@@ -39,7 +39,7 @@ export function LeadNotesList({
   )
 
   return (
-    <div className="relative space-y-8 before:absolute before:left-5 before:top-2 before:h-[calc(100%-16px)] before:w-px before:bg-border/30">
+    <div className="space-y-4.5">
       {sortedNotes.map((note) => {
         const authorName = note.author?.name || "Sistema"
         const initials = authorName
@@ -50,19 +50,17 @@ export function LeadNotesList({
           .slice(0, 2)
 
         return (
-          <div key={note.id} className="relative pl-14">
-            {/* Avatar / Marker */}
-            <div className="absolute left-0 top-0">
-              <Avatar className="size-10 border-2 border-background shadow-sm ring-2 ring-border/10 transition-transform hover:scale-110">
+          <div key={note.id} className="flex items-start gap-3.5">
+            <div className="pt-1">
+              <Avatar className="size-10 border border-border/10">
                 <AvatarFallback className="bg-brand-primary/10 text-[10px] font-black text-brand-primary">
                   {initials || <UserCircle size={20} />}
                 </AvatarFallback>
               </Avatar>
             </div>
 
-            {/* Note Content */}
-            <div className="rounded-[1.5rem] border border-border/40 bg-muted/5 p-6 transition-all hover:bg-muted/10">
-              <div className="mb-3 flex items-center justify-between gap-4">
+            <div className="min-w-0 flex-1 rounded-[1.25rem] bg-muted/[0.03] p-5 sm:p-6">
+              <div className="mb-3.5 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-black uppercase tracking-widest text-foreground/80">
                     {authorName}

@@ -35,9 +35,7 @@ export default async function CreateLeadPage(): Promise<React.JSX.Element> {
         </p>
       </div>
 
-      <div className="rounded-4xl border border-border/40 bg-background/70 p-6 shadow-[0_30px_90px_-50px_rgba(15,23,42,0.28)] backdrop-blur-xl lg:p-8">
-        <CreateLeadForm />
-      </div>
+      <CreateLeadForm />
     </main>
   )
 }

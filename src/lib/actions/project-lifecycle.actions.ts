@@ -16,7 +16,12 @@ import { addDays } from "date-fns"
 import { logger } from "@/src/lib/logger"
 import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
-import { buildInitialProjectScheduleData } from "@/src/lib/project-schedule"
+import {
+  buildInitialProjectScheduleData,
+  buildProjectSchedulePersistence,
+  ensureProjectRenewalSchedule,
+  setProjectOperationalStatus,
+} from "@/src/lib/project-schedule"
 import {
   getAuditOriginLabel,
   getCurrentAppUser,
@@ -26,6 +31,10 @@ import {
   revalidateProjectStatus,
 } from "@/src/lib/revalidate"
 import { getOrCreateStripeCustomer } from "@/src/lib/stripe-actions"
+import {
+  cancelProjectBonusIfNeeded,
+  releaseProjectBonusIfEligible,
+} from "@/src/lib/invoice-fulfillment"
 import { getInternationalizationFeeCents } from "@/src/lib/utils/project-pricing"
 import { parseCurrencyBRLToCents } from "@/src/lib/utils/utils"
 import {
@@ -52,8 +61,6 @@ export async function createProjectAction(
     projectName: formData.get("projectName"),
     projectDescription: formData.get("projectDescription"),
     budget: formData.get("budget"),
-    deadline: formData.get("deadline"),
-    startDate: formData.get("startDate"),
     executionBusinessDays: formData.get("executionBusinessDays"),
     category: formData.get("category"),
     serviceCategoryId: formData.get("serviceCategoryId"),
@@ -101,6 +108,7 @@ export async function createProjectAction(
     const scheduleData = buildInitialProjectScheduleData({
       executionBusinessDays,
     })
+    const schedulePersistence = buildProjectSchedulePersistence(scheduleData)
 
     const project = await prisma.$transaction(async (tx) => {
       const p = await tx.project.create({
@@ -113,9 +121,8 @@ export async function createProjectAction(
           internationalizationFee: normalizedI18nFee || null,
           paymentMethod: data.paymentMethod,
           serviceCategoryId: data.serviceCategoryId || null,
-          deadline: data.deadline ? new Date(data.deadline) : null,
-          startDate: data.startDate ? new Date(data.startDate) : new Date(),
           scheduleData,
+          ...schedulePersistence,
           category: data.category as ProjectCategory,
           clientId: data.clientId,
           status: ProjectStatus.STRATEGY,
@@ -172,7 +179,6 @@ export async function createProjectAction(
               budget: p.budget,
               hasInternationalization: p.hasInternationalization,
               internationalizationFee: p.internationalizationFee,
-              deadline: p.deadline?.toISOString() ?? null,
               scheduleData,
             },
             relatedEntities: [
@@ -338,8 +344,22 @@ export async function updateProjectStatusAction(
           progress: true,
           liveUrl: true,
           repositoryUrl: true,
+          scheduleData: true,
         },
       })
+
+      const nextScheduleData = setProjectOperationalStatus(
+        previousProject?.scheduleData,
+        status as ProjectStatus
+      )
+      const launchAwareScheduleData =
+        status === ProjectStatus.LAUNCHED
+          ? ensureProjectRenewalSchedule(nextScheduleData)
+          : nextScheduleData
+      const schedulePersistence = buildProjectSchedulePersistence(
+        launchAwareScheduleData,
+        status as ProjectStatus
+      )
 
       const project = await tx.project.update({
         where: { id },
@@ -348,6 +368,8 @@ export async function updateProjectStatusAction(
           progress,
           liveUrl: liveUrl || null,
           repositoryUrl: repositoryUrl || null,
+          scheduleData: launchAwareScheduleData,
+          ...schedulePersistence,
         },
         include: {
           client: {
@@ -403,6 +425,70 @@ export async function updateProjectStatusAction(
           ctaPath: getDashboardPath(project.id),
         },
       })
+
+      if (status === ProjectStatus.LAUNCHED) {
+        const renewalSchedule = ensureProjectRenewalSchedule(
+          previousProject?.scheduleData
+        )
+        const domainRenewalDueAt = renewalSchedule.domainRenewalDueAt
+          ? new Date(renewalSchedule.domainRenewalDueAt)
+          : null
+        const hostingRenewalDueAt = renewalSchedule.hostingRenewalDueAt
+          ? new Date(renewalSchedule.hostingRenewalDueAt)
+          : null
+
+        const renewalTasks = [
+          domainRenewalDueAt
+            ? {
+                title: "Cobrar renovacao de dominio",
+                description:
+                  "Confirmar pagamento e continuidade do dominio apos o primeiro ciclo anual.",
+                dueDate: domainRenewalDueAt,
+              }
+            : null,
+          hostingRenewalDueAt
+            ? {
+                title: "Cobrar taxa anual de permanencia",
+                description:
+                  "Formalizar renovacao de hospedagem/manutencao apos o primeiro ciclo anual.",
+                dueDate: hostingRenewalDueAt,
+              }
+            : null,
+        ].filter(Boolean) as Array<{
+          title: string
+          description: string
+          dueDate: Date
+        }>
+
+        for (const task of renewalTasks) {
+          const exists = await tx.actionItem.findFirst({
+            where: {
+              projectId: project.id,
+              title: task.title,
+            },
+            select: { id: true },
+          })
+
+          if (!exists) {
+            await tx.actionItem.create({
+              data: {
+                projectId: project.id,
+                title: task.title,
+                description: task.description,
+                dueDate: task.dueDate,
+                targetRole: "ADMIN",
+                ctaPath: `/admin/projects/${project.id}/financial`,
+              },
+            })
+          }
+        }
+
+        await releaseProjectBonusIfEligible(tx, project.id)
+      }
+
+      if (status === ProjectStatus.ABANDONED) {
+        await cancelProjectBonusIfNeeded(tx, project.id)
+      }
     })
 
     revalidateProjectStatus(id)

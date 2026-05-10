@@ -227,6 +227,27 @@ export function ProjectBriefingTab({
               {renderField(t("steps.competitors.label"), data.competitors, "list")}
             </div>
           </section>
+
+          <section>
+            {renderSectionHeader(
+              <FileText weight="fill" className="size-5" />,
+              "Aceites contratuais"
+            )}
+            <div className="grid grid-cols-1 gap-6 py-2">
+              {renderField(
+                "Responsabilidade sobre ativos enviados",
+                data.assetOwnershipAccepted
+                  ? "Confirmado formalmente no briefing."
+                  : null
+              )}
+              {renderField(
+                "Responsabilidade sobre conteudo e ofertas",
+                data.contentResponsibilityAccepted
+                  ? "Confirmado formalmente no briefing."
+                  : null
+              )}
+            </div>
+          </section>
         </div>
 
         <div className="xl:col-span-4 space-y-8">

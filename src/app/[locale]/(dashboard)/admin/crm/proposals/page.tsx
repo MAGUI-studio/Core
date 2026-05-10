@@ -73,7 +73,7 @@ export default async function ProposalsPage(): Promise<React.JSX.Element> {
         </Button>
       </div>
 
-      <div className="rounded-4xl border border-border/40 bg-background/70 p-6 shadow-[0_30px_90px_-50px_rgba(15,23,42,0.28)] backdrop-blur-xl lg:p-8">
+      <div className="p-0">
         <ProposalsOverviewList proposals={proposals} />
       </div>
     </main>

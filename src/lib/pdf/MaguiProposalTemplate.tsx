@@ -311,7 +311,7 @@ function formatCurrency(value: number, currency = "BRL") {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency,
-  }).format(value)
+  }).format(value / 100)
 }
 
 function splitContent(value?: string | null) {

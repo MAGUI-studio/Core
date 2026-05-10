@@ -32,6 +32,7 @@ import {
 import { Textarea } from "@/src/components/ui/textarea"
 
 import { createLead } from "@/src/lib/actions/crm.actions"
+import { formatCurrencyBRL } from "@/src/lib/utils/utils"
 
 type LeadSourceValue =
   | "REFERRAL"
@@ -124,7 +125,7 @@ export function CreateLeadForm(): React.JSX.Element {
                   name="companyName"
                   required
                   placeholder="Ex: Nome da Empresa Ltda"
-                  className="h-12 rounded-2xl border-border/40 bg-muted/10 pl-12 transition-all focus:bg-muted/20 focus:ring-brand-primary/20"
+                  className="h-12 rounded-2xl border-border/40 bg-transparent pl-12 shadow-none transition-all focus-visible:ring-0"
                 />
               </div>
             </div>
@@ -145,7 +146,7 @@ export function CreateLeadForm(): React.JSX.Element {
                   id="contactName"
                   name="contactName"
                   placeholder="Nome da pessoa"
-                  className="h-12 rounded-2xl border-border/40 bg-muted/10 pl-12 transition-all focus:bg-muted/20"
+                  className="h-12 rounded-2xl border-border/40 bg-transparent pl-12 shadow-none transition-all focus-visible:ring-0"
                 />
               </div>
             </div>
@@ -175,7 +176,7 @@ export function CreateLeadForm(): React.JSX.Element {
                   name="email"
                   type="email"
                   placeholder="contato@empresa.com"
-                  className="h-12 rounded-2xl border-border/40 bg-muted/10 pl-12 transition-all focus:bg-muted/20"
+                  className="h-12 rounded-2xl border-border/40 bg-transparent pl-12 shadow-none transition-all focus-visible:ring-0"
                 />
               </div>
             </div>
@@ -196,7 +197,7 @@ export function CreateLeadForm(): React.JSX.Element {
                   id="phone"
                   name="phone"
                   placeholder="(00) 00000-0000"
-                  className="h-12 rounded-2xl border-border/40 bg-muted/10 pl-12 transition-all focus:bg-muted/20"
+                  className="h-12 rounded-2xl border-border/40 bg-transparent pl-12 shadow-none transition-all focus-visible:ring-0"
                 />
               </div>
             </div>
@@ -225,7 +226,7 @@ export function CreateLeadForm(): React.JSX.Element {
                 >
                   <SelectTrigger
                     size="lg"
-                    className="h-12 w-full rounded-2xl border-border/40 bg-muted/10 pl-12 text-left"
+                    className="h-12 w-full rounded-2xl border-border/40 bg-transparent pl-12 text-left shadow-none"
                   >
                     <SelectValue placeholder={t("form.sourcePlaceholder")} />
                   </SelectTrigger>
@@ -260,7 +261,12 @@ export function CreateLeadForm(): React.JSX.Element {
                   id="value"
                   name="value"
                   placeholder="Ex: R$ 12.000"
-                  className="h-12 rounded-2xl border-border/40 bg-muted/10 pl-12 transition-all focus:bg-muted/20"
+                  className="h-12 rounded-2xl border-border/40 bg-transparent pl-12 shadow-none transition-all focus-visible:ring-0"
+                  onChange={(event) => {
+                    event.currentTarget.value = formatCurrencyBRL(
+                      event.currentTarget.value
+                    )
+                  }}
                 />
               </div>
             </div>
@@ -282,7 +288,7 @@ export function CreateLeadForm(): React.JSX.Element {
                     id="instagram"
                     name="instagram"
                     placeholder={sourceFieldPlaceholder}
-                    className="h-12 rounded-2xl border-border/40 bg-muted/10 pl-12 transition-all focus:bg-muted/20"
+                    className="h-12 rounded-2xl border-border/40 bg-transparent pl-12 shadow-none transition-all focus-visible:ring-0"
                   />
                 </div>
               </div>
@@ -306,7 +312,7 @@ export function CreateLeadForm(): React.JSX.Element {
                     name="website"
                     type="url"
                     placeholder={sourceFieldPlaceholder}
-                    className="h-12 rounded-2xl border-border/40 bg-muted/10 pl-12 transition-all focus:bg-muted/20"
+                    className="h-12 rounded-2xl border-border/40 bg-transparent pl-12 shadow-none transition-all focus-visible:ring-0"
                   />
                 </div>
               </div>
@@ -335,7 +341,7 @@ export function CreateLeadForm(): React.JSX.Element {
                 id="notes"
                 name="notes"
                 placeholder={t("form.notesPlaceholder")}
-                className="min-h-[120px] rounded-2xl border-border/40 bg-muted/10 pl-12 transition-all focus:bg-muted/20"
+                className="min-h-[120px] rounded-2xl border-border/40 bg-transparent pl-12 shadow-none transition-all focus-visible:ring-0"
               />
             </div>
             <p className="pl-1 text-[11px] text-muted-foreground/60">

@@ -325,8 +325,17 @@ exports.Prisma.ProjectScalarFieldEnum = {
   serviceCategoryId: 'serviceCategoryId',
   briefing: 'briefing',
   scheduleData: 'scheduleData',
-  startDate: 'startDate',
-  deadline: 'deadline',
+  executionBusinessDays: 'executionBusinessDays',
+  executionStartAt: 'executionStartAt',
+  briefingRequestedAt: 'briefingRequestedAt',
+  briefingValidatedAt: 'briefingValidatedAt',
+  deliveryForecastAt: 'deliveryForecastAt',
+  suspendedAt: 'suspendedAt',
+  abandonedAt: 'abandonedAt',
+  lastClientDependencyAt: 'lastClientDependencyAt',
+  lastClientResponseAt: 'lastClientResponseAt',
+  clientDelayCalendarDays: 'clientDelayCalendarDays',
+  clientDelayBusinessDays: 'clientDelayBusinessDays',
   liveUrl: 'liveUrl',
   repositoryUrl: 'repositoryUrl',
   clientId: 'clientId',
@@ -763,6 +772,8 @@ exports.ProjectStatus = exports.$Enums.ProjectStatus = {
   DESIGN: 'DESIGN',
   ENGINEERING: 'ENGINEERING',
   QA: 'QA',
+  ON_HOLD_CLIENT: 'ON_HOLD_CLIENT',
+  ABANDONED: 'ABANDONED',
   LAUNCHED: 'LAUNCHED'
 };
 
@@ -863,7 +874,9 @@ exports.ScheduledReminderType = exports.$Enums.ScheduledReminderType = {
   PROJECT_SILENT: 'PROJECT_SILENT',
   ACTION_ITEM_OVERDUE: 'ACTION_ITEM_OVERDUE',
   CLIENT_ON_HOLD: 'CLIENT_ON_HOLD',
-  PROJECT_ABANDONED: 'PROJECT_ABANDONED'
+  PROJECT_ABANDONED: 'PROJECT_ABANDONED',
+  RENEWAL_UPCOMING: 'RENEWAL_UPCOMING',
+  RENEWAL_SUSPENSION_RISK: 'RENEWAL_SUSPENSION_RISK'
 };
 
 exports.ScheduledReminderStatus = exports.$Enums.ScheduledReminderStatus = {

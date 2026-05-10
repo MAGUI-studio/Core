@@ -3,6 +3,7 @@
 import {
   AuditActorType,
   Prisma,
+  ProjectCategory,
   ProposalStatus,
 } from "@/src/generated/client"
 import { z } from "zod"
@@ -15,13 +16,23 @@ import { buildProposalScheduleData } from "@/src/lib/project-schedule"
 import { createAuditLog, getCurrentAppUser } from "@/src/lib/project-governance"
 import { revalidateCrmLead } from "@/src/lib/revalidate"
 
+function convertReaisToCents(value: number) {
+  return Math.round(value * 100)
+}
+
 const CreateProposalSchema = z.object({
   leadId: z.string(),
   title: z.string(),
   currency: z.string().default("BRL"),
   validUntil: z.string().optional(),
   notes: z.string().optional(),
+  projectCategory: z.nativeEnum(ProjectCategory).optional(),
   executionBusinessDays: z.number().int().positive().optional(),
+  includesMaguiConnectBonus: z.boolean().optional(),
+  exposeInPortfolio: z.boolean().optional(),
+  keepFooterCredit: z.boolean().optional(),
+  whiteLabelFeeCents: z.number().int().nonnegative().optional(),
+  annualRenewalFeeCents: z.number().int().nonnegative().optional(),
   items: z.array(
     z.object({
       description: z.string(),
@@ -40,8 +51,12 @@ export async function createProposalAction(
     await protect("admin")
     const actor = await getCurrentAppUser()
     const validated = CreateProposalSchema.parse(data)
+    const itemsInCents = validated.items.map((item) => ({
+      ...item,
+      unitValue: convertReaisToCents(item.unitValue),
+    }))
 
-    const totalValue = validated.items.reduce(
+    const totalValue = itemsInCents.reduce(
       (acc, item) => acc + item.unitValue * item.quantity,
       0
     )
@@ -58,10 +73,17 @@ export async function createProposalAction(
           totalValue,
           notes: validated.notes,
           scheduleData: buildProposalScheduleData({
+            projectCategory: validated.projectCategory ?? null,
             executionBusinessDays: validated.executionBusinessDays ?? null,
+            includesMaguiConnectBonus:
+              validated.includesMaguiConnectBonus ?? false,
+            exposeInPortfolio: validated.exposeInPortfolio ?? true,
+            keepFooterCredit: validated.keepFooterCredit ?? true,
+            whiteLabelFeeCents: validated.whiteLabelFeeCents ?? 20_000,
+            annualRenewalFeeCents: validated.annualRenewalFeeCents ?? 29_700,
           }),
           items: {
-            create: validated.items.map((item) => ({
+            create: itemsInCents.map((item) => ({
               description: item.description,
               longDescription: item.longDescription,
               unitValue: item.unitValue,
@@ -83,10 +105,38 @@ export async function createProposalAction(
           summary: `Nova proposta "${proposal.title}" criada para ${proposal.lead.companyName}.`,
           actorId: actor?.id,
           projectId: null,
-          metadata: { totalValue },
+          metadata: {
+            totalValue,
+            projectCategory: validated.projectCategory ?? null,
+            executionBusinessDays: validated.executionBusinessDays ?? null,
+            includesMaguiConnectBonus:
+              validated.includesMaguiConnectBonus ?? false,
+            exposeInPortfolio: validated.exposeInPortfolio ?? true,
+            keepFooterCredit: validated.keepFooterCredit ?? true,
+            whiteLabelFeeCents: validated.whiteLabelFeeCents ?? 20_000,
+            annualRenewalFeeCents: validated.annualRenewalFeeCents ?? 29_700,
+          },
         },
         tx
       )
+
+      if (validated.includesMaguiConnectBonus) {
+        await createAuditLog(
+          {
+            action: "magui_connect.bonus_marked_on_proposal",
+            entityType: "Proposal",
+            entityId: proposal.id,
+            summary: `Bonus MAGUI Connect marcado na proposta "${proposal.title}".`,
+            actorId: actor?.id,
+            projectId: null,
+            metadata: {
+              leadId: validated.leadId,
+              executionBusinessDays: validated.executionBusinessDays ?? null,
+            },
+          },
+          tx
+        )
+      }
 
       return proposal
     })

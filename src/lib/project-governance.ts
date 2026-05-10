@@ -96,13 +96,15 @@ async function upsertUserFromClerk(clerkUserId: string) {
   throw new Error("Unable to sync Clerk user after retries")
 }
 
-function splitClientName(name: string): {
+function splitClientName(
+  name: string
+): {
   firstName: string
-  lastName: string
+  lastName?: string
 } {
   const parts = name.trim().split(/\s+/).filter(Boolean)
   const firstName = parts.shift() ?? "Cliente"
-  const lastName = parts.join(" ") || "MAGUI"
+  const lastName = parts.join(" ") || undefined
   return { firstName, lastName }
 }
 
@@ -111,6 +113,8 @@ export async function findOrCreateClientFromEmail(
     email: string
     name?: string | null
     companyName?: string | null
+    username?: string | null
+    password?: string | null
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tx: any = prisma
@@ -180,10 +184,17 @@ export async function findOrCreateClientFromEmail(
   // Path 3: Create new Clerk user and local user
   const displayName = input.name?.trim() || input.companyName?.trim() || email
   const { firstName, lastName } = splitClientName(displayName)
+
+  if (!input.username?.trim() || !input.password?.trim()) {
+    throw new Error("Username and password are required for new client access")
+  }
+
   const clerkUser = await client.users.createUser({
     emailAddress: [email],
+    username: input.username.trim(),
     firstName,
-    lastName,
+    ...(lastName ? { lastName } : {}),
+    password: input.password.trim(),
     publicMetadata: { role: "client" },
   })
 

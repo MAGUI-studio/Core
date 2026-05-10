@@ -11,6 +11,7 @@ import {
   FolderOpen,
   Globe,
   Plus,
+  SlidersHorizontal,
 } from "@phosphor-icons/react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
@@ -32,6 +33,8 @@ import {
 } from "@/src/components/ui/tabs"
 
 import { MaguiConnectAdminView } from "@/src/components/admin/MaguiConnectAdminView"
+import { ClientPasswordResetCard } from "@/src/components/admin/ClientPasswordResetCard"
+import { ClientProfileForm } from "@/src/components/admin/ClientProfileForm"
 import { AddInvoiceForm } from "@/src/components/admin/financial/AddInvoiceForm"
 
 import { formatCurrencyBRLFromCents } from "@/src/lib/utils/utils"
@@ -40,6 +43,15 @@ interface ClientTabsProps {
   userId: string
   localUserId: string
   clientFullName: string
+  clerkUserId: string
+  clientFirstName: string
+  clientLastName: string
+  clientUsername: string
+  clientEmail: string
+  clientCompanyName: string
+  clientPhone: string
+  clientPosition: string
+  clientTaxId: string
   standaloneInvoices: Prisma.InvoiceGetPayload<{
     include: {
       installments: true
@@ -64,6 +76,15 @@ export function ClientTabs({
   userId,
   localUserId,
   clientFullName,
+  clerkUserId,
+  clientFirstName,
+  clientLastName,
+  clientUsername,
+  clientEmail,
+  clientCompanyName,
+  clientPhone,
+  clientPosition,
+  clientTaxId,
   standaloneInvoices,
   projects,
   maguiConnectProfile,
@@ -104,6 +125,13 @@ export function ClientTabs({
           >
             <FolderOpen weight="duotone" className="mr-2 size-4" />
             {t("tabs.projects")}
+          </TabsTrigger>
+          <TabsTrigger
+            value="settings"
+            className="whitespace-nowrap px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-muted/5 data-[state=active]:bg-transparent"
+          >
+            <SlidersHorizontal weight="duotone" className="mr-2 size-4" />
+            Configuracoes
           </TabsTrigger>
         </TabsList>
       </div>
@@ -285,6 +313,25 @@ export function ClientTabs({
             )}
           </CardContent>
         </Card>
+      </TabsContent>
+
+      <TabsContent value="settings" className="mt-0 space-y-10 focus-visible:outline-none">
+        <ClientProfileForm
+          clerkUserId={clerkUserId}
+          firstName={clientFirstName}
+          lastName={clientLastName}
+          username={clientUsername}
+          email={clientEmail}
+          companyName={clientCompanyName}
+          phone={clientPhone}
+          position={clientPosition}
+          taxId={clientTaxId}
+        />
+
+        <ClientPasswordResetCard
+          clerkUserId={clerkUserId}
+          username={clientUsername || null}
+        />
       </TabsContent>
     </Tabs>
   )

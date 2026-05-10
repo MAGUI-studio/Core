@@ -5,6 +5,7 @@ import * as React from "react"
 import { useTranslations } from "next-intl"
 
 import { useRouter } from "@/src/i18n/navigation"
+import { ProjectCategory } from "@/src/generated/client"
 import {
   Calculator,
   ClockCountdown,
@@ -293,6 +294,11 @@ export function ProposalBuilderForm({
   }
 
   const [includeConnectBonus, setIncludeConnectBonus] = React.useState(false)
+  const [exposeInPortfolio, setExposeInPortfolio] = React.useState(true)
+  const [keepFooterCredit, setKeepFooterCredit] = React.useState(true)
+  const [whiteLabelFeeValue, setWhiteLabelFeeValue] = React.useState("R$ 200,00")
+  const [annualRenewalFeeValue, setAnnualRenewalFeeValue] =
+    React.useState("R$ 297,00")
 
   const buildProposalNotes = () => {
     const sections = [
@@ -362,7 +368,20 @@ export function ProposalBuilderForm({
       currency: currency,
       validUntil: validUntil || undefined,
       notes: buildProposalNotes() || undefined,
+      projectCategory:
+        projectCategory === "landing-page"
+          ? ProjectCategory.LANDING_PAGE
+          : projectCategory === "institucional"
+            ? ProjectCategory.INSTITUTIONAL_SITE
+            : undefined,
       executionBusinessDays,
+      includesMaguiConnectBonus: includeConnectBonus,
+      exposeInPortfolio,
+      keepFooterCredit,
+      whiteLabelFeeCents: Math.round(parseCurrencyInput(whiteLabelFeeValue) * 100),
+      annualRenewalFeeCents: Math.round(
+        parseCurrencyInput(annualRenewalFeeValue) * 100
+      ),
       items: items.map((item, order) => ({
         ...item,
         description: item.description.trim(),
@@ -807,6 +826,7 @@ export function ProposalBuilderForm({
               <Switch
                 checked={includeConnectBonus}
                 onCheckedChange={setIncludeConnectBonus}
+                className="data-checked:bg-brand-primary data-unchecked:bg-slate-300 dark:data-unchecked:bg-input/80"
               />
             </div>
 
@@ -832,16 +852,79 @@ export function ProposalBuilderForm({
             )}
           </div>
 
-          <div className="space-y-3 border-t border-border/20 pt-6">
+          <div className="space-y-4 border-t border-border/20 pt-6">
             <div className="flex items-center gap-3">
-              <Calculator className="size-5 text-brand-primary" weight="bold" />
+              <ShieldCheck className="size-5 text-brand-primary" weight="bold" />
               <p className="text-[10px] font-black uppercase tracking-[0.22em] text-muted-foreground/55">
-                {t("builder.commercialReadingTitle")}
+                Governanca comercial
               </p>
             </div>
-            <p className="text-sm leading-relaxed text-muted-foreground/70">
-              {t("builder.commercialReadingHelper")}
-            </p>
+
+            <div className="space-y-4 rounded-3xl border border-border/20 bg-muted/5 p-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-widest text-foreground">
+                    Expor no portfolio
+                  </p>
+                  <p className="text-[11px] leading-relaxed text-muted-foreground/70">
+                    Autoriza a MAGUI.studio a mostrar o projeto em portfolio e materiais comerciais.
+                  </p>
+                </div>
+                <Switch
+                  checked={exposeInPortfolio}
+                  onCheckedChange={setExposeInPortfolio}
+                  className="data-checked:bg-brand-primary data-unchecked:bg-slate-300 dark:data-unchecked:bg-input/80"
+                />
+              </div>
+
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-widest text-foreground">
+                    Manter credito no rodape
+                  </p>
+                  <p className="text-[11px] leading-relaxed text-muted-foreground/70">
+                    Se desligado, a proposta assume cenário de white label com taxa adicional.
+                  </p>
+                </div>
+                <Switch
+                  checked={keepFooterCredit}
+                  onCheckedChange={setKeepFooterCredit}
+                  className="data-checked:bg-brand-primary data-unchecked:bg-slate-300 dark:data-unchecked:bg-input/80"
+                />
+              </div>
+
+              {!keepFooterCredit && (
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                    Taxa de white label
+                  </Label>
+                  <Input
+                    value={whiteLabelFeeValue}
+                    onChange={(e) =>
+                      setWhiteLabelFeeValue(
+                        formatCurrencyInput(parseCurrencyInput(e.target.value), currency)
+                      )
+                    }
+                    className="h-12 rounded-2xl border-border/40 bg-background/60 font-mono font-bold"
+                  />
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                  Taxa anual de permanencia
+                </Label>
+                <Input
+                  value={annualRenewalFeeValue}
+                  onChange={(e) =>
+                    setAnnualRenewalFeeValue(
+                      formatCurrencyInput(parseCurrencyInput(e.target.value), currency)
+                    )
+                  }
+                  className="h-12 rounded-2xl border-border/40 bg-background/60 font-mono font-bold"
+                />
+              </div>
+            </div>
           </div>
         </aside>
       </section>

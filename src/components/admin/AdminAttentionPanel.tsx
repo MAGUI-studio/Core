@@ -33,13 +33,13 @@ export interface AdminAttentionItem {
         pathname: "/admin/projects/[id]" | "/admin/crm"
         params?: { id: string }
       }
-  kind: "approval" | "deadline" | "lead" | "project" | "task"
+  kind: "approval" | "forecast" | "lead" | "project" | "task"
   priority: "high" | "medium"
 }
 
 const kindIcon = {
   approval: CheckCircle,
-  deadline: ClockCountdown,
+  forecast: ClockCountdown,
   lead: ChartLineUp,
   project: FolderOpen,
   task: NotePencil,
@@ -66,7 +66,7 @@ export function AdminAttentionPanel({
 
   const kindLabels: Record<AdminAttentionItem["kind"], string> = {
     approval: t("kinds.approval"),
-    deadline: t("kinds.deadline"),
+    forecast: t("kinds.forecast"),
     lead: t("kinds.lead"),
     project: t("kinds.project"),
     task: t("kinds.task"),
@@ -96,7 +96,7 @@ export function AdminAttentionPanel({
         },
         {
           approval: 0,
-          deadline: 0,
+          forecast: 0,
           lead: 0,
           project: 0,
           task: 0,

@@ -9,8 +9,9 @@ import { Button } from "@/src/components/ui/button"
 
 import { ProposalBuilderForm } from "@/src/components/admin/proposals/ProposalBuilderForm"
 
-import { getLeads } from "@/src/lib/crm-data"
+import { LeadStatus } from "@/src/generated/client"
 import { protectAdmin } from "@/src/lib/permissions"
+import prisma from "@/src/lib/prisma"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
@@ -30,8 +31,24 @@ export default async function CreateProposalPage({
   await protectAdmin()
 
   const t = await getTranslations("Admin.crm")
-  const leads = await getLeads(1, 500)
+  const leads = await prisma.lead.findMany({
+    where: {
+      status: {
+        not: LeadStatus.DESCARTADO,
+      },
+    },
+    select: {
+      id: true,
+      companyName: true,
+      createdAt: true,
+    },
+    orderBy: [{ createdAt: "desc" }],
+  })
   const resolvedSearchParams = searchParams ? await searchParams : undefined
+
+  const uniqueLeads = Array.from(
+    new Map(leads.map((lead) => [lead.id, lead])).values()
+  )
 
   return (
     <main className="relative flex flex-col gap-10 overflow-hidden bg-background/50 p-6 lg:p-12">
@@ -70,7 +87,7 @@ export default async function CreateProposalPage({
 
       <div className="w-full">
         <ProposalBuilderForm
-          leads={leads.map((lead) => ({
+          leads={uniqueLeads.map((lead) => ({
             id: lead.id,
             companyName: lead.companyName,
           }))}

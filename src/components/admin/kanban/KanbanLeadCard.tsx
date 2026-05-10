@@ -3,7 +3,6 @@
 import * as React from "react"
 
 import { useTranslations } from "next-intl"
-import { useRouter } from "next/navigation"
 
 import { LeadStatus } from "@/src/generated/client"
 import { Lead, MessageTemplate } from "@/src/types/crm"
@@ -39,7 +38,6 @@ export function KanbanLeadCard({
   onLeadDeleted,
 }: KanbanLeadCardProps) {
   const t = useTranslations("Admin.crm")
-  const router = useRouter()
   const [isMoving, setIsMoving] = React.useState(false)
 
   // Status excluding CONVERTIDO for manual movement restriction
@@ -67,8 +65,12 @@ export function KanbanLeadCard({
     const result = await updateLeadStatus(lead.id, nextStatus)
 
     if (result.success) {
+      onLeadUpdated({
+        ...lead,
+        status: nextStatus,
+        updatedAt: new Date().toISOString(),
+      })
       toast.success(`Lead movido para ${t(`status.${nextStatus}`)}`)
-      router.refresh()
     } else {
       toast.error(result.error || "Erro ao mover lead")
     }

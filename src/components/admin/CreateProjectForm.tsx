@@ -102,8 +102,6 @@ export function CreateProjectForm({
     PaymentMethod.FIFTY_FIFTY
   )
 
-  const [deadline, setDeadline] = React.useState<Date | undefined>(undefined)
-  const [startDate, setStartDate] = React.useState<Date | undefined>(new Date())
   const [executionBusinessDays, setExecutionBusinessDays] =
     React.useState<number>(20)
   const [budgetBaseValue, setBudgetBaseValue] = React.useState("")
@@ -222,12 +220,6 @@ export function CreateProjectForm({
         inst.id === id ? { ...inst, [key]: value } : inst
       )
     )
-  }
-
-  const setDeadlineByDays = (days: number) => {
-    const date = new Date()
-    date.setDate(date.getDate() + days)
-    setDeadline(date)
   }
 
   const [state, formAction, isPending] = React.useActionState(
@@ -530,7 +522,6 @@ export function CreateProjectForm({
                           )}
                         </p>
                       </div>
-                      {/* Custos de terceiros removido: nao precisamos dessa info no fluxo */}
                     </div>
                   </div>
                 </div>
@@ -877,100 +868,6 @@ export function CreateProjectForm({
             </Field>
           </div>
 
-          <div className="hidden grid grid-cols-1 gap-8 md:grid-cols-2 mt-12">
-            <Field>
-              <FieldLabel className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">
-                Data de InÃ­cio da OperaÃ§Ã£o
-              </FieldLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="h-16 justify-start text-left font-sans font-bold rounded-3xl border-border/40 bg-muted/10 px-6 transition-all hover:bg-muted/20"
-                  >
-                    <CalendarIcon
-                      className="mr-3 size-5 text-brand-primary/60"
-                      weight="bold"
-                    />
-                    {startDate ? (
-                      format(startDate, "PPP", { locale: ptBR })
-                    ) : (
-                      <span className="font-medium opacity-30">
-                        Definir inÃ­cio
-                      </span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto p-0 rounded-3xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
-                  align="start"
-                >
-                  <Calendar
-                    mode="single"
-                    selected={startDate}
-                    onSelect={setStartDate}
-                    initialFocus
-                    locale={ptBR}
-                  />
-                </PopoverContent>
-              </Popover>
-            </Field>
-
-            <Field>
-              <FieldLabel className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">
-                {t("deadline")}
-              </FieldLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "h-16 justify-start text-left font-sans font-bold rounded-3xl border-border/40 bg-muted/10 px-6 transition-all hover:bg-muted/20",
-                      !deadline && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon
-                      className="mr-3 size-5 text-brand-primary/60"
-                      weight="bold"
-                    />
-                    {deadline ? (
-                      format(deadline, "PPP", { locale: ptBR })
-                    ) : (
-                      <span className="font-medium opacity-30">
-                        {t("deadline_placeholder")}
-                      </span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto p-0 rounded-3xl border-border/40 bg-background/95 backdrop-blur-xl shadow-2xl"
-                  align="start"
-                >
-                  <Calendar
-                    mode="single"
-                    selected={deadline}
-                    onSelect={setDeadline}
-                    initialFocus
-                    locale={ptBR}
-                  />
-                </PopoverContent>
-              </Popover>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                {[7, 14, 21, 30, 45, 60].map((days) => (
-                  <Badge
-                    key={days}
-                    variant="outline"
-                    className="cursor-pointer border-border/40 bg-muted/5 px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all hover:border-brand-primary/40 hover:bg-brand-primary/5 hover:text-brand-primary rounded-full"
-                    onClick={() => setDeadlineByDays(days)}
-                  >
-                    {days} dias
-                  </Badge>
-                ))}
-              </div>
-            </Field>
-          </div>
-
           <Field className="mt-12">
             <FieldLabel className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">
               {t("projectDescription")}
@@ -1042,3 +939,6 @@ export function CreateProjectForm({
     </form>
   )
 }
+
+
+

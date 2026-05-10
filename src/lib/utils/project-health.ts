@@ -4,7 +4,6 @@ import { ProjectStatus } from "@/src/generated/client"
 export interface ProjectHealthInput {
   status: ProjectStatus
   progress: number
-  deadline: Date | string | null
   scheduleData?: unknown
   updatedAt: Date | string
   lastUpdateAt: Date | string | null
@@ -56,7 +55,7 @@ export function getProjectHealth(
   }
 
   const schedule = buildProjectScheduleView(input.scheduleData, input.status)
-  const forecastDate = schedule.currentForecastDate ?? (input.deadline ? new Date(input.deadline) : null)
+  const forecastDate = schedule.currentForecastDate
 
   if (schedule.executionState === "ON_HOLD_CLIENT") {
     score -= 18

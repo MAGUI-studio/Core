@@ -21,8 +21,6 @@ export const createProjectSchema = z.object({
   projectName: z.string().min(2, "Nome do projeto ? obrigat?rio"),
   projectDescription: optionalFormString,
   budget: optionalFormString,
-  deadline: optionalFormString,
-  startDate: optionalFormString,
   executionBusinessDays: optionalFormString,
   category: z.nativeEnum(ProjectCategory),
   serviceCategoryId: optionalFormString,

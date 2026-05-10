@@ -190,7 +190,6 @@ export async function getClientProjectOverview(id: string, userId: string) {
       description: true,
       status: true,
       progress: true,
-      deadline: true,
       scheduleData: true,
       updates: {
         where: {

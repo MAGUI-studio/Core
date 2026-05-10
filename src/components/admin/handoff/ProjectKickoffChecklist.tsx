@@ -29,12 +29,12 @@ export function ProjectKickoffChecklist({
       key: "contract",
     },
     {
-      label: "Briefing Preenchido",
+      label: "Briefing validado",
       completed: kickoff.briefingCompleted,
       key: "briefing",
     },
     {
-      label: "Logos e Ativos Enviados",
+      label: "Ativos minimos recebidos",
       completed: kickoff.brandAssetsSent,
       key: "assets",
     },

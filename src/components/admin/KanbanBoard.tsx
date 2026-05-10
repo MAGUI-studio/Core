@@ -31,10 +31,28 @@ export function KanbanBoard({
 
   // Local state for basic filtering/mapping without DnD complexity
   const [boardLeads, setBoardLeads] = React.useState(leads)
+  const [deletedLeadIds, setDeletedLeadIds] = React.useState<Set<string>>(
+    () => new Set()
+  )
 
   React.useEffect(() => {
-    setBoardLeads(leads)
-  }, [leads])
+    setBoardLeads((current) => {
+      const currentMap = new Map(current.map((lead) => [lead.id, lead]))
+
+      return leads
+        .filter((serverLead) => !deletedLeadIds.has(serverLead.id))
+        .map((serverLead) => {
+          const localLead = currentMap.get(serverLead.id)
+
+          if (!localLead) return serverLead
+
+          const serverUpdatedAt = new Date(serverLead.updatedAt).getTime()
+          const localUpdatedAt = new Date(localLead.updatedAt).getTime()
+
+          return localUpdatedAt > serverUpdatedAt ? localLead : serverLead
+        })
+    })
+  }, [deletedLeadIds, leads])
 
   const columnMap = React.useMemo(() => {
     return CRM_STATUS_ORDER.reduce(
@@ -82,9 +100,11 @@ export function KanbanBoard({
                   curr.map((l) => (l.id === next.id ? next : l))
                 )
               }
-              onLeadDeleted={(id) =>
+              onLeadDeleted={(id) => {
+                setDeletedLeadIds((current) => new Set(current).add(id))
+                setSelectedLeadId((current) => (current === id ? null : current))
                 setBoardLeads((curr) => curr.filter((l) => l.id !== id))
-              }
+              }}
             />
           )
         )}

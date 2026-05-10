@@ -24,8 +24,6 @@ export interface DashboardProject {
   internationalizationFee: number | null
   paymentMethod: PaymentMethod
   serviceCategoryId: string | null
-  deadline: Date | null
-  startDate: Date
   scheduleData?: unknown
   liveUrl: string | null
   repositoryUrl: string | null

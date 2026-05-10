@@ -10,6 +10,7 @@ import {
 } from "@/src/generated/client"
 
 import { triggerProductEvent } from "@/src/lib/email/events"
+import { cancelProjectBonusIfNeeded } from "@/src/lib/invoice-fulfillment"
 import { logger } from "@/src/lib/logger"
 import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
@@ -24,8 +25,10 @@ import {
 } from "@/src/lib/project-governance"
 import {
   buildProjectScheduleView,
+  buildProjectSchedulePersistence,
   clearPendingClientApproval,
   registerPendingClientApproval,
+  resolveProjectStatusFromSchedule,
   resolvePendingClientApproval,
 } from "@/src/lib/project-schedule"
 import { revalidateProjectTimeline } from "@/src/lib/revalidate"
@@ -169,6 +172,21 @@ export async function addProjectTimelineAction(
             nextSchedule,
             currentProject.status
           )
+          const schedulePersistence = buildProjectSchedulePersistence(
+            {
+              ...nextSchedule,
+              clientDelayCalendarDays: scheduleView.clientDelayCalendarDays,
+              clientDelayBusinessDays: scheduleView.clientDelayBusinessDays,
+              currentForecastDate: scheduleView.currentForecastDate
+                ? scheduleView.currentForecastDate.toISOString()
+                : null,
+            },
+            currentProject.status
+          )
+          const resolvedStatus = resolveProjectStatusFromSchedule(
+            nextSchedule,
+            currentProject.status
+          )
 
           await tx.project.update({
             where: { id: projectId },
@@ -181,9 +199,14 @@ export async function addProjectTimelineAction(
                   ? scheduleView.currentForecastDate.toISOString()
                   : null,
               },
-              deadline: scheduleView.currentForecastDate,
+              ...schedulePersistence,
+              status: resolvedStatus,
             },
           })
+
+          if (resolvedStatus === "ABANDONED") {
+            await cancelProjectBonusIfNeeded(tx, projectId)
+          }
         }
       }
 
@@ -334,6 +357,21 @@ export async function approveUpdateAction(
           nextSchedule,
           currentProject.status
         )
+        const schedulePersistence = buildProjectSchedulePersistence(
+          {
+            ...nextSchedule,
+            clientDelayCalendarDays: scheduleView.clientDelayCalendarDays,
+            clientDelayBusinessDays: scheduleView.clientDelayBusinessDays,
+            currentForecastDate: scheduleView.currentForecastDate
+              ? scheduleView.currentForecastDate.toISOString()
+              : null,
+          },
+          currentProject.status
+        )
+        const resolvedStatus = resolveProjectStatusFromSchedule(
+          nextSchedule,
+          currentProject.status
+        )
 
         await tx.project.update({
           where: { id: projectId },
@@ -346,9 +384,14 @@ export async function approveUpdateAction(
                 ? scheduleView.currentForecastDate.toISOString()
                 : null,
             },
-            deadline: scheduleView.currentForecastDate,
+            ...schedulePersistence,
+            status: resolvedStatus,
           },
         })
+
+        if (resolvedStatus === "ABANDONED") {
+          await cancelProjectBonusIfNeeded(tx, projectId)
+        }
       }
 
       await createAuditLog(
@@ -472,6 +515,21 @@ export async function rejectUpdateAction(input: {
           nextSchedule,
           currentProject.status
         )
+        const schedulePersistence = buildProjectSchedulePersistence(
+          {
+            ...nextSchedule,
+            clientDelayCalendarDays: scheduleView.clientDelayCalendarDays,
+            clientDelayBusinessDays: scheduleView.clientDelayBusinessDays,
+            currentForecastDate: scheduleView.currentForecastDate
+              ? scheduleView.currentForecastDate.toISOString()
+              : null,
+          },
+          currentProject.status
+        )
+        const resolvedStatus = resolveProjectStatusFromSchedule(
+          nextSchedule,
+          currentProject.status
+        )
 
         await tx.project.update({
           where: { id: validated.data.projectId },
@@ -484,9 +542,14 @@ export async function rejectUpdateAction(input: {
                 ? scheduleView.currentForecastDate.toISOString()
                 : null,
             },
-            deadline: scheduleView.currentForecastDate,
+            ...schedulePersistence,
+            status: resolvedStatus,
           },
         })
+
+        if (resolvedStatus === "ABANDONED") {
+          await cancelProjectBonusIfNeeded(tx, validated.data.projectId)
+        }
       }
 
       await createAuditLog(
@@ -589,6 +652,21 @@ export async function deleteProjectTimelineAction(
           nextSchedule,
           currentProject.status
         )
+        const schedulePersistence = buildProjectSchedulePersistence(
+          {
+            ...nextSchedule,
+            clientDelayCalendarDays: scheduleView.clientDelayCalendarDays,
+            clientDelayBusinessDays: scheduleView.clientDelayBusinessDays,
+            currentForecastDate: scheduleView.currentForecastDate
+              ? scheduleView.currentForecastDate.toISOString()
+              : null,
+          },
+          currentProject.status
+        )
+        const resolvedStatus = resolveProjectStatusFromSchedule(
+          nextSchedule,
+          currentProject.status
+        )
 
         await tx.project.update({
           where: { id: projectId },
@@ -601,9 +679,14 @@ export async function deleteProjectTimelineAction(
                 ? scheduleView.currentForecastDate.toISOString()
                 : null,
             },
-            deadline: scheduleView.currentForecastDate,
+            ...schedulePersistence,
+            status: resolvedStatus,
           },
         })
+
+        if (resolvedStatus === "ABANDONED") {
+          await cancelProjectBonusIfNeeded(tx, projectId)
+        }
       }
 
       const actor = await getCurrentAppUser()
@@ -636,5 +719,111 @@ export async function deleteProjectTimelineAction(
   } catch (error) {
     logger.error({ error }, "Delete Timeline Error:")
     return { error: "Erro ao remover atualização da timeline" }
+  }
+}
+
+export async function requestScopeChangeAction(input: {
+  updateId: string
+  projectId: string
+  justification: string
+}): Promise<{ error?: string; success?: boolean }> {
+  try {
+    const { user, project } = await ensureProjectAccess(input.projectId, [
+      UserRole.CLIENT,
+      UserRole.ADMIN,
+      UserRole.MEMBER,
+    ])
+
+    if (input.justification.trim().length < 10) {
+      return { error: "Descreva o novo escopo com mais contexto." }
+    }
+
+    await prisma.$transaction(async (tx) => {
+      const update = await tx.update.findUnique({
+        where: { id: input.updateId },
+        select: { id: true, title: true, approvalStatus: true, requiresApproval: true },
+      })
+
+      if (!update) {
+        throw new Error("Update not found")
+      }
+
+      if (!update.requiresApproval || update.approvalStatus !== "APPROVED") {
+        throw new Error(
+          "Novo escopo so pode ser solicitado depois de uma aprovacao formal."
+        )
+      }
+
+      const existingTask = await tx.actionItem.findFirst({
+        where: {
+          projectId: input.projectId,
+          title: `Avaliar novo escopo: ${update.title}`,
+          status: "PENDING",
+        },
+        select: { id: true },
+      })
+
+      if (!existingTask) {
+        await tx.actionItem.create({
+          data: {
+            projectId: input.projectId,
+            title: `Avaliar novo escopo: ${update.title}`,
+            description: input.justification.trim(),
+            targetRole: "ADMIN",
+            ctaPath: getAdminProjectPath(input.projectId),
+          },
+        })
+      }
+
+      await createAuditLog(
+        {
+          action: "project.scope_change_requested",
+          entityType: "Update",
+          entityId: input.updateId,
+          projectId: input.projectId,
+          actorId: user.id,
+          actorType: AuditActorType.USER,
+          summary: `Solicitacao de novo escopo registrada para "${update.title}".`,
+          metadata: {
+            origin: getAuditOriginLabel({
+              actorType: AuditActorType.USER,
+              role: user.role,
+            }),
+            justification: input.justification.trim(),
+          },
+        },
+        tx
+      )
+
+      const admins = await getInternalNotificationRecipients()
+      await createNotificationsMany(
+        admins.map((admin) => ({
+          userId: admin.id,
+          projectId: input.projectId,
+          type: NotificationType.OPERATIONAL_REMINDER,
+          title: "Novo escopo solicitado",
+          message: `${project.client.name ?? "O cliente"} solicitou reavaliacao de escopo apos aprovacao em "${update.title}".`,
+          ctaPath: getAdminProjectPath(input.projectId),
+          metadata: {
+            updateId: input.updateId,
+            justification: input.justification.trim(),
+          },
+        })),
+        tx
+      )
+    })
+
+    revalidateProjectTimeline(input.projectId)
+    revalidatePath(`/admin/projects/${input.projectId}`)
+    revalidatePath("/")
+    return { success: true }
+  } catch (error) {
+    logger.error({ error }, "Request Scope Change Error:")
+    return {
+      error:
+        error instanceof Error
+          ? error.message
+          : "Erro ao registrar novo escopo",
+    }
   }
 }

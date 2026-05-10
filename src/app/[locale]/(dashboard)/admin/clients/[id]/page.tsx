@@ -15,12 +15,6 @@ import {
 
 import { Badge } from "@/src/components/ui/badge"
 import { Button } from "@/src/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card"
 
 import { ClientTabs } from "@/src/components/admin/ClientTabs"
 
@@ -102,11 +96,11 @@ export default async function ClientDetailsPage({
   const role = (clerkUser.publicMetadata.role as string) || "client"
 
   return (
-    <main className="relative flex flex-col gap-10 bg-background/50 p-6 lg:p-12 overflow-hidden">
-      <div className="absolute top-0 right-0 -z-10 size-96 translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-primary/5 blur-3xl opacity-50" />
+    <main className="relative flex flex-col gap-12 overflow-hidden bg-background/50 px-6 py-7 lg:px-12 lg:py-10">
+      <div className="absolute right-0 top-0 -z-10 size-96 translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-primary/5 blur-3xl opacity-50" />
       <div className="absolute bottom-0 left-0 -z-10 size-96 -translate-x-1/2 translate-y-1/2 rounded-full bg-brand-primary/10 blur-3xl opacity-30" />
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-7">
         <Button
           asChild
           variant="ghost"
@@ -118,9 +112,9 @@ export default async function ClientDetailsPage({
           </Link>
         </Button>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <div className="size-2 rounded-full bg-brand-primary animate-pulse" />
+            <div className="size-2 animate-pulse rounded-full bg-brand-primary" />
             <p className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-primary">
               {t("eyebrow")}
             </p>
@@ -129,20 +123,17 @@ export default async function ClientDetailsPage({
             {fullName}
           </h1>
           <p className="max-w-xl text-sm font-medium leading-relaxed text-muted-foreground/80">
-            Visão consolidada do cadastro, papel de acesso e projetos
-            vinculados.
+            Visao consolidada do cadastro, papel de acesso e projetos vinculados.
           </p>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card className="rounded-[1.75rem] border-border/40 bg-muted/10 backdrop-blur-md">
-          <CardHeader>
-            <CardTitle className="text-[10px] font-black uppercase tracking-[0.24em] text-muted-foreground/55">
-              Identificação
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-3">
+      <div className="grid gap-10 md:grid-cols-3">
+        <section className="grid gap-5">
+          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-muted-foreground/55">
+            Identificacao
+          </p>
+          <div className="grid gap-4">
             <div className="flex items-center gap-3">
               <UserCircle className="size-5 text-brand-primary" />
               <span className="text-sm font-semibold text-foreground/85">
@@ -155,21 +146,19 @@ export default async function ClientDetailsPage({
                 {email}
               </span>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
 
-        <Card className="rounded-[1.75rem] border-border/40 bg-muted/10 backdrop-blur-md">
-          <CardHeader>
-            <CardTitle className="text-[10px] font-black uppercase tracking-[0.24em] text-muted-foreground/55">
-              Permissão
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-3">
+        <section className="grid gap-5">
+          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-muted-foreground/55">
+            Permissao
+          </p>
+          <div className="grid gap-4">
             <div className="flex items-center gap-3">
               <ShieldCheck className="size-5 text-brand-primary" />
               <Badge
                 variant="secondary"
-                className="bg-brand-primary/5 text-brand-primary border-brand-primary/20 text-[9px] font-black uppercase tracking-widest py-1 px-3"
+                className="border-brand-primary/15 bg-brand-primary/5 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-brand-primary"
               >
                 {t(`roles.${role === "admin" ? "admin" : "client"}`)}
               </Badge>
@@ -177,16 +166,14 @@ export default async function ClientDetailsPage({
             <p className="text-sm text-muted-foreground/75">
               Username: @{clerkUser.username || "client"}
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
 
-        <Card className="rounded-[1.75rem] border-border/40 bg-muted/10 backdrop-blur-md">
-          <CardHeader>
-            <CardTitle className="text-[10px] font-black uppercase tracking-[0.24em] text-muted-foreground/55">
-              Projetos
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-3">
+        <section className="grid gap-5">
+          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-muted-foreground/55">
+            Projetos
+          </p>
+          <div className="grid gap-4">
             <div className="flex items-center gap-3">
               <FolderOpen className="size-5 text-brand-primary" />
               <span className="text-sm font-semibold text-foreground/85">
@@ -196,8 +183,8 @@ export default async function ClientDetailsPage({
             <p className="text-sm text-muted-foreground/75">
               {activeProjects.length} em andamento
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
       </div>
 
       {localUser ? (
@@ -205,6 +192,15 @@ export default async function ClientDetailsPage({
           userId={id}
           localUserId={localUser.id}
           clientFullName={fullName}
+          clerkUserId={clerkUser.id}
+          clientFirstName={clerkUser.firstName ?? ""}
+          clientLastName={clerkUser.lastName ?? ""}
+          clientUsername={clerkUser.username ?? ""}
+          clientEmail={email === "Sem e-mail" ? "" : email}
+          clientCompanyName={localUser.companyName ?? ""}
+          clientPhone={localUser.phone ?? ""}
+          clientPosition={localUser.position ?? ""}
+          clientTaxId={localUser.taxId ?? ""}
           standaloneInvoices={standaloneInvoices}
           projects={projects}
           maguiConnectProfile={maguiConnectProfile}

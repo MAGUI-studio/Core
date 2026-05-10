@@ -1,4 +1,7 @@
-import { getProposalExecutionDaysFromSchedule } from "@/src/lib/project-schedule"
+import {
+  getProposalExecutionDaysFromSchedule,
+  proposalIncludesMaguiConnectBonus,
+} from "@/src/lib/project-schedule"
 
 type ProposalItemInput = {
   description: string
@@ -46,15 +49,12 @@ export type ParsedProposalNotes = {
   bonus: string[]
 }
 
-function hasComplimentaryMaguiConnect(parsedNotes: ParsedProposalNotes) {
-  const bonusText = parsedNotes.bonus.join(" ").toLowerCase()
-
-  return (
-    bonusText.includes("magui connect") &&
-    (bonusText.includes("gratuit") ||
-      bonusText.includes("r$ 0,00") ||
-      bonusText.includes("sem custo"))
-  )
+function hasComplimentaryMaguiConnect(
+  parsedNotes: ParsedProposalNotes,
+  scheduleData?: unknown
+) {
+  void parsedNotes
+  return proposalIncludesMaguiConnectBonus(scheduleData)
 }
 
 function normalizeSectionTitle(value: string) {
@@ -229,17 +229,9 @@ function buildExcludedScopeClause(parsedNotes: ParsedProposalNotes) {
     .join("; ")}.`
 }
 
-function extractTimelineDays(
-  parsedNotes: ParsedProposalNotes,
-  scheduleData?: unknown
-) {
+function extractStructuredTimelineDays(scheduleData?: unknown) {
   const structuredDays = getProposalExecutionDaysFromSchedule(scheduleData)
-  if (structuredDays) return String(structuredDays)
-
-  const timelineText = parsedNotes.timeline.join(" ")
-  const match = timelineText.match(/(\d+(?:\s*a\s*\d+)?)\s*dias?\s*(?:úteis|uteis)?/i)
-
-  return match?.[1]?.replace(/\s+/g, " ").trim() ?? "X"
+  return structuredDays ? String(structuredDays) : "X"
 }
 
 function buildExecutionDaysLabel(executionDays: string) {
@@ -272,15 +264,20 @@ export function buildContractText({
   form,
 }: BuildContractTextInput) {
   const parsedNotes = parseProposalNotes(proposal.notes)
-  const totalValue = formatCurrencyBRL(proposal.totalValue, proposal.currency ?? "BRL")
-  const executionDays = extractTimelineDays(parsedNotes, proposal.scheduleData)
+  const totalValue = formatCurrencyBRL(
+    proposal.totalValue / 100,
+    proposal.currency ?? "BRL"
+  )
+  const executionDays = extractStructuredTimelineDays(proposal.scheduleData)
   const executionDaysLabel = buildExecutionDaysLabel(executionDays)
   const renewalValue = sanitizeCurrencyFragment(form.renewalValue)
   const clauseOne = buildObjectClauseOne(proposal.items, proposal.title)
   const clauseTwo = buildObjectClauseTwo(parsedNotes, proposal.items)
   const clauseThree = buildExcludedScopeClause(parsedNotes)
-  const includesComplimentaryMaguiConnect =
-    hasComplimentaryMaguiConnect(parsedNotes)
+  const includesComplimentaryMaguiConnect = hasComplimentaryMaguiConnect(
+    parsedNotes,
+    proposal.scheduleData
+  )
   const optionalClauseOneFour = includesComplimentaryMaguiConnect
     ? "\n1.4. Bônus Cortesia: Como parte desta oferta, a CONTRATADA entregará o módulo MAGUI Connect (Perfil profissional de centralização de links), sem custo adicional de desenvolvimento, condicionado à permanência do projeto na infraestrutura da CONTRATADA."
     : ""
@@ -381,3 +378,5 @@ CLÁUSULA 12. DA VALIDADE JURÍDICA DIGITAL
 CLÁUSULA 13. DO FORO
 13.1. Fica eleito o Foro da Comarca de São José dos Campos/SP para dirimir controvérsias deste instrumento.`
 }
+
+

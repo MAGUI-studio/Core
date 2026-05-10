@@ -8,6 +8,11 @@ import { CACHE_TTL } from "@/src/config/cache"
 
 import { cacheTags } from "./cache-tags"
 import prisma from "./prisma"
+import {
+  getProposalExecutionDaysFromSchedule,
+  normalizeProposalScheduleData,
+  proposalIncludesMaguiConnectBonus,
+} from "./project-schedule"
 
 // Types for DTO mapping
 type LeadWithRelations = Prisma.LeadGetPayload<{
@@ -77,7 +82,13 @@ const getLeadsCached = unstable_cache(
             select: { followUpNotes: true },
           },
           proposals: {
-            select: { status: true },
+            select: {
+              id: true,
+              title: true,
+              status: true,
+              totalValue: true,
+              scheduleData: true,
+            },
           },
         },
         orderBy: [{ nextActionAt: "asc" }, { createdAt: "desc" }],
@@ -111,6 +122,21 @@ export const getLeads = async (page: number = 1, limit: number = 100) => {
     proposalCount: l.proposals.length,
     acceptedProposalCount: l.proposals.filter((p) => p.status === "ACCEPTED")
       .length,
+    acceptedProposals: l.proposals
+      .filter((p) => p.status === "ACCEPTED")
+      .map((proposal) => ({
+        id: proposal.id,
+        title: proposal.title,
+        totalValue: proposal.totalValue,
+        projectCategory: normalizeProposalScheduleData(proposal.scheduleData)
+          .projectCategory,
+        executionBusinessDays: getProposalExecutionDaysFromSchedule(
+          proposal.scheduleData
+        ),
+        includesMaguiConnectBonus: proposalIncludesMaguiConnectBonus(
+          proposal.scheduleData
+        ),
+      })),
     activities: [],
     followUpNotes: Array(l._count.followUpNotes).fill({}),
   })) as unknown as Lead[]

@@ -47,7 +47,10 @@ import { ConvertLeadDialog } from "@/src/components/admin/ConvertLeadDialog"
 import { LeadActivityFeed } from "@/src/components/admin/LeadActivityFeed"
 import { LeadStatusBadge } from "@/src/components/admin/LeadStatusBadge"
 
-import { getLeadActivitiesAction } from "@/src/lib/actions/crm.actions"
+import {
+  getLeadActivitiesAction,
+  getLeadSnapshotAction,
+} from "@/src/lib/actions/crm.actions"
 
 import { useLeadMutations } from "@/src/hooks/use-lead-mutations"
 
@@ -55,6 +58,7 @@ import { LeadDeleteDialog } from "./lead-drawer/LeadDeleteDialog"
 import { LeadEditForm } from "./lead-drawer/LeadEditForm"
 import { LeadInfoDisplay } from "./lead-drawer/LeadInfoDisplay"
 import { LeadNotesList } from "./lead-drawer/LeadNotesList"
+import { LeadProposalsTab } from "./lead-drawer/LeadProposalsTab"
 import { LeadQuickActions } from "./lead-drawer/LeadQuickActions"
 
 function formatDateTime(value: string | Date): string {
@@ -110,14 +114,38 @@ export function LeadDetailsDrawer({
   const loadExtraData = React.useCallback(
     async (leadId: string) => {
       setIsLoadingData(true)
-      const result = await getLeadActivitiesAction(leadId)
-      if (result.success && result.activities) {
+
+      const [activitiesResult, snapshotResult] = await Promise.all([
+        getLeadActivitiesAction(leadId),
+        getLeadSnapshotAction(leadId),
+      ])
+
+      if (activitiesResult.success && activitiesResult.activities) {
         setLocalLead((current) => ({
           ...current,
-          activities: result.activities,
-          followUpNotes: result.notes,
+          activities: activitiesResult.activities,
+          followUpNotes: activitiesResult.notes,
         }))
       }
+
+      if (snapshotResult.success && snapshotResult.lead) {
+        setLocalLead((current) => ({
+          ...current,
+          status: snapshotResult.lead?.status ?? current.status,
+          updatedAt: snapshotResult.lead?.updatedAt ?? current.updatedAt,
+          proposalCount:
+            snapshotResult.lead?.proposalCount ?? current.proposalCount,
+          acceptedProposalCount:
+            snapshotResult.lead?.acceptedProposalCount ??
+            current.acceptedProposalCount,
+          acceptedProposals:
+            snapshotResult.lead?.acceptedProposals ??
+            current.acceptedProposals,
+          proposals: snapshotResult.lead?.proposals ?? current.proposals,
+          client: snapshotResult.lead?.client ?? current.client,
+        }))
+      }
+
       setIsLoadingData(false)
     },
     [setLocalLead]
@@ -125,13 +153,32 @@ export function LeadDetailsDrawer({
 
   React.useEffect(() => {
     if (open && localLead.id) {
-      loadExtraData(localLead.id)
+      void loadExtraData(localLead.id)
+    }
+  }, [open, localLead.id, loadExtraData])
+
+  React.useEffect(() => {
+    if (!open || !localLead.id) return
+
+    const refreshOnReturn = () => {
+      if (document.visibilityState === "visible") {
+        void loadExtraData(localLead.id)
+      }
+    }
+
+    window.addEventListener("focus", refreshOnReturn)
+    document.addEventListener("visibilitychange", refreshOnReturn)
+
+    return () => {
+      window.removeEventListener("focus", refreshOnReturn)
+      document.removeEventListener("visibilitychange", refreshOnReturn)
     }
   }, [open, localLead.id, loadExtraData])
 
   const handleSheetOpenChange = (nextOpen: boolean) => {
     setUncontrolledOpen(nextOpen)
     onOpenChange?.(nextOpen)
+
     if (!nextOpen) {
       setIsEditing(false)
       setNote("")
@@ -144,18 +191,40 @@ export function LeadDetailsDrawer({
     LeadStatus.NEGOCIACAO,
     LeadStatus.CONVERTIDO,
   ]
+  const canConvertLead = (localLead.acceptedProposalCount ?? 0) > 0
+  const matchedClient = React.useMemo(() => {
+    if (localLead.client) return localLead.client
+    if (!localLead.email) return null
+
+    const normalizedLeadEmail = localLead.email.trim().toLowerCase()
+    const fallbackClient = clients.find(
+      (client) => client.email.trim().toLowerCase() === normalizedLeadEmail
+    )
+
+    if (!fallbackClient) return null
+
+    return {
+      id: fallbackClient.id,
+      name: fallbackClient.name,
+      email: fallbackClient.email,
+      companyName: null,
+      phone: null,
+      position: null,
+    }
+  }, [clients, localLead.client, localLead.email])
+  const clientDisplayName =
+    matchedClient?.name || localLead.contactName || "Cliente nao identificado"
 
   return (
     <Sheet open={open} onOpenChange={handleSheetOpenChange}>
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent
         side="right"
-        className="w-[96vw] overflow-y-auto border-l border-border/15 bg-background p-0 sm:min-w-[40rem] sm:max-w-[42rem] sm:rounded-l-[3.5rem]"
+        className="w-[96vw] overflow-y-auto border-l-0 bg-background p-0 sm:min-w-[40rem] sm:max-w-[42rem]"
       >
         <div className="flex min-h-screen flex-col">
-          {/* Executive Header */}
-          <SheetHeader className="border-b border-border/10 px-10 py-12 text-left">
-            <div className="flex flex-col gap-8">
+          <SheetHeader className="px-8 py-8 text-left sm:px-10 sm:py-10">
+            <div className="flex flex-col gap-6">
               <div className="flex items-start justify-between">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
@@ -165,12 +234,15 @@ export function LeadDetailsDrawer({
                       weight="bold"
                     />
                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/50">
-                      Gestão de Oportunidade
+                      Gestao de oportunidade
                     </span>
                   </div>
                   <SheetTitle className="font-heading text-4xl font-black tracking-tighter text-foreground">
                     {localLead.companyName}
                   </SheetTitle>
+                  <p className="text-sm font-bold text-muted-foreground/70">
+                    Cliente: {clientDisplayName}
+                  </p>
                   <div className="flex items-center gap-3">
                     <LeadStatusBadge status={localLead.status} />
                     <span className="text-xs font-medium text-muted-foreground/40">
@@ -187,20 +259,20 @@ export function LeadDetailsDrawer({
                     <Button
                       variant="outline"
                       size="icon"
-                      className="size-10 rounded-full border-border/20 shadow-sm transition-transform active:scale-90"
+                      className="size-10 rounded-full border-border/10 bg-muted/[0.04] transition-transform active:scale-90"
                     >
                       <DotsThreeVertical size={20} weight="bold" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
-                    className="z-50 w-52 rounded-4xl border border-border/10 bg-background p-2 shadow-2xl"
+                    className="z-50 w-52 rounded-4xl border border-border/10 bg-background p-2"
                   >
                     <DropdownMenuItem
                       onClick={() => setIsEditing(true)}
                       className="cursor-pointer rounded-full px-4 py-3 text-[11px] font-black uppercase tracking-widest transition-colors hover:bg-muted"
                     >
-                      <PencilSimple size={16} className="mr-3" /> Editar Lead
+                      <PencilSimple size={16} className="mr-3" /> Editar lead
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       asChild
@@ -214,7 +286,7 @@ export function LeadDetailsDrawer({
                         target="_blank"
                       >
                         <ArrowSquareOut size={16} className="mr-3" /> Ver
-                        Detalhes
+                        detalhes
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -229,7 +301,7 @@ export function LeadDetailsDrawer({
                         target="_blank"
                       >
                         <ArrowSquareOut size={16} className="mr-3" /> Ver
-                        Propostas
+                        propostas
                       </Link>
                     </DropdownMenuItem>
                     <div className="my-2 h-px bg-border/10 px-2" />
@@ -246,21 +318,34 @@ export function LeadDetailsDrawer({
                 </DropdownMenu>
               </div>
 
-              {/* Primary Actions Grid */}
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-3">
                 {localLead.status !== LeadStatus.CONVERTIDO ? (
-                  <Button
-                    onClick={() => setIsConvertDialogOpen(true)}
-                    className="h-14 rounded-2xl bg-brand-primary text-[11px] font-black uppercase tracking-widest text-white shadow-xl shadow-brand-primary/20 transition-all hover:scale-[1.02] hover:bg-brand-primary/90 active:scale-95"
-                  >
-                    <RocketLaunch size={20} weight="bold" className="mr-3" />
-                    Converter Lead
-                  </Button>
+                  <div className="space-y-3">
+                    <Button
+                      onClick={() => setIsConvertDialogOpen(true)}
+                      disabled={!canConvertLead}
+                      className="h-14 w-full rounded-2xl bg-brand-primary text-[11px] font-black uppercase tracking-widest text-white transition-all hover:bg-brand-primary/90 active:scale-95 disabled:cursor-not-allowed disabled:opacity-45"
+                    >
+                      <RocketLaunch size={20} weight="bold" className="mr-3" />
+                      Converter lead
+                    </Button>
+                    {!canConvertLead ? (
+                      <div className="rounded-2xl border border-red-500/20 bg-red-500/8 px-4 py-3">
+                        <p className="text-[9px] font-black uppercase tracking-[0.18em] text-red-700/80">
+                          Conversao bloqueada
+                        </p>
+                        <p className="mt-1 text-sm font-medium leading-relaxed text-red-700">
+                          Crie e aprove uma proposta antes de converter este
+                          lead em projeto.
+                        </p>
+                      </div>
+                    ) : null}
+                  </div>
                 ) : (
                   <Button
                     asChild
                     variant="outline"
-                    className="h-14 rounded-2xl border-green-500/30 bg-green-500/5 text-[11px] font-black uppercase tracking-widest text-green-600 shadow-sm"
+                    className="h-14 rounded-2xl border-green-500/20 bg-green-500/5 text-[11px] font-black uppercase tracking-widest text-green-600"
                   >
                     <Link
                       href={{
@@ -269,15 +354,15 @@ export function LeadDetailsDrawer({
                       }}
                     >
                       <RocketLaunch size={20} weight="fill" className="mr-3" />
-                      Acessar Projeto
+                      Acessar projeto
                     </Link>
                   </Button>
                 )}
 
-                <div className="flex h-14 items-center justify-between rounded-2xl border border-border/15 bg-muted/10 px-8">
+                <div className="flex h-14 items-center justify-between rounded-2xl bg-muted/[0.04] px-6">
                   <div className="flex flex-col">
                     <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/40">
-                      Última Interação
+                      Ultima interacao
                     </span>
                     <span className="text-[10px] font-bold text-foreground/70">
                       {formatDateTime(localLead.updatedAt)}
@@ -293,32 +378,31 @@ export function LeadDetailsDrawer({
             </div>
           </SheetHeader>
 
-          {/* Content Tabs */}
           <Tabs defaultValue="overview" className="flex-1">
-            <div className="bg-background px-10 pt-6">
-              <TabsList className="flex h-12 w-full items-center justify-start gap-2 rounded-full border border-border/10 bg-muted/10 p-1">
+            <div className="bg-background px-8 pt-4 sm:px-10 sm:pt-5">
+              <TabsList className="flex h-12 w-full items-center justify-start gap-2 rounded-full bg-muted/[0.04] p-1">
                 <TabsTrigger
                   value="overview"
-                  className="h-full rounded-full px-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                  className="h-full rounded-full px-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 transition-all data-[state=active]:bg-brand-primary data-[state=active]:text-white"
                 >
                   Overview
                 </TabsTrigger>
                 <TabsTrigger
                   value="timeline"
-                  className="h-full rounded-full px-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                  className="h-full rounded-full px-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 transition-all data-[state=active]:bg-brand-primary data-[state=active]:text-white"
                 >
                   Atividades
                 </TabsTrigger>
               </TabsList>
             </div>
 
-            <div className="p-10">
+            <div className="px-8 pb-8 sm:px-10 sm:pb-10">
               <TabsContent
                 value="overview"
-                className="m-0 space-y-10 outline-none"
+                className="m-0 space-y-8 pt-6 outline-none"
               >
-                {isEditing && (
-                  <div className="rounded-[2.5rem] border border-brand-primary/20 bg-brand-primary/[0.02] p-8 shadow-sm">
+                {isEditing ? (
+                  <div className="rounded-[2rem] bg-muted/[0.03] p-6 sm:p-8">
                     <LeadEditForm
                       lead={localLead}
                       isSaving={isSavingLead}
@@ -329,12 +413,12 @@ export function LeadDetailsDrawer({
                       }}
                     />
                   </div>
-                )}
+                ) : null}
 
-                <LeadInfoDisplay lead={localLead} />
+                <LeadInfoDisplay lead={localLead} client={matchedClient} />
 
-                <div className="grid gap-10">
-                  <div className="space-y-3">
+                <div className="grid gap-8">
+                  <div className="space-y-4">
                     <SectionHeader
                       title="Proposta Comercial"
                       icon={NotePencil}
@@ -342,7 +426,7 @@ export function LeadDetailsDrawer({
                     <Button
                       asChild
                       variant="outline"
-                      className="h-14 w-full justify-start rounded-2xl border-brand-primary/25 bg-brand-primary/5 px-6 text-[11px] font-black uppercase tracking-widest text-brand-primary shadow-sm"
+                      className="h-14 w-full justify-start rounded-2xl border-brand-primary/15 bg-brand-primary/[0.04] px-5 text-[11px] font-black uppercase tracking-widest text-brand-primary"
                     >
                       <Link
                         href={{
@@ -351,42 +435,47 @@ export function LeadDetailsDrawer({
                         }}
                       >
                         <NotePencil size={20} weight="bold" className="mr-3" />
-                        Criar Proposta
+                        Criar proposta
                       </Link>
                     </Button>
+                    <div className="rounded-[1.75rem] bg-muted/[0.03] p-0">
+                      <LeadProposalsTab
+                        lead={localLead}
+                        showHeader={false}
+                        onProposalChanged={() => void loadExtraData(localLead.id)}
+                      />
+                    </div>
                   </div>
 
-                  {/* Pipeline Control */}
                   <div className="space-y-4">
-                    <SectionHeader title="Estágio do Funil" icon={Layout} />
-                    <div className="flex flex-wrap gap-2">
-                      {statuses.map((s) => (
+                    <SectionHeader title="Estagio do funil" icon={Layout} />
+                    <div className="flex flex-wrap gap-2.5">
+                      {statuses.map((status) => (
                         <button
-                          key={s}
-                          onClick={() => handleStatusChange(s)}
+                          key={status}
+                          onClick={() => handleStatusChange(status)}
                           disabled={Boolean(isUpdatingStatus)}
-                          className={`flex items-center rounded-2xl border px-6 py-3 transition-all active:scale-95 ${
-                            localLead.status === s
+                          className={`flex items-center rounded-2xl border px-5 py-3 transition-all active:scale-95 ${
+                            localLead.status === status
                               ? "border-brand-primary bg-brand-primary text-white shadow-lg shadow-brand-primary/20"
                               : "border-border/40 bg-background text-muted-foreground/60 hover:border-border/80"
                           }`}
                         >
-                          {isUpdatingStatus === s && (
+                          {isUpdatingStatus === status ? (
                             <CircleNotch
                               size={12}
                               className="mr-2 animate-spin"
                             />
-                          )}
+                          ) : null}
                           <span className="text-[10px] font-black uppercase tracking-widest">
-                            {t(`status.${s}`)}
+                            {t(`status.${status}`)}
                           </span>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  {/* Notes Strategy */}
-                  <div className="space-y-6">
+                  <div className="space-y-5">
                     <SectionHeader
                       title="Contexto comercial"
                       icon={NotePencil}
@@ -394,21 +483,23 @@ export function LeadDetailsDrawer({
                     <div className="relative">
                       <Textarea
                         value={note}
-                        onChange={(e) => setNote(e.target.value)}
+                        onChange={(event) => setNote(event.target.value)}
                         placeholder="Registre contexto, proximo passo, decisor e qualquer bloqueio real da negociacao."
-                        className="min-h-[140px] resize-none rounded-4xl border-border/15 bg-muted/10 p-8 text-sm font-medium transition-all focus:bg-background focus:ring-1 focus:ring-brand-primary/20 shadow-inner"
+                        className="min-h-[140px] resize-none rounded-[1.75rem] border-border/10 bg-muted/[0.03] p-6 pr-28 text-sm font-medium transition-all focus:bg-background focus:ring-1 focus:ring-brand-primary/10"
                       />
                       <Button
                         onClick={async () => {
-                          if (await handleAddNote(note)) setNote("")
+                          if (await handleAddNote(note)) {
+                            setNote("")
+                          }
                         }}
                         disabled={isSavingNote || note.trim().length < 2}
-                        className="absolute bottom-4 right-4 h-11 rounded-2xl bg-foreground px-8 text-[10px] font-black uppercase tracking-widest text-background shadow-xl active:scale-95"
+                        className="absolute right-4 bottom-4 h-11 rounded-2xl bg-foreground px-6 text-[10px] font-black uppercase tracking-widest text-background active:scale-95"
                       >
                         {isSavingNote ? (
                           <CircleNotch size={14} className="animate-spin" />
                         ) : (
-                          "Salvar Nota"
+                          "Salvar nota"
                         )}
                       </Button>
                     </div>
@@ -418,13 +509,12 @@ export function LeadDetailsDrawer({
                     </div>
                   </div>
 
-                  {/* Communication */}
                   <div className="space-y-4">
                     <SectionHeader
-                      title="Templates de Contato"
+                      title="Templates de contato"
                       icon={WhatsappLogo}
                     />
-                    <div className="rounded-[2.5rem] border border-border/15 bg-muted/10 p-8 shadow-sm">
+                    <div className="rounded-[1.75rem] bg-muted/[0.03] p-6 sm:p-8">
                       <LeadQuickActions
                         lead={localLead}
                         templates={templates}
@@ -436,18 +526,18 @@ export function LeadDetailsDrawer({
 
               <TabsContent
                 value="timeline"
-                className="m-0 space-y-8 outline-none"
+                className="m-0 space-y-6 pt-6 outline-none"
               >
                 <div className="flex items-center justify-between">
-                  <SectionHeader title="Histórico Completo" icon={Lightning} />
-                  {isLoadingData && (
+                  <SectionHeader title="Historico completo" icon={Lightning} />
+                  {isLoadingData ? (
                     <CircleNotch
                       size={18}
                       className="animate-spin text-brand-primary"
                     />
-                  )}
+                  ) : null}
                 </div>
-                <div className="rounded-[2.5rem] border border-border/15 bg-background p-10 shadow-sm">
+                <div className="rounded-[1.75rem] bg-muted/[0.03] p-6 sm:p-8">
                   <LeadActivityFeed activities={localLead.activities || []} />
                 </div>
               </TabsContent>

@@ -55,6 +55,8 @@ enum ProjectStatus {
   DESIGN
   ENGINEERING
   QA
+  ON_HOLD_CLIENT
+  ABANDONED
   LAUNCHED
 }
 
@@ -160,6 +162,8 @@ enum ScheduledReminderType {
   ACTION_ITEM_OVERDUE
   CLIENT_ON_HOLD
   PROJECT_ABANDONED
+  RENEWAL_UPCOMING
+  RENEWAL_SUSPENSION_RISK
 }
 
 enum ScheduledReminderStatus {
@@ -500,8 +504,18 @@ model Project {
   briefingNotes BriefingEntry[]
   scheduleData  Json?           @default("{}")
 
-  startDate     DateTime  @default(now())
-  deadline      DateTime?
+  executionBusinessDays   Int?
+  executionStartAt        DateTime?
+  briefingRequestedAt     DateTime?
+  briefingValidatedAt     DateTime?
+  deliveryForecastAt      DateTime?
+  suspendedAt             DateTime?
+  abandonedAt             DateTime?
+  lastClientDependencyAt  DateTime?
+  lastClientResponseAt    DateTime?
+  clientDelayCalendarDays Int       @default(0)
+  clientDelayBusinessDays Int       @default(0)
+
   liveUrl       String?
   repositoryUrl String?
 
@@ -553,7 +567,7 @@ model Document {
   contractingData Json? @default("{}") // { legalName, tradeName, document, email, address... }
 
   // Commercial Data (Snapshot)
-  commercialData Json? @default("{}") // { totalValue, installments, revisions, deadline... }
+  commercialData Json? @default("{}") // { totalValue, installments, revisions, executionBusinessDays... }
 
   currentVersionId String?
   versions         DocumentVersion[]
