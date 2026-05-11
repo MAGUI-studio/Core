@@ -6,7 +6,6 @@ import { ptBR } from "date-fns/locale"
 import { ContractSentEmail } from "@/src/components/email/ContractSentEmail"
 import { InvoiceSentEmail } from "@/src/components/email/InvoiceSentEmail"
 import { ProjectUpdateEmail } from "@/src/components/email/ProjectUpdateEmail"
-import { ProposalSentEmail } from "@/src/components/email/ProposalSentEmail"
 
 import prisma from "@/src/lib/prisma"
 
@@ -15,7 +14,6 @@ import { env } from "@/src/config/env"
 import { sendTransactionalEmail } from "./index"
 
 export type ProductEvent =
-  | { type: "PROPOSAL_SENT"; proposalId: string }
   | { type: "CONTRACT_SENT"; documentId: string }
   | { type: "INVOICE_SENT"; invoiceId: string }
   | { type: "UPDATE_PUBLISHED"; updateId: string; projectId: string }
@@ -76,30 +74,6 @@ export async function triggerProductEvent(event: ProductEvent) {
           templateKey: event.type,
           entityType: "Update",
           entityId: update.id,
-        })
-        break
-      }
-
-      case "PROPOSAL_SENT": {
-        const proposal = await prisma.proposal.findUnique({
-          where: { id: event.proposalId },
-          include: { lead: true },
-        })
-
-        if (!proposal?.lead.email) return
-
-        await sendTransactionalEmail({
-          to: proposal.lead.email,
-          subject: `Nova Proposta Comercial: ${proposal.title}`,
-          template: React.createElement(ProposalSentEmail, {
-            contactName: proposal.lead.contactName || proposal.lead.companyName,
-            proposalTitle: proposal.title,
-            proposalUrl: `${env.NEXT_PUBLIC_SITE_URL}/proposals/${proposal.id}`,
-            totalValue: `${proposal.currency} ${(proposal.totalValue / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
-          }),
-          templateKey: "PROPOSAL_SENT",
-          entityType: "Proposal",
-          entityId: proposal.id,
         })
         break
       }

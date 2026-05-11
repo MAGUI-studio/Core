@@ -8,9 +8,11 @@ import { ProposalStatus } from "@/src/generated/client"
 import { Lead } from "@/src/types/crm"
 import {
   ArrowSquareOut,
+  Copy,
   DotsThreeVertical,
   DownloadSimple,
   FilePdf,
+  LinkSimple,
 } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
@@ -28,6 +30,7 @@ import {
   getLeadProposalsAction,
   updateProposalStatusAction,
 } from "@/src/lib/actions/proposal.actions"
+import { buildProposalPublicPath } from "@/src/lib/proposals/public-links"
 import { formatCurrencyBRLFromCents } from "@/src/lib/utils/utils"
 
 import { CreateProposalDrawer } from "./CreateProposalDrawer"
@@ -63,6 +66,20 @@ export function LeadProposalsTab({
   }
 
   const [isLoading, setIsLoading] = React.useState(!providedProposals)
+
+  const buildPublicProposalUrl = React.useCallback((proposalId: string) => {
+    const origin =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : (process.env.NEXT_PUBLIC_SITE_URL ?? "")
+
+    return `${origin}${buildProposalPublicPath(lead.instagram, proposalId)}`
+  }, [lead.instagram])
+
+  const handleCopyPublicLink = async (proposalId: string) => {
+    await navigator.clipboard.writeText(buildPublicProposalUrl(proposalId))
+    toast.success("Link público da proposta copiado")
+  }
 
   const loadProposals = React.useCallback(async () => {
     if (providedProposals) {
@@ -231,6 +248,23 @@ export function LeadProposalsTab({
                           <ArrowSquareOut className="mr-2 size-4" />
                           Abrir PDF
                         </a>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight">
+                        <a
+                          href={buildPublicProposalUrl(proposal.id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <LinkSimple className="mr-2 size-4" />
+                          Abrir link público
+                        </a>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => void handleCopyPublicLink(proposal.id)}
+                        className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight"
+                      >
+                        <Copy className="mr-2 size-4" />
+                        Copiar link público
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight">
                         <a

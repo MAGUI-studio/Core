@@ -18,7 +18,7 @@ import {
   NotePencil,
   PencilSimple,
   RocketLaunch,
-  WhatsappLogo,
+  InstagramLogo,
 } from "@phosphor-icons/react"
 
 import { Button } from "@/src/components/ui/button"
@@ -41,7 +41,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/src/components/ui/tabs"
-import { Textarea } from "@/src/components/ui/textarea"
 
 import { ConvertLeadDialog } from "@/src/components/admin/ConvertLeadDialog"
 import { LeadActivityFeed } from "@/src/components/admin/LeadActivityFeed"
@@ -94,7 +93,6 @@ export function LeadDetailsDrawer({
 }: LeadDetailsDrawerProps): React.JSX.Element {
   const t = useTranslations("Admin.crm")
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false)
-  const [note, setNote] = React.useState("")
   const [isEditing, setIsEditing] = React.useState(false)
   const [isLoadingData, setIsLoadingData] = React.useState(false)
   const [isConvertDialogOpen, setIsConvertDialogOpen] = React.useState(false)
@@ -104,10 +102,8 @@ export function LeadDetailsDrawer({
     localLead,
     setLocalLead,
     isUpdatingStatus,
-    isSavingNote,
     isSavingLead,
     handleStatusChange,
-    handleAddNote,
     handleSaveLead,
   } = useLeadMutations(lead, onLeadUpdated)
 
@@ -184,7 +180,6 @@ export function LeadDetailsDrawer({
 
     if (!nextOpen) {
       setIsEditing(false)
-      setNote("")
     }
   }
 
@@ -478,50 +473,24 @@ export function LeadDetailsDrawer({
                     </div>
                   </div>
 
-                  <div className="space-y-5">
-                    <SectionHeader
-                      title="Contexto comercial"
-                      icon={NotePencil}
-                    />
-                    <div className="relative">
-                      <Textarea
-                        value={note}
-                        onChange={(event) => setNote(event.target.value)}
-                        placeholder="Registre contexto, proximo passo, decisor e qualquer bloqueio real da negociacao."
-                        className="min-h-[140px] resize-none rounded-[1.75rem] border-border/10 bg-muted/[0.03] p-6 pr-28 text-sm font-medium transition-all focus:bg-background focus:ring-1 focus:ring-brand-primary/10"
-                      />
-                      <Button
-                        onClick={async () => {
-                          if (await handleAddNote(note)) {
-                            setNote("")
-                          }
-                        }}
-                        disabled={isSavingNote || note.trim().length < 2}
-                        className="absolute right-4 bottom-4 h-11 rounded-2xl bg-foreground px-6 text-[10px] font-black uppercase tracking-widest text-background active:scale-95"
-                      >
-                        {isSavingNote ? (
-                          <CircleNotch size={14} className="animate-spin" />
-                        ) : (
-                          "Salvar nota"
-                        )}
-                      </Button>
-                    </div>
-
-                    <div className="mt-4">
-                      <LeadNotesList notes={localLead.followUpNotes || []} />
-                    </div>
-                  </div>
-
                   <div className="space-y-4">
                     <SectionHeader
-                      title="Templates de contato"
-                      icon={WhatsappLogo}
+                      title="Mensagens para direct"
+                      icon={InstagramLogo}
                     />
                     <div className="rounded-[1.75rem] bg-muted/[0.03] p-6 sm:p-8">
                       <LeadQuickActions
                         lead={localLead}
                         templates={templates}
+                        proposals={localLead.proposals || []}
                       />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <SectionHeader title="Notas salvas" icon={NotePencil} />
+                    <div className="rounded-[1.75rem] bg-muted/[0.03] p-6 sm:p-8">
+                      <LeadNotesList notes={localLead.followUpNotes || []} />
                     </div>
                   </div>
                 </div>

@@ -8,7 +8,6 @@ import {
 } from "@/src/generated/client"
 import { z } from "zod"
 
-import { triggerProductEvent } from "@/src/lib/email/events"
 import { logger } from "@/src/lib/logger"
 import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
@@ -161,10 +160,6 @@ export async function updateProposalStatusAction(
       where: { id },
       data: { status },
     })
-
-    if (status === ProposalStatus.SENT) {
-      await triggerProductEvent({ type: "PROPOSAL_SENT", proposalId: id })
-    }
 
     await createAuditLog({
       action: "proposal.status_updated",

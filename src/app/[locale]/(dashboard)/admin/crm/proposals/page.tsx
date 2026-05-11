@@ -30,6 +30,7 @@ export default async function ProposalsPage(): Promise<React.JSX.Element> {
         select: {
           id: true,
           companyName: true,
+          instagram: true,
         },
       },
       items: {

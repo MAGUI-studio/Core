@@ -16,6 +16,7 @@ import {
   DownloadSimple,
   Funnel,
   MagnifyingGlass,
+  LinkSimple,
   Trash,
 } from "@phosphor-icons/react"
 import { toast } from "sonner"
@@ -52,6 +53,7 @@ import {
   updateProposalStatusAction,
 } from "@/src/lib/actions/proposal.actions"
 import { ProposalContractDrawer } from "@/src/components/admin/proposals/ProposalContractDrawer"
+import { buildProposalPublicPath } from "@/src/lib/proposals/public-links"
 import { formatCurrencyBRLFromCents } from "@/src/lib/utils/utils"
 
 interface ProposalRecord {
@@ -66,6 +68,7 @@ interface ProposalRecord {
   lead: {
     id: string
     companyName: string
+    instagram?: string | null
   }
 }
 
@@ -105,6 +108,23 @@ export function ProposalsOverviewList({
       title: string
       companyName: string
     } | null>(null)
+
+  const buildPublicProposalUrl = React.useCallback((proposal: ProposalRecord) => {
+    const origin =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : (process.env.NEXT_PUBLIC_SITE_URL ?? "")
+
+    return `${origin}${buildProposalPublicPath(
+      proposal.lead.instagram,
+      proposal.id
+    )}`
+  }, [])
+
+  const handleCopyPublicLink = async (proposal: ProposalRecord) => {
+    await navigator.clipboard.writeText(buildPublicProposalUrl(proposal))
+    toast.success("Link público da proposta copiado")
+  }
 
   const handleDelete = async (id: string) => {
     const result = await deleteProposalAction(id)
@@ -485,6 +505,24 @@ export function ProposalsOverviewList({
                             >
                               <DownloadSimple className="mr-2 size-4" /> {tList("downloadPdf")}
                             </a>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            asChild
+                            className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
+                          >
+                            <a
+                              href={buildPublicProposalUrl(proposal)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <LinkSimple className="mr-2 size-4" /> Abrir link público
+                            </a>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => void handleCopyPublicLink(proposal)}
+                            className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
+                          >
+                            <Copy className="mr-2 size-4" /> Copiar link público
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleDuplicate(proposal.id)}

@@ -47,6 +47,10 @@ export const pathnames = {
     pt: "/admin/prospeccao/propostas/nova",
     en: "/admin/crm/proposals/new",
   },
+  "/proposal/[identifier]": {
+    pt: "/proposta/[identifier]",
+    en: "/proposal/[identifier]",
+  },
   "/admin/crm/leads/[id]": {
     pt: "/admin/prospeccao/leads/[id]",
     en: "/admin/crm/leads/[id]",
