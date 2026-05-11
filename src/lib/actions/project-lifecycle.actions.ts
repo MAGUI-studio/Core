@@ -33,6 +33,8 @@ import {
 import { getOrCreateStripeCustomer } from "@/src/lib/stripe-actions"
 import {
   cancelProjectBonusIfNeeded,
+  forceCancelProjectBonus,
+  forceReleaseProjectBonus,
   releaseProjectBonusIfEligible,
 } from "@/src/lib/invoice-fulfillment"
 import { getInternationalizationFeeCents } from "@/src/lib/utils/project-pricing"
@@ -548,5 +550,91 @@ export async function deleteProjectAction(
   } catch (error) {
     logger.error({ error }, "Delete Project Error:")
     return { error: "Erro ao deletar o projeto" }
+  }
+}
+
+export async function releaseProjectBonusManuallyAction(
+  projectId: string
+): Promise<{ error?: string; success?: boolean }> {
+  try {
+    await protect("admin")
+  } catch {
+    return { error: "Unauthorized" }
+  }
+
+  const actor = await getCurrentAppUser()
+
+  try {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: {
+        id: true,
+        client: {
+          select: {
+            id: true,
+            clerkId: true,
+          },
+        },
+      },
+    })
+
+    if (!project?.client) {
+      return { error: "Projeto não encontrado" }
+    }
+
+    const released = await prisma.$transaction((tx) =>
+      forceReleaseProjectBonus(tx, projectId, actor?.id)
+    )
+
+    if (!released) {
+      return { error: "O bônus não está em um estado liberável manualmente." }
+    }
+
+    revalidateProjectData(projectId)
+    revalidateProjectStatus(projectId)
+    return { success: true }
+  } catch (error) {
+    logger.error({ error }, "Manual Project Bonus Release Error:")
+    return { error: "Erro ao liberar o bônus manualmente" }
+  }
+}
+
+export async function cancelProjectBonusManuallyAction(
+  projectId: string
+): Promise<{ error?: string; success?: boolean }> {
+  try {
+    await protect("admin")
+  } catch {
+    return { error: "Unauthorized" }
+  }
+
+  const actor = await getCurrentAppUser()
+
+  try {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: {
+        id: true,
+      },
+    })
+
+    if (!project) {
+      return { error: "Projeto não encontrado" }
+    }
+
+    const cancelled = await prisma.$transaction((tx) =>
+      forceCancelProjectBonus(tx, projectId, actor?.id)
+    )
+
+    if (!cancelled) {
+      return { error: "O bônus não está em um estado cancelável manualmente." }
+    }
+
+    revalidateProjectData(projectId)
+    revalidateProjectStatus(projectId)
+    return { success: true }
+  } catch (error) {
+    logger.error({ error }, "Manual Project Bonus Cancel Error:")
+    return { error: "Erro ao cancelar o bônus manualmente" }
   }
 }

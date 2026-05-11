@@ -11,14 +11,20 @@ import {
   ArrowLeft,
   ArrowSquareOut,
   Calendar,
+  CircleNotch,
   CurrencyDollar,
   Gift,
   ProjectorScreen,
   UserCircle,
 } from "@phosphor-icons/react"
+import { toast } from "sonner"
 import { ProjectScheduleDelayTooltip } from "@/src/components/common/ProjectScheduleDelayTooltip"
 import { Button } from "@/src/components/ui/button"
 
+import {
+  cancelProjectBonusManuallyAction,
+  releaseProjectBonusManuallyAction,
+} from "@/src/lib/actions/project.actions"
 import {
   buildProjectScheduleView,
   getExecutionDaysLabel,
@@ -46,6 +52,10 @@ interface ProjectDetailsHeaderProps {
 export function ProjectDetailsHeader({ project }: ProjectDetailsHeaderProps) {
   const t = useTranslations("Admin.projects.details")
   const router = useRouter()
+  const [isReleasingBonus, startBonusReleaseTransition] =
+    React.useTransition()
+  const [isCancellingBonus, startBonusCancelTransition] =
+    React.useTransition()
   const schedule = buildProjectScheduleView(project.scheduleData, project.status)
   const forecastDateLabel = schedule.currentForecastDate
     ? new Intl.DateTimeFormat("pt-BR", {
@@ -105,6 +115,32 @@ export function ProjectDetailsHeader({ project }: ProjectDetailsHeaderProps) {
   const budgetDisplay = project.budget
     ? formatCurrencyBRLFromCents(project.budget)
     : t("no_budget")
+  const canManagePendingBonus =
+    showBonusBadge && schedule.maguiConnectBonusStatus === "PENDING_RELEASE"
+
+  const handleManualBonusRelease = () => {
+    startBonusReleaseTransition(async () => {
+      const result = await releaseProjectBonusManuallyAction(project.id)
+
+      if (result.success) {
+        toast.success("Bônus do MAGUI Connect liberado manualmente.")
+      } else {
+        toast.error(result.error ?? "Não foi possível liberar o bônus.")
+      }
+    })
+  }
+
+  const handleManualBonusCancel = () => {
+    startBonusCancelTransition(async () => {
+      const result = await cancelProjectBonusManuallyAction(project.id)
+
+      if (result.success) {
+        toast.success("Bônus do MAGUI Connect cancelado manualmente.")
+      } else {
+        toast.error(result.error ?? "Não foi possível cancelar o bônus.")
+      }
+    })
+  }
 
   return (
     <div className="flex flex-col gap-10">
@@ -228,6 +264,38 @@ export function ProjectDetailsHeader({ project }: ProjectDetailsHeaderProps) {
               </div>
             </div>
           </div>
+
+          {canManagePendingBonus ? (
+            <div className="flex flex-wrap items-center gap-3 pl-1">
+              <Button
+                type="button"
+                onClick={handleManualBonusRelease}
+                disabled={isReleasingBonus || isCancellingBonus}
+                className="h-10 rounded-full bg-foreground px-5 font-mono text-[10px] font-black uppercase tracking-[0.2em] text-background"
+              >
+                {isReleasingBonus ? (
+                  <CircleNotch className="mr-2 size-4 animate-spin" />
+                ) : (
+                  <Gift className="mr-2 size-4" />
+                )}
+                Liberar bônus manualmente
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleManualBonusCancel}
+                disabled={isReleasingBonus || isCancellingBonus}
+                className="h-10 rounded-full border-border/40 bg-background/60 px-5 font-mono text-[10px] font-black uppercase tracking-[0.2em]"
+              >
+                {isCancellingBonus ? (
+                  <CircleNotch className="mr-2 size-4 animate-spin" />
+                ) : (
+                  <Gift className="mr-2 size-4" />
+                )}
+                Cancelar bônus pendente
+              </Button>
+            </div>
+          ) : null}
 
         </div>
       </div>

@@ -14,8 +14,10 @@ import {
   updateProjectBriefingAction as updateProjectBriefingActionImpl,
 } from "./project-briefing.actions"
 import {
+  cancelProjectBonusManuallyAction as cancelProjectBonusManuallyActionImpl,
   createProjectAction as createProjectActionImpl,
   deleteProjectAction as deleteProjectActionImpl,
+  releaseProjectBonusManuallyAction as releaseProjectBonusManuallyActionImpl,
   updateProjectStatusAction as updateProjectStatusActionImpl,
 } from "./project-lifecycle.actions"
 import {
@@ -45,6 +47,18 @@ export async function deleteProjectAction(
   ...args: Parameters<typeof deleteProjectActionImpl>
 ): ReturnType<typeof deleteProjectActionImpl> {
   return deleteProjectActionImpl(...args)
+}
+
+export async function releaseProjectBonusManuallyAction(
+  ...args: Parameters<typeof releaseProjectBonusManuallyActionImpl>
+): ReturnType<typeof releaseProjectBonusManuallyActionImpl> {
+  return releaseProjectBonusManuallyActionImpl(...args)
+}
+
+export async function cancelProjectBonusManuallyAction(
+  ...args: Parameters<typeof cancelProjectBonusManuallyActionImpl>
+): ReturnType<typeof cancelProjectBonusManuallyActionImpl> {
+  return cancelProjectBonusManuallyActionImpl(...args)
 }
 
 export async function addProjectTimelineAction(

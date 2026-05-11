@@ -1,4 +1,5 @@
 import {
+  AuditActorType,
   InstallmentStatus,
   InvoiceKind,
   NotificationType,
@@ -33,9 +34,20 @@ async function ensureMaguiConnectProfile(
   })
 }
 
-async function releaseProjectBonusIfEligible(
+type ProjectBonusReleaseMode = "AUTO" | "MANUAL"
+type ProjectBonusCancelMode = "AUTO" | "MANUAL"
+type ProjectBonusCancelReason =
+  | "PROJECT_ABANDONED"
+  | "PROJECT_CANCELLED"
+  | "ADMIN_OVERRIDE"
+
+async function releaseProjectBonus(
   tx: Prisma.TransactionClient,
-  projectId: string
+  projectId: string,
+  input: {
+    mode: ProjectBonusReleaseMode
+    actorId?: string | null
+  }
 ) {
   const project = await tx.project.findUnique({
     where: { id: projectId },
@@ -71,8 +83,8 @@ async function releaseProjectBonusIfEligible(
   const schedule = normalizeProjectScheduleData(project.scheduleData)
   const isEligible =
     schedule.includesMaguiConnectBonus &&
-    schedule.maguiConnectBonusStatus !== "RELEASED" &&
-    project.status === "LAUNCHED"
+    schedule.maguiConnectBonusStatus === "PENDING_RELEASE" &&
+    (input.mode === "MANUAL" || project.status === "LAUNCHED")
 
   if (!isEligible) return false
 
@@ -84,7 +96,7 @@ async function releaseProjectBonusIfEligible(
     )
   )
 
-  if (hasOpenInstallments) return false
+  if (input.mode === "AUTO" && hasOpenInstallments) return false
 
   await tx.project.update({
     where: { id: project.id },
@@ -98,16 +110,25 @@ async function releaseProjectBonusIfEligible(
 
   await createAuditLog(
     {
-      action: "magui_connect.bonus_released",
+      action:
+        input.mode === "MANUAL"
+          ? "magui_connect.bonus_released_manual"
+          : "magui_connect.bonus_released",
       entityType: "Project",
       entityId: project.id,
       projectId: project.id,
-      summary: `Bonus MAGUI Connect liberado para o projeto ${project.name}.`,
+      summary:
+        input.mode === "MANUAL"
+          ? `Bonus MAGUI Connect liberado manualmente para o projeto ${project.name}.`
+          : `Bonus MAGUI Connect liberado para o projeto ${project.name}.`,
+      actorId: input.actorId ?? null,
+      actorType: input.actorId ? AuditActorType.USER : AuditActorType.SYSTEM,
       metadata: {
         clientId: project.clientId,
         sourceProposalId: schedule.sourceProposalId,
         previousStatus: schedule.maguiConnectBonusStatus,
         nextStatus: "RELEASED",
+        releaseMode: input.mode,
       },
     },
     tx
@@ -122,29 +143,35 @@ async function releaseProjectBonusIfEligible(
 
   await ensureMaguiConnectProfile(tx, project.clientId, project.client.name)
 
-  const admins = await tx.user.findMany({
-    where: { role: UserRole.ADMIN },
-    select: { id: true },
-  })
+  if (input.mode === "AUTO") {
+    const admins = await tx.user.findMany({
+      where: { role: UserRole.ADMIN },
+      select: { id: true },
+    })
 
-  await createNotificationsMany(
-    admins.map((admin) => ({
-      userId: admin.id,
-      type: NotificationType.OPERATIONAL_REMINDER,
-      title: "Bonus MAGUI Connect liberado",
-      message: `O bonus do MAGUI Connect foi liberado automaticamente para ${project.client.name || "cliente"} no projeto ${project.name}.`,
-      ctaPath: `/admin/projects/${project.id}`,
-    })),
-    tx
-  )
+    await createNotificationsMany(
+      admins.map((admin) => ({
+        userId: admin.id,
+        type: NotificationType.OPERATIONAL_REMINDER,
+        title: "Bonus MAGUI Connect liberado",
+        message: `O bonus do MAGUI Connect foi liberado automaticamente para ${project.client.name || "cliente"} no projeto ${project.name}.`,
+        ctaPath: `/admin/projects/${project.id}`,
+      })),
+      tx
+    )
+  }
 
   return true
 }
 
-async function cancelProjectBonusIfNeeded(
+async function cancelProjectBonus(
   tx: Prisma.TransactionClient,
   projectId: string,
-  reason: "PROJECT_ABANDONED" | "PROJECT_CANCELLED" = "PROJECT_ABANDONED"
+  input: {
+    mode: ProjectBonusCancelMode
+    reason?: ProjectBonusCancelReason
+    actorId?: string | null
+  }
 ) {
   const project = await tx.project.findUnique({
     where: { id: projectId },
@@ -163,7 +190,7 @@ async function cancelProjectBonusIfNeeded(
   const canCancel =
     schedule.includesMaguiConnectBonus &&
     schedule.maguiConnectBonusStatus === "PENDING_RELEASE" &&
-    project.status === ProjectStatus.ABANDONED
+    (input.mode === "MANUAL" || project.status === ProjectStatus.ABANDONED)
 
   if (!canCancel) return false
 
@@ -179,23 +206,73 @@ async function cancelProjectBonusIfNeeded(
 
   await createAuditLog(
     {
-      action: "magui_connect.bonus_cancelled",
+      action:
+        input.mode === "MANUAL"
+          ? "magui_connect.bonus_cancelled_manual"
+          : "magui_connect.bonus_cancelled",
       entityType: "Project",
       entityId: project.id,
       projectId: project.id,
-      summary: `Bonus MAGUI Connect cancelado para o projeto ${project.name}.`,
+      summary:
+        input.mode === "MANUAL"
+          ? `Bonus MAGUI Connect cancelado manualmente para o projeto ${project.name}.`
+          : `Bonus MAGUI Connect cancelado para o projeto ${project.name}.`,
+      actorId: input.actorId ?? null,
+      actorType: input.actorId ? AuditActorType.USER : AuditActorType.SYSTEM,
       metadata: {
         clientId: project.clientId,
         sourceProposalId: schedule.sourceProposalId,
         previousStatus: schedule.maguiConnectBonusStatus,
         nextStatus: "CANCELLED",
-        reason,
+        reason: input.reason ?? "PROJECT_ABANDONED",
+        cancelMode: input.mode,
       },
     },
     tx
   )
 
   return true
+}
+
+async function releaseProjectBonusIfEligible(
+  tx: Prisma.TransactionClient,
+  projectId: string
+) {
+  return releaseProjectBonus(tx, projectId, { mode: "AUTO" })
+}
+
+async function forceReleaseProjectBonus(
+  tx: Prisma.TransactionClient,
+  projectId: string,
+  actorId?: string | null
+) {
+  return releaseProjectBonus(tx, projectId, {
+    mode: "MANUAL",
+    actorId,
+  })
+}
+
+async function cancelProjectBonusIfNeeded(
+  tx: Prisma.TransactionClient,
+  projectId: string,
+  reason: "PROJECT_ABANDONED" | "PROJECT_CANCELLED" = "PROJECT_ABANDONED"
+) {
+  return cancelProjectBonus(tx, projectId, {
+    mode: "AUTO",
+    reason,
+  })
+}
+
+async function forceCancelProjectBonus(
+  tx: Prisma.TransactionClient,
+  projectId: string,
+  actorId?: string | null
+) {
+  return cancelProjectBonus(tx, projectId, {
+    mode: "MANUAL",
+    reason: "ADMIN_OVERRIDE",
+    actorId,
+  })
 }
 
 export async function applyInvoicePaidSideEffects(
@@ -284,4 +361,9 @@ export async function applyInvoicePaidSideEffects(
   }
 }
 
-export { cancelProjectBonusIfNeeded, releaseProjectBonusIfEligible }
+export {
+  cancelProjectBonusIfNeeded,
+  forceCancelProjectBonus,
+  forceReleaseProjectBonus,
+  releaseProjectBonusIfEligible,
+}
