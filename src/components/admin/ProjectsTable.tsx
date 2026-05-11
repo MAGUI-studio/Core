@@ -61,6 +61,8 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
   const [projectItems, setProjectItems] = React.useState(initialProjects)
   const [prevInitialProjects, setPrevInitialProjects] =
     React.useState(initialProjects)
+  const [search, setSearch] = React.useState("")
+  const [pendingDeletion, startDeletion] = React.useTransition()
 
   if (initialProjects !== prevInitialProjects) {
     setPrevInitialProjects(initialProjects)

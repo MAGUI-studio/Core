@@ -48,6 +48,13 @@ export function AssetManagement({
   }
 
   const [isDeleting, setIsDeleting] = React.useState<string | null>(null)
+  const [typeFilter, setTypeFilter] = React.useState<AssetType | "ALL">("ALL")
+  const [originFilter, setOriginFilter] = React.useState<AssetOrigin | "ALL">(
+    "ALL"
+  )
+  const [visibilityFilter, setVisibilityFilter] = React.useState<
+    AssetVisibility | "ALL"
+  >("ALL")
 
   const sensors = useSensors(useSensor(PointerSensor))
 

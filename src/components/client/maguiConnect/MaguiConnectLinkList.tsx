@@ -69,6 +69,18 @@ export function MaguiConnectLinkList({
   const router = useRouter()
   const [items, setItems] = React.useState(links)
   const [prevLinks, setPrevLinks] = React.useState(links)
+  const [isAdding, setIsAdding] = React.useState(false)
+  const [label, setLabel] = React.useState("")
+  const [url, setUrl] = React.useState("")
+  const [customShortDescription, setCustomShortDescription] =
+    React.useState("")
+  const [startsAt, setStartsAt] = React.useState("")
+  const [expiresAt, setExpiresAt] = React.useState("")
+  const [kind, setKind] = React.useState("LINK")
+  const [sectionId, setSectionId] = React.useState<string | null>(null)
+  const [openKind, setOpenKind] = React.useState(false)
+  const [openSection, setOpenSection] = React.useState(false)
+  const [activeId, setActiveId] = React.useState<string | null>(null)
 
   if (links !== prevLinks) {
     setPrevLinks(links)

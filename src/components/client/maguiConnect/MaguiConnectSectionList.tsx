@@ -70,6 +70,10 @@ export function MaguiConnectSectionList({
   const router = useRouter()
   const [items, setItems] = React.useState(sections)
   const [prevSections, setPrevSections] = React.useState(sections)
+  const [isAdding, setIsAdding] = React.useState(false)
+  const [newTitle, setNewTitle] = React.useState("")
+  const [newDescription, setNewDescription] = React.useState("")
+  const [newIsCollapsible, setNewIsCollapsible] = React.useState(false)
 
   if (sections !== prevSections) {
     setPrevSections(sections)

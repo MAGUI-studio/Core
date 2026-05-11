@@ -478,14 +478,12 @@ export function MaguiContractTemplate({
   return (
     <Document title={document.title}>
       <Page size="A4" style={styles.page}>
-        <Image alt="" src={
-FRONT_IMAGE} style={styles.fullBleed} />
+        <Image src={FRONT_IMAGE} style={styles.fullBleed} />
       </Page>
 
       {pages.map((pageBlocks, pageIndex) => (
         <Page key={pageIndex} size="A4" style={styles.page}>
-          <Image alt="" src={
-PAGE_IMAGE} style={styles.sheet} fixed />
+          <Image src={PAGE_IMAGE} style={styles.sheet} fixed />
           <View style={styles.content}>
             {pageIndex === 0 ? (
               <Text style={styles.title}>CONTRATO DE PRESTAÇÃO DE SERVIÇOS</Text>
@@ -498,8 +496,7 @@ PAGE_IMAGE} style={styles.sheet} fixed />
       ))}
 
       <Page size="A4" style={styles.page}>
-        <Image alt="" src={
-BACK_IMAGE} style={styles.fullBleed} />
+        <Image src={BACK_IMAGE} style={styles.fullBleed} />
       </Page>
     </Document>
   )

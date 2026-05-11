@@ -32,6 +32,10 @@ export function AdminTemplateLibrary({
 }): React.JSX.Element {
   const [templateItems, setTemplateItems] = React.useState(templates)
   const [prevTemplates, setPrevTemplates] = React.useState(templates)
+  const [name, setName] = React.useState("")
+  const [content, setContent] = React.useState("")
+  const [isSaving, startSaving] = React.useTransition()
+  const [isDeleting, startDeleting] = React.useTransition()
 
   if (templates !== prevTemplates) {
     setPrevTemplates(templates)
