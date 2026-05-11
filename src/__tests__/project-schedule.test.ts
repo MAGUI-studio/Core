@@ -3,9 +3,11 @@ import { describe, expect, it } from "vitest"
 import { ProjectStatus } from "@/src/generated/client"
 
 import {
+  addBusinessDays,
   buildInitialProjectScheduleData,
   buildProjectSchedulePersistence,
   buildProjectScheduleView,
+  diffBusinessDays,
   getProjectRenewalSignals,
   proposalIncludesMaguiConnectBonus,
   resolveProjectStatusFromSchedule,
@@ -138,5 +140,19 @@ describe("Project Schedule", () => {
       kind: "DOMAIN",
       status: "UPCOMING",
     })
+  })
+
+  it("skips national and São José dos Campos holidays in business day calculations", () => {
+    const beforeCityHoliday = new Date("2026-03-18T12:00:00.000-03:00")
+    const afterOneBusinessDay = addBusinessDays(beforeCityHoliday, 1)
+    const businessDays = diffBusinessDays(
+      new Date("2026-03-18T12:00:00.000-03:00"),
+      new Date("2026-03-23T12:00:00.000-03:00")
+    )
+
+    expect(afterOneBusinessDay.toISOString()).toBe(
+      new Date("2026-03-20T12:00:00.000-03:00").toISOString()
+    )
+    expect(businessDays).toBe(2)
   })
 })

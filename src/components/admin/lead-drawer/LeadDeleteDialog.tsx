@@ -140,7 +140,7 @@ export function LeadDeleteDialog({
                 onClick={handleDelete}
                 disabled={isDeleting || confirmValue.toUpperCase() !== code}
               >
-                {isDeleting ? "Excluindo..." : "Confirmar exclusao"}
+                {isDeleting ? "Excluindo..." : "Confirmar"}
               </Button>
             </div>
           </div>

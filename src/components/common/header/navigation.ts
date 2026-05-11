@@ -4,6 +4,7 @@ type HeaderStaticPath =
   | "/admin/clients/register"
   | "/admin/crm"
   | "/admin/crm/register"
+  | "/admin/crm/contracts"
   | "/admin/crm/proposals"
   | "/admin/crm/proposals/new"
   | "/admin/projects"
@@ -85,6 +86,13 @@ export function getAdminHeaderNav(t: (key: string) => string): {
             description: t("descriptions.proposal_create"),
             featured: true,
             exact: true,
+          },
+          {
+            href: "/admin/crm/contracts",
+            icon: "list",
+            label: "Contratos",
+            description: "Consulte os contratos já gerados",
+            matchPrefix: "/admin/crm/contracts",
           },
         ],
       },

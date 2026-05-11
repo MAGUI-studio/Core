@@ -47,6 +47,15 @@ export function ProjectDetailsHeader({ project }: ProjectDetailsHeaderProps) {
   const t = useTranslations("Admin.projects.details")
   const router = useRouter()
   const schedule = buildProjectScheduleView(project.scheduleData, project.status)
+  const forecastDateLabel = schedule.currentForecastDate
+    ? new Intl.DateTimeFormat("pt-BR", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        timeZone: "America/Sao_Paulo",
+      }).format(schedule.currentForecastDate)
+    : null
   const renewalSignals = getProjectRenewalSignals(project.scheduleData)
   const visibleDelayReasons = schedule.delayReasons.filter(
     (reason) => reason.businessDaysAdded > 0
@@ -201,28 +210,25 @@ export function ProjectDetailsHeader({ project }: ProjectDetailsHeaderProps) {
                   <span className="text-sm font-bold text-foreground">
                     {getExecutionDaysLabel(schedule.executionBusinessDays)}
                   </span>
-                  {schedule.currentForecastDate && (
-                    <span className="rounded-full bg-brand-primary/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-brand-primary">
-                      previsão{" "}
-                      {new Date(schedule.currentForecastDate).toLocaleDateString()}
+                  {forecastDateLabel ? (
+                    <span className="rounded-full bg-brand-primary/10 px-2 py-0.5 text-[9px] font-black tracking-widest text-brand-primary">
+                      Previsão {forecastDateLabel}
                     </span>
-                  )}
+                  ) : null}
                   {visibleDelayReasons.length > 0 ? (
                     <ProjectScheduleDelayTooltip reasons={visibleDelayReasons} />
                   ) : null}
                 </div>
                 {schedule.clientDelayBusinessDays > 0 ? (
                   <span className="text-[9px] font-black uppercase tracking-widest text-amber-600">
-                    +{schedule.clientDelayBusinessDays} dias úteis por atraso do cliente
+                    +{schedule.clientDelayBusinessDays} dias úteis por atraso do
+                    cliente
                   </span>
                 ) : null}
               </div>
             </div>
           </div>
 
-          <p className="pl-1 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/45">
-            CRM como canal oficial. WhatsApp apenas como apoio informativo.
-          </p>
         </div>
       </div>
     </div>

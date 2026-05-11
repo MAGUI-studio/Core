@@ -1,6 +1,10 @@
 "use server"
 
-import { AuditActorType, DocumentType } from "@/src/generated/client"
+import {
+  AuditActorType,
+  DocumentStatus,
+  DocumentType,
+} from "@/src/generated/client"
 import { z } from "zod"
 
 import {
@@ -455,5 +459,85 @@ export async function createContractFromProposalAction(
     }
 
     return { success: false, error: "Falha ao gerar contrato." }
+  }
+}
+
+const UpdateDocumentStatusSchema = z.object({
+  documentId: z.string().min(1),
+  status: z.enum([
+    "DRAFT",
+    "SENT",
+    "VIEWED",
+    "SIGNED",
+    "COMPLETED",
+    "REJECTED",
+    "EXPIRED",
+    "CANCELLED",
+  ]),
+})
+
+export async function updateDocumentStatusAction(
+  rawData: z.infer<typeof UpdateDocumentStatusSchema>
+) {
+  try {
+    await protect("admin")
+    const actor = await getCurrentAppUser()
+    const data = UpdateDocumentStatusSchema.parse(rawData)
+
+    const existing = await prisma.document.findUnique({
+      where: { id: data.documentId },
+      select: {
+        id: true,
+        title: true,
+        status: true,
+        projectId: true,
+      },
+    })
+
+    if (!existing) {
+      return { success: false, error: "Contrato não encontrado." }
+    }
+
+    if (existing.status === data.status) {
+      return { success: true }
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.document.update({
+        where: { id: data.documentId },
+        data: {
+          status: data.status as DocumentStatus,
+        },
+      })
+
+      await createAuditLog(
+        {
+          action: "document.status_updated",
+          entityType: "Document",
+          entityId: data.documentId,
+          actorId: actor?.id,
+          actorType: actor ? AuditActorType.USER : AuditActorType.SYSTEM,
+          projectId: existing.projectId,
+          summary: `Status do contrato "${existing.title}" atualizado para ${data.status}.`,
+          metadata: {
+            previousStatus: existing.status,
+            nextStatus: data.status,
+          },
+        },
+        tx
+      )
+    })
+
+    return { success: true }
+  } catch (error) {
+    logger.error({ error }, "Update Document Status Error")
+    if (error instanceof z.ZodError) {
+      return {
+        success: false,
+        error: error.issues[0]?.message ?? "Dados inválidos.",
+      }
+    }
+
+    return { success: false, error: "Falha ao atualizar status do contrato." }
   }
 }

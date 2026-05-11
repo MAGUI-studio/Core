@@ -66,6 +66,31 @@ const EMPTY_FORM: ContractPrefill = {
   timelinePreview: "",
 }
 
+function RequiredLabel({
+  children,
+}: {
+  children: React.ReactNode
+}): React.JSX.Element {
+  return (
+    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+      {children} <span className="text-red-500">*</span>
+    </Label>
+  )
+}
+
+function formatCpf(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 11)
+  const part1 = digits.slice(0, 3)
+  const part2 = digits.slice(3, 6)
+  const part3 = digits.slice(6, 9)
+  const part4 = digits.slice(9, 11)
+
+  if (!part2) return part1
+  if (!part3) return `${part1}.${part2}`
+  if (!part4) return `${part1}.${part2}.${part3}`
+  return `${part1}.${part2}.${part3}-${part4}`
+}
+
 export function ProposalContractDrawer({
   proposal,
   open,
@@ -117,6 +142,16 @@ export function ProposalContractDrawer({
   ) => {
     setForm((current) => ({ ...current, [key]: value }))
   }
+
+  const isFormValid =
+    form.contractingPartyType.trim().length > 0 &&
+    form.contractingSignerName.trim().length > 0 &&
+    form.contractingDocumentNumber.trim().length > 0 &&
+    form.contractingAddress.trim().length > 0 &&
+    form.contractingCityState.trim().length > 0 &&
+    form.renewalValue.trim().length > 0 &&
+    (form.contractingPartyType !== "COMPANY" ||
+      form.contractingLegalName.trim().length > 0)
 
   const handleSubmit = async () => {
     if (!proposal?.id) return
@@ -205,9 +240,7 @@ export function ProposalContractDrawer({
 
               <div className="space-y-5">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                    Tipo de contratante
-                  </Label>
+                  <RequiredLabel>Tipo de contratante</RequiredLabel>
                   <div className="grid grid-cols-2 gap-2">
                     {([
                       { value: "COMPANY", label: "Empresa" },
@@ -234,9 +267,7 @@ export function ProposalContractDrawer({
 
                 {form.contractingPartyType === "COMPANY" ? (
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                      Nome da empresa
-                    </Label>
+                    <RequiredLabel>Nome da empresa</RequiredLabel>
                     <Input
                       value={form.contractingLegalName}
                       onChange={(event) =>
@@ -249,9 +280,7 @@ export function ProposalContractDrawer({
                 ) : null}
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                    Nome completo do dono
-                  </Label>
+                  <RequiredLabel>Nome completo do dono</RequiredLabel>
                   <Input
                     value={form.contractingSignerName}
                     onChange={(event) =>
@@ -263,15 +292,13 @@ export function ProposalContractDrawer({
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                    CPF do responsável
-                  </Label>
+                  <RequiredLabel>CPF do responsável</RequiredLabel>
                   <Input
                     value={form.contractingDocumentNumber}
                     onChange={(event) =>
                       updateField(
                         "contractingDocumentNumber",
-                        event.target.value
+                        formatCpf(event.target.value)
                       )
                     }
                     className="h-12 rounded-2xl border-border/40 bg-muted/10"
@@ -280,9 +307,7 @@ export function ProposalContractDrawer({
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                    Endereço
-                  </Label>
+                  <RequiredLabel>Endereço</RequiredLabel>
                   <Textarea
                     value={form.contractingAddress}
                     onChange={(event) =>
@@ -294,9 +319,7 @@ export function ProposalContractDrawer({
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                    Cidade / UF
-                  </Label>
+                  <RequiredLabel>Cidade / UF</RequiredLabel>
                   <Input
                     value={form.contractingCityState}
                     onChange={(event) =>
@@ -308,9 +331,7 @@ export function ProposalContractDrawer({
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                    Valor estimado de renovação
-                  </Label>
+                  <RequiredLabel>Valor estimado de renovação</RequiredLabel>
                   <Input
                     value={form.renewalValue}
                     onChange={(event) =>
@@ -345,7 +366,7 @@ export function ProposalContractDrawer({
             type="button"
             className="h-12 rounded-2xl bg-brand-primary px-5 text-[10px] font-black uppercase tracking-[0.18em] text-white"
             onClick={handleSubmit}
-            disabled={isLoading || isSubmitting}
+            disabled={isLoading || isSubmitting || !isFormValid}
           >
             {isSubmitting ? (
               <CircleNotch className="mr-2 size-4 animate-spin" weight="bold" />

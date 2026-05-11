@@ -299,7 +299,7 @@ CLÁUSULA 1. DO OBJETO TÉCNICO
 1.2. ${clauseTwo}
 1.3. ${clauseThree}${optionalClauseOneFour}
 CLÁUSULA 2. DO CRONOGRAMA E DO "GARGALO DE CONTEÚDO"
-2.1. O prazo de execução será de ${executionDaysLabel}, contados a partir da validação do material inicial enviado pelo CONTRATANTE, que consiste obrigatoriamente no preenchimento do briefing e envio de ativos através do CRM da CONTRATADA (https://dashboard.magui.studio).
+2.1. O prazo de execução será de ${executionDaysLabel}, contados a partir da validação do material inicial enviado pelo CONTRATANTE, que consiste obrigatoriamente no preenchimento do briefing e envio de ativos através do CRM da CONTRATADA (https://dashboard.magui.studio). Para os fins deste contrato, dias úteis correspondem a segunda-feira a sexta-feira, excluídos sábados, domingos, feriados nacionais e feriados municipais de São José dos Campos/SP.
 
 2.2. Cláusula de Reciprocidade de Prazos (Gargalo): Dada a natureza dependente da prestação de serviço, qualquer atraso por parte do CONTRATANTE no envio de materiais, ativos ou feedbacks resultará na postergação automática do cronograma final na proporção de 02 (dois) dias úteis de entrega para cada 01 (um) dia de atraso na resposta, visando a reorganização da fila de produção da CONTRATADA.
 

@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server"
 
 import { UserRole } from "@/src/generated/client"
 import { Link } from "@/src/i18n/navigation"
-import { Plus } from "@phosphor-icons/react/dist/ssr"
+import { PlusIcon } from "@phosphor-icons/react/dist/ssr"
 
 import { Button } from "@/src/components/ui/button"
 
@@ -74,9 +74,9 @@ export default async function CRMPage({
           >
             <Link
               href="/admin/crm/register"
-              className="flex items-center gap-3"
+              className="flex items-center gap-3 text-white!"
             >
-              <Plus
+              <PlusIcon
                 weight="duotone"
                 className="size-5 transition-transform group-hover:rotate-12"
               />

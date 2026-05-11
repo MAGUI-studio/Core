@@ -370,9 +370,10 @@ export function ClientsTable({
                                   Remover cliente do sistema
                                 </AlertDialogTitle>
                                 <AlertDialogDescription className="max-w-none text-sm leading-relaxed text-muted-foreground/75">
-                                  Isso remove o usuario do Clerk, encerra o acesso
-                                  ao painel e apaga o cadastro local. Projetos
-                                  vinculados tambem serao removidos por cascata.
+                                  Isso remove o usuario do Clerk, encerra o
+                                  acesso ao painel e apaga o cadastro local.
+                                  Projetos vinculados tambem serao removidos por
+                                  cascata.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
 
@@ -404,7 +405,7 @@ export function ClientsTable({
                                   disabled={pendingDeletion}
                                   className="rounded-full bg-red-500 text-white hover:bg-red-500/90"
                                 >
-                                  Confirmar exclusao
+                                  Confirmar exclusão
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>

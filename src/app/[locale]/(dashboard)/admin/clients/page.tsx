@@ -5,7 +5,7 @@ import { redirect } from "next/navigation"
 
 import { Link } from "@/src/i18n/navigation"
 import { clerkClient } from "@clerk/nextjs/server"
-import { UserPlus } from "@phosphor-icons/react/dist/ssr"
+import { UserPlusIcon } from "@phosphor-icons/react/dist/ssr"
 
 import { Button } from "@/src/components/ui/button"
 
@@ -130,9 +130,9 @@ export default async function ClientsPage(): Promise<React.JSX.Element> {
         >
           <Link
             href="/admin/clients/register"
-            className="flex items-center gap-3"
+            className="flex items-center gap-3 text-white!"
           >
-            <UserPlus
+            <UserPlusIcon
               weight="duotone"
               className="size-5 transition-transform group-hover:rotate-12"
             />

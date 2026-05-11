@@ -622,7 +622,7 @@ function buildProposalBlocks(
   const timeline = notes.timeline.length
     ? notes.timeline
     : [
-        "Estimativa em dias úteis, com início da contagem somente após briefing validado e materiais obrigatórios enviados pelo cliente via CRM.",
+        "Estimativa em dias úteis, com início da contagem somente após briefing validado e materiais obrigatórios enviados pelo cliente via CRM. Para esta proposta, dias úteis correspondem a segunda-feira a sexta-feira, excluídos sábados, domingos, feriados nacionais e feriados municipais de São José dos Campos/SP.",
       ]
 
   const paymentTerms = notes.paymentTerms.length

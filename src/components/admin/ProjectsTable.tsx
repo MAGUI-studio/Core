@@ -278,7 +278,7 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
                               disabled={pendingDeletion}
                               className="rounded-2xl bg-red-500 hover:bg-red-500/90"
                             >
-                              Confirmar exclusao
+                              Confirmar exclusão
                             </Button>
                           </DialogFooter>
                         </DialogContent>

@@ -100,7 +100,7 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
       id: "time-standard",
       label: "Padrão comercial",
       content:
-        "O cronograma é contado em dias úteis e só começa após a validação do briefing e o envio dos ativos obrigatórios pelo cliente no CRM da MAGUI.studio.",
+        "O cronograma é contado em dias úteis e só começa após a validação do briefing e o envio dos ativos obrigatórios pelo cliente no CRM da MAGUI.studio. Para este projeto, dias úteis correspondem a segunda-feira a sexta-feira, excluídos sábados, domingos, feriados nacionais e feriados municipais de São José dos Campos/SP.",
     },
   ],
   paymentTerms: [
