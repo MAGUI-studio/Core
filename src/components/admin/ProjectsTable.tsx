@@ -59,12 +59,13 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
   const t = useTranslations("Dashboard.status")
   const commonT = useTranslations("Admin.clients.table")
   const [projectItems, setProjectItems] = React.useState(initialProjects)
-  const [search, setSearch] = React.useState("")
-  const [pendingDeletion, startDeletion] = React.useTransition()
+  const [prevInitialProjects, setPrevInitialProjects] =
+    React.useState(initialProjects)
 
-  React.useEffect(() => {
+  if (initialProjects !== prevInitialProjects) {
+    setPrevInitialProjects(initialProjects)
     setProjectItems(initialProjects)
-  }, [initialProjects])
+  }
 
   const filteredProjects = React.useMemo(() => {
     if (!search) return projectItems

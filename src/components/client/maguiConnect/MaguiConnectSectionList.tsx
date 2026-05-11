@@ -69,14 +69,12 @@ export function MaguiConnectSectionList({
   const t = useTranslations("MaguiConnect")
   const router = useRouter()
   const [items, setItems] = React.useState(sections)
-  const [isAdding, setIsAdding] = React.useState(false)
-  const [newTitle, setNewTitle] = React.useState("")
-  const [newDescription, setNewDescription] = React.useState("")
-  const [newIsCollapsible, setNewIsCollapsible] = React.useState(false)
+  const [prevSections, setPrevSections] = React.useState(sections)
 
-  React.useEffect(() => {
+  if (sections !== prevSections) {
+    setPrevSections(sections)
     setItems(sections)
-  }, [sections])
+  }
 
   const sensors = useSensors(useSensor(PointerSensor))
 

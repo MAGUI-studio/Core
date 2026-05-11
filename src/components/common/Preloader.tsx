@@ -16,12 +16,12 @@ export function Preloader({
   onComplete,
   siteName = "MAGUI.studio",
 }: PreloaderProps): React.JSX.Element {
-  const [mounted, setMounted] = React.useState(false)
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  )
   const [isLoading, setIsLoading] = React.useState(true)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
 
   React.useEffect(() => {
     if (!mounted) {

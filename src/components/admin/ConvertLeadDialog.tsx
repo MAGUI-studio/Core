@@ -158,8 +158,10 @@ export function ConvertLeadDialog({
     (proposal) => proposal.id === selectedProposalId
   )
 
+  const selectedProposalCategory = selectedProposal?.projectCategory
+
   const selectedProposalCategoryLabel = React.useMemo(() => {
-    if (!selectedProposal?.projectCategory) return "Categoria nao definida"
+    if (!selectedProposalCategory) return "Categoria nao definida"
 
     return (
       {
@@ -172,9 +174,9 @@ export function ConvertLeadDialog({
             : "Booking Platform",
         STABILITY_PLAN:
           locale === "pt" ? "Plano de Estabilidade" : "Stability Plan",
-      }[selectedProposal.projectCategory] ?? selectedProposal.projectCategory
+      }[selectedProposalCategory] ?? selectedProposalCategory
     )
-  }, [locale, selectedProposal?.projectCategory])
+  }, [locale, selectedProposalCategory])
 
   const selectedProposalBudgetLabel = React.useMemo(() => {
     if (!selectedProposal) return "Orcamento nao definido"

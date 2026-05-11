@@ -15,14 +15,17 @@ export function useLeadMutations(
   onLeadUpdated?: (lead: Lead) => void
 ) {
   const [localLead, setLocalLead] = React.useState(initialLead)
+  const [prevInitialLead, setPrevInitialLead] = React.useState(initialLead)
+
+  if (initialLead !== prevInitialLead) {
+    setPrevInitialLead(initialLead)
+    setLocalLead(initialLead)
+  }
+
   const [isUpdatingStatus, setIsUpdatingStatus] =
     React.useState<LeadStatus | null>(null)
   const [isSavingNote, setIsSavingNote] = React.useState(false)
   const [isSavingLead, setIsSavingLead] = React.useState(false)
-
-  React.useEffect(() => {
-    setLocalLead(initialLead)
-  }, [initialLead])
 
   const commitLead = React.useCallback(
     (nextLead: Lead) => {

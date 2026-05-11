@@ -31,15 +31,14 @@ export function AdminTemplateLibrary({
   templates: MessageTemplate[]
 }): React.JSX.Element {
   const [templateItems, setTemplateItems] = React.useState(templates)
-  const [activeScope, setActiveScope] = React.useState("LEAD")
-  const [name, setName] = React.useState("")
-  const [content, setContent] = React.useState("")
-  const [isSaving, startSaving] = React.useTransition()
-  const [isDeleting, startDeleting] = React.useTransition()
+  const [prevTemplates, setPrevTemplates] = React.useState(templates)
 
-  React.useEffect(() => {
+  if (templates !== prevTemplates) {
+    setPrevTemplates(templates)
     setTemplateItems(templates)
-  }, [templates])
+  }
+
+  const [activeScope, setActiveScope] = React.useState("LEAD")
 
   const visibleTemplates = templateItems.filter(
     (template) => template.scope === activeScope

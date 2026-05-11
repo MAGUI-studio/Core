@@ -153,7 +153,10 @@ export function LeadDetailsDrawer({
 
   React.useEffect(() => {
     if (open && localLead.id) {
-      void loadExtraData(localLead.id)
+      const timer = setTimeout(() => {
+        void loadExtraData(localLead.id)
+      }, 0)
+      return () => clearTimeout(timer)
     }
   }, [open, localLead.id, loadExtraData])
 

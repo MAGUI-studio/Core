@@ -40,16 +40,14 @@ export function AssetManagement({
 }) {
   const t = useTranslations("Admin.projects.details")
   const [assets, setAssets] = React.useState(initialAssets)
-  const [isDeleting, setIsDeleting] = React.useState<string | null>(null)
-  const [typeFilter, setTypeFilter] = React.useState<AssetType | "ALL">("ALL")
-  const [originFilter, setOriginFilter] = React.useState<AssetOrigin | "ALL">(
-    "ALL"
-  )
-  const [visibilityFilter, setVisibilityFilter] = React.useState<
-    AssetVisibility | "ALL"
-  >("ALL")
+  const [prevInitialAssets, setPrevInitialAssets] = React.useState(initialAssets)
 
-  React.useEffect(() => setAssets(initialAssets), [initialAssets])
+  if (initialAssets !== prevInitialAssets) {
+    setPrevInitialAssets(initialAssets)
+    setAssets(initialAssets)
+  }
+
+  const [isDeleting, setIsDeleting] = React.useState<string | null>(null)
 
   const sensors = useSensors(useSensor(PointerSensor))
 

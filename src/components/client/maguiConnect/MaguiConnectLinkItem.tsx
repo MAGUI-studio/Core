@@ -102,6 +102,13 @@ export function MaguiConnectLinkItem({
   const router = useRouter()
   const [isPending, startTransition] = React.useTransition()
   const [isFeatured, setIsFeatured] = React.useState(link.isFeatured)
+  const [prevIsFeatured, setPrevIsFeatured] = React.useState(link.isFeatured)
+
+  if (link.isFeatured !== prevIsFeatured) {
+    setPrevIsFeatured(link.isFeatured)
+    setIsFeatured(link.isFeatured)
+  }
+
   const [openSection, setOpenSection] = React.useState(false)
 
   const [editLabel, setEditLabel] = React.useState(link.label)
@@ -119,10 +126,6 @@ export function MaguiConnectLinkItem({
   const [openKind, setOpenKind] = React.useState(false)
 
   const countdown = useCountdownLabel(link.expiresAt)
-
-  React.useEffect(() => {
-    setIsFeatured(link.isFeatured)
-  }, [link.isFeatured])
 
   const preset = MAGUI_CONNECT_LINK_KIND_PRESETS.find(
     (p) => p.value === link.kind

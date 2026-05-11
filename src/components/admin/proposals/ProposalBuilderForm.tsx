@@ -156,21 +156,25 @@ export function ProposalBuilderForm({
     (item) => !item.description.trim() || item.unitValue <= 0
   )
 
-  React.useEffect(() => {
-    const selectedLead = leads.find((lead) => lead.id === selectedLeadId)
-    if (!selectedLead) return
+  const selectedLead = leads.find((lead) => lead.id === selectedLeadId)
+  const [prevSelectedLeadId, setPrevSelectedLeadId] =
+    React.useState(selectedLeadId)
 
-    setTitle((currentTitle: string) => {
-      if (
-        currentTitle === t("builder.title") ||
-        currentTitle.startsWith(`${t("builder.title")} - `)
-      ) {
-        return `${t("builder.title")} - ${selectedLead.companyName}`
-      }
+  if (selectedLeadId !== prevSelectedLeadId) {
+    setPrevSelectedLeadId(selectedLeadId)
+    if (selectedLead) {
+      setTitle((currentTitle: string) => {
+        if (
+          currentTitle === t("builder.title") ||
+          currentTitle.startsWith(`${t("builder.title")} - `)
+        ) {
+          return `${t("builder.title")} - ${selectedLead.companyName}`
+        }
 
-      return currentTitle
-    })
-  }, [selectedLeadId, leads, t])
+        return currentTitle
+      })
+    }
+  }
 
   const total = items.reduce(
     (acc, item) => acc + item.unitValue * item.quantity,

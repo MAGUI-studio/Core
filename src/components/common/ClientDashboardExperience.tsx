@@ -19,20 +19,23 @@ export function ClientDashboardExperience({
 }: ClientDashboardExperienceProps): React.JSX.Element {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [isReady, setIsReady] = React.useState(false)
-
   const experienceKey = React.useMemo(
     () => `${pathname}?${searchParams.toString()}`,
     [pathname, searchParams]
   )
 
+  const [isReady, setIsReady] = React.useState(false)
+  const [prevExperienceKey, setPrevExperienceKey] =
+    React.useState(experienceKey)
+
+  if (experienceKey !== prevExperienceKey) {
+    setPrevExperienceKey(experienceKey)
+    setIsReady(false)
+  }
+
   const handleComplete = React.useCallback(() => {
     setIsReady(true)
   }, [])
-
-  React.useEffect(() => {
-    setIsReady(false)
-  }, [experienceKey])
 
   return (
     <React.Fragment key={experienceKey}>

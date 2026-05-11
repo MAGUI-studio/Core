@@ -113,6 +113,42 @@ export function CreateProjectForm({
   const selectedService = serviceCategories.find(
     (s) => s.id === selectedCategoryId
   )
+
+  const [prevSelectedCategoryId, setPrevSelectedCategoryId] =
+    React.useState("")
+  const [prevCustomValue, setPrevCustomValue] = React.useState(customValue)
+
+  if (
+    selectedCategoryId !== prevSelectedCategoryId ||
+    customValue !== prevCustomValue
+  ) {
+    setPrevSelectedCategoryId(selectedCategoryId)
+    setPrevCustomValue(customValue)
+    if (selectedService && !customValue) {
+      setBudgetBaseValue(
+        formatCurrencyBRLFromCents(selectedService.suggestedValue)
+      )
+    }
+  }
+
+  const [prevSelectedServiceForDays, setPrevSelectedServiceForDays] =
+    React.useState("")
+  if (selectedCategoryId !== prevSelectedServiceForDays) {
+    setPrevSelectedServiceForDays(selectedCategoryId)
+    if (selectedService) {
+      if (
+        selectedService.name.includes("Agendamento") ||
+        selectedService.name.includes("Sistema") ||
+        selectedService.name.includes("Manutenção") ||
+        selectedService.name.includes("Estabilidade")
+      ) {
+        setExecutionBusinessDays(30)
+      } else {
+        setExecutionBusinessDays(20)
+      }
+    }
+  }
+
   const normalizedServiceName = selectedService?.name ?? ""
   const projectCategoryValue = normalizedServiceName.includes("Landing")
     ? "LANDING_PAGE"
@@ -125,30 +161,6 @@ export function CreateProjectForm({
             normalizedServiceName.includes("Estabilidade")
           ? "STABILITY_PLAN"
           : ""
-
-  React.useEffect(() => {
-    if (selectedService && !customValue) {
-      setBudgetBaseValue(
-        formatCurrencyBRLFromCents(selectedService.suggestedValue)
-      )
-    }
-  }, [selectedService, customValue])
-
-  React.useEffect(() => {
-    if (!selectedService) return
-
-    if (
-      selectedService.name.includes("Agendamento") ||
-      selectedService.name.includes("Sistema") ||
-      selectedService.name.includes("Manutenção") ||
-      selectedService.name.includes("Estabilidade")
-    ) {
-      setExecutionBusinessDays(30)
-      return
-    }
-
-    setExecutionBusinessDays(20)
-  }, [selectedService])
 
   const baseBudgetCents = React.useMemo(
     () => parseCurrencyBRLToCents(budgetBaseValue),
@@ -175,8 +187,16 @@ export function CreateProjectForm({
     [totalBudgetCents]
   )
 
-  // Auto-generate 50/50 installments
-  React.useEffect(() => {
+  const [prevInstallmentTrigger, setPrevInstallmentTrigger] = React.useState({
+    paymentMethod,
+    totalBudgetCents,
+  })
+
+  if (
+    paymentMethod !== prevInstallmentTrigger.paymentMethod ||
+    totalBudgetCents !== prevInstallmentTrigger.totalBudgetCents
+  ) {
+    setPrevInstallmentTrigger({ paymentMethod, totalBudgetCents })
     if (paymentMethod === PaymentMethod.FIFTY_FIFTY && totalBudgetCents > 0) {
       const half = Math.floor(totalBudgetCents / 2)
       const remainder = totalBudgetCents - half
@@ -193,7 +213,7 @@ export function CreateProjectForm({
         },
       ])
     }
-  }, [paymentMethod, totalBudgetCents])
+  }
 
   const addInstallment = () => {
     setInstallments([

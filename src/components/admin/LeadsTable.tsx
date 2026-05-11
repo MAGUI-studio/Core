@@ -43,10 +43,12 @@ export function LeadsTable({
   const t = useTranslations("Admin.crm")
   const [search, setSearch] = React.useState("")
   const [leadItems, setLeadItems] = React.useState(leads)
+  const [prevLeads, setPrevLeads] = React.useState(leads)
 
-  React.useEffect(() => {
+  if (leads !== prevLeads) {
+    setPrevLeads(leads)
     setLeadItems(leads)
-  }, [leads])
+  }
 
   const filteredLeads = React.useMemo(() => {
     let result = [...leadItems]

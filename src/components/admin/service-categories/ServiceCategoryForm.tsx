@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { Image, Lightning, ShieldCheck, Tag } from "@phosphor-icons/react"
+import { Image as ImageIcon, Lightning, ShieldCheck, Tag } from "@phosphor-icons/react"
 
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
@@ -117,7 +117,7 @@ export function ServiceCategoryForm({
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-3">
-            <Image weight="bold" className="size-5 text-brand-primary" />
+            <ImageIcon weight="bold" className="size-5 text-brand-primary" />
             <h3 className="font-heading text-lg font-black uppercase tracking-tight text-foreground">
               Oferta e exibicao
             </h3>
@@ -149,7 +149,7 @@ export function ServiceCategoryForm({
               Foto (URL)
             </Label>
             <div className="relative group">
-              <Image
+              <ImageIcon
                 weight="bold"
                 className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/40 transition-colors group-focus-within:text-brand-primary"
               />

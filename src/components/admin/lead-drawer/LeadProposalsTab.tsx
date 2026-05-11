@@ -52,11 +52,20 @@ export function LeadProposalsTab({
   const [proposals, setProposals] = React.useState<LeadProposalRecord[]>(
     providedProposals ?? []
   )
+  const [prevProvidedProposals, setPrevProvidedProposals] =
+    React.useState(providedProposals)
+
+  if (providedProposals !== prevProvidedProposals) {
+    setPrevProvidedProposals(providedProposals)
+    if (providedProposals) {
+      setProposals(providedProposals)
+    }
+  }
+
   const [isLoading, setIsLoading] = React.useState(!providedProposals)
 
   const loadProposals = React.useCallback(async () => {
     if (providedProposals) {
-      setProposals(providedProposals)
       setIsLoading(false)
       return
     }
@@ -74,8 +83,10 @@ export function LeadProposalsTab({
   }, [lead.id, providedProposals])
 
   React.useEffect(() => {
-    void loadProposals()
-  }, [loadProposals])
+    if (!providedProposals) {
+      void loadProposals()
+    }
+  }, [loadProposals, providedProposals])
 
   const handleDelete = async (id: string) => {
     const result = await deleteProposalAction(id)

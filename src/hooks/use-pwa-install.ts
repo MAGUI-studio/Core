@@ -37,26 +37,39 @@ function isSafariBrowser(userAgent: string) {
 export function usePwaInstall() {
   const [deferredPrompt, setDeferredPrompt] =
     React.useState<BeforeInstallPromptEvent | null>(null)
-  const [isStandalone, setIsStandalone] = React.useState(false)
-  const [isAppleMobile, setIsAppleMobile] = React.useState(false)
-  const [isSafari, setIsSafari] = React.useState(false)
 
-  React.useEffect(() => {
-    if (typeof window === "undefined") return
+  const [isOptimisticallyStandalone, setIsOptimisticallyStandalone] =
+    React.useState(false)
 
-    const userAgent = window.navigator.userAgent
-    const platform = window.navigator.platform || ""
-    const standalone =
+  const isStandaloneFromStore = React.useSyncExternalStore(
+    (callback) => {
+      const mql = window.matchMedia("(display-mode: standalone)")
+      mql.addEventListener("change", callback)
+      return () => mql.removeEventListener("change", callback)
+    },
+    () =>
       window.matchMedia("(display-mode: standalone)").matches ||
       ("standalone" in window.navigator &&
         Boolean(
           (window.navigator as Navigator & { standalone?: boolean }).standalone
-        ))
+        )),
+    () => false
+  )
 
-    setIsStandalone(standalone)
-    setIsAppleMobile(isAppleMobileDevice(userAgent, platform))
-    setIsSafari(isSafariBrowser(userAgent))
+  const isStandalone = isStandaloneFromStore || isOptimisticallyStandalone
 
+  const { isAppleMobile, isSafari } = React.useMemo(() => {
+    if (typeof window === "undefined")
+      return { isAppleMobile: false, isSafari: false }
+    const userAgent = window.navigator.userAgent
+    const platform = window.navigator.platform || ""
+    return {
+      isAppleMobile: isAppleMobileDevice(userAgent, platform),
+      isSafari: isSafariBrowser(userAgent),
+    }
+  }, [])
+
+  React.useEffect(() => {
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault()
       setDeferredPrompt(event as BeforeInstallPromptEvent)
@@ -92,7 +105,7 @@ export function usePwaInstall() {
 
     if (outcome === "accepted") {
       setDeferredPrompt(null)
-      setIsStandalone(true)
+      setIsOptimisticallyStandalone(true)
       return true
     }
 

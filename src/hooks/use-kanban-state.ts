@@ -39,12 +39,15 @@ export function useKanbanState(initialLeads: Lead[], onMove?: () => void) {
   const [boardState, setBoardState] = React.useState(() =>
     buildBoardState(initialLeads)
   )
+  const [prevInitialLeads, setPrevInitialLeads] = React.useState(initialLeads)
+
+  if (initialLeads !== prevInitialLeads) {
+    setPrevInitialLeads(initialLeads)
+    setBoardState(buildBoardState(initialLeads))
+  }
+
   const [activeLeadId, setActiveLeadId] = React.useState<string | null>(null)
   const lastCommittedStatusRef = React.useRef<LeadStatus | null>(null)
-
-  React.useEffect(() => {
-    setBoardState(buildBoardState(initialLeads))
-  }, [initialLeads])
 
   const handleDragStart = (event: DragStartEvent) => {
     const id = String(event.active.id)

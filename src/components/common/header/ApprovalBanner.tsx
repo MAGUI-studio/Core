@@ -62,16 +62,20 @@ export function ApprovalBanner({ approvals }: ApprovalBannerProps) {
   const [feedback, setFeedback] = React.useState("")
   const [currentIndex, setCurrentIndex] = React.useState(0)
   const [dismissedIds, setDismissedIds] = React.useState<string[]>([])
+  const [prevApprovalsLength, setPrevApprovalsLength] = React.useState(
+    approvals.length
+  )
+
+  if (approvals.length !== prevApprovalsLength) {
+    setPrevApprovalsLength(approvals.length)
+    setCurrentIndex(0)
+    setDismissedIds([])
+  }
 
   const visibleApprovals = React.useMemo(
     () => approvals.filter((a) => !dismissedIds.includes(a.lastUpdateId)),
     [dismissedIds, approvals]
   )
-
-  React.useEffect(() => {
-    setCurrentIndex(0)
-    setDismissedIds([])
-  }, [approvals.length])
 
   const active = visibleApprovals[currentIndex]
 
