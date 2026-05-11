@@ -378,7 +378,7 @@ export function LeadQuickActions({
               className="min-h-[220px] rounded-2xl border-border/40 bg-background/50 text-sm"
             />
 
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <Button
                 type="button"
                 onClick={() => void handleCopyMessage()}
@@ -387,17 +387,6 @@ export function LeadQuickActions({
               >
                 <CopySimple size={18} weight="bold" className="mr-2" />
                 Copiar mensagem
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => void handleCopyProposalLink()}
-                disabled={!selectedProposal}
-                className="h-12 rounded-full border-border/30 bg-background text-[10px] font-black uppercase tracking-widest"
-              >
-                <LinkSimple size={18} weight="bold" className="mr-2" />
-                Copiar link
               </Button>
 
               <Button
