@@ -13,6 +13,7 @@ import {
   ChartPie,
   DownloadSimple,
   House,
+  Lifebuoy,
   Link as LinkIcon,
   List,
   Money,
@@ -82,6 +83,8 @@ function NavIcon({
       return <Tag weight="bold" className={className} />
     case "link":
       return <LinkIcon weight="bold" className={className} />
+    case "support":
+      return <Lifebuoy weight="duotone" className={className} />
     case "money":
       return <Money weight="duotone" className={className} />
     case "list":

@@ -132,6 +132,42 @@ export function getNotificationPresentation(
         emphasisClassName:
           "bg-violet-500/12 text-violet-900 dark:bg-violet-400/15 dark:text-violet-200",
       }
+    case "SUPPORT_TICKET_CREATED" as NotificationType:
+      return {
+        categoryLabel: t("support"),
+        emphasisLabel: t("new_ticket"),
+        requiresAction: true,
+        cardClassName:
+          "border-cyan-500/20 bg-cyan-500/[0.04] dark:border-cyan-400/20 dark:bg-[linear-gradient(135deg,rgba(34,211,238,0.10),rgba(10,10,10,0.78))]",
+        categoryClassName:
+          "border border-cyan-500/20 bg-cyan-500/10 text-cyan-800 dark:border-cyan-400/20 dark:bg-cyan-400/10 dark:text-cyan-200",
+        emphasisClassName:
+          "bg-cyan-500/12 text-cyan-900 dark:bg-cyan-400/15 dark:text-cyan-200",
+      }
+    case "SUPPORT_TICKET_CLIENT_REPLY" as NotificationType:
+      return {
+        categoryLabel: t("support"),
+        emphasisLabel: t("client_reply"),
+        requiresAction: true,
+        cardClassName:
+          "border-sky-500/20 bg-sky-500/[0.04] dark:border-sky-400/20 dark:bg-[linear-gradient(135deg,rgba(56,189,248,0.10),rgba(10,10,10,0.78))]",
+        categoryClassName:
+          "border border-sky-500/20 bg-sky-500/10 text-sky-800 dark:border-sky-400/20 dark:bg-sky-400/10 dark:text-sky-200",
+        emphasisClassName:
+          "bg-sky-500/12 text-sky-900 dark:bg-sky-400/15 dark:text-sky-200",
+      }
+    case "SUPPORT_TICKET_ADMIN_REPLY" as NotificationType:
+      return {
+        categoryLabel: t("support"),
+        emphasisLabel: t("team_reply"),
+        requiresAction: true,
+        cardClassName:
+          "border-emerald-500/20 bg-emerald-500/[0.04] dark:border-emerald-400/20 dark:bg-[linear-gradient(135deg,rgba(16,185,129,0.10),rgba(10,10,10,0.78))]",
+        categoryClassName:
+          "border border-emerald-500/20 bg-emerald-500/10 text-emerald-800 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200",
+        emphasisClassName:
+          "bg-emerald-500/12 text-emerald-900 dark:bg-emerald-400/15 dark:text-emerald-200",
+      }
     default:
       return {
         categoryLabel: t("notification"),

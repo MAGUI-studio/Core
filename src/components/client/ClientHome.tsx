@@ -7,6 +7,7 @@ import { ClientHomeData } from "@/src/types/client-portal"
 import {
   ClockCountdown,
   Files,
+  Lifebuoy,
   NotePencil,
   Receipt,
   ShieldCheck,
@@ -308,6 +309,13 @@ export async function ClientHome({
                       : "/projects"
                   ),
                   icon: ClockCountdown,
+                },
+                {
+                  label: "Suporte",
+                  description:
+                    "Abra tickets e acompanhe respostas da equipe em até 24h úteis.",
+                  href: toHref("/support"),
+                  icon: Lifebuoy,
                 },
               ].map((link) => (
                 <ClientFeatureLink

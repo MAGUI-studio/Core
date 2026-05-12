@@ -299,7 +299,7 @@ CLÁUSULA 1. DO OBJETO TÉCNICO
 1.2. ${clauseTwo}
 1.3. ${clauseThree}${optionalClauseOneFour}
 CLÁUSULA 2. DO CRONOGRAMA E DO "GARGALO DE CONTEÚDO"
-2.1. O prazo de execução será de ${executionDaysLabel}, contados a partir da validação do material inicial enviado pelo CONTRATANTE, que consiste obrigatoriamente no preenchimento do briefing e envio de ativos através do CRM da CONTRATADA (https://dashboard.magui.studio). Para os fins deste contrato, dias úteis correspondem a segunda-feira a sexta-feira, excluídos sábados, domingos, feriados nacionais e feriados municipais de São José dos Campos/SP.
+2.1. O prazo de execução será de ${executionDaysLabel}, contados a partir da validação do material inicial enviado pelo CONTRATANTE, que consiste obrigatoriamente no preenchimento do briefing e envio de ativos através do CRM da CONTRATADA (https://dashboard.magui.studio). Para os fins deste contrato, dias úteis correspondem a segunda-feira a sexta-feira, excluídos sábados, domingos, feriados nacionais e feriados municipais de São José dos Campos/SP. O horário útil operacional da CONTRATADA é das 09h00 às 18h00.
 
 2.2. Cláusula de Reciprocidade de Prazos (Gargalo): Dada a natureza dependente da prestação de serviço, qualquer atraso por parte do CONTRATANTE no envio de materiais, ativos ou feedbacks resultará na postergação automática do cronograma final na proporção de 02 (dois) dias úteis de entrega para cada 01 (um) dia de atraso na resposta, visando a reorganização da fila de produção da CONTRATADA.
 
@@ -307,7 +307,7 @@ CLÁUSULA 2. DO CRONOGRAMA E DO "GARGALO DE CONTEÚDO"
 CLÁUSULA 3. DA METODOLOGIA DE COMUNICAÇÃO ASSÍNCRONA E GESTÃO VIA CRM
 3.1. Exclusividade de Canal: Toda e qualquer interação técnica ou administrativa deverá ocorrer, obrigatoriamente, via plataforma oficial (https://dashboard.magui.studio). Comunicações via WhatsApp serão consideradas apenas informativas, não gerando obrigações contratuais até que sejam formalizadas no CRM.
 
-3.2. Fundamentação do Modelo Assíncrono: A CONTRATADA opera sob regime de alta concentração técnica (Deep Work). Não estão previstas reuniões por videoconferência (Meet, Zoom), chamadas de voz ou atendimentos presenciais. As dúvidas e solicitações serão respondidas via CRM em até 24 (vinte e quatro) horas úteis.
+3.2. Fundamentação do Modelo Assíncrono: A CONTRATADA opera sob regime de alta concentração técnica (Deep Work). Não estão previstas reuniões por videoconferência (Meet, Zoom), chamadas de voz ou atendimentos presenciais. As dúvidas, solicitações e chamados de suporte deverão ser registrados via CRM, por meio da área de tickets, e serão respondidos em até 24 (vinte e quatro) horas úteis, consideradas exclusivamente dentro da janela operacional de segunda-feira a sexta-feira, das 09h00 às 18h00.
 3.3. Segurança do Registro Escrito: A abstenção de chamadas síncronas visa garantir a
 segurança jurídica de ambas as partes, assegurando que toda solicitação, alteração ou
 aprovação esteja devidamente documentada por escrito no CRM, evitando ambiguidades

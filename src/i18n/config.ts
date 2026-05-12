@@ -43,6 +43,14 @@ export const pathnames = {
     pt: "/admin/prospeccao/contratos",
     en: "/admin/crm/contracts",
   },
+  "/admin/support": {
+    pt: "/admin/tickets",
+    en: "/admin/support",
+  },
+  "/admin/support/[id]": {
+    pt: "/admin/tickets/[id]",
+    en: "/admin/support/[id]",
+  },
   "/admin/crm/proposals/new": {
     pt: "/admin/prospeccao/propostas/nova",
     en: "/admin/crm/proposals/new",
@@ -98,6 +106,14 @@ export const pathnames = {
   "/financial": {
     pt: "/financeiro",
     en: "/financial",
+  },
+  "/support": {
+    pt: "/suporte",
+    en: "/support",
+  },
+  "/support/[id]": {
+    pt: "/suporte/[id]",
+    en: "/support/[id]",
   },
   "/projects/[id]": {
     pt: "/projetos/[id]",

@@ -714,14 +714,15 @@
       "categories_all": "Todas as Categorias",
       "categories_new": "Nova Categoria"
     },
-    "commercial": {
-      "title": "Comercial",
-      "list": "Todos os Leads",
-      "kanban": "Kanban",
-      "create": "Novo Lead",
-      "proposals": "Todas as Propostas",
-      "proposal_create": "Nova Proposta"
-    },
+  "commercial": {
+    "title": "Comercial",
+    "list": "Todos os Leads",
+    "kanban": "Kanban",
+    "create": "Novo Lead",
+    "proposals": "Todas as Propostas",
+    "support": "Tickets de Suporte",
+    "proposal_create": "Nova Proposta"
+  },
     "documents": {
       "title": "Documentos",
       "list": "Todos os Documentos",
@@ -735,20 +736,22 @@
       "admin_role": "Administrador",
       "client_role": "Cliente"
     },
-    "client": {
-      "home": "Início",
-      "projects": "Meus Projetos",
-      "maguiConnect": "MAGUI Connect",
-      "files": "Arquivos",
-      "notifications": "Notificações"
-    },
+  "client": {
+    "home": "Início",
+    "projects": "Meus Projetos",
+    "support": "Suporte",
+    "maguiConnect": "MAGUI Connect",
+    "files": "Arquivos",
+    "notifications": "Notificações"
+  },
     "descriptions": {
       "dashboard": "Visão consolidada da operação",
-      "commercial_list": "Gestão ativa de leads e funil",
-      "commercial_create": "Catalogar nova oportunidade",
-      "proposals": "Controle de propostas enviadas",
-      "proposal_create": "Gerar novo documento comercial",
-      "projects_list": "Monitoramento de execução",
+    "commercial_list": "Gestão ativa de leads e funil",
+    "commercial_create": "Catalogar nova oportunidade",
+    "proposals": "Controle de propostas enviadas",
+    "proposal_create": "Gerar novo documento comercial",
+    "support": "Atendimento, tickets e histórico de suporte",
+    "projects_list": "Monitoramento de execução",
       "projects_create": "Iniciar projeto",
       "service_categories": "Configurações de serviços",
       "clients_list": "Portal de acessos e usuários",
@@ -1381,11 +1384,15 @@
       "new_material": "Novo material",
       "lead_assigned": "Lead atribuído",
       "informational": "Informativo",
-      "operations": "Operações",
-      "automatic_reminder": "Lembrete automático",
-      "connect": "MAGUI Connect",
-      "connect_access_request": "Solicitação de liberação"
-    },
+    "operations": "Operações",
+    "automatic_reminder": "Lembrete automático",
+    "connect": "MAGUI Connect",
+    "connect_access_request": "Solicitação de liberação",
+    "support": "Suporte",
+    "new_ticket": "Novo ticket",
+    "client_reply": "Resposta do cliente",
+    "team_reply": "Resposta da equipe"
+  },
     "pagination": {
       "previous": "Anterior",
       "next": "Próxima",

@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.8.0
- * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
+ * Prisma Client JS version: 7.7.0
+ * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
  */
 Prisma.prismaVersion = {
-  client: "7.8.0",
-  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
+  client: "7.7.0",
+  engine: "75cbdc1eb7150937890ad5465d861175c6624711"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -248,8 +248,6 @@ exports.Prisma.LeadScalarFieldEnum = {
   instagram: 'instagram',
   status: 'status',
   source: 'source',
-  notes: 'notes',
-  value: 'value',
   lastContactAt: 'lastContactAt',
   nextActionAt: 'nextActionAt',
   assignedToId: 'assignedToId',
@@ -688,6 +686,36 @@ exports.Prisma.EmailLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.SupportTicketScalarFieldEnum = {
+  id: 'id',
+  number: 'number',
+  subject: 'subject',
+  description: 'description',
+  status: 'status',
+  priority: 'priority',
+  category: 'category',
+  slaDeadlineAt: 'slaDeadlineAt',
+  firstResponseAt: 'firstResponseAt',
+  resolvedAt: 'resolvedAt',
+  closedAt: 'closedAt',
+  clientUnreadCount: 'clientUnreadCount',
+  adminUnreadCount: 'adminUnreadCount',
+  clientId: 'clientId',
+  projectId: 'projectId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SupportTicketMessageScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  isInternal: 'isInternal',
+  ticketId: 'ticketId',
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.MaguiConnectClickEventScalarFieldEnum = {
   id: 'id',
   profileId: 'profileId',
@@ -865,7 +893,10 @@ exports.NotificationType = exports.$Enums.NotificationType = {
   PROJECT_STATUS_CHANGED: 'PROJECT_STATUS_CHANGED',
   LEAD_ASSIGNED: 'LEAD_ASSIGNED',
   OPERATIONAL_REMINDER: 'OPERATIONAL_REMINDER',
-  CONNECT_ACCESS_REQUEST: 'CONNECT_ACCESS_REQUEST'
+  CONNECT_ACCESS_REQUEST: 'CONNECT_ACCESS_REQUEST',
+  SUPPORT_TICKET_CREATED: 'SUPPORT_TICKET_CREATED',
+  SUPPORT_TICKET_CLIENT_REPLY: 'SUPPORT_TICKET_CLIENT_REPLY',
+  SUPPORT_TICKET_ADMIN_REPLY: 'SUPPORT_TICKET_ADMIN_REPLY'
 };
 
 exports.ScheduledReminderType = exports.$Enums.ScheduledReminderType = {
@@ -922,6 +953,30 @@ exports.InstallmentStatus = exports.$Enums.InstallmentStatus = {
   WAIVED: 'WAIVED'
 };
 
+exports.SupportTicketStatus = exports.$Enums.SupportTicketStatus = {
+  OPEN: 'OPEN',
+  IN_PROGRESS: 'IN_PROGRESS',
+  WAITING_FOR_CLIENT: 'WAITING_FOR_CLIENT',
+  ANSWERED: 'ANSWERED',
+  RESOLVED: 'RESOLVED',
+  CLOSED: 'CLOSED'
+};
+
+exports.SupportTicketPriority = exports.$Enums.SupportTicketPriority = {
+  LOW: 'LOW',
+  NORMAL: 'NORMAL',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT'
+};
+
+exports.SupportTicketCategory = exports.$Enums.SupportTicketCategory = {
+  GENERAL: 'GENERAL',
+  TECHNICAL: 'TECHNICAL',
+  BILLING: 'BILLING',
+  ACCESS: 'ACCESS',
+  CHANGE_REQUEST: 'CHANGE_REQUEST'
+};
+
 exports.Prisma.ModelName = {
   DashboardMetricSnapshot: 'DashboardMetricSnapshot',
   EventOutbox: 'EventOutbox',
@@ -961,6 +1016,8 @@ exports.Prisma.ModelName = {
   Installment: 'Installment',
   PaymentEvent: 'PaymentEvent',
   EmailLog: 'EmailLog',
+  SupportTicket: 'SupportTicket',
+  SupportTicketMessage: 'SupportTicketMessage',
   MaguiConnectClickEvent: 'MaguiConnectClickEvent'
 };
 

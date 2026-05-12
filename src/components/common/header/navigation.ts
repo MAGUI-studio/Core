@@ -7,6 +7,7 @@ type HeaderStaticPath =
   | "/admin/crm/contracts"
   | "/admin/crm/proposals"
   | "/admin/crm/proposals/new"
+  | "/admin/support"
   | "/admin/projects"
   | "/admin/projects/register"
   | "/admin/service-categories"
@@ -14,6 +15,7 @@ type HeaderStaticPath =
   | "/magui-connect"
   | "/financial"
   | "/projects"
+  | "/support"
 
 export type HeaderNavLeaf = {
   href: HeaderStaticPath
@@ -28,6 +30,7 @@ export type HeaderNavLeaf = {
     | "crm"
     | "tag"
     | "link"
+    | "support"
   label: string
   description?: string
   featured?: boolean
@@ -93,6 +96,13 @@ export function getAdminHeaderNav(t: (key: string) => string): {
             label: "Contratos",
             description: "Consulte os contratos já gerados",
             matchPrefix: "/admin/crm/contracts",
+          },
+          {
+            href: "/admin/support",
+            icon: "support",
+            label: t("commercial.support"),
+            description: t("descriptions.support"),
+            matchPrefix: "/admin/support",
           },
         ],
       },
@@ -176,6 +186,12 @@ export function getClientHeaderNav(
       icon: "money",
       label: "Financeiro",
       matchPrefix: "/financial",
+    },
+    {
+      href: "/support",
+      icon: "support",
+      label: t("client.support"),
+      matchPrefix: "/support",
     },
     {
       href: "/magui-connect",

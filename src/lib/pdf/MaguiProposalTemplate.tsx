@@ -622,7 +622,7 @@ function buildProposalBlocks(
   const timeline = notes.timeline.length
     ? notes.timeline
     : [
-        "Estimativa em dias úteis, com início da contagem somente após briefing validado e materiais obrigatórios enviados pelo cliente via CRM. Para esta proposta, dias úteis correspondem a segunda-feira a sexta-feira, excluídos sábados, domingos, feriados nacionais e feriados municipais de São José dos Campos/SP.",
+        "Estimativa em dias úteis, com início da contagem somente após briefing validado e materiais obrigatórios enviados pelo cliente via CRM. Para esta proposta, dias úteis correspondem a segunda-feira a sexta-feira, excluídos sábados, domingos, feriados nacionais e feriados municipais de São José dos Campos/SP. O horário útil operacional considerado é das 09h00 às 18h00.",
       ]
 
   const paymentTerms = notes.paymentTerms.length
@@ -682,7 +682,7 @@ function buildProposalBlocks(
     { type: "aboutStudio" },
     {
       type: "paragraph",
-      text: "Trabalhamos com metodologia assíncrona, escopo técnico bem definido e comunicação centralizada via CRM. Isso cria previsibilidade para o cliente e protege a execução do projeto contra ruído, retrabalho e desalinhamento.",
+      text: "Trabalhamos com metodologia assíncrona, escopo técnico bem definido e comunicação centralizada via CRM. Dúvidas, alinhamentos e chamados de suporte acontecem por esse canal, com resposta em até 24 horas úteis dentro da janela operacional de segunda a sexta, das 09h00 às 18h00. Isso cria previsibilidade para o cliente e protege a execução do projeto contra ruído, retrabalho e desalinhamento.",
     },
     { type: "clause", text: "1. IDENTIFICAÇÃO DAS PARTES E OBJETIVO DO PROJETO" },
     {

@@ -153,6 +153,9 @@ enum NotificationType {
   LEAD_ASSIGNED
   OPERATIONAL_REMINDER
   CONNECT_ACCESS_REQUEST
+  SUPPORT_TICKET_CREATED
+  SUPPORT_TICKET_CLIENT_REPLY
+  SUPPORT_TICKET_ADMIN_REPLY
 }
 
 enum ScheduledReminderType {
@@ -203,6 +206,30 @@ enum SignatureProvider {
   DOCUSIGN
   ADOBE_SIGN
   OTHER
+}
+
+enum SupportTicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_FOR_CLIENT
+  ANSWERED
+  RESOLVED
+  CLOSED
+}
+
+enum SupportTicketPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum SupportTicketCategory {
+  GENERAL
+  TECHNICAL
+  BILLING
+  ACCESS
+  CHANGE_REQUEST
 }
 
 model DashboardMetricSnapshot {
@@ -269,6 +296,8 @@ model User {
   emailLogs        EmailLog[]
   stripeCustomerId String?         @unique
   invoices         Invoice[]       @relation("InvoiceClient")
+  supportTickets   SupportTicket[] @relation("SupportTicketClient")
+  supportMessages  SupportTicketMessage[] @relation("SupportTicketAuthor")
 
   canAccessMaguiConnect Boolean @default(false)
   maguiConnectProfile MaguiConnectProfile?
@@ -532,6 +561,7 @@ model Project {
   kickoff       ProjectKickoffChecklist?
   documents     Document[]
   invoices      Invoice[]
+  supportTickets SupportTicket[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1087,6 +1117,56 @@ model EmailLog {
   @@index([userId])
   @@index([templateKey])
   @@index([entityType, entityId])
+}
+
+model SupportTicket {
+  id          String                @id @default(cuid())
+  number      Int                   @unique @default(autoincrement())
+  subject     String
+  description String                @db.Text
+  status      SupportTicketStatus   @default(OPEN)
+  priority    SupportTicketPriority @default(NORMAL)
+  category    SupportTicketCategory @default(GENERAL)
+  slaDeadlineAt DateTime?
+  firstResponseAt DateTime?
+  resolvedAt  DateTime?
+  closedAt    DateTime?
+  clientUnreadCount Int             @default(0)
+  adminUnreadCount  Int             @default(0)
+
+  clientId String
+  client   User    @relation("SupportTicketClient", fields: [clientId], references: [id], onDelete: Cascade)
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  messages SupportTicketMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clientId, status, updatedAt])
+  @@index([projectId, status, updatedAt])
+  @@index([status, priority, updatedAt])
+  @@index([number])
+}
+
+model SupportTicketMessage {
+  id        String @id @default(cuid())
+  content   String @db.Text
+  isInternal Boolean @default(false)
+
+  ticketId String
+  ticket   SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  authorId String?
+  author   User?   @relation("SupportTicketAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ticketId, createdAt])
+  @@index([authorId, createdAt])
 }
 
 model MaguiConnectClickEvent {

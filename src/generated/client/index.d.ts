@@ -204,6 +204,16 @@ export type PaymentEvent = $Result.DefaultSelection<Prisma.$PaymentEventPayload>
  */
 export type EmailLog = $Result.DefaultSelection<Prisma.$EmailLogPayload>
 /**
+ * Model SupportTicket
+ * 
+ */
+export type SupportTicket = $Result.DefaultSelection<Prisma.$SupportTicketPayload>
+/**
+ * Model SupportTicketMessage
+ * 
+ */
+export type SupportTicketMessage = $Result.DefaultSelection<Prisma.$SupportTicketMessagePayload>
+/**
  * Model MaguiConnectClickEvent
  * 
  */
@@ -415,7 +425,10 @@ export const NotificationType: {
   PROJECT_STATUS_CHANGED: 'PROJECT_STATUS_CHANGED',
   LEAD_ASSIGNED: 'LEAD_ASSIGNED',
   OPERATIONAL_REMINDER: 'OPERATIONAL_REMINDER',
-  CONNECT_ACCESS_REQUEST: 'CONNECT_ACCESS_REQUEST'
+  CONNECT_ACCESS_REQUEST: 'CONNECT_ACCESS_REQUEST',
+  SUPPORT_TICKET_CREATED: 'SUPPORT_TICKET_CREATED',
+  SUPPORT_TICKET_CLIENT_REPLY: 'SUPPORT_TICKET_CLIENT_REPLY',
+  SUPPORT_TICKET_ADMIN_REPLY: 'SUPPORT_TICKET_ADMIN_REPLY'
 };
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
@@ -487,6 +500,39 @@ export const SignatureProvider: {
 };
 
 export type SignatureProvider = (typeof SignatureProvider)[keyof typeof SignatureProvider]
+
+
+export const SupportTicketStatus: {
+  OPEN: 'OPEN',
+  IN_PROGRESS: 'IN_PROGRESS',
+  WAITING_FOR_CLIENT: 'WAITING_FOR_CLIENT',
+  ANSWERED: 'ANSWERED',
+  RESOLVED: 'RESOLVED',
+  CLOSED: 'CLOSED'
+};
+
+export type SupportTicketStatus = (typeof SupportTicketStatus)[keyof typeof SupportTicketStatus]
+
+
+export const SupportTicketPriority: {
+  LOW: 'LOW',
+  NORMAL: 'NORMAL',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT'
+};
+
+export type SupportTicketPriority = (typeof SupportTicketPriority)[keyof typeof SupportTicketPriority]
+
+
+export const SupportTicketCategory: {
+  GENERAL: 'GENERAL',
+  TECHNICAL: 'TECHNICAL',
+  BILLING: 'BILLING',
+  ACCESS: 'ACCESS',
+  CHANGE_REQUEST: 'CHANGE_REQUEST'
+};
+
+export type SupportTicketCategory = (typeof SupportTicketCategory)[keyof typeof SupportTicketCategory]
 
 }
 
@@ -593,6 +639,18 @@ export const DocumentStatus: typeof $Enums.DocumentStatus
 export type SignatureProvider = $Enums.SignatureProvider
 
 export const SignatureProvider: typeof $Enums.SignatureProvider
+
+export type SupportTicketStatus = $Enums.SupportTicketStatus
+
+export const SupportTicketStatus: typeof $Enums.SupportTicketStatus
+
+export type SupportTicketPriority = $Enums.SupportTicketPriority
+
+export const SupportTicketPriority: typeof $Enums.SupportTicketPriority
+
+export type SupportTicketCategory = $Enums.SupportTicketCategory
+
+export const SupportTicketCategory: typeof $Enums.SupportTicketCategory
 
 /**
  * ##  Prisma Client ʲˢ
@@ -707,7 +765,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
-  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
+  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
   $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => $Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<R>
 
@@ -1096,6 +1154,26 @@ export class PrismaClient<
   get emailLog(): Prisma.EmailLogDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.supportTicket`: Exposes CRUD operations for the **SupportTicket** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SupportTickets
+    * const supportTickets = await prisma.supportTicket.findMany()
+    * ```
+    */
+  get supportTicket(): Prisma.SupportTicketDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.supportTicketMessage`: Exposes CRUD operations for the **SupportTicketMessage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SupportTicketMessages
+    * const supportTicketMessages = await prisma.supportTicketMessage.findMany()
+    * ```
+    */
+  get supportTicketMessage(): Prisma.SupportTicketMessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.maguiConnectClickEvent`: Exposes CRUD operations for the **MaguiConnectClickEvent** model.
     * Example usage:
     * ```ts
@@ -1154,8 +1232,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.8.0
-   * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
+   * Prisma Client JS version: 7.7.0
+   * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
    */
   export type PrismaVersion = {
     client: string
@@ -1576,6 +1654,8 @@ export namespace Prisma {
     Installment: 'Installment',
     PaymentEvent: 'PaymentEvent',
     EmailLog: 'EmailLog',
+    SupportTicket: 'SupportTicket',
+    SupportTicketMessage: 'SupportTicketMessage',
     MaguiConnectClickEvent: 'MaguiConnectClickEvent'
   };
 
@@ -1592,7 +1672,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "dashboardMetricSnapshot" | "eventOutbox" | "user" | "maguiConnectProfile" | "maguiConnectSection" | "maguiConnectLink" | "lead" | "leadNote" | "leadActivity" | "messageTemplate" | "savedView" | "serviceCategory" | "project" | "document" | "documentVersion" | "documentClause" | "documentSigner" | "projectHandoff" | "projectKickoffChecklist" | "briefingEntry" | "projectMember" | "update" | "updateAttachment" | "approvalEvent" | "actionItem" | "asset" | "version" | "notification" | "scheduledReminder" | "auditLog" | "proposal" | "proposalItem" | "proposalBlock" | "billingProfile" | "invoice" | "installment" | "paymentEvent" | "emailLog" | "maguiConnectClickEvent"
+      modelProps: "dashboardMetricSnapshot" | "eventOutbox" | "user" | "maguiConnectProfile" | "maguiConnectSection" | "maguiConnectLink" | "lead" | "leadNote" | "leadActivity" | "messageTemplate" | "savedView" | "serviceCategory" | "project" | "document" | "documentVersion" | "documentClause" | "documentSigner" | "projectHandoff" | "projectKickoffChecklist" | "briefingEntry" | "projectMember" | "update" | "updateAttachment" | "approvalEvent" | "actionItem" | "asset" | "version" | "notification" | "scheduledReminder" | "auditLog" | "proposal" | "proposalItem" | "proposalBlock" | "billingProfile" | "invoice" | "installment" | "paymentEvent" | "emailLog" | "supportTicket" | "supportTicketMessage" | "maguiConnectClickEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4408,6 +4488,154 @@ export namespace Prisma {
           }
         }
       }
+      SupportTicket: {
+        payload: Prisma.$SupportTicketPayload<ExtArgs>
+        fields: Prisma.SupportTicketFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SupportTicketFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SupportTicketFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketPayload>
+          }
+          findFirst: {
+            args: Prisma.SupportTicketFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SupportTicketFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketPayload>
+          }
+          findMany: {
+            args: Prisma.SupportTicketFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketPayload>[]
+          }
+          create: {
+            args: Prisma.SupportTicketCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketPayload>
+          }
+          createMany: {
+            args: Prisma.SupportTicketCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SupportTicketCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketPayload>[]
+          }
+          delete: {
+            args: Prisma.SupportTicketDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketPayload>
+          }
+          update: {
+            args: Prisma.SupportTicketUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketPayload>
+          }
+          deleteMany: {
+            args: Prisma.SupportTicketDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SupportTicketUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SupportTicketUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketPayload>[]
+          }
+          upsert: {
+            args: Prisma.SupportTicketUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketPayload>
+          }
+          aggregate: {
+            args: Prisma.SupportTicketAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSupportTicket>
+          }
+          groupBy: {
+            args: Prisma.SupportTicketGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SupportTicketGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SupportTicketCountArgs<ExtArgs>
+            result: $Utils.Optional<SupportTicketCountAggregateOutputType> | number
+          }
+        }
+      }
+      SupportTicketMessage: {
+        payload: Prisma.$SupportTicketMessagePayload<ExtArgs>
+        fields: Prisma.SupportTicketMessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SupportTicketMessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketMessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SupportTicketMessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketMessagePayload>
+          }
+          findFirst: {
+            args: Prisma.SupportTicketMessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketMessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SupportTicketMessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketMessagePayload>
+          }
+          findMany: {
+            args: Prisma.SupportTicketMessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketMessagePayload>[]
+          }
+          create: {
+            args: Prisma.SupportTicketMessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketMessagePayload>
+          }
+          createMany: {
+            args: Prisma.SupportTicketMessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SupportTicketMessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketMessagePayload>[]
+          }
+          delete: {
+            args: Prisma.SupportTicketMessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketMessagePayload>
+          }
+          update: {
+            args: Prisma.SupportTicketMessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketMessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.SupportTicketMessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SupportTicketMessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SupportTicketMessageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketMessagePayload>[]
+          }
+          upsert: {
+            args: Prisma.SupportTicketMessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTicketMessagePayload>
+          }
+          aggregate: {
+            args: Prisma.SupportTicketMessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSupportTicketMessage>
+          }
+          groupBy: {
+            args: Prisma.SupportTicketMessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SupportTicketMessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SupportTicketMessageCountArgs<ExtArgs>
+            result: $Utils.Optional<SupportTicketMessageCountAggregateOutputType> | number
+          }
+        }
+      }
       MaguiConnectClickEvent: {
         payload: Prisma.$MaguiConnectClickEventPayload<ExtArgs>
         fields: Prisma.MaguiConnectClickEventFieldRefs
@@ -4628,6 +4856,8 @@ export namespace Prisma {
     installment?: InstallmentOmit
     paymentEvent?: PaymentEventOmit
     emailLog?: EmailLogOmit
+    supportTicket?: SupportTicketOmit
+    supportTicketMessage?: SupportTicketMessageOmit
     maguiConnectClickEvent?: MaguiConnectClickEventOmit
   }
 
@@ -4722,6 +4952,8 @@ export namespace Prisma {
     createdDocumentVersions: number
     emailLogs: number
     invoices: number
+    supportTickets: number
+    supportMessages: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4738,6 +4970,8 @@ export namespace Prisma {
     createdDocumentVersions?: boolean | UserCountOutputTypeCountCreatedDocumentVersionsArgs
     emailLogs?: boolean | UserCountOutputTypeCountEmailLogsArgs
     invoices?: boolean | UserCountOutputTypeCountInvoicesArgs
+    supportTickets?: boolean | UserCountOutputTypeCountSupportTicketsArgs
+    supportMessages?: boolean | UserCountOutputTypeCountSupportMessagesArgs
   }
 
   // Custom InputTypes
@@ -4840,6 +5074,20 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountInvoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InvoiceWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSupportTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SupportTicketWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSupportMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SupportTicketMessageWhereInput
   }
 
 
@@ -5059,6 +5307,7 @@ export namespace Prisma {
     proposals: number
     documents: number
     invoices: number
+    supportTickets: number
   }
 
   export type ProjectCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5073,6 +5322,7 @@ export namespace Prisma {
     proposals?: boolean | ProjectCountOutputTypeCountProposalsArgs
     documents?: boolean | ProjectCountOutputTypeCountDocumentsArgs
     invoices?: boolean | ProjectCountOutputTypeCountInvoicesArgs
+    supportTickets?: boolean | ProjectCountOutputTypeCountSupportTicketsArgs
   }
 
   // Custom InputTypes
@@ -5161,6 +5411,13 @@ export namespace Prisma {
    */
   export type ProjectCountOutputTypeCountInvoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InvoiceWhereInput
+  }
+
+  /**
+   * ProjectCountOutputType without action
+   */
+  export type ProjectCountOutputTypeCountSupportTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SupportTicketWhereInput
   }
 
 
@@ -5361,6 +5618,37 @@ export namespace Prisma {
    */
   export type InstallmentCountOutputTypeCountPaymentEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PaymentEventWhereInput
+  }
+
+
+  /**
+   * Count Type SupportTicketCountOutputType
+   */
+
+  export type SupportTicketCountOutputType = {
+    messages: number
+  }
+
+  export type SupportTicketCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    messages?: boolean | SupportTicketCountOutputTypeCountMessagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SupportTicketCountOutputType without action
+   */
+  export type SupportTicketCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketCountOutputType
+     */
+    select?: SupportTicketCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SupportTicketCountOutputType without action
+   */
+  export type SupportTicketCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SupportTicketMessageWhereInput
   }
 
 
@@ -7810,6 +8098,8 @@ export namespace Prisma {
     billingProfile?: boolean | User$billingProfileArgs<ExtArgs>
     emailLogs?: boolean | User$emailLogsArgs<ExtArgs>
     invoices?: boolean | User$invoicesArgs<ExtArgs>
+    supportTickets?: boolean | User$supportTicketsArgs<ExtArgs>
+    supportMessages?: boolean | User$supportMessagesArgs<ExtArgs>
     maguiConnectProfile?: boolean | User$maguiConnectProfileArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -7881,6 +8171,8 @@ export namespace Prisma {
     billingProfile?: boolean | User$billingProfileArgs<ExtArgs>
     emailLogs?: boolean | User$emailLogsArgs<ExtArgs>
     invoices?: boolean | User$invoicesArgs<ExtArgs>
+    supportTickets?: boolean | User$supportTicketsArgs<ExtArgs>
+    supportMessages?: boolean | User$supportMessagesArgs<ExtArgs>
     maguiConnectProfile?: boolean | User$maguiConnectProfileArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -7904,6 +8196,8 @@ export namespace Prisma {
       billingProfile: Prisma.$BillingProfilePayload<ExtArgs> | null
       emailLogs: Prisma.$EmailLogPayload<ExtArgs>[]
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
+      supportTickets: Prisma.$SupportTicketPayload<ExtArgs>[]
+      supportMessages: Prisma.$SupportTicketMessagePayload<ExtArgs>[]
       maguiConnectProfile: Prisma.$MaguiConnectProfilePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -8329,6 +8623,8 @@ export namespace Prisma {
     billingProfile<T extends User$billingProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$billingProfileArgs<ExtArgs>>): Prisma__BillingProfileClient<$Result.GetResult<Prisma.$BillingProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     emailLogs<T extends User$emailLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$emailLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invoices<T extends User$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, User$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    supportTickets<T extends User$supportTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$supportTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    supportMessages<T extends User$supportMessagesArgs<ExtArgs> = {}>(args?: Subset<T, User$supportMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     maguiConnectProfile<T extends User$maguiConnectProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$maguiConnectProfileArgs<ExtArgs>>): Prisma__MaguiConnectProfileClient<$Result.GetResult<Prisma.$MaguiConnectProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -9094,6 +9390,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: InvoiceScalarFieldEnum | InvoiceScalarFieldEnum[]
+  }
+
+  /**
+   * User.supportTickets
+   */
+  export type User$supportTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketInclude<ExtArgs> | null
+    where?: SupportTicketWhereInput
+    orderBy?: SupportTicketOrderByWithRelationInput | SupportTicketOrderByWithRelationInput[]
+    cursor?: SupportTicketWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SupportTicketScalarFieldEnum | SupportTicketScalarFieldEnum[]
+  }
+
+  /**
+   * User.supportMessages
+   */
+  export type User$supportMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageInclude<ExtArgs> | null
+    where?: SupportTicketMessageWhereInput
+    orderBy?: SupportTicketMessageOrderByWithRelationInput | SupportTicketMessageOrderByWithRelationInput[]
+    cursor?: SupportTicketMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SupportTicketMessageScalarFieldEnum | SupportTicketMessageScalarFieldEnum[]
   }
 
   /**
@@ -13277,8 +13621,6 @@ export namespace Prisma {
     instagram: string | null
     status: $Enums.LeadStatus | null
     source: $Enums.LeadSource | null
-    notes: string | null
-    value: string | null
     lastContactAt: Date | null
     nextActionAt: Date | null
     assignedToId: string | null
@@ -13298,8 +13640,6 @@ export namespace Prisma {
     instagram: string | null
     status: $Enums.LeadStatus | null
     source: $Enums.LeadSource | null
-    notes: string | null
-    value: string | null
     lastContactAt: Date | null
     nextActionAt: Date | null
     assignedToId: string | null
@@ -13319,8 +13659,6 @@ export namespace Prisma {
     instagram: number
     status: number
     source: number
-    notes: number
-    value: number
     lastContactAt: number
     nextActionAt: number
     assignedToId: number
@@ -13342,8 +13680,6 @@ export namespace Prisma {
     instagram?: true
     status?: true
     source?: true
-    notes?: true
-    value?: true
     lastContactAt?: true
     nextActionAt?: true
     assignedToId?: true
@@ -13363,8 +13699,6 @@ export namespace Prisma {
     instagram?: true
     status?: true
     source?: true
-    notes?: true
-    value?: true
     lastContactAt?: true
     nextActionAt?: true
     assignedToId?: true
@@ -13384,8 +13718,6 @@ export namespace Prisma {
     instagram?: true
     status?: true
     source?: true
-    notes?: true
-    value?: true
     lastContactAt?: true
     nextActionAt?: true
     assignedToId?: true
@@ -13478,8 +13810,6 @@ export namespace Prisma {
     instagram: string | null
     status: $Enums.LeadStatus
     source: $Enums.LeadSource
-    notes: string | null
-    value: string | null
     lastContactAt: Date | null
     nextActionAt: Date | null
     assignedToId: string | null
@@ -13516,8 +13846,6 @@ export namespace Prisma {
     instagram?: boolean
     status?: boolean
     source?: boolean
-    notes?: boolean
-    value?: boolean
     lastContactAt?: boolean
     nextActionAt?: boolean
     assignedToId?: boolean
@@ -13543,8 +13871,6 @@ export namespace Prisma {
     instagram?: boolean
     status?: boolean
     source?: boolean
-    notes?: boolean
-    value?: boolean
     lastContactAt?: boolean
     nextActionAt?: boolean
     assignedToId?: boolean
@@ -13565,8 +13891,6 @@ export namespace Prisma {
     instagram?: boolean
     status?: boolean
     source?: boolean
-    notes?: boolean
-    value?: boolean
     lastContactAt?: boolean
     nextActionAt?: boolean
     assignedToId?: boolean
@@ -13587,8 +13911,6 @@ export namespace Prisma {
     instagram?: boolean
     status?: boolean
     source?: boolean
-    notes?: boolean
-    value?: boolean
     lastContactAt?: boolean
     nextActionAt?: boolean
     assignedToId?: boolean
@@ -13598,7 +13920,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type LeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyName" | "contactName" | "email" | "phone" | "website" | "instagram" | "status" | "source" | "notes" | "value" | "lastContactAt" | "nextActionAt" | "assignedToId" | "convertedProjectId" | "convertedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["lead"]>
+  export type LeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyName" | "contactName" | "email" | "phone" | "website" | "instagram" | "status" | "source" | "lastContactAt" | "nextActionAt" | "assignedToId" | "convertedProjectId" | "convertedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["lead"]>
   export type LeadInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignedTo?: boolean | Lead$assignedToArgs<ExtArgs>
     followUpNotes?: boolean | Lead$followUpNotesArgs<ExtArgs>
@@ -13633,8 +13955,6 @@ export namespace Prisma {
       instagram: string | null
       status: $Enums.LeadStatus
       source: $Enums.LeadSource
-      notes: string | null
-      value: string | null
       lastContactAt: Date | null
       nextActionAt: Date | null
       assignedToId: string | null
@@ -14079,8 +14399,6 @@ export namespace Prisma {
     readonly instagram: FieldRef<"Lead", 'String'>
     readonly status: FieldRef<"Lead", 'LeadStatus'>
     readonly source: FieldRef<"Lead", 'LeadSource'>
-    readonly notes: FieldRef<"Lead", 'String'>
-    readonly value: FieldRef<"Lead", 'String'>
     readonly lastContactAt: FieldRef<"Lead", 'DateTime'>
     readonly nextActionAt: FieldRef<"Lead", 'DateTime'>
     readonly assignedToId: FieldRef<"Lead", 'String'>
@@ -20471,6 +20789,7 @@ export namespace Prisma {
     kickoff?: boolean | Project$kickoffArgs<ExtArgs>
     documents?: boolean | Project$documentsArgs<ExtArgs>
     invoices?: boolean | Project$invoicesArgs<ExtArgs>
+    supportTickets?: boolean | Project$supportTicketsArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["project"]>
 
@@ -20594,6 +20913,7 @@ export namespace Prisma {
     kickoff?: boolean | Project$kickoffArgs<ExtArgs>
     documents?: boolean | Project$documentsArgs<ExtArgs>
     invoices?: boolean | Project$invoicesArgs<ExtArgs>
+    supportTickets?: boolean | Project$supportTicketsArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProjectIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -20623,6 +20943,7 @@ export namespace Prisma {
       kickoff: Prisma.$ProjectKickoffChecklistPayload<ExtArgs> | null
       documents: Prisma.$DocumentPayload<ExtArgs>[]
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
+      supportTickets: Prisma.$SupportTicketPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -21064,6 +21385,7 @@ export namespace Prisma {
     kickoff<T extends Project$kickoffArgs<ExtArgs> = {}>(args?: Subset<T, Project$kickoffArgs<ExtArgs>>): Prisma__ProjectKickoffChecklistClient<$Result.GetResult<Prisma.$ProjectKickoffChecklistPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     documents<T extends Project$documentsArgs<ExtArgs> = {}>(args?: Subset<T, Project$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invoices<T extends Project$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, Project$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    supportTickets<T extends Project$supportTicketsArgs<ExtArgs> = {}>(args?: Subset<T, Project$supportTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -21842,6 +22164,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: InvoiceScalarFieldEnum | InvoiceScalarFieldEnum[]
+  }
+
+  /**
+   * Project.supportTickets
+   */
+  export type Project$supportTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketInclude<ExtArgs> | null
+    where?: SupportTicketWhereInput
+    orderBy?: SupportTicketOrderByWithRelationInput | SupportTicketOrderByWithRelationInput[]
+    cursor?: SupportTicketWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SupportTicketScalarFieldEnum | SupportTicketScalarFieldEnum[]
   }
 
   /**
@@ -51313,6 +51659,2440 @@ export namespace Prisma {
 
 
   /**
+   * Model SupportTicket
+   */
+
+  export type AggregateSupportTicket = {
+    _count: SupportTicketCountAggregateOutputType | null
+    _avg: SupportTicketAvgAggregateOutputType | null
+    _sum: SupportTicketSumAggregateOutputType | null
+    _min: SupportTicketMinAggregateOutputType | null
+    _max: SupportTicketMaxAggregateOutputType | null
+  }
+
+  export type SupportTicketAvgAggregateOutputType = {
+    number: number | null
+    clientUnreadCount: number | null
+    adminUnreadCount: number | null
+  }
+
+  export type SupportTicketSumAggregateOutputType = {
+    number: number | null
+    clientUnreadCount: number | null
+    adminUnreadCount: number | null
+  }
+
+  export type SupportTicketMinAggregateOutputType = {
+    id: string | null
+    number: number | null
+    subject: string | null
+    description: string | null
+    status: $Enums.SupportTicketStatus | null
+    priority: $Enums.SupportTicketPriority | null
+    category: $Enums.SupportTicketCategory | null
+    slaDeadlineAt: Date | null
+    firstResponseAt: Date | null
+    resolvedAt: Date | null
+    closedAt: Date | null
+    clientUnreadCount: number | null
+    adminUnreadCount: number | null
+    clientId: string | null
+    projectId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SupportTicketMaxAggregateOutputType = {
+    id: string | null
+    number: number | null
+    subject: string | null
+    description: string | null
+    status: $Enums.SupportTicketStatus | null
+    priority: $Enums.SupportTicketPriority | null
+    category: $Enums.SupportTicketCategory | null
+    slaDeadlineAt: Date | null
+    firstResponseAt: Date | null
+    resolvedAt: Date | null
+    closedAt: Date | null
+    clientUnreadCount: number | null
+    adminUnreadCount: number | null
+    clientId: string | null
+    projectId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SupportTicketCountAggregateOutputType = {
+    id: number
+    number: number
+    subject: number
+    description: number
+    status: number
+    priority: number
+    category: number
+    slaDeadlineAt: number
+    firstResponseAt: number
+    resolvedAt: number
+    closedAt: number
+    clientUnreadCount: number
+    adminUnreadCount: number
+    clientId: number
+    projectId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SupportTicketAvgAggregateInputType = {
+    number?: true
+    clientUnreadCount?: true
+    adminUnreadCount?: true
+  }
+
+  export type SupportTicketSumAggregateInputType = {
+    number?: true
+    clientUnreadCount?: true
+    adminUnreadCount?: true
+  }
+
+  export type SupportTicketMinAggregateInputType = {
+    id?: true
+    number?: true
+    subject?: true
+    description?: true
+    status?: true
+    priority?: true
+    category?: true
+    slaDeadlineAt?: true
+    firstResponseAt?: true
+    resolvedAt?: true
+    closedAt?: true
+    clientUnreadCount?: true
+    adminUnreadCount?: true
+    clientId?: true
+    projectId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SupportTicketMaxAggregateInputType = {
+    id?: true
+    number?: true
+    subject?: true
+    description?: true
+    status?: true
+    priority?: true
+    category?: true
+    slaDeadlineAt?: true
+    firstResponseAt?: true
+    resolvedAt?: true
+    closedAt?: true
+    clientUnreadCount?: true
+    adminUnreadCount?: true
+    clientId?: true
+    projectId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SupportTicketCountAggregateInputType = {
+    id?: true
+    number?: true
+    subject?: true
+    description?: true
+    status?: true
+    priority?: true
+    category?: true
+    slaDeadlineAt?: true
+    firstResponseAt?: true
+    resolvedAt?: true
+    closedAt?: true
+    clientUnreadCount?: true
+    adminUnreadCount?: true
+    clientId?: true
+    projectId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SupportTicketAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SupportTicket to aggregate.
+     */
+    where?: SupportTicketWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SupportTickets to fetch.
+     */
+    orderBy?: SupportTicketOrderByWithRelationInput | SupportTicketOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SupportTicketWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SupportTickets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SupportTickets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SupportTickets
+    **/
+    _count?: true | SupportTicketCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SupportTicketAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SupportTicketSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SupportTicketMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SupportTicketMaxAggregateInputType
+  }
+
+  export type GetSupportTicketAggregateType<T extends SupportTicketAggregateArgs> = {
+        [P in keyof T & keyof AggregateSupportTicket]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSupportTicket[P]>
+      : GetScalarType<T[P], AggregateSupportTicket[P]>
+  }
+
+
+
+
+  export type SupportTicketGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SupportTicketWhereInput
+    orderBy?: SupportTicketOrderByWithAggregationInput | SupportTicketOrderByWithAggregationInput[]
+    by: SupportTicketScalarFieldEnum[] | SupportTicketScalarFieldEnum
+    having?: SupportTicketScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SupportTicketCountAggregateInputType | true
+    _avg?: SupportTicketAvgAggregateInputType
+    _sum?: SupportTicketSumAggregateInputType
+    _min?: SupportTicketMinAggregateInputType
+    _max?: SupportTicketMaxAggregateInputType
+  }
+
+  export type SupportTicketGroupByOutputType = {
+    id: string
+    number: number
+    subject: string
+    description: string
+    status: $Enums.SupportTicketStatus
+    priority: $Enums.SupportTicketPriority
+    category: $Enums.SupportTicketCategory
+    slaDeadlineAt: Date | null
+    firstResponseAt: Date | null
+    resolvedAt: Date | null
+    closedAt: Date | null
+    clientUnreadCount: number
+    adminUnreadCount: number
+    clientId: string
+    projectId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SupportTicketCountAggregateOutputType | null
+    _avg: SupportTicketAvgAggregateOutputType | null
+    _sum: SupportTicketSumAggregateOutputType | null
+    _min: SupportTicketMinAggregateOutputType | null
+    _max: SupportTicketMaxAggregateOutputType | null
+  }
+
+  type GetSupportTicketGroupByPayload<T extends SupportTicketGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SupportTicketGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SupportTicketGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SupportTicketGroupByOutputType[P]>
+            : GetScalarType<T[P], SupportTicketGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SupportTicketSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    number?: boolean
+    subject?: boolean
+    description?: boolean
+    status?: boolean
+    priority?: boolean
+    category?: boolean
+    slaDeadlineAt?: boolean
+    firstResponseAt?: boolean
+    resolvedAt?: boolean
+    closedAt?: boolean
+    clientUnreadCount?: boolean
+    adminUnreadCount?: boolean
+    clientId?: boolean
+    projectId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    project?: boolean | SupportTicket$projectArgs<ExtArgs>
+    messages?: boolean | SupportTicket$messagesArgs<ExtArgs>
+    _count?: boolean | SupportTicketCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["supportTicket"]>
+
+  export type SupportTicketSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    number?: boolean
+    subject?: boolean
+    description?: boolean
+    status?: boolean
+    priority?: boolean
+    category?: boolean
+    slaDeadlineAt?: boolean
+    firstResponseAt?: boolean
+    resolvedAt?: boolean
+    closedAt?: boolean
+    clientUnreadCount?: boolean
+    adminUnreadCount?: boolean
+    clientId?: boolean
+    projectId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    project?: boolean | SupportTicket$projectArgs<ExtArgs>
+  }, ExtArgs["result"]["supportTicket"]>
+
+  export type SupportTicketSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    number?: boolean
+    subject?: boolean
+    description?: boolean
+    status?: boolean
+    priority?: boolean
+    category?: boolean
+    slaDeadlineAt?: boolean
+    firstResponseAt?: boolean
+    resolvedAt?: boolean
+    closedAt?: boolean
+    clientUnreadCount?: boolean
+    adminUnreadCount?: boolean
+    clientId?: boolean
+    projectId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    project?: boolean | SupportTicket$projectArgs<ExtArgs>
+  }, ExtArgs["result"]["supportTicket"]>
+
+  export type SupportTicketSelectScalar = {
+    id?: boolean
+    number?: boolean
+    subject?: boolean
+    description?: boolean
+    status?: boolean
+    priority?: boolean
+    category?: boolean
+    slaDeadlineAt?: boolean
+    firstResponseAt?: boolean
+    resolvedAt?: boolean
+    closedAt?: boolean
+    clientUnreadCount?: boolean
+    adminUnreadCount?: boolean
+    clientId?: boolean
+    projectId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SupportTicketOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "subject" | "description" | "status" | "priority" | "category" | "slaDeadlineAt" | "firstResponseAt" | "resolvedAt" | "closedAt" | "clientUnreadCount" | "adminUnreadCount" | "clientId" | "projectId" | "createdAt" | "updatedAt", ExtArgs["result"]["supportTicket"]>
+  export type SupportTicketInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    project?: boolean | SupportTicket$projectArgs<ExtArgs>
+    messages?: boolean | SupportTicket$messagesArgs<ExtArgs>
+    _count?: boolean | SupportTicketCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type SupportTicketIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    project?: boolean | SupportTicket$projectArgs<ExtArgs>
+  }
+  export type SupportTicketIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    project?: boolean | SupportTicket$projectArgs<ExtArgs>
+  }
+
+  export type $SupportTicketPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SupportTicket"
+    objects: {
+      client: Prisma.$UserPayload<ExtArgs>
+      project: Prisma.$ProjectPayload<ExtArgs> | null
+      messages: Prisma.$SupportTicketMessagePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      number: number
+      subject: string
+      description: string
+      status: $Enums.SupportTicketStatus
+      priority: $Enums.SupportTicketPriority
+      category: $Enums.SupportTicketCategory
+      slaDeadlineAt: Date | null
+      firstResponseAt: Date | null
+      resolvedAt: Date | null
+      closedAt: Date | null
+      clientUnreadCount: number
+      adminUnreadCount: number
+      clientId: string
+      projectId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["supportTicket"]>
+    composites: {}
+  }
+
+  type SupportTicketGetPayload<S extends boolean | null | undefined | SupportTicketDefaultArgs> = $Result.GetResult<Prisma.$SupportTicketPayload, S>
+
+  type SupportTicketCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SupportTicketFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SupportTicketCountAggregateInputType | true
+    }
+
+  export interface SupportTicketDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SupportTicket'], meta: { name: 'SupportTicket' } }
+    /**
+     * Find zero or one SupportTicket that matches the filter.
+     * @param {SupportTicketFindUniqueArgs} args - Arguments to find a SupportTicket
+     * @example
+     * // Get one SupportTicket
+     * const supportTicket = await prisma.supportTicket.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SupportTicketFindUniqueArgs>(args: SelectSubset<T, SupportTicketFindUniqueArgs<ExtArgs>>): Prisma__SupportTicketClient<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SupportTicket that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SupportTicketFindUniqueOrThrowArgs} args - Arguments to find a SupportTicket
+     * @example
+     * // Get one SupportTicket
+     * const supportTicket = await prisma.supportTicket.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SupportTicketFindUniqueOrThrowArgs>(args: SelectSubset<T, SupportTicketFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SupportTicketClient<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SupportTicket that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketFindFirstArgs} args - Arguments to find a SupportTicket
+     * @example
+     * // Get one SupportTicket
+     * const supportTicket = await prisma.supportTicket.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SupportTicketFindFirstArgs>(args?: SelectSubset<T, SupportTicketFindFirstArgs<ExtArgs>>): Prisma__SupportTicketClient<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SupportTicket that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketFindFirstOrThrowArgs} args - Arguments to find a SupportTicket
+     * @example
+     * // Get one SupportTicket
+     * const supportTicket = await prisma.supportTicket.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SupportTicketFindFirstOrThrowArgs>(args?: SelectSubset<T, SupportTicketFindFirstOrThrowArgs<ExtArgs>>): Prisma__SupportTicketClient<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SupportTickets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SupportTickets
+     * const supportTickets = await prisma.supportTicket.findMany()
+     * 
+     * // Get first 10 SupportTickets
+     * const supportTickets = await prisma.supportTicket.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const supportTicketWithIdOnly = await prisma.supportTicket.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SupportTicketFindManyArgs>(args?: SelectSubset<T, SupportTicketFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SupportTicket.
+     * @param {SupportTicketCreateArgs} args - Arguments to create a SupportTicket.
+     * @example
+     * // Create one SupportTicket
+     * const SupportTicket = await prisma.supportTicket.create({
+     *   data: {
+     *     // ... data to create a SupportTicket
+     *   }
+     * })
+     * 
+     */
+    create<T extends SupportTicketCreateArgs>(args: SelectSubset<T, SupportTicketCreateArgs<ExtArgs>>): Prisma__SupportTicketClient<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SupportTickets.
+     * @param {SupportTicketCreateManyArgs} args - Arguments to create many SupportTickets.
+     * @example
+     * // Create many SupportTickets
+     * const supportTicket = await prisma.supportTicket.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SupportTicketCreateManyArgs>(args?: SelectSubset<T, SupportTicketCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SupportTickets and returns the data saved in the database.
+     * @param {SupportTicketCreateManyAndReturnArgs} args - Arguments to create many SupportTickets.
+     * @example
+     * // Create many SupportTickets
+     * const supportTicket = await prisma.supportTicket.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SupportTickets and only return the `id`
+     * const supportTicketWithIdOnly = await prisma.supportTicket.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SupportTicketCreateManyAndReturnArgs>(args?: SelectSubset<T, SupportTicketCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SupportTicket.
+     * @param {SupportTicketDeleteArgs} args - Arguments to delete one SupportTicket.
+     * @example
+     * // Delete one SupportTicket
+     * const SupportTicket = await prisma.supportTicket.delete({
+     *   where: {
+     *     // ... filter to delete one SupportTicket
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SupportTicketDeleteArgs>(args: SelectSubset<T, SupportTicketDeleteArgs<ExtArgs>>): Prisma__SupportTicketClient<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SupportTicket.
+     * @param {SupportTicketUpdateArgs} args - Arguments to update one SupportTicket.
+     * @example
+     * // Update one SupportTicket
+     * const supportTicket = await prisma.supportTicket.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SupportTicketUpdateArgs>(args: SelectSubset<T, SupportTicketUpdateArgs<ExtArgs>>): Prisma__SupportTicketClient<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SupportTickets.
+     * @param {SupportTicketDeleteManyArgs} args - Arguments to filter SupportTickets to delete.
+     * @example
+     * // Delete a few SupportTickets
+     * const { count } = await prisma.supportTicket.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SupportTicketDeleteManyArgs>(args?: SelectSubset<T, SupportTicketDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SupportTickets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SupportTickets
+     * const supportTicket = await prisma.supportTicket.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SupportTicketUpdateManyArgs>(args: SelectSubset<T, SupportTicketUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SupportTickets and returns the data updated in the database.
+     * @param {SupportTicketUpdateManyAndReturnArgs} args - Arguments to update many SupportTickets.
+     * @example
+     * // Update many SupportTickets
+     * const supportTicket = await prisma.supportTicket.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SupportTickets and only return the `id`
+     * const supportTicketWithIdOnly = await prisma.supportTicket.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SupportTicketUpdateManyAndReturnArgs>(args: SelectSubset<T, SupportTicketUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SupportTicket.
+     * @param {SupportTicketUpsertArgs} args - Arguments to update or create a SupportTicket.
+     * @example
+     * // Update or create a SupportTicket
+     * const supportTicket = await prisma.supportTicket.upsert({
+     *   create: {
+     *     // ... data to create a SupportTicket
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SupportTicket we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SupportTicketUpsertArgs>(args: SelectSubset<T, SupportTicketUpsertArgs<ExtArgs>>): Prisma__SupportTicketClient<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SupportTickets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketCountArgs} args - Arguments to filter SupportTickets to count.
+     * @example
+     * // Count the number of SupportTickets
+     * const count = await prisma.supportTicket.count({
+     *   where: {
+     *     // ... the filter for the SupportTickets we want to count
+     *   }
+     * })
+    **/
+    count<T extends SupportTicketCountArgs>(
+      args?: Subset<T, SupportTicketCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SupportTicketCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SupportTicket.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SupportTicketAggregateArgs>(args: Subset<T, SupportTicketAggregateArgs>): Prisma.PrismaPromise<GetSupportTicketAggregateType<T>>
+
+    /**
+     * Group by SupportTicket.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SupportTicketGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SupportTicketGroupByArgs['orderBy'] }
+        : { orderBy?: SupportTicketGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SupportTicketGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSupportTicketGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SupportTicket model
+   */
+  readonly fields: SupportTicketFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SupportTicket.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SupportTicketClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    project<T extends SupportTicket$projectArgs<ExtArgs> = {}>(args?: Subset<T, SupportTicket$projectArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    messages<T extends SupportTicket$messagesArgs<ExtArgs> = {}>(args?: Subset<T, SupportTicket$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SupportTicket model
+   */
+  interface SupportTicketFieldRefs {
+    readonly id: FieldRef<"SupportTicket", 'String'>
+    readonly number: FieldRef<"SupportTicket", 'Int'>
+    readonly subject: FieldRef<"SupportTicket", 'String'>
+    readonly description: FieldRef<"SupportTicket", 'String'>
+    readonly status: FieldRef<"SupportTicket", 'SupportTicketStatus'>
+    readonly priority: FieldRef<"SupportTicket", 'SupportTicketPriority'>
+    readonly category: FieldRef<"SupportTicket", 'SupportTicketCategory'>
+    readonly slaDeadlineAt: FieldRef<"SupportTicket", 'DateTime'>
+    readonly firstResponseAt: FieldRef<"SupportTicket", 'DateTime'>
+    readonly resolvedAt: FieldRef<"SupportTicket", 'DateTime'>
+    readonly closedAt: FieldRef<"SupportTicket", 'DateTime'>
+    readonly clientUnreadCount: FieldRef<"SupportTicket", 'Int'>
+    readonly adminUnreadCount: FieldRef<"SupportTicket", 'Int'>
+    readonly clientId: FieldRef<"SupportTicket", 'String'>
+    readonly projectId: FieldRef<"SupportTicket", 'String'>
+    readonly createdAt: FieldRef<"SupportTicket", 'DateTime'>
+    readonly updatedAt: FieldRef<"SupportTicket", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SupportTicket findUnique
+   */
+  export type SupportTicketFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportTicket to fetch.
+     */
+    where: SupportTicketWhereUniqueInput
+  }
+
+  /**
+   * SupportTicket findUniqueOrThrow
+   */
+  export type SupportTicketFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportTicket to fetch.
+     */
+    where: SupportTicketWhereUniqueInput
+  }
+
+  /**
+   * SupportTicket findFirst
+   */
+  export type SupportTicketFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportTicket to fetch.
+     */
+    where?: SupportTicketWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SupportTickets to fetch.
+     */
+    orderBy?: SupportTicketOrderByWithRelationInput | SupportTicketOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SupportTickets.
+     */
+    cursor?: SupportTicketWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SupportTickets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SupportTickets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SupportTickets.
+     */
+    distinct?: SupportTicketScalarFieldEnum | SupportTicketScalarFieldEnum[]
+  }
+
+  /**
+   * SupportTicket findFirstOrThrow
+   */
+  export type SupportTicketFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportTicket to fetch.
+     */
+    where?: SupportTicketWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SupportTickets to fetch.
+     */
+    orderBy?: SupportTicketOrderByWithRelationInput | SupportTicketOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SupportTickets.
+     */
+    cursor?: SupportTicketWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SupportTickets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SupportTickets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SupportTickets.
+     */
+    distinct?: SupportTicketScalarFieldEnum | SupportTicketScalarFieldEnum[]
+  }
+
+  /**
+   * SupportTicket findMany
+   */
+  export type SupportTicketFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportTickets to fetch.
+     */
+    where?: SupportTicketWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SupportTickets to fetch.
+     */
+    orderBy?: SupportTicketOrderByWithRelationInput | SupportTicketOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SupportTickets.
+     */
+    cursor?: SupportTicketWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SupportTickets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SupportTickets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SupportTickets.
+     */
+    distinct?: SupportTicketScalarFieldEnum | SupportTicketScalarFieldEnum[]
+  }
+
+  /**
+   * SupportTicket create
+   */
+  export type SupportTicketCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SupportTicket.
+     */
+    data: XOR<SupportTicketCreateInput, SupportTicketUncheckedCreateInput>
+  }
+
+  /**
+   * SupportTicket createMany
+   */
+  export type SupportTicketCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SupportTickets.
+     */
+    data: SupportTicketCreateManyInput | SupportTicketCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SupportTicket createManyAndReturn
+   */
+  export type SupportTicketCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * The data used to create many SupportTickets.
+     */
+    data: SupportTicketCreateManyInput | SupportTicketCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SupportTicket update
+   */
+  export type SupportTicketUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SupportTicket.
+     */
+    data: XOR<SupportTicketUpdateInput, SupportTicketUncheckedUpdateInput>
+    /**
+     * Choose, which SupportTicket to update.
+     */
+    where: SupportTicketWhereUniqueInput
+  }
+
+  /**
+   * SupportTicket updateMany
+   */
+  export type SupportTicketUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SupportTickets.
+     */
+    data: XOR<SupportTicketUpdateManyMutationInput, SupportTicketUncheckedUpdateManyInput>
+    /**
+     * Filter which SupportTickets to update
+     */
+    where?: SupportTicketWhereInput
+    /**
+     * Limit how many SupportTickets to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SupportTicket updateManyAndReturn
+   */
+  export type SupportTicketUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * The data used to update SupportTickets.
+     */
+    data: XOR<SupportTicketUpdateManyMutationInput, SupportTicketUncheckedUpdateManyInput>
+    /**
+     * Filter which SupportTickets to update
+     */
+    where?: SupportTicketWhereInput
+    /**
+     * Limit how many SupportTickets to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SupportTicket upsert
+   */
+  export type SupportTicketUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SupportTicket to update in case it exists.
+     */
+    where: SupportTicketWhereUniqueInput
+    /**
+     * In case the SupportTicket found by the `where` argument doesn't exist, create a new SupportTicket with this data.
+     */
+    create: XOR<SupportTicketCreateInput, SupportTicketUncheckedCreateInput>
+    /**
+     * In case the SupportTicket was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SupportTicketUpdateInput, SupportTicketUncheckedUpdateInput>
+  }
+
+  /**
+   * SupportTicket delete
+   */
+  export type SupportTicketDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketInclude<ExtArgs> | null
+    /**
+     * Filter which SupportTicket to delete.
+     */
+    where: SupportTicketWhereUniqueInput
+  }
+
+  /**
+   * SupportTicket deleteMany
+   */
+  export type SupportTicketDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SupportTickets to delete
+     */
+    where?: SupportTicketWhereInput
+    /**
+     * Limit how many SupportTickets to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SupportTicket.project
+   */
+  export type SupportTicket$projectArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    where?: ProjectWhereInput
+  }
+
+  /**
+   * SupportTicket.messages
+   */
+  export type SupportTicket$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageInclude<ExtArgs> | null
+    where?: SupportTicketMessageWhereInput
+    orderBy?: SupportTicketMessageOrderByWithRelationInput | SupportTicketMessageOrderByWithRelationInput[]
+    cursor?: SupportTicketMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SupportTicketMessageScalarFieldEnum | SupportTicketMessageScalarFieldEnum[]
+  }
+
+  /**
+   * SupportTicket without action
+   */
+  export type SupportTicketDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicket
+     */
+    select?: SupportTicketSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicket
+     */
+    omit?: SupportTicketOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SupportTicketMessage
+   */
+
+  export type AggregateSupportTicketMessage = {
+    _count: SupportTicketMessageCountAggregateOutputType | null
+    _min: SupportTicketMessageMinAggregateOutputType | null
+    _max: SupportTicketMessageMaxAggregateOutputType | null
+  }
+
+  export type SupportTicketMessageMinAggregateOutputType = {
+    id: string | null
+    content: string | null
+    isInternal: boolean | null
+    ticketId: string | null
+    authorId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SupportTicketMessageMaxAggregateOutputType = {
+    id: string | null
+    content: string | null
+    isInternal: boolean | null
+    ticketId: string | null
+    authorId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SupportTicketMessageCountAggregateOutputType = {
+    id: number
+    content: number
+    isInternal: number
+    ticketId: number
+    authorId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SupportTicketMessageMinAggregateInputType = {
+    id?: true
+    content?: true
+    isInternal?: true
+    ticketId?: true
+    authorId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SupportTicketMessageMaxAggregateInputType = {
+    id?: true
+    content?: true
+    isInternal?: true
+    ticketId?: true
+    authorId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SupportTicketMessageCountAggregateInputType = {
+    id?: true
+    content?: true
+    isInternal?: true
+    ticketId?: true
+    authorId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SupportTicketMessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SupportTicketMessage to aggregate.
+     */
+    where?: SupportTicketMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SupportTicketMessages to fetch.
+     */
+    orderBy?: SupportTicketMessageOrderByWithRelationInput | SupportTicketMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SupportTicketMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SupportTicketMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SupportTicketMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SupportTicketMessages
+    **/
+    _count?: true | SupportTicketMessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SupportTicketMessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SupportTicketMessageMaxAggregateInputType
+  }
+
+  export type GetSupportTicketMessageAggregateType<T extends SupportTicketMessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateSupportTicketMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSupportTicketMessage[P]>
+      : GetScalarType<T[P], AggregateSupportTicketMessage[P]>
+  }
+
+
+
+
+  export type SupportTicketMessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SupportTicketMessageWhereInput
+    orderBy?: SupportTicketMessageOrderByWithAggregationInput | SupportTicketMessageOrderByWithAggregationInput[]
+    by: SupportTicketMessageScalarFieldEnum[] | SupportTicketMessageScalarFieldEnum
+    having?: SupportTicketMessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SupportTicketMessageCountAggregateInputType | true
+    _min?: SupportTicketMessageMinAggregateInputType
+    _max?: SupportTicketMessageMaxAggregateInputType
+  }
+
+  export type SupportTicketMessageGroupByOutputType = {
+    id: string
+    content: string
+    isInternal: boolean
+    ticketId: string
+    authorId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SupportTicketMessageCountAggregateOutputType | null
+    _min: SupportTicketMessageMinAggregateOutputType | null
+    _max: SupportTicketMessageMaxAggregateOutputType | null
+  }
+
+  type GetSupportTicketMessageGroupByPayload<T extends SupportTicketMessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SupportTicketMessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SupportTicketMessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SupportTicketMessageGroupByOutputType[P]>
+            : GetScalarType<T[P], SupportTicketMessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SupportTicketMessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    isInternal?: boolean
+    ticketId?: boolean
+    authorId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    ticket?: boolean | SupportTicketDefaultArgs<ExtArgs>
+    author?: boolean | SupportTicketMessage$authorArgs<ExtArgs>
+  }, ExtArgs["result"]["supportTicketMessage"]>
+
+  export type SupportTicketMessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    isInternal?: boolean
+    ticketId?: boolean
+    authorId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    ticket?: boolean | SupportTicketDefaultArgs<ExtArgs>
+    author?: boolean | SupportTicketMessage$authorArgs<ExtArgs>
+  }, ExtArgs["result"]["supportTicketMessage"]>
+
+  export type SupportTicketMessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    isInternal?: boolean
+    ticketId?: boolean
+    authorId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    ticket?: boolean | SupportTicketDefaultArgs<ExtArgs>
+    author?: boolean | SupportTicketMessage$authorArgs<ExtArgs>
+  }, ExtArgs["result"]["supportTicketMessage"]>
+
+  export type SupportTicketMessageSelectScalar = {
+    id?: boolean
+    content?: boolean
+    isInternal?: boolean
+    ticketId?: boolean
+    authorId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SupportTicketMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "isInternal" | "ticketId" | "authorId" | "createdAt" | "updatedAt", ExtArgs["result"]["supportTicketMessage"]>
+  export type SupportTicketMessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    ticket?: boolean | SupportTicketDefaultArgs<ExtArgs>
+    author?: boolean | SupportTicketMessage$authorArgs<ExtArgs>
+  }
+  export type SupportTicketMessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    ticket?: boolean | SupportTicketDefaultArgs<ExtArgs>
+    author?: boolean | SupportTicketMessage$authorArgs<ExtArgs>
+  }
+  export type SupportTicketMessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    ticket?: boolean | SupportTicketDefaultArgs<ExtArgs>
+    author?: boolean | SupportTicketMessage$authorArgs<ExtArgs>
+  }
+
+  export type $SupportTicketMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SupportTicketMessage"
+    objects: {
+      ticket: Prisma.$SupportTicketPayload<ExtArgs>
+      author: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      content: string
+      isInternal: boolean
+      ticketId: string
+      authorId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["supportTicketMessage"]>
+    composites: {}
+  }
+
+  type SupportTicketMessageGetPayload<S extends boolean | null | undefined | SupportTicketMessageDefaultArgs> = $Result.GetResult<Prisma.$SupportTicketMessagePayload, S>
+
+  type SupportTicketMessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SupportTicketMessageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SupportTicketMessageCountAggregateInputType | true
+    }
+
+  export interface SupportTicketMessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SupportTicketMessage'], meta: { name: 'SupportTicketMessage' } }
+    /**
+     * Find zero or one SupportTicketMessage that matches the filter.
+     * @param {SupportTicketMessageFindUniqueArgs} args - Arguments to find a SupportTicketMessage
+     * @example
+     * // Get one SupportTicketMessage
+     * const supportTicketMessage = await prisma.supportTicketMessage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SupportTicketMessageFindUniqueArgs>(args: SelectSubset<T, SupportTicketMessageFindUniqueArgs<ExtArgs>>): Prisma__SupportTicketMessageClient<$Result.GetResult<Prisma.$SupportTicketMessagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SupportTicketMessage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SupportTicketMessageFindUniqueOrThrowArgs} args - Arguments to find a SupportTicketMessage
+     * @example
+     * // Get one SupportTicketMessage
+     * const supportTicketMessage = await prisma.supportTicketMessage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SupportTicketMessageFindUniqueOrThrowArgs>(args: SelectSubset<T, SupportTicketMessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SupportTicketMessageClient<$Result.GetResult<Prisma.$SupportTicketMessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SupportTicketMessage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketMessageFindFirstArgs} args - Arguments to find a SupportTicketMessage
+     * @example
+     * // Get one SupportTicketMessage
+     * const supportTicketMessage = await prisma.supportTicketMessage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SupportTicketMessageFindFirstArgs>(args?: SelectSubset<T, SupportTicketMessageFindFirstArgs<ExtArgs>>): Prisma__SupportTicketMessageClient<$Result.GetResult<Prisma.$SupportTicketMessagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SupportTicketMessage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketMessageFindFirstOrThrowArgs} args - Arguments to find a SupportTicketMessage
+     * @example
+     * // Get one SupportTicketMessage
+     * const supportTicketMessage = await prisma.supportTicketMessage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SupportTicketMessageFindFirstOrThrowArgs>(args?: SelectSubset<T, SupportTicketMessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__SupportTicketMessageClient<$Result.GetResult<Prisma.$SupportTicketMessagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SupportTicketMessages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketMessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SupportTicketMessages
+     * const supportTicketMessages = await prisma.supportTicketMessage.findMany()
+     * 
+     * // Get first 10 SupportTicketMessages
+     * const supportTicketMessages = await prisma.supportTicketMessage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const supportTicketMessageWithIdOnly = await prisma.supportTicketMessage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SupportTicketMessageFindManyArgs>(args?: SelectSubset<T, SupportTicketMessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SupportTicketMessage.
+     * @param {SupportTicketMessageCreateArgs} args - Arguments to create a SupportTicketMessage.
+     * @example
+     * // Create one SupportTicketMessage
+     * const SupportTicketMessage = await prisma.supportTicketMessage.create({
+     *   data: {
+     *     // ... data to create a SupportTicketMessage
+     *   }
+     * })
+     * 
+     */
+    create<T extends SupportTicketMessageCreateArgs>(args: SelectSubset<T, SupportTicketMessageCreateArgs<ExtArgs>>): Prisma__SupportTicketMessageClient<$Result.GetResult<Prisma.$SupportTicketMessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SupportTicketMessages.
+     * @param {SupportTicketMessageCreateManyArgs} args - Arguments to create many SupportTicketMessages.
+     * @example
+     * // Create many SupportTicketMessages
+     * const supportTicketMessage = await prisma.supportTicketMessage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SupportTicketMessageCreateManyArgs>(args?: SelectSubset<T, SupportTicketMessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SupportTicketMessages and returns the data saved in the database.
+     * @param {SupportTicketMessageCreateManyAndReturnArgs} args - Arguments to create many SupportTicketMessages.
+     * @example
+     * // Create many SupportTicketMessages
+     * const supportTicketMessage = await prisma.supportTicketMessage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SupportTicketMessages and only return the `id`
+     * const supportTicketMessageWithIdOnly = await prisma.supportTicketMessage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SupportTicketMessageCreateManyAndReturnArgs>(args?: SelectSubset<T, SupportTicketMessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketMessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SupportTicketMessage.
+     * @param {SupportTicketMessageDeleteArgs} args - Arguments to delete one SupportTicketMessage.
+     * @example
+     * // Delete one SupportTicketMessage
+     * const SupportTicketMessage = await prisma.supportTicketMessage.delete({
+     *   where: {
+     *     // ... filter to delete one SupportTicketMessage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SupportTicketMessageDeleteArgs>(args: SelectSubset<T, SupportTicketMessageDeleteArgs<ExtArgs>>): Prisma__SupportTicketMessageClient<$Result.GetResult<Prisma.$SupportTicketMessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SupportTicketMessage.
+     * @param {SupportTicketMessageUpdateArgs} args - Arguments to update one SupportTicketMessage.
+     * @example
+     * // Update one SupportTicketMessage
+     * const supportTicketMessage = await prisma.supportTicketMessage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SupportTicketMessageUpdateArgs>(args: SelectSubset<T, SupportTicketMessageUpdateArgs<ExtArgs>>): Prisma__SupportTicketMessageClient<$Result.GetResult<Prisma.$SupportTicketMessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SupportTicketMessages.
+     * @param {SupportTicketMessageDeleteManyArgs} args - Arguments to filter SupportTicketMessages to delete.
+     * @example
+     * // Delete a few SupportTicketMessages
+     * const { count } = await prisma.supportTicketMessage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SupportTicketMessageDeleteManyArgs>(args?: SelectSubset<T, SupportTicketMessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SupportTicketMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketMessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SupportTicketMessages
+     * const supportTicketMessage = await prisma.supportTicketMessage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SupportTicketMessageUpdateManyArgs>(args: SelectSubset<T, SupportTicketMessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SupportTicketMessages and returns the data updated in the database.
+     * @param {SupportTicketMessageUpdateManyAndReturnArgs} args - Arguments to update many SupportTicketMessages.
+     * @example
+     * // Update many SupportTicketMessages
+     * const supportTicketMessage = await prisma.supportTicketMessage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SupportTicketMessages and only return the `id`
+     * const supportTicketMessageWithIdOnly = await prisma.supportTicketMessage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SupportTicketMessageUpdateManyAndReturnArgs>(args: SelectSubset<T, SupportTicketMessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketMessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SupportTicketMessage.
+     * @param {SupportTicketMessageUpsertArgs} args - Arguments to update or create a SupportTicketMessage.
+     * @example
+     * // Update or create a SupportTicketMessage
+     * const supportTicketMessage = await prisma.supportTicketMessage.upsert({
+     *   create: {
+     *     // ... data to create a SupportTicketMessage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SupportTicketMessage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SupportTicketMessageUpsertArgs>(args: SelectSubset<T, SupportTicketMessageUpsertArgs<ExtArgs>>): Prisma__SupportTicketMessageClient<$Result.GetResult<Prisma.$SupportTicketMessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SupportTicketMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketMessageCountArgs} args - Arguments to filter SupportTicketMessages to count.
+     * @example
+     * // Count the number of SupportTicketMessages
+     * const count = await prisma.supportTicketMessage.count({
+     *   where: {
+     *     // ... the filter for the SupportTicketMessages we want to count
+     *   }
+     * })
+    **/
+    count<T extends SupportTicketMessageCountArgs>(
+      args?: Subset<T, SupportTicketMessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SupportTicketMessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SupportTicketMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketMessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SupportTicketMessageAggregateArgs>(args: Subset<T, SupportTicketMessageAggregateArgs>): Prisma.PrismaPromise<GetSupportTicketMessageAggregateType<T>>
+
+    /**
+     * Group by SupportTicketMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTicketMessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SupportTicketMessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SupportTicketMessageGroupByArgs['orderBy'] }
+        : { orderBy?: SupportTicketMessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SupportTicketMessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSupportTicketMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SupportTicketMessage model
+   */
+  readonly fields: SupportTicketMessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SupportTicketMessage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SupportTicketMessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    ticket<T extends SupportTicketDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SupportTicketDefaultArgs<ExtArgs>>): Prisma__SupportTicketClient<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    author<T extends SupportTicketMessage$authorArgs<ExtArgs> = {}>(args?: Subset<T, SupportTicketMessage$authorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SupportTicketMessage model
+   */
+  interface SupportTicketMessageFieldRefs {
+    readonly id: FieldRef<"SupportTicketMessage", 'String'>
+    readonly content: FieldRef<"SupportTicketMessage", 'String'>
+    readonly isInternal: FieldRef<"SupportTicketMessage", 'Boolean'>
+    readonly ticketId: FieldRef<"SupportTicketMessage", 'String'>
+    readonly authorId: FieldRef<"SupportTicketMessage", 'String'>
+    readonly createdAt: FieldRef<"SupportTicketMessage", 'DateTime'>
+    readonly updatedAt: FieldRef<"SupportTicketMessage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SupportTicketMessage findUnique
+   */
+  export type SupportTicketMessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportTicketMessage to fetch.
+     */
+    where: SupportTicketMessageWhereUniqueInput
+  }
+
+  /**
+   * SupportTicketMessage findUniqueOrThrow
+   */
+  export type SupportTicketMessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportTicketMessage to fetch.
+     */
+    where: SupportTicketMessageWhereUniqueInput
+  }
+
+  /**
+   * SupportTicketMessage findFirst
+   */
+  export type SupportTicketMessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportTicketMessage to fetch.
+     */
+    where?: SupportTicketMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SupportTicketMessages to fetch.
+     */
+    orderBy?: SupportTicketMessageOrderByWithRelationInput | SupportTicketMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SupportTicketMessages.
+     */
+    cursor?: SupportTicketMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SupportTicketMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SupportTicketMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SupportTicketMessages.
+     */
+    distinct?: SupportTicketMessageScalarFieldEnum | SupportTicketMessageScalarFieldEnum[]
+  }
+
+  /**
+   * SupportTicketMessage findFirstOrThrow
+   */
+  export type SupportTicketMessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportTicketMessage to fetch.
+     */
+    where?: SupportTicketMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SupportTicketMessages to fetch.
+     */
+    orderBy?: SupportTicketMessageOrderByWithRelationInput | SupportTicketMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SupportTicketMessages.
+     */
+    cursor?: SupportTicketMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SupportTicketMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SupportTicketMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SupportTicketMessages.
+     */
+    distinct?: SupportTicketMessageScalarFieldEnum | SupportTicketMessageScalarFieldEnum[]
+  }
+
+  /**
+   * SupportTicketMessage findMany
+   */
+  export type SupportTicketMessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportTicketMessages to fetch.
+     */
+    where?: SupportTicketMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SupportTicketMessages to fetch.
+     */
+    orderBy?: SupportTicketMessageOrderByWithRelationInput | SupportTicketMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SupportTicketMessages.
+     */
+    cursor?: SupportTicketMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SupportTicketMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SupportTicketMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SupportTicketMessages.
+     */
+    distinct?: SupportTicketMessageScalarFieldEnum | SupportTicketMessageScalarFieldEnum[]
+  }
+
+  /**
+   * SupportTicketMessage create
+   */
+  export type SupportTicketMessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SupportTicketMessage.
+     */
+    data: XOR<SupportTicketMessageCreateInput, SupportTicketMessageUncheckedCreateInput>
+  }
+
+  /**
+   * SupportTicketMessage createMany
+   */
+  export type SupportTicketMessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SupportTicketMessages.
+     */
+    data: SupportTicketMessageCreateManyInput | SupportTicketMessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SupportTicketMessage createManyAndReturn
+   */
+  export type SupportTicketMessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * The data used to create many SupportTicketMessages.
+     */
+    data: SupportTicketMessageCreateManyInput | SupportTicketMessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SupportTicketMessage update
+   */
+  export type SupportTicketMessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SupportTicketMessage.
+     */
+    data: XOR<SupportTicketMessageUpdateInput, SupportTicketMessageUncheckedUpdateInput>
+    /**
+     * Choose, which SupportTicketMessage to update.
+     */
+    where: SupportTicketMessageWhereUniqueInput
+  }
+
+  /**
+   * SupportTicketMessage updateMany
+   */
+  export type SupportTicketMessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SupportTicketMessages.
+     */
+    data: XOR<SupportTicketMessageUpdateManyMutationInput, SupportTicketMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which SupportTicketMessages to update
+     */
+    where?: SupportTicketMessageWhereInput
+    /**
+     * Limit how many SupportTicketMessages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SupportTicketMessage updateManyAndReturn
+   */
+  export type SupportTicketMessageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * The data used to update SupportTicketMessages.
+     */
+    data: XOR<SupportTicketMessageUpdateManyMutationInput, SupportTicketMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which SupportTicketMessages to update
+     */
+    where?: SupportTicketMessageWhereInput
+    /**
+     * Limit how many SupportTicketMessages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SupportTicketMessage upsert
+   */
+  export type SupportTicketMessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SupportTicketMessage to update in case it exists.
+     */
+    where: SupportTicketMessageWhereUniqueInput
+    /**
+     * In case the SupportTicketMessage found by the `where` argument doesn't exist, create a new SupportTicketMessage with this data.
+     */
+    create: XOR<SupportTicketMessageCreateInput, SupportTicketMessageUncheckedCreateInput>
+    /**
+     * In case the SupportTicketMessage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SupportTicketMessageUpdateInput, SupportTicketMessageUncheckedUpdateInput>
+  }
+
+  /**
+   * SupportTicketMessage delete
+   */
+  export type SupportTicketMessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageInclude<ExtArgs> | null
+    /**
+     * Filter which SupportTicketMessage to delete.
+     */
+    where: SupportTicketMessageWhereUniqueInput
+  }
+
+  /**
+   * SupportTicketMessage deleteMany
+   */
+  export type SupportTicketMessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SupportTicketMessages to delete
+     */
+    where?: SupportTicketMessageWhereInput
+    /**
+     * Limit how many SupportTicketMessages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SupportTicketMessage.author
+   */
+  export type SupportTicketMessage$authorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * SupportTicketMessage without action
+   */
+  export type SupportTicketMessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTicketMessage
+     */
+    select?: SupportTicketMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportTicketMessage
+     */
+    omit?: SupportTicketMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTicketMessageInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model MaguiConnectClickEvent
    */
 
@@ -52530,8 +55310,6 @@ export namespace Prisma {
     instagram: 'instagram',
     status: 'status',
     source: 'source',
-    notes: 'notes',
-    value: 'value',
     lastContactAt: 'lastContactAt',
     nextActionAt: 'nextActionAt',
     assignedToId: 'assignedToId',
@@ -53066,6 +55844,42 @@ export namespace Prisma {
   export type EmailLogScalarFieldEnum = (typeof EmailLogScalarFieldEnum)[keyof typeof EmailLogScalarFieldEnum]
 
 
+  export const SupportTicketScalarFieldEnum: {
+    id: 'id',
+    number: 'number',
+    subject: 'subject',
+    description: 'description',
+    status: 'status',
+    priority: 'priority',
+    category: 'category',
+    slaDeadlineAt: 'slaDeadlineAt',
+    firstResponseAt: 'firstResponseAt',
+    resolvedAt: 'resolvedAt',
+    closedAt: 'closedAt',
+    clientUnreadCount: 'clientUnreadCount',
+    adminUnreadCount: 'adminUnreadCount',
+    clientId: 'clientId',
+    projectId: 'projectId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SupportTicketScalarFieldEnum = (typeof SupportTicketScalarFieldEnum)[keyof typeof SupportTicketScalarFieldEnum]
+
+
+  export const SupportTicketMessageScalarFieldEnum: {
+    id: 'id',
+    content: 'content',
+    isInternal: 'isInternal',
+    ticketId: 'ticketId',
+    authorId: 'authorId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SupportTicketMessageScalarFieldEnum = (typeof SupportTicketMessageScalarFieldEnum)[keyof typeof SupportTicketMessageScalarFieldEnum]
+
+
   export const MaguiConnectClickEventScalarFieldEnum: {
     id: 'id',
     profileId: 'profileId',
@@ -53568,6 +56382,48 @@ export namespace Prisma {
    */
   export type ListEnumInstallmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InstallmentStatus[]'>
     
+
+
+  /**
+   * Reference to a field of type 'SupportTicketStatus'
+   */
+  export type EnumSupportTicketStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SupportTicketStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'SupportTicketStatus[]'
+   */
+  export type ListEnumSupportTicketStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SupportTicketStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'SupportTicketPriority'
+   */
+  export type EnumSupportTicketPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SupportTicketPriority'>
+    
+
+
+  /**
+   * Reference to a field of type 'SupportTicketPriority[]'
+   */
+  export type ListEnumSupportTicketPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SupportTicketPriority[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'SupportTicketCategory'
+   */
+  export type EnumSupportTicketCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SupportTicketCategory'>
+    
+
+
+  /**
+   * Reference to a field of type 'SupportTicketCategory[]'
+   */
+  export type ListEnumSupportTicketCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SupportTicketCategory[]'>
+    
   /**
    * Deep Input Types
    */
@@ -53753,6 +56609,8 @@ export namespace Prisma {
     billingProfile?: XOR<BillingProfileNullableScalarRelationFilter, BillingProfileWhereInput> | null
     emailLogs?: EmailLogListRelationFilter
     invoices?: InvoiceListRelationFilter
+    supportTickets?: SupportTicketListRelationFilter
+    supportMessages?: SupportTicketMessageListRelationFilter
     maguiConnectProfile?: XOR<MaguiConnectProfileNullableScalarRelationFilter, MaguiConnectProfileWhereInput> | null
   }
 
@@ -53785,6 +56643,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileOrderByWithRelationInput
     emailLogs?: EmailLogOrderByRelationAggregateInput
     invoices?: InvoiceOrderByRelationAggregateInput
+    supportTickets?: SupportTicketOrderByRelationAggregateInput
+    supportMessages?: SupportTicketMessageOrderByRelationAggregateInput
     maguiConnectProfile?: MaguiConnectProfileOrderByWithRelationInput
   }
 
@@ -53820,6 +56680,8 @@ export namespace Prisma {
     billingProfile?: XOR<BillingProfileNullableScalarRelationFilter, BillingProfileWhereInput> | null
     emailLogs?: EmailLogListRelationFilter
     invoices?: InvoiceListRelationFilter
+    supportTickets?: SupportTicketListRelationFilter
+    supportMessages?: SupportTicketMessageListRelationFilter
     maguiConnectProfile?: XOR<MaguiConnectProfileNullableScalarRelationFilter, MaguiConnectProfileWhereInput> | null
   }, "id" | "clerkId" | "email" | "stripeCustomerId">
 
@@ -54328,8 +57190,6 @@ export namespace Prisma {
     instagram?: StringNullableFilter<"Lead"> | string | null
     status?: EnumLeadStatusFilter<"Lead"> | $Enums.LeadStatus
     source?: EnumLeadSourceFilter<"Lead"> | $Enums.LeadSource
-    notes?: StringNullableFilter<"Lead"> | string | null
-    value?: StringNullableFilter<"Lead"> | string | null
     lastContactAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
     nextActionAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
     assignedToId?: StringNullableFilter<"Lead"> | string | null
@@ -54354,8 +57214,6 @@ export namespace Prisma {
     instagram?: SortOrderInput | SortOrder
     status?: SortOrder
     source?: SortOrder
-    notes?: SortOrderInput | SortOrder
-    value?: SortOrderInput | SortOrder
     lastContactAt?: SortOrderInput | SortOrder
     nextActionAt?: SortOrderInput | SortOrder
     assignedToId?: SortOrderInput | SortOrder
@@ -54383,8 +57241,6 @@ export namespace Prisma {
     instagram?: StringNullableFilter<"Lead"> | string | null
     status?: EnumLeadStatusFilter<"Lead"> | $Enums.LeadStatus
     source?: EnumLeadSourceFilter<"Lead"> | $Enums.LeadSource
-    notes?: StringNullableFilter<"Lead"> | string | null
-    value?: StringNullableFilter<"Lead"> | string | null
     lastContactAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
     nextActionAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
     assignedToId?: StringNullableFilter<"Lead"> | string | null
@@ -54409,8 +57265,6 @@ export namespace Prisma {
     instagram?: SortOrderInput | SortOrder
     status?: SortOrder
     source?: SortOrder
-    notes?: SortOrderInput | SortOrder
-    value?: SortOrderInput | SortOrder
     lastContactAt?: SortOrderInput | SortOrder
     nextActionAt?: SortOrderInput | SortOrder
     assignedToId?: SortOrderInput | SortOrder
@@ -54436,8 +57290,6 @@ export namespace Prisma {
     instagram?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     status?: EnumLeadStatusWithAggregatesFilter<"Lead"> | $Enums.LeadStatus
     source?: EnumLeadSourceWithAggregatesFilter<"Lead"> | $Enums.LeadSource
-    notes?: StringNullableWithAggregatesFilter<"Lead"> | string | null
-    value?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     lastContactAt?: DateTimeNullableWithAggregatesFilter<"Lead"> | Date | string | null
     nextActionAt?: DateTimeNullableWithAggregatesFilter<"Lead"> | Date | string | null
     assignedToId?: StringNullableWithAggregatesFilter<"Lead"> | string | null
@@ -54829,6 +57681,7 @@ export namespace Prisma {
     kickoff?: XOR<ProjectKickoffChecklistNullableScalarRelationFilter, ProjectKickoffChecklistWhereInput> | null
     documents?: DocumentListRelationFilter
     invoices?: InvoiceListRelationFilter
+    supportTickets?: SupportTicketListRelationFilter
   }
 
   export type ProjectOrderByWithRelationInput = {
@@ -54877,6 +57730,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistOrderByWithRelationInput
     documents?: DocumentOrderByRelationAggregateInput
     invoices?: InvoiceOrderByRelationAggregateInput
+    supportTickets?: SupportTicketOrderByRelationAggregateInput
   }
 
   export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -54928,6 +57782,7 @@ export namespace Prisma {
     kickoff?: XOR<ProjectKickoffChecklistNullableScalarRelationFilter, ProjectKickoffChecklistWhereInput> | null
     documents?: DocumentListRelationFilter
     invoices?: InvoiceListRelationFilter
+    supportTickets?: SupportTicketListRelationFilter
   }, "id">
 
   export type ProjectOrderByWithAggregationInput = {
@@ -57194,6 +60049,197 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"EmailLog"> | Date | string
   }
 
+  export type SupportTicketWhereInput = {
+    AND?: SupportTicketWhereInput | SupportTicketWhereInput[]
+    OR?: SupportTicketWhereInput[]
+    NOT?: SupportTicketWhereInput | SupportTicketWhereInput[]
+    id?: StringFilter<"SupportTicket"> | string
+    number?: IntFilter<"SupportTicket"> | number
+    subject?: StringFilter<"SupportTicket"> | string
+    description?: StringFilter<"SupportTicket"> | string
+    status?: EnumSupportTicketStatusFilter<"SupportTicket"> | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFilter<"SupportTicket"> | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFilter<"SupportTicket"> | $Enums.SupportTicketCategory
+    slaDeadlineAt?: DateTimeNullableFilter<"SupportTicket"> | Date | string | null
+    firstResponseAt?: DateTimeNullableFilter<"SupportTicket"> | Date | string | null
+    resolvedAt?: DateTimeNullableFilter<"SupportTicket"> | Date | string | null
+    closedAt?: DateTimeNullableFilter<"SupportTicket"> | Date | string | null
+    clientUnreadCount?: IntFilter<"SupportTicket"> | number
+    adminUnreadCount?: IntFilter<"SupportTicket"> | number
+    clientId?: StringFilter<"SupportTicket"> | string
+    projectId?: StringNullableFilter<"SupportTicket"> | string | null
+    createdAt?: DateTimeFilter<"SupportTicket"> | Date | string
+    updatedAt?: DateTimeFilter<"SupportTicket"> | Date | string
+    client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    project?: XOR<ProjectNullableScalarRelationFilter, ProjectWhereInput> | null
+    messages?: SupportTicketMessageListRelationFilter
+  }
+
+  export type SupportTicketOrderByWithRelationInput = {
+    id?: SortOrder
+    number?: SortOrder
+    subject?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    category?: SortOrder
+    slaDeadlineAt?: SortOrderInput | SortOrder
+    firstResponseAt?: SortOrderInput | SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    closedAt?: SortOrderInput | SortOrder
+    clientUnreadCount?: SortOrder
+    adminUnreadCount?: SortOrder
+    clientId?: SortOrder
+    projectId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    client?: UserOrderByWithRelationInput
+    project?: ProjectOrderByWithRelationInput
+    messages?: SupportTicketMessageOrderByRelationAggregateInput
+  }
+
+  export type SupportTicketWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    number?: number
+    AND?: SupportTicketWhereInput | SupportTicketWhereInput[]
+    OR?: SupportTicketWhereInput[]
+    NOT?: SupportTicketWhereInput | SupportTicketWhereInput[]
+    subject?: StringFilter<"SupportTicket"> | string
+    description?: StringFilter<"SupportTicket"> | string
+    status?: EnumSupportTicketStatusFilter<"SupportTicket"> | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFilter<"SupportTicket"> | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFilter<"SupportTicket"> | $Enums.SupportTicketCategory
+    slaDeadlineAt?: DateTimeNullableFilter<"SupportTicket"> | Date | string | null
+    firstResponseAt?: DateTimeNullableFilter<"SupportTicket"> | Date | string | null
+    resolvedAt?: DateTimeNullableFilter<"SupportTicket"> | Date | string | null
+    closedAt?: DateTimeNullableFilter<"SupportTicket"> | Date | string | null
+    clientUnreadCount?: IntFilter<"SupportTicket"> | number
+    adminUnreadCount?: IntFilter<"SupportTicket"> | number
+    clientId?: StringFilter<"SupportTicket"> | string
+    projectId?: StringNullableFilter<"SupportTicket"> | string | null
+    createdAt?: DateTimeFilter<"SupportTicket"> | Date | string
+    updatedAt?: DateTimeFilter<"SupportTicket"> | Date | string
+    client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    project?: XOR<ProjectNullableScalarRelationFilter, ProjectWhereInput> | null
+    messages?: SupportTicketMessageListRelationFilter
+  }, "id" | "number">
+
+  export type SupportTicketOrderByWithAggregationInput = {
+    id?: SortOrder
+    number?: SortOrder
+    subject?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    category?: SortOrder
+    slaDeadlineAt?: SortOrderInput | SortOrder
+    firstResponseAt?: SortOrderInput | SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    closedAt?: SortOrderInput | SortOrder
+    clientUnreadCount?: SortOrder
+    adminUnreadCount?: SortOrder
+    clientId?: SortOrder
+    projectId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SupportTicketCountOrderByAggregateInput
+    _avg?: SupportTicketAvgOrderByAggregateInput
+    _max?: SupportTicketMaxOrderByAggregateInput
+    _min?: SupportTicketMinOrderByAggregateInput
+    _sum?: SupportTicketSumOrderByAggregateInput
+  }
+
+  export type SupportTicketScalarWhereWithAggregatesInput = {
+    AND?: SupportTicketScalarWhereWithAggregatesInput | SupportTicketScalarWhereWithAggregatesInput[]
+    OR?: SupportTicketScalarWhereWithAggregatesInput[]
+    NOT?: SupportTicketScalarWhereWithAggregatesInput | SupportTicketScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SupportTicket"> | string
+    number?: IntWithAggregatesFilter<"SupportTicket"> | number
+    subject?: StringWithAggregatesFilter<"SupportTicket"> | string
+    description?: StringWithAggregatesFilter<"SupportTicket"> | string
+    status?: EnumSupportTicketStatusWithAggregatesFilter<"SupportTicket"> | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityWithAggregatesFilter<"SupportTicket"> | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryWithAggregatesFilter<"SupportTicket"> | $Enums.SupportTicketCategory
+    slaDeadlineAt?: DateTimeNullableWithAggregatesFilter<"SupportTicket"> | Date | string | null
+    firstResponseAt?: DateTimeNullableWithAggregatesFilter<"SupportTicket"> | Date | string | null
+    resolvedAt?: DateTimeNullableWithAggregatesFilter<"SupportTicket"> | Date | string | null
+    closedAt?: DateTimeNullableWithAggregatesFilter<"SupportTicket"> | Date | string | null
+    clientUnreadCount?: IntWithAggregatesFilter<"SupportTicket"> | number
+    adminUnreadCount?: IntWithAggregatesFilter<"SupportTicket"> | number
+    clientId?: StringWithAggregatesFilter<"SupportTicket"> | string
+    projectId?: StringNullableWithAggregatesFilter<"SupportTicket"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"SupportTicket"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SupportTicket"> | Date | string
+  }
+
+  export type SupportTicketMessageWhereInput = {
+    AND?: SupportTicketMessageWhereInput | SupportTicketMessageWhereInput[]
+    OR?: SupportTicketMessageWhereInput[]
+    NOT?: SupportTicketMessageWhereInput | SupportTicketMessageWhereInput[]
+    id?: StringFilter<"SupportTicketMessage"> | string
+    content?: StringFilter<"SupportTicketMessage"> | string
+    isInternal?: BoolFilter<"SupportTicketMessage"> | boolean
+    ticketId?: StringFilter<"SupportTicketMessage"> | string
+    authorId?: StringNullableFilter<"SupportTicketMessage"> | string | null
+    createdAt?: DateTimeFilter<"SupportTicketMessage"> | Date | string
+    updatedAt?: DateTimeFilter<"SupportTicketMessage"> | Date | string
+    ticket?: XOR<SupportTicketScalarRelationFilter, SupportTicketWhereInput>
+    author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type SupportTicketMessageOrderByWithRelationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    isInternal?: SortOrder
+    ticketId?: SortOrder
+    authorId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    ticket?: SupportTicketOrderByWithRelationInput
+    author?: UserOrderByWithRelationInput
+  }
+
+  export type SupportTicketMessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SupportTicketMessageWhereInput | SupportTicketMessageWhereInput[]
+    OR?: SupportTicketMessageWhereInput[]
+    NOT?: SupportTicketMessageWhereInput | SupportTicketMessageWhereInput[]
+    content?: StringFilter<"SupportTicketMessage"> | string
+    isInternal?: BoolFilter<"SupportTicketMessage"> | boolean
+    ticketId?: StringFilter<"SupportTicketMessage"> | string
+    authorId?: StringNullableFilter<"SupportTicketMessage"> | string | null
+    createdAt?: DateTimeFilter<"SupportTicketMessage"> | Date | string
+    updatedAt?: DateTimeFilter<"SupportTicketMessage"> | Date | string
+    ticket?: XOR<SupportTicketScalarRelationFilter, SupportTicketWhereInput>
+    author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type SupportTicketMessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    isInternal?: SortOrder
+    ticketId?: SortOrder
+    authorId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SupportTicketMessageCountOrderByAggregateInput
+    _max?: SupportTicketMessageMaxOrderByAggregateInput
+    _min?: SupportTicketMessageMinOrderByAggregateInput
+  }
+
+  export type SupportTicketMessageScalarWhereWithAggregatesInput = {
+    AND?: SupportTicketMessageScalarWhereWithAggregatesInput | SupportTicketMessageScalarWhereWithAggregatesInput[]
+    OR?: SupportTicketMessageScalarWhereWithAggregatesInput[]
+    NOT?: SupportTicketMessageScalarWhereWithAggregatesInput | SupportTicketMessageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SupportTicketMessage"> | string
+    content?: StringWithAggregatesFilter<"SupportTicketMessage"> | string
+    isInternal?: BoolWithAggregatesFilter<"SupportTicketMessage"> | boolean
+    ticketId?: StringWithAggregatesFilter<"SupportTicketMessage"> | string
+    authorId?: StringNullableWithAggregatesFilter<"SupportTicketMessage"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"SupportTicketMessage"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SupportTicketMessage"> | Date | string
+  }
+
   export type MaguiConnectClickEventWhereInput = {
     AND?: MaguiConnectClickEventWhereInput | MaguiConnectClickEventWhereInput[]
     OR?: MaguiConnectClickEventWhereInput[]
@@ -57444,6 +60490,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -57476,6 +60524,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -57508,6 +60558,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -57540,6 +60592,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -58159,8 +61213,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     convertedProjectId?: string | null
@@ -58184,8 +61236,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     assignedToId?: string | null
@@ -58209,8 +61259,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     convertedProjectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58234,8 +61282,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58259,8 +61305,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     assignedToId?: string | null
@@ -58280,8 +61324,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     convertedProjectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58300,8 +61342,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58712,6 +61752,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateInput = {
@@ -58758,6 +61799,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUpdateInput = {
@@ -58804,6 +61846,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateInput = {
@@ -58850,6 +61893,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateManyInput = {
@@ -61372,6 +64416,214 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SupportTicketCreateInput = {
+    id?: string
+    number?: number
+    subject: string
+    description: string
+    status?: $Enums.SupportTicketStatus
+    priority?: $Enums.SupportTicketPriority
+    category?: $Enums.SupportTicketCategory
+    slaDeadlineAt?: Date | string | null
+    firstResponseAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    clientUnreadCount?: number
+    adminUnreadCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    client: UserCreateNestedOneWithoutSupportTicketsInput
+    project?: ProjectCreateNestedOneWithoutSupportTicketsInput
+    messages?: SupportTicketMessageCreateNestedManyWithoutTicketInput
+  }
+
+  export type SupportTicketUncheckedCreateInput = {
+    id?: string
+    number?: number
+    subject: string
+    description: string
+    status?: $Enums.SupportTicketStatus
+    priority?: $Enums.SupportTicketPriority
+    category?: $Enums.SupportTicketCategory
+    slaDeadlineAt?: Date | string | null
+    firstResponseAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    clientUnreadCount?: number
+    adminUnreadCount?: number
+    clientId: string
+    projectId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: SupportTicketMessageUncheckedCreateNestedManyWithoutTicketInput
+  }
+
+  export type SupportTicketUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumSupportTicketStatusFieldUpdateOperationsInput | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFieldUpdateOperationsInput | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFieldUpdateOperationsInput | $Enums.SupportTicketCategory
+    slaDeadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    firstResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientUnreadCount?: IntFieldUpdateOperationsInput | number
+    adminUnreadCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: UserUpdateOneRequiredWithoutSupportTicketsNestedInput
+    project?: ProjectUpdateOneWithoutSupportTicketsNestedInput
+    messages?: SupportTicketMessageUpdateManyWithoutTicketNestedInput
+  }
+
+  export type SupportTicketUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: IntFieldUpdateOperationsInput | number
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumSupportTicketStatusFieldUpdateOperationsInput | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFieldUpdateOperationsInput | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFieldUpdateOperationsInput | $Enums.SupportTicketCategory
+    slaDeadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    firstResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientUnreadCount?: IntFieldUpdateOperationsInput | number
+    adminUnreadCount?: IntFieldUpdateOperationsInput | number
+    clientId?: StringFieldUpdateOperationsInput | string
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: SupportTicketMessageUncheckedUpdateManyWithoutTicketNestedInput
+  }
+
+  export type SupportTicketCreateManyInput = {
+    id?: string
+    number?: number
+    subject: string
+    description: string
+    status?: $Enums.SupportTicketStatus
+    priority?: $Enums.SupportTicketPriority
+    category?: $Enums.SupportTicketCategory
+    slaDeadlineAt?: Date | string | null
+    firstResponseAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    clientUnreadCount?: number
+    adminUnreadCount?: number
+    clientId: string
+    projectId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SupportTicketUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumSupportTicketStatusFieldUpdateOperationsInput | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFieldUpdateOperationsInput | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFieldUpdateOperationsInput | $Enums.SupportTicketCategory
+    slaDeadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    firstResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientUnreadCount?: IntFieldUpdateOperationsInput | number
+    adminUnreadCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTicketUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: IntFieldUpdateOperationsInput | number
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumSupportTicketStatusFieldUpdateOperationsInput | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFieldUpdateOperationsInput | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFieldUpdateOperationsInput | $Enums.SupportTicketCategory
+    slaDeadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    firstResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientUnreadCount?: IntFieldUpdateOperationsInput | number
+    adminUnreadCount?: IntFieldUpdateOperationsInput | number
+    clientId?: StringFieldUpdateOperationsInput | string
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTicketMessageCreateInput = {
+    id?: string
+    content: string
+    isInternal?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ticket: SupportTicketCreateNestedOneWithoutMessagesInput
+    author?: UserCreateNestedOneWithoutSupportMessagesInput
+  }
+
+  export type SupportTicketMessageUncheckedCreateInput = {
+    id?: string
+    content: string
+    isInternal?: boolean
+    ticketId: string
+    authorId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SupportTicketMessageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isInternal?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ticket?: SupportTicketUpdateOneRequiredWithoutMessagesNestedInput
+    author?: UserUpdateOneWithoutSupportMessagesNestedInput
+  }
+
+  export type SupportTicketMessageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isInternal?: BoolFieldUpdateOperationsInput | boolean
+    ticketId?: StringFieldUpdateOperationsInput | string
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTicketMessageCreateManyInput = {
+    id?: string
+    content: string
+    isInternal?: boolean
+    ticketId: string
+    authorId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SupportTicketMessageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isInternal?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTicketMessageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isInternal?: BoolFieldUpdateOperationsInput | boolean
+    ticketId?: StringFieldUpdateOperationsInput | string
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type MaguiConnectClickEventCreateInput = {
     id?: string
     createdAt?: Date | string
@@ -61836,6 +65088,18 @@ export namespace Prisma {
     none?: InvoiceWhereInput
   }
 
+  export type SupportTicketListRelationFilter = {
+    every?: SupportTicketWhereInput
+    some?: SupportTicketWhereInput
+    none?: SupportTicketWhereInput
+  }
+
+  export type SupportTicketMessageListRelationFilter = {
+    every?: SupportTicketMessageWhereInput
+    some?: SupportTicketMessageWhereInput
+    none?: SupportTicketMessageWhereInput
+  }
+
   export type MaguiConnectProfileNullableScalarRelationFilter = {
     is?: MaguiConnectProfileWhereInput | null
     isNot?: MaguiConnectProfileWhereInput | null
@@ -61890,6 +65154,14 @@ export namespace Prisma {
   }
 
   export type InvoiceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SupportTicketOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SupportTicketMessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -62312,8 +65584,6 @@ export namespace Prisma {
     instagram?: SortOrder
     status?: SortOrder
     source?: SortOrder
-    notes?: SortOrder
-    value?: SortOrder
     lastContactAt?: SortOrder
     nextActionAt?: SortOrder
     assignedToId?: SortOrder
@@ -62333,8 +65603,6 @@ export namespace Prisma {
     instagram?: SortOrder
     status?: SortOrder
     source?: SortOrder
-    notes?: SortOrder
-    value?: SortOrder
     lastContactAt?: SortOrder
     nextActionAt?: SortOrder
     assignedToId?: SortOrder
@@ -62354,8 +65622,6 @@ export namespace Prisma {
     instagram?: SortOrder
     status?: SortOrder
     source?: SortOrder
-    notes?: SortOrder
-    value?: SortOrder
     lastContactAt?: SortOrder
     nextActionAt?: SortOrder
     assignedToId?: SortOrder
@@ -64444,6 +67710,164 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type EnumSupportTicketStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SupportTicketStatus | EnumSupportTicketStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SupportTicketStatus[] | ListEnumSupportTicketStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SupportTicketStatus[] | ListEnumSupportTicketStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSupportTicketStatusFilter<$PrismaModel> | $Enums.SupportTicketStatus
+  }
+
+  export type EnumSupportTicketPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.SupportTicketPriority | EnumSupportTicketPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.SupportTicketPriority[] | ListEnumSupportTicketPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SupportTicketPriority[] | ListEnumSupportTicketPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumSupportTicketPriorityFilter<$PrismaModel> | $Enums.SupportTicketPriority
+  }
+
+  export type EnumSupportTicketCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.SupportTicketCategory | EnumSupportTicketCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.SupportTicketCategory[] | ListEnumSupportTicketCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SupportTicketCategory[] | ListEnumSupportTicketCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumSupportTicketCategoryFilter<$PrismaModel> | $Enums.SupportTicketCategory
+  }
+
+  export type SupportTicketCountOrderByAggregateInput = {
+    id?: SortOrder
+    number?: SortOrder
+    subject?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    category?: SortOrder
+    slaDeadlineAt?: SortOrder
+    firstResponseAt?: SortOrder
+    resolvedAt?: SortOrder
+    closedAt?: SortOrder
+    clientUnreadCount?: SortOrder
+    adminUnreadCount?: SortOrder
+    clientId?: SortOrder
+    projectId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SupportTicketAvgOrderByAggregateInput = {
+    number?: SortOrder
+    clientUnreadCount?: SortOrder
+    adminUnreadCount?: SortOrder
+  }
+
+  export type SupportTicketMaxOrderByAggregateInput = {
+    id?: SortOrder
+    number?: SortOrder
+    subject?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    category?: SortOrder
+    slaDeadlineAt?: SortOrder
+    firstResponseAt?: SortOrder
+    resolvedAt?: SortOrder
+    closedAt?: SortOrder
+    clientUnreadCount?: SortOrder
+    adminUnreadCount?: SortOrder
+    clientId?: SortOrder
+    projectId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SupportTicketMinOrderByAggregateInput = {
+    id?: SortOrder
+    number?: SortOrder
+    subject?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    category?: SortOrder
+    slaDeadlineAt?: SortOrder
+    firstResponseAt?: SortOrder
+    resolvedAt?: SortOrder
+    closedAt?: SortOrder
+    clientUnreadCount?: SortOrder
+    adminUnreadCount?: SortOrder
+    clientId?: SortOrder
+    projectId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SupportTicketSumOrderByAggregateInput = {
+    number?: SortOrder
+    clientUnreadCount?: SortOrder
+    adminUnreadCount?: SortOrder
+  }
+
+  export type EnumSupportTicketStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SupportTicketStatus | EnumSupportTicketStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SupportTicketStatus[] | ListEnumSupportTicketStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SupportTicketStatus[] | ListEnumSupportTicketStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSupportTicketStatusWithAggregatesFilter<$PrismaModel> | $Enums.SupportTicketStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSupportTicketStatusFilter<$PrismaModel>
+    _max?: NestedEnumSupportTicketStatusFilter<$PrismaModel>
+  }
+
+  export type EnumSupportTicketPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SupportTicketPriority | EnumSupportTicketPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.SupportTicketPriority[] | ListEnumSupportTicketPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SupportTicketPriority[] | ListEnumSupportTicketPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumSupportTicketPriorityWithAggregatesFilter<$PrismaModel> | $Enums.SupportTicketPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSupportTicketPriorityFilter<$PrismaModel>
+    _max?: NestedEnumSupportTicketPriorityFilter<$PrismaModel>
+  }
+
+  export type EnumSupportTicketCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SupportTicketCategory | EnumSupportTicketCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.SupportTicketCategory[] | ListEnumSupportTicketCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SupportTicketCategory[] | ListEnumSupportTicketCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumSupportTicketCategoryWithAggregatesFilter<$PrismaModel> | $Enums.SupportTicketCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSupportTicketCategoryFilter<$PrismaModel>
+    _max?: NestedEnumSupportTicketCategoryFilter<$PrismaModel>
+  }
+
+  export type SupportTicketScalarRelationFilter = {
+    is?: SupportTicketWhereInput
+    isNot?: SupportTicketWhereInput
+  }
+
+  export type SupportTicketMessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    isInternal?: SortOrder
+    ticketId?: SortOrder
+    authorId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SupportTicketMessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    isInternal?: SortOrder
+    ticketId?: SortOrder
+    authorId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SupportTicketMessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    isInternal?: SortOrder
+    ticketId?: SortOrder
+    authorId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type MaguiConnectLinkScalarRelationFilter = {
     is?: MaguiConnectLinkWhereInput
     isNot?: MaguiConnectLinkWhereInput
@@ -64599,6 +68023,20 @@ export namespace Prisma {
     connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
   }
 
+  export type SupportTicketCreateNestedManyWithoutClientInput = {
+    create?: XOR<SupportTicketCreateWithoutClientInput, SupportTicketUncheckedCreateWithoutClientInput> | SupportTicketCreateWithoutClientInput[] | SupportTicketUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: SupportTicketCreateOrConnectWithoutClientInput | SupportTicketCreateOrConnectWithoutClientInput[]
+    createMany?: SupportTicketCreateManyClientInputEnvelope
+    connect?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+  }
+
+  export type SupportTicketMessageCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<SupportTicketMessageCreateWithoutAuthorInput, SupportTicketMessageUncheckedCreateWithoutAuthorInput> | SupportTicketMessageCreateWithoutAuthorInput[] | SupportTicketMessageUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: SupportTicketMessageCreateOrConnectWithoutAuthorInput | SupportTicketMessageCreateOrConnectWithoutAuthorInput[]
+    createMany?: SupportTicketMessageCreateManyAuthorInputEnvelope
+    connect?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+  }
+
   export type MaguiConnectProfileCreateNestedOneWithoutUserInput = {
     create?: XOR<MaguiConnectProfileCreateWithoutUserInput, MaguiConnectProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: MaguiConnectProfileCreateOrConnectWithoutUserInput
@@ -64700,6 +68138,20 @@ export namespace Prisma {
     connectOrCreate?: InvoiceCreateOrConnectWithoutClientInput | InvoiceCreateOrConnectWithoutClientInput[]
     createMany?: InvoiceCreateManyClientInputEnvelope
     connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+  }
+
+  export type SupportTicketUncheckedCreateNestedManyWithoutClientInput = {
+    create?: XOR<SupportTicketCreateWithoutClientInput, SupportTicketUncheckedCreateWithoutClientInput> | SupportTicketCreateWithoutClientInput[] | SupportTicketUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: SupportTicketCreateOrConnectWithoutClientInput | SupportTicketCreateOrConnectWithoutClientInput[]
+    createMany?: SupportTicketCreateManyClientInputEnvelope
+    connect?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+  }
+
+  export type SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<SupportTicketMessageCreateWithoutAuthorInput, SupportTicketMessageUncheckedCreateWithoutAuthorInput> | SupportTicketMessageCreateWithoutAuthorInput[] | SupportTicketMessageUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: SupportTicketMessageCreateOrConnectWithoutAuthorInput | SupportTicketMessageCreateOrConnectWithoutAuthorInput[]
+    createMany?: SupportTicketMessageCreateManyAuthorInputEnvelope
+    connect?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
   }
 
   export type MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput = {
@@ -64908,6 +68360,34 @@ export namespace Prisma {
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
   }
 
+  export type SupportTicketUpdateManyWithoutClientNestedInput = {
+    create?: XOR<SupportTicketCreateWithoutClientInput, SupportTicketUncheckedCreateWithoutClientInput> | SupportTicketCreateWithoutClientInput[] | SupportTicketUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: SupportTicketCreateOrConnectWithoutClientInput | SupportTicketCreateOrConnectWithoutClientInput[]
+    upsert?: SupportTicketUpsertWithWhereUniqueWithoutClientInput | SupportTicketUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: SupportTicketCreateManyClientInputEnvelope
+    set?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    disconnect?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    delete?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    connect?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    update?: SupportTicketUpdateWithWhereUniqueWithoutClientInput | SupportTicketUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: SupportTicketUpdateManyWithWhereWithoutClientInput | SupportTicketUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: SupportTicketScalarWhereInput | SupportTicketScalarWhereInput[]
+  }
+
+  export type SupportTicketMessageUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<SupportTicketMessageCreateWithoutAuthorInput, SupportTicketMessageUncheckedCreateWithoutAuthorInput> | SupportTicketMessageCreateWithoutAuthorInput[] | SupportTicketMessageUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: SupportTicketMessageCreateOrConnectWithoutAuthorInput | SupportTicketMessageCreateOrConnectWithoutAuthorInput[]
+    upsert?: SupportTicketMessageUpsertWithWhereUniqueWithoutAuthorInput | SupportTicketMessageUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: SupportTicketMessageCreateManyAuthorInputEnvelope
+    set?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    disconnect?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    delete?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    connect?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    update?: SupportTicketMessageUpdateWithWhereUniqueWithoutAuthorInput | SupportTicketMessageUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: SupportTicketMessageUpdateManyWithWhereWithoutAuthorInput | SupportTicketMessageUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: SupportTicketMessageScalarWhereInput | SupportTicketMessageScalarWhereInput[]
+  }
+
   export type MaguiConnectProfileUpdateOneWithoutUserNestedInput = {
     create?: XOR<MaguiConnectProfileCreateWithoutUserInput, MaguiConnectProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: MaguiConnectProfileCreateOrConnectWithoutUserInput
@@ -65108,6 +68588,34 @@ export namespace Prisma {
     update?: InvoiceUpdateWithWhereUniqueWithoutClientInput | InvoiceUpdateWithWhereUniqueWithoutClientInput[]
     updateMany?: InvoiceUpdateManyWithWhereWithoutClientInput | InvoiceUpdateManyWithWhereWithoutClientInput[]
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
+  }
+
+  export type SupportTicketUncheckedUpdateManyWithoutClientNestedInput = {
+    create?: XOR<SupportTicketCreateWithoutClientInput, SupportTicketUncheckedCreateWithoutClientInput> | SupportTicketCreateWithoutClientInput[] | SupportTicketUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: SupportTicketCreateOrConnectWithoutClientInput | SupportTicketCreateOrConnectWithoutClientInput[]
+    upsert?: SupportTicketUpsertWithWhereUniqueWithoutClientInput | SupportTicketUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: SupportTicketCreateManyClientInputEnvelope
+    set?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    disconnect?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    delete?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    connect?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    update?: SupportTicketUpdateWithWhereUniqueWithoutClientInput | SupportTicketUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: SupportTicketUpdateManyWithWhereWithoutClientInput | SupportTicketUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: SupportTicketScalarWhereInput | SupportTicketScalarWhereInput[]
+  }
+
+  export type SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<SupportTicketMessageCreateWithoutAuthorInput, SupportTicketMessageUncheckedCreateWithoutAuthorInput> | SupportTicketMessageCreateWithoutAuthorInput[] | SupportTicketMessageUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: SupportTicketMessageCreateOrConnectWithoutAuthorInput | SupportTicketMessageCreateOrConnectWithoutAuthorInput[]
+    upsert?: SupportTicketMessageUpsertWithWhereUniqueWithoutAuthorInput | SupportTicketMessageUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: SupportTicketMessageCreateManyAuthorInputEnvelope
+    set?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    disconnect?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    delete?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    connect?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    update?: SupportTicketMessageUpdateWithWhereUniqueWithoutAuthorInput | SupportTicketMessageUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: SupportTicketMessageUpdateManyWithWhereWithoutAuthorInput | SupportTicketMessageUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: SupportTicketMessageScalarWhereInput | SupportTicketMessageScalarWhereInput[]
   }
 
   export type MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput = {
@@ -65791,6 +69299,13 @@ export namespace Prisma {
     connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
   }
 
+  export type SupportTicketCreateNestedManyWithoutProjectInput = {
+    create?: XOR<SupportTicketCreateWithoutProjectInput, SupportTicketUncheckedCreateWithoutProjectInput> | SupportTicketCreateWithoutProjectInput[] | SupportTicketUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: SupportTicketCreateOrConnectWithoutProjectInput | SupportTicketCreateOrConnectWithoutProjectInput[]
+    createMany?: SupportTicketCreateManyProjectInputEnvelope
+    connect?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+  }
+
   export type BriefingEntryUncheckedCreateNestedManyWithoutProjectInput = {
     create?: XOR<BriefingEntryCreateWithoutProjectInput, BriefingEntryUncheckedCreateWithoutProjectInput> | BriefingEntryCreateWithoutProjectInput[] | BriefingEntryUncheckedCreateWithoutProjectInput[]
     connectOrCreate?: BriefingEntryCreateOrConnectWithoutProjectInput | BriefingEntryCreateOrConnectWithoutProjectInput[]
@@ -65878,6 +69393,13 @@ export namespace Prisma {
     connectOrCreate?: InvoiceCreateOrConnectWithoutProjectInput | InvoiceCreateOrConnectWithoutProjectInput[]
     createMany?: InvoiceCreateManyProjectInputEnvelope
     connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+  }
+
+  export type SupportTicketUncheckedCreateNestedManyWithoutProjectInput = {
+    create?: XOR<SupportTicketCreateWithoutProjectInput, SupportTicketUncheckedCreateWithoutProjectInput> | SupportTicketCreateWithoutProjectInput[] | SupportTicketUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: SupportTicketCreateOrConnectWithoutProjectInput | SupportTicketCreateOrConnectWithoutProjectInput[]
+    createMany?: SupportTicketCreateManyProjectInputEnvelope
+    connect?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
   }
 
   export type EnumProjectStatusFieldUpdateOperationsInput = {
@@ -66092,6 +69614,20 @@ export namespace Prisma {
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
   }
 
+  export type SupportTicketUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<SupportTicketCreateWithoutProjectInput, SupportTicketUncheckedCreateWithoutProjectInput> | SupportTicketCreateWithoutProjectInput[] | SupportTicketUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: SupportTicketCreateOrConnectWithoutProjectInput | SupportTicketCreateOrConnectWithoutProjectInput[]
+    upsert?: SupportTicketUpsertWithWhereUniqueWithoutProjectInput | SupportTicketUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: SupportTicketCreateManyProjectInputEnvelope
+    set?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    disconnect?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    delete?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    connect?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    update?: SupportTicketUpdateWithWhereUniqueWithoutProjectInput | SupportTicketUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: SupportTicketUpdateManyWithWhereWithoutProjectInput | SupportTicketUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: SupportTicketScalarWhereInput | SupportTicketScalarWhereInput[]
+  }
+
   export type BriefingEntryUncheckedUpdateManyWithoutProjectNestedInput = {
     create?: XOR<BriefingEntryCreateWithoutProjectInput, BriefingEntryUncheckedCreateWithoutProjectInput> | BriefingEntryCreateWithoutProjectInput[] | BriefingEntryUncheckedCreateWithoutProjectInput[]
     connectOrCreate?: BriefingEntryCreateOrConnectWithoutProjectInput | BriefingEntryCreateOrConnectWithoutProjectInput[]
@@ -66264,6 +69800,20 @@ export namespace Prisma {
     update?: InvoiceUpdateWithWhereUniqueWithoutProjectInput | InvoiceUpdateWithWhereUniqueWithoutProjectInput[]
     updateMany?: InvoiceUpdateManyWithWhereWithoutProjectInput | InvoiceUpdateManyWithWhereWithoutProjectInput[]
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
+  }
+
+  export type SupportTicketUncheckedUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<SupportTicketCreateWithoutProjectInput, SupportTicketUncheckedCreateWithoutProjectInput> | SupportTicketCreateWithoutProjectInput[] | SupportTicketUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: SupportTicketCreateOrConnectWithoutProjectInput | SupportTicketCreateOrConnectWithoutProjectInput[]
+    upsert?: SupportTicketUpsertWithWhereUniqueWithoutProjectInput | SupportTicketUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: SupportTicketCreateManyProjectInputEnvelope
+    set?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    disconnect?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    delete?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    connect?: SupportTicketWhereUniqueInput | SupportTicketWhereUniqueInput[]
+    update?: SupportTicketUpdateWithWhereUniqueWithoutProjectInput | SupportTicketUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: SupportTicketUpdateManyWithWhereWithoutProjectInput | SupportTicketUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: SupportTicketScalarWhereInput | SupportTicketScalarWhereInput[]
   }
 
   export type LeadCreateNestedOneWithoutDocumentsInput = {
@@ -67332,6 +70882,120 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutEmailLogsInput, UserUpdateWithoutEmailLogsInput>, UserUncheckedUpdateWithoutEmailLogsInput>
   }
 
+  export type UserCreateNestedOneWithoutSupportTicketsInput = {
+    create?: XOR<UserCreateWithoutSupportTicketsInput, UserUncheckedCreateWithoutSupportTicketsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSupportTicketsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ProjectCreateNestedOneWithoutSupportTicketsInput = {
+    create?: XOR<ProjectCreateWithoutSupportTicketsInput, ProjectUncheckedCreateWithoutSupportTicketsInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutSupportTicketsInput
+    connect?: ProjectWhereUniqueInput
+  }
+
+  export type SupportTicketMessageCreateNestedManyWithoutTicketInput = {
+    create?: XOR<SupportTicketMessageCreateWithoutTicketInput, SupportTicketMessageUncheckedCreateWithoutTicketInput> | SupportTicketMessageCreateWithoutTicketInput[] | SupportTicketMessageUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: SupportTicketMessageCreateOrConnectWithoutTicketInput | SupportTicketMessageCreateOrConnectWithoutTicketInput[]
+    createMany?: SupportTicketMessageCreateManyTicketInputEnvelope
+    connect?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+  }
+
+  export type SupportTicketMessageUncheckedCreateNestedManyWithoutTicketInput = {
+    create?: XOR<SupportTicketMessageCreateWithoutTicketInput, SupportTicketMessageUncheckedCreateWithoutTicketInput> | SupportTicketMessageCreateWithoutTicketInput[] | SupportTicketMessageUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: SupportTicketMessageCreateOrConnectWithoutTicketInput | SupportTicketMessageCreateOrConnectWithoutTicketInput[]
+    createMany?: SupportTicketMessageCreateManyTicketInputEnvelope
+    connect?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+  }
+
+  export type EnumSupportTicketStatusFieldUpdateOperationsInput = {
+    set?: $Enums.SupportTicketStatus
+  }
+
+  export type EnumSupportTicketPriorityFieldUpdateOperationsInput = {
+    set?: $Enums.SupportTicketPriority
+  }
+
+  export type EnumSupportTicketCategoryFieldUpdateOperationsInput = {
+    set?: $Enums.SupportTicketCategory
+  }
+
+  export type UserUpdateOneRequiredWithoutSupportTicketsNestedInput = {
+    create?: XOR<UserCreateWithoutSupportTicketsInput, UserUncheckedCreateWithoutSupportTicketsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSupportTicketsInput
+    upsert?: UserUpsertWithoutSupportTicketsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSupportTicketsInput, UserUpdateWithoutSupportTicketsInput>, UserUncheckedUpdateWithoutSupportTicketsInput>
+  }
+
+  export type ProjectUpdateOneWithoutSupportTicketsNestedInput = {
+    create?: XOR<ProjectCreateWithoutSupportTicketsInput, ProjectUncheckedCreateWithoutSupportTicketsInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutSupportTicketsInput
+    upsert?: ProjectUpsertWithoutSupportTicketsInput
+    disconnect?: ProjectWhereInput | boolean
+    delete?: ProjectWhereInput | boolean
+    connect?: ProjectWhereUniqueInput
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutSupportTicketsInput, ProjectUpdateWithoutSupportTicketsInput>, ProjectUncheckedUpdateWithoutSupportTicketsInput>
+  }
+
+  export type SupportTicketMessageUpdateManyWithoutTicketNestedInput = {
+    create?: XOR<SupportTicketMessageCreateWithoutTicketInput, SupportTicketMessageUncheckedCreateWithoutTicketInput> | SupportTicketMessageCreateWithoutTicketInput[] | SupportTicketMessageUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: SupportTicketMessageCreateOrConnectWithoutTicketInput | SupportTicketMessageCreateOrConnectWithoutTicketInput[]
+    upsert?: SupportTicketMessageUpsertWithWhereUniqueWithoutTicketInput | SupportTicketMessageUpsertWithWhereUniqueWithoutTicketInput[]
+    createMany?: SupportTicketMessageCreateManyTicketInputEnvelope
+    set?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    disconnect?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    delete?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    connect?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    update?: SupportTicketMessageUpdateWithWhereUniqueWithoutTicketInput | SupportTicketMessageUpdateWithWhereUniqueWithoutTicketInput[]
+    updateMany?: SupportTicketMessageUpdateManyWithWhereWithoutTicketInput | SupportTicketMessageUpdateManyWithWhereWithoutTicketInput[]
+    deleteMany?: SupportTicketMessageScalarWhereInput | SupportTicketMessageScalarWhereInput[]
+  }
+
+  export type SupportTicketMessageUncheckedUpdateManyWithoutTicketNestedInput = {
+    create?: XOR<SupportTicketMessageCreateWithoutTicketInput, SupportTicketMessageUncheckedCreateWithoutTicketInput> | SupportTicketMessageCreateWithoutTicketInput[] | SupportTicketMessageUncheckedCreateWithoutTicketInput[]
+    connectOrCreate?: SupportTicketMessageCreateOrConnectWithoutTicketInput | SupportTicketMessageCreateOrConnectWithoutTicketInput[]
+    upsert?: SupportTicketMessageUpsertWithWhereUniqueWithoutTicketInput | SupportTicketMessageUpsertWithWhereUniqueWithoutTicketInput[]
+    createMany?: SupportTicketMessageCreateManyTicketInputEnvelope
+    set?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    disconnect?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    delete?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    connect?: SupportTicketMessageWhereUniqueInput | SupportTicketMessageWhereUniqueInput[]
+    update?: SupportTicketMessageUpdateWithWhereUniqueWithoutTicketInput | SupportTicketMessageUpdateWithWhereUniqueWithoutTicketInput[]
+    updateMany?: SupportTicketMessageUpdateManyWithWhereWithoutTicketInput | SupportTicketMessageUpdateManyWithWhereWithoutTicketInput[]
+    deleteMany?: SupportTicketMessageScalarWhereInput | SupportTicketMessageScalarWhereInput[]
+  }
+
+  export type SupportTicketCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<SupportTicketCreateWithoutMessagesInput, SupportTicketUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: SupportTicketCreateOrConnectWithoutMessagesInput
+    connect?: SupportTicketWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutSupportMessagesInput = {
+    create?: XOR<UserCreateWithoutSupportMessagesInput, UserUncheckedCreateWithoutSupportMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSupportMessagesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type SupportTicketUpdateOneRequiredWithoutMessagesNestedInput = {
+    create?: XOR<SupportTicketCreateWithoutMessagesInput, SupportTicketUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: SupportTicketCreateOrConnectWithoutMessagesInput
+    upsert?: SupportTicketUpsertWithoutMessagesInput
+    connect?: SupportTicketWhereUniqueInput
+    update?: XOR<XOR<SupportTicketUpdateToOneWithWhereWithoutMessagesInput, SupportTicketUpdateWithoutMessagesInput>, SupportTicketUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type UserUpdateOneWithoutSupportMessagesNestedInput = {
+    create?: XOR<UserCreateWithoutSupportMessagesInput, UserUncheckedCreateWithoutSupportMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSupportMessagesInput
+    upsert?: UserUpsertWithoutSupportMessagesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSupportMessagesInput, UserUpdateWithoutSupportMessagesInput>, UserUncheckedUpdateWithoutSupportMessagesInput>
+  }
+
   export type MaguiConnectProfileCreateNestedOneWithoutClickEventsInput = {
     create?: XOR<MaguiConnectProfileCreateWithoutClickEventsInput, MaguiConnectProfileUncheckedCreateWithoutClickEventsInput>
     connectOrCreate?: MaguiConnectProfileCreateOrConnectWithoutClickEventsInput
@@ -68081,6 +71745,57 @@ export namespace Prisma {
     _max?: NestedEnumInstallmentStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumSupportTicketStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SupportTicketStatus | EnumSupportTicketStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SupportTicketStatus[] | ListEnumSupportTicketStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SupportTicketStatus[] | ListEnumSupportTicketStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSupportTicketStatusFilter<$PrismaModel> | $Enums.SupportTicketStatus
+  }
+
+  export type NestedEnumSupportTicketPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.SupportTicketPriority | EnumSupportTicketPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.SupportTicketPriority[] | ListEnumSupportTicketPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SupportTicketPriority[] | ListEnumSupportTicketPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumSupportTicketPriorityFilter<$PrismaModel> | $Enums.SupportTicketPriority
+  }
+
+  export type NestedEnumSupportTicketCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.SupportTicketCategory | EnumSupportTicketCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.SupportTicketCategory[] | ListEnumSupportTicketCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SupportTicketCategory[] | ListEnumSupportTicketCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumSupportTicketCategoryFilter<$PrismaModel> | $Enums.SupportTicketCategory
+  }
+
+  export type NestedEnumSupportTicketStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SupportTicketStatus | EnumSupportTicketStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SupportTicketStatus[] | ListEnumSupportTicketStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SupportTicketStatus[] | ListEnumSupportTicketStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSupportTicketStatusWithAggregatesFilter<$PrismaModel> | $Enums.SupportTicketStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSupportTicketStatusFilter<$PrismaModel>
+    _max?: NestedEnumSupportTicketStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSupportTicketPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SupportTicketPriority | EnumSupportTicketPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.SupportTicketPriority[] | ListEnumSupportTicketPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SupportTicketPriority[] | ListEnumSupportTicketPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumSupportTicketPriorityWithAggregatesFilter<$PrismaModel> | $Enums.SupportTicketPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSupportTicketPriorityFilter<$PrismaModel>
+    _max?: NestedEnumSupportTicketPriorityFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSupportTicketCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SupportTicketCategory | EnumSupportTicketCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.SupportTicketCategory[] | ListEnumSupportTicketCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SupportTicketCategory[] | ListEnumSupportTicketCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumSupportTicketCategoryWithAggregatesFilter<$PrismaModel> | $Enums.SupportTicketCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSupportTicketCategoryFilter<$PrismaModel>
+    _max?: NestedEnumSupportTicketCategoryFilter<$PrismaModel>
+  }
+
   export type ProjectCreateWithoutClientInput = {
     id?: string
     name: string
@@ -68124,6 +71839,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutClientInput = {
@@ -68169,6 +71885,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutClientInput = {
@@ -68217,8 +71934,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     convertedProjectId?: string | null
@@ -68241,8 +71956,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     convertedProjectId?: string | null
@@ -68666,6 +72379,84 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SupportTicketCreateWithoutClientInput = {
+    id?: string
+    number?: number
+    subject: string
+    description: string
+    status?: $Enums.SupportTicketStatus
+    priority?: $Enums.SupportTicketPriority
+    category?: $Enums.SupportTicketCategory
+    slaDeadlineAt?: Date | string | null
+    firstResponseAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    clientUnreadCount?: number
+    adminUnreadCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    project?: ProjectCreateNestedOneWithoutSupportTicketsInput
+    messages?: SupportTicketMessageCreateNestedManyWithoutTicketInput
+  }
+
+  export type SupportTicketUncheckedCreateWithoutClientInput = {
+    id?: string
+    number?: number
+    subject: string
+    description: string
+    status?: $Enums.SupportTicketStatus
+    priority?: $Enums.SupportTicketPriority
+    category?: $Enums.SupportTicketCategory
+    slaDeadlineAt?: Date | string | null
+    firstResponseAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    clientUnreadCount?: number
+    adminUnreadCount?: number
+    projectId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: SupportTicketMessageUncheckedCreateNestedManyWithoutTicketInput
+  }
+
+  export type SupportTicketCreateOrConnectWithoutClientInput = {
+    where: SupportTicketWhereUniqueInput
+    create: XOR<SupportTicketCreateWithoutClientInput, SupportTicketUncheckedCreateWithoutClientInput>
+  }
+
+  export type SupportTicketCreateManyClientInputEnvelope = {
+    data: SupportTicketCreateManyClientInput | SupportTicketCreateManyClientInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SupportTicketMessageCreateWithoutAuthorInput = {
+    id?: string
+    content: string
+    isInternal?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ticket: SupportTicketCreateNestedOneWithoutMessagesInput
+  }
+
+  export type SupportTicketMessageUncheckedCreateWithoutAuthorInput = {
+    id?: string
+    content: string
+    isInternal?: boolean
+    ticketId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SupportTicketMessageCreateOrConnectWithoutAuthorInput = {
+    where: SupportTicketMessageWhereUniqueInput
+    create: XOR<SupportTicketMessageCreateWithoutAuthorInput, SupportTicketMessageUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type SupportTicketMessageCreateManyAuthorInputEnvelope = {
+    data: SupportTicketMessageCreateManyAuthorInput | SupportTicketMessageCreateManyAuthorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type MaguiConnectProfileCreateWithoutUserInput = {
     id?: string
     slug?: string | null
@@ -68874,8 +72665,6 @@ export namespace Prisma {
     instagram?: StringNullableFilter<"Lead"> | string | null
     status?: EnumLeadStatusFilter<"Lead"> | $Enums.LeadStatus
     source?: EnumLeadSourceFilter<"Lead"> | $Enums.LeadSource
-    notes?: StringNullableFilter<"Lead"> | string | null
-    value?: StringNullableFilter<"Lead"> | string | null
     lastContactAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
     nextActionAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
     assignedToId?: StringNullableFilter<"Lead"> | string | null
@@ -69257,6 +73046,74 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
   }
 
+  export type SupportTicketUpsertWithWhereUniqueWithoutClientInput = {
+    where: SupportTicketWhereUniqueInput
+    update: XOR<SupportTicketUpdateWithoutClientInput, SupportTicketUncheckedUpdateWithoutClientInput>
+    create: XOR<SupportTicketCreateWithoutClientInput, SupportTicketUncheckedCreateWithoutClientInput>
+  }
+
+  export type SupportTicketUpdateWithWhereUniqueWithoutClientInput = {
+    where: SupportTicketWhereUniqueInput
+    data: XOR<SupportTicketUpdateWithoutClientInput, SupportTicketUncheckedUpdateWithoutClientInput>
+  }
+
+  export type SupportTicketUpdateManyWithWhereWithoutClientInput = {
+    where: SupportTicketScalarWhereInput
+    data: XOR<SupportTicketUpdateManyMutationInput, SupportTicketUncheckedUpdateManyWithoutClientInput>
+  }
+
+  export type SupportTicketScalarWhereInput = {
+    AND?: SupportTicketScalarWhereInput | SupportTicketScalarWhereInput[]
+    OR?: SupportTicketScalarWhereInput[]
+    NOT?: SupportTicketScalarWhereInput | SupportTicketScalarWhereInput[]
+    id?: StringFilter<"SupportTicket"> | string
+    number?: IntFilter<"SupportTicket"> | number
+    subject?: StringFilter<"SupportTicket"> | string
+    description?: StringFilter<"SupportTicket"> | string
+    status?: EnumSupportTicketStatusFilter<"SupportTicket"> | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFilter<"SupportTicket"> | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFilter<"SupportTicket"> | $Enums.SupportTicketCategory
+    slaDeadlineAt?: DateTimeNullableFilter<"SupportTicket"> | Date | string | null
+    firstResponseAt?: DateTimeNullableFilter<"SupportTicket"> | Date | string | null
+    resolvedAt?: DateTimeNullableFilter<"SupportTicket"> | Date | string | null
+    closedAt?: DateTimeNullableFilter<"SupportTicket"> | Date | string | null
+    clientUnreadCount?: IntFilter<"SupportTicket"> | number
+    adminUnreadCount?: IntFilter<"SupportTicket"> | number
+    clientId?: StringFilter<"SupportTicket"> | string
+    projectId?: StringNullableFilter<"SupportTicket"> | string | null
+    createdAt?: DateTimeFilter<"SupportTicket"> | Date | string
+    updatedAt?: DateTimeFilter<"SupportTicket"> | Date | string
+  }
+
+  export type SupportTicketMessageUpsertWithWhereUniqueWithoutAuthorInput = {
+    where: SupportTicketMessageWhereUniqueInput
+    update: XOR<SupportTicketMessageUpdateWithoutAuthorInput, SupportTicketMessageUncheckedUpdateWithoutAuthorInput>
+    create: XOR<SupportTicketMessageCreateWithoutAuthorInput, SupportTicketMessageUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type SupportTicketMessageUpdateWithWhereUniqueWithoutAuthorInput = {
+    where: SupportTicketMessageWhereUniqueInput
+    data: XOR<SupportTicketMessageUpdateWithoutAuthorInput, SupportTicketMessageUncheckedUpdateWithoutAuthorInput>
+  }
+
+  export type SupportTicketMessageUpdateManyWithWhereWithoutAuthorInput = {
+    where: SupportTicketMessageScalarWhereInput
+    data: XOR<SupportTicketMessageUpdateManyMutationInput, SupportTicketMessageUncheckedUpdateManyWithoutAuthorInput>
+  }
+
+  export type SupportTicketMessageScalarWhereInput = {
+    AND?: SupportTicketMessageScalarWhereInput | SupportTicketMessageScalarWhereInput[]
+    OR?: SupportTicketMessageScalarWhereInput[]
+    NOT?: SupportTicketMessageScalarWhereInput | SupportTicketMessageScalarWhereInput[]
+    id?: StringFilter<"SupportTicketMessage"> | string
+    content?: StringFilter<"SupportTicketMessage"> | string
+    isInternal?: BoolFilter<"SupportTicketMessage"> | boolean
+    ticketId?: StringFilter<"SupportTicketMessage"> | string
+    authorId?: StringNullableFilter<"SupportTicketMessage"> | string | null
+    createdAt?: DateTimeFilter<"SupportTicketMessage"> | Date | string
+    updatedAt?: DateTimeFilter<"SupportTicketMessage"> | Date | string
+  }
+
   export type MaguiConnectProfileUpsertWithoutUserInput = {
     update: XOR<MaguiConnectProfileUpdateWithoutUserInput, MaguiConnectProfileUncheckedUpdateWithoutUserInput>
     create: XOR<MaguiConnectProfileCreateWithoutUserInput, MaguiConnectProfileUncheckedCreateWithoutUserInput>
@@ -69391,6 +73248,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutMaguiConnectProfileInput = {
@@ -69422,6 +73281,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutMaguiConnectProfileInput = {
@@ -69575,6 +73436,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMaguiConnectProfileInput = {
@@ -69606,6 +73469,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type MaguiConnectLinkUpsertWithWhereUniqueWithoutProfileInput = {
@@ -70308,6 +74173,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -70339,6 +74206,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -70544,6 +74413,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -70575,6 +74446,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -70673,8 +74546,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     convertedProjectId?: string | null
@@ -70697,8 +74568,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     assignedToId?: string | null
@@ -70744,6 +74613,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -70775,6 +74646,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -70804,8 +74677,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     convertedProjectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70828,8 +74699,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70881,6 +74750,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -70912,6 +74783,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -70925,8 +74798,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     convertedProjectId?: string | null
@@ -70949,8 +74820,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     assignedToId?: string | null
@@ -70996,6 +74865,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -71027,6 +74898,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -71056,8 +74929,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     convertedProjectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71080,8 +74951,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71133,6 +75002,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -71164,6 +75035,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -71210,6 +75083,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutServiceCategoryInput = {
@@ -71255,6 +75129,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutServiceCategoryInput = {
@@ -71368,6 +75243,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -71399,6 +75276,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -71861,6 +75740,56 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SupportTicketCreateWithoutProjectInput = {
+    id?: string
+    number?: number
+    subject: string
+    description: string
+    status?: $Enums.SupportTicketStatus
+    priority?: $Enums.SupportTicketPriority
+    category?: $Enums.SupportTicketCategory
+    slaDeadlineAt?: Date | string | null
+    firstResponseAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    clientUnreadCount?: number
+    adminUnreadCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    client: UserCreateNestedOneWithoutSupportTicketsInput
+    messages?: SupportTicketMessageCreateNestedManyWithoutTicketInput
+  }
+
+  export type SupportTicketUncheckedCreateWithoutProjectInput = {
+    id?: string
+    number?: number
+    subject: string
+    description: string
+    status?: $Enums.SupportTicketStatus
+    priority?: $Enums.SupportTicketPriority
+    category?: $Enums.SupportTicketCategory
+    slaDeadlineAt?: Date | string | null
+    firstResponseAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    clientUnreadCount?: number
+    adminUnreadCount?: number
+    clientId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: SupportTicketMessageUncheckedCreateNestedManyWithoutTicketInput
+  }
+
+  export type SupportTicketCreateOrConnectWithoutProjectInput = {
+    where: SupportTicketWhereUniqueInput
+    create: XOR<SupportTicketCreateWithoutProjectInput, SupportTicketUncheckedCreateWithoutProjectInput>
+  }
+
+  export type SupportTicketCreateManyProjectInputEnvelope = {
+    data: SupportTicketCreateManyProjectInput | SupportTicketCreateManyProjectInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ServiceCategoryUpsertWithoutProjectsInput = {
     update: XOR<ServiceCategoryUpdateWithoutProjectsInput, ServiceCategoryUncheckedUpdateWithoutProjectsInput>
     create: XOR<ServiceCategoryCreateWithoutProjectsInput, ServiceCategoryUncheckedCreateWithoutProjectsInput>
@@ -71964,6 +75893,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -71995,6 +75926,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -72301,6 +76234,22 @@ export namespace Prisma {
     data: XOR<InvoiceUpdateManyMutationInput, InvoiceUncheckedUpdateManyWithoutProjectInput>
   }
 
+  export type SupportTicketUpsertWithWhereUniqueWithoutProjectInput = {
+    where: SupportTicketWhereUniqueInput
+    update: XOR<SupportTicketUpdateWithoutProjectInput, SupportTicketUncheckedUpdateWithoutProjectInput>
+    create: XOR<SupportTicketCreateWithoutProjectInput, SupportTicketUncheckedCreateWithoutProjectInput>
+  }
+
+  export type SupportTicketUpdateWithWhereUniqueWithoutProjectInput = {
+    where: SupportTicketWhereUniqueInput
+    data: XOR<SupportTicketUpdateWithoutProjectInput, SupportTicketUncheckedUpdateWithoutProjectInput>
+  }
+
+  export type SupportTicketUpdateManyWithWhereWithoutProjectInput = {
+    where: SupportTicketScalarWhereInput
+    data: XOR<SupportTicketUpdateManyMutationInput, SupportTicketUncheckedUpdateManyWithoutProjectInput>
+  }
+
   export type LeadCreateWithoutDocumentsInput = {
     id?: string
     companyName: string
@@ -72311,8 +76260,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     convertedProjectId?: string | null
@@ -72335,8 +76282,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     assignedToId?: string | null
@@ -72382,6 +76327,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -72413,6 +76360,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -72464,6 +76413,7 @@ export namespace Prisma {
     handoff?: ProjectHandoffCreateNestedOneWithoutProjectInput
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutDocumentsInput = {
@@ -72509,6 +76459,7 @@ export namespace Prisma {
     handoff?: ProjectHandoffUncheckedCreateNestedOneWithoutProjectInput
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutDocumentsInput = {
@@ -72677,8 +76628,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     convertedProjectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -72701,8 +76650,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -72754,6 +76701,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -72785,6 +76734,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -72842,6 +76793,7 @@ export namespace Prisma {
     handoff?: ProjectHandoffUpdateOneWithoutProjectNestedInput
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutDocumentsInput = {
@@ -72887,6 +76839,7 @@ export namespace Prisma {
     handoff?: ProjectHandoffUncheckedUpdateOneWithoutProjectNestedInput
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type DocumentVersionUpsertWithWhereUniqueWithoutDocumentInput = {
@@ -73061,6 +77014,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -73092,6 +77047,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -73194,6 +77151,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -73225,6 +77184,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -73479,6 +77440,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutHandoffInput = {
@@ -73524,6 +77486,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutHandoffInput = {
@@ -73630,6 +77593,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutHandoffInput = {
@@ -73675,6 +77639,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProposalUpsertWithoutHandoffInput = {
@@ -73771,6 +77736,7 @@ export namespace Prisma {
     handoff?: ProjectHandoffCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutKickoffInput = {
@@ -73816,6 +77782,7 @@ export namespace Prisma {
     handoff?: ProjectHandoffUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutKickoffInput = {
@@ -73877,6 +77844,7 @@ export namespace Prisma {
     handoff?: ProjectHandoffUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutKickoffInput = {
@@ -73922,6 +77890,7 @@ export namespace Prisma {
     handoff?: ProjectHandoffUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateWithoutBriefingNotesInput = {
@@ -73967,6 +77936,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutBriefingNotesInput = {
@@ -74012,6 +77982,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutBriefingNotesInput = {
@@ -74073,6 +78044,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutBriefingNotesInput = {
@@ -74118,6 +78090,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateWithoutMembersInput = {
@@ -74163,6 +78136,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutMembersInput = {
@@ -74208,6 +78182,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutMembersInput = {
@@ -74243,6 +78218,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -74274,6 +78251,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -74336,6 +78315,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutMembersInput = {
@@ -74381,6 +78361,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type UserUpsertWithoutProjectMembershipsInput = {
@@ -74422,6 +78403,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -74453,6 +78436,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -74499,6 +78484,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutUpdatesInput = {
@@ -74544,6 +78530,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutUpdatesInput = {
@@ -74665,6 +78652,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutUpdatesInput = {
@@ -74710,6 +78698,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type UpdateAttachmentUpsertWithWhereUniqueWithoutUpdateInput = {
@@ -74905,6 +78894,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -74936,6 +78927,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -75026,6 +79019,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -75057,6 +79052,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -75103,6 +79100,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutActionItemsInput = {
@@ -75148,6 +79146,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutActionItemsInput = {
@@ -75209,6 +79208,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutActionItemsInput = {
@@ -75254,6 +79254,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateWithoutAssetsInput = {
@@ -75299,6 +79300,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutAssetsInput = {
@@ -75344,6 +79346,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutAssetsInput = {
@@ -75405,6 +79408,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutAssetsInput = {
@@ -75450,6 +79454,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateWithoutVersionsInput = {
@@ -75495,6 +79500,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutVersionsInput = {
@@ -75540,6 +79546,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutVersionsInput = {
@@ -75601,6 +79608,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutVersionsInput = {
@@ -75646,6 +79654,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type UserCreateWithoutNotificationsInput = {
@@ -75676,6 +79685,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -75707,6 +79718,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -75758,6 +79771,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutNotificationsInput = {
@@ -75803,6 +79817,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutNotificationsInput = {
@@ -75849,6 +79864,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -75880,6 +79897,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -75937,6 +79956,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutNotificationsInput = {
@@ -75982,6 +80002,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type UserCreateWithoutScheduledRemindersInput = {
@@ -76012,6 +80033,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -76043,6 +80066,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -76090,6 +80115,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -76121,6 +80148,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -76152,6 +80181,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -76183,6 +80214,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -76234,6 +80267,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutAuditLogsInput = {
@@ -76279,6 +80313,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutAuditLogsInput = {
@@ -76325,6 +80360,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -76356,6 +80393,8 @@ export namespace Prisma {
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -76413,6 +80452,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutAuditLogsInput = {
@@ -76458,6 +80498,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type LeadCreateWithoutProposalsInput = {
@@ -76470,8 +80511,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     convertedProjectId?: string | null
@@ -76494,8 +80533,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     assignedToId?: string | null
@@ -76556,6 +80593,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
     invoices?: InvoiceCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutProposalsInput = {
@@ -76601,6 +80639,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutProposalsInput = {
@@ -76742,8 +80781,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     convertedProjectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76766,8 +80803,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76834,6 +80869,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutProposalsInput = {
@@ -76879,6 +80915,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectHandoffUpsertWithoutProposalInput = {
@@ -77093,6 +81130,8 @@ export namespace Prisma {
     createdDocumentVersions?: DocumentVersionCreateNestedManyWithoutCreatedByInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -77124,6 +81163,8 @@ export namespace Prisma {
     createdDocumentVersions?: DocumentVersionUncheckedCreateNestedManyWithoutCreatedByInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -77171,6 +81212,8 @@ export namespace Prisma {
     createdDocumentVersions?: DocumentVersionUpdateManyWithoutCreatedByNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -77202,6 +81245,8 @@ export namespace Prisma {
     createdDocumentVersions?: DocumentVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -77248,6 +81293,7 @@ export namespace Prisma {
     handoff?: ProjectHandoffCreateNestedOneWithoutProjectInput
     kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
     documents?: DocumentCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutInvoicesInput = {
@@ -77293,6 +81339,7 @@ export namespace Prisma {
     handoff?: ProjectHandoffUncheckedCreateNestedOneWithoutProjectInput
     kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
     documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutInvoicesInput = {
@@ -77328,6 +81375,8 @@ export namespace Prisma {
     createdDocumentVersions?: DocumentVersionCreateNestedManyWithoutCreatedByInput
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogCreateNestedManyWithoutUserInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -77359,6 +81408,8 @@ export namespace Prisma {
     createdDocumentVersions?: DocumentVersionUncheckedCreateNestedManyWithoutCreatedByInput
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -77559,6 +81610,7 @@ export namespace Prisma {
     handoff?: ProjectHandoffUpdateOneWithoutProjectNestedInput
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutInvoicesInput = {
@@ -77604,6 +81656,7 @@ export namespace Prisma {
     handoff?: ProjectHandoffUncheckedUpdateOneWithoutProjectNestedInput
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type UserUpsertWithoutInvoicesInput = {
@@ -77645,6 +81698,8 @@ export namespace Prisma {
     createdDocumentVersions?: DocumentVersionUpdateManyWithoutCreatedByNestedInput
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -77676,6 +81731,8 @@ export namespace Prisma {
     createdDocumentVersions?: DocumentVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -78087,6 +82144,8 @@ export namespace Prisma {
     createdDocumentVersions?: DocumentVersionCreateNestedManyWithoutCreatedByInput
     billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
   }
 
@@ -78118,6 +82177,8 @@ export namespace Prisma {
     createdDocumentVersions?: DocumentVersionUncheckedCreateNestedManyWithoutCreatedByInput
     billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -78165,6 +82226,8 @@ export namespace Prisma {
     createdDocumentVersions?: DocumentVersionUpdateManyWithoutCreatedByNestedInput
     billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
     maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
   }
 
@@ -78196,6 +82259,643 @@ export namespace Prisma {
     createdDocumentVersions?: DocumentVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
+    maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutSupportTicketsInput = {
+    id?: string
+    clerkId: string
+    email: string
+    name?: string | null
+    role?: $Enums.UserRole
+    companyName?: string | null
+    phone?: string | null
+    position?: string | null
+    avatarUrl?: string | null
+    taxId?: string | null
+    stripeCustomerId?: string | null
+    canAccessMaguiConnect?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    projects?: ProjectCreateNestedManyWithoutClientInput
+    projectMemberships?: ProjectMemberCreateNestedManyWithoutUserInput
+    ownedLeads?: LeadCreateNestedManyWithoutAssignedToInput
+    leadNotes?: LeadNoteCreateNestedManyWithoutAuthorInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
+    scheduledReminders?: ScheduledReminderCreateNestedManyWithoutRecipientUserInput
+    approvalEvents?: ApprovalEventCreateNestedManyWithoutActorInput
+    leadActivities?: LeadActivityCreateNestedManyWithoutAuthorInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    createdDocumentVersions?: DocumentVersionCreateNestedManyWithoutCreatedByInput
+    billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
+    emailLogs?: EmailLogCreateNestedManyWithoutUserInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageCreateNestedManyWithoutAuthorInput
+    maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSupportTicketsInput = {
+    id?: string
+    clerkId: string
+    email: string
+    name?: string | null
+    role?: $Enums.UserRole
+    companyName?: string | null
+    phone?: string | null
+    position?: string | null
+    avatarUrl?: string | null
+    taxId?: string | null
+    stripeCustomerId?: string | null
+    canAccessMaguiConnect?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    projects?: ProjectUncheckedCreateNestedManyWithoutClientInput
+    projectMemberships?: ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+    ownedLeads?: LeadUncheckedCreateNestedManyWithoutAssignedToInput
+    leadNotes?: LeadNoteUncheckedCreateNestedManyWithoutAuthorInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
+    scheduledReminders?: ScheduledReminderUncheckedCreateNestedManyWithoutRecipientUserInput
+    approvalEvents?: ApprovalEventUncheckedCreateNestedManyWithoutActorInput
+    leadActivities?: LeadActivityUncheckedCreateNestedManyWithoutAuthorInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    createdDocumentVersions?: DocumentVersionUncheckedCreateNestedManyWithoutCreatedByInput
+    billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
+    emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportMessages?: SupportTicketMessageUncheckedCreateNestedManyWithoutAuthorInput
+    maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSupportTicketsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSupportTicketsInput, UserUncheckedCreateWithoutSupportTicketsInput>
+  }
+
+  export type ProjectCreateWithoutSupportTicketsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    status?: $Enums.ProjectStatus
+    category?: $Enums.ProjectCategory
+    progress?: number
+    budget?: number | null
+    customValue?: boolean
+    hasInternationalization?: boolean
+    internationalizationFee?: number | null
+    paymentMethod?: $Enums.PaymentMethod
+    briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
+    liveUrl?: string | null
+    repositoryUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    serviceCategory?: ServiceCategoryCreateNestedOneWithoutProjectsInput
+    briefingNotes?: BriefingEntryCreateNestedManyWithoutProjectInput
+    client: UserCreateNestedOneWithoutProjectsInput
+    members?: ProjectMemberCreateNestedManyWithoutProjectInput
+    updates?: UpdateCreateNestedManyWithoutProjectInput
+    assets?: AssetCreateNestedManyWithoutProjectInput
+    actionItems?: ActionItemCreateNestedManyWithoutProjectInput
+    versions?: VersionCreateNestedManyWithoutProjectInput
+    notifications?: NotificationCreateNestedManyWithoutProjectInput
+    auditLogs?: AuditLogCreateNestedManyWithoutProjectInput
+    proposals?: ProposalCreateNestedManyWithoutProjectInput
+    handoff?: ProjectHandoffCreateNestedOneWithoutProjectInput
+    kickoff?: ProjectKickoffChecklistCreateNestedOneWithoutProjectInput
+    documents?: DocumentCreateNestedManyWithoutProjectInput
+    invoices?: InvoiceCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectUncheckedCreateWithoutSupportTicketsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    status?: $Enums.ProjectStatus
+    category?: $Enums.ProjectCategory
+    progress?: number
+    budget?: number | null
+    customValue?: boolean
+    hasInternationalization?: boolean
+    internationalizationFee?: number | null
+    paymentMethod?: $Enums.PaymentMethod
+    serviceCategoryId?: string | null
+    briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
+    executionBusinessDays?: number | null
+    executionStartAt?: Date | string | null
+    briefingRequestedAt?: Date | string | null
+    briefingValidatedAt?: Date | string | null
+    deliveryForecastAt?: Date | string | null
+    suspendedAt?: Date | string | null
+    abandonedAt?: Date | string | null
+    lastClientDependencyAt?: Date | string | null
+    lastClientResponseAt?: Date | string | null
+    clientDelayCalendarDays?: number
+    clientDelayBusinessDays?: number
+    liveUrl?: string | null
+    repositoryUrl?: string | null
+    clientId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    briefingNotes?: BriefingEntryUncheckedCreateNestedManyWithoutProjectInput
+    members?: ProjectMemberUncheckedCreateNestedManyWithoutProjectInput
+    updates?: UpdateUncheckedCreateNestedManyWithoutProjectInput
+    assets?: AssetUncheckedCreateNestedManyWithoutProjectInput
+    actionItems?: ActionItemUncheckedCreateNestedManyWithoutProjectInput
+    versions?: VersionUncheckedCreateNestedManyWithoutProjectInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutProjectInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutProjectInput
+    proposals?: ProposalUncheckedCreateNestedManyWithoutProjectInput
+    handoff?: ProjectHandoffUncheckedCreateNestedOneWithoutProjectInput
+    kickoff?: ProjectKickoffChecklistUncheckedCreateNestedOneWithoutProjectInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutProjectInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectCreateOrConnectWithoutSupportTicketsInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutSupportTicketsInput, ProjectUncheckedCreateWithoutSupportTicketsInput>
+  }
+
+  export type SupportTicketMessageCreateWithoutTicketInput = {
+    id?: string
+    content: string
+    isInternal?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    author?: UserCreateNestedOneWithoutSupportMessagesInput
+  }
+
+  export type SupportTicketMessageUncheckedCreateWithoutTicketInput = {
+    id?: string
+    content: string
+    isInternal?: boolean
+    authorId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SupportTicketMessageCreateOrConnectWithoutTicketInput = {
+    where: SupportTicketMessageWhereUniqueInput
+    create: XOR<SupportTicketMessageCreateWithoutTicketInput, SupportTicketMessageUncheckedCreateWithoutTicketInput>
+  }
+
+  export type SupportTicketMessageCreateManyTicketInputEnvelope = {
+    data: SupportTicketMessageCreateManyTicketInput | SupportTicketMessageCreateManyTicketInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutSupportTicketsInput = {
+    update: XOR<UserUpdateWithoutSupportTicketsInput, UserUncheckedUpdateWithoutSupportTicketsInput>
+    create: XOR<UserCreateWithoutSupportTicketsInput, UserUncheckedCreateWithoutSupportTicketsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSupportTicketsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSupportTicketsInput, UserUncheckedUpdateWithoutSupportTicketsInput>
+  }
+
+  export type UserUpdateWithoutSupportTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    taxId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    canAccessMaguiConnect?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    projects?: ProjectUpdateManyWithoutClientNestedInput
+    projectMemberships?: ProjectMemberUpdateManyWithoutUserNestedInput
+    ownedLeads?: LeadUpdateManyWithoutAssignedToNestedInput
+    leadNotes?: LeadNoteUpdateManyWithoutAuthorNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
+    scheduledReminders?: ScheduledReminderUpdateManyWithoutRecipientUserNestedInput
+    approvalEvents?: ApprovalEventUpdateManyWithoutActorNestedInput
+    leadActivities?: LeadActivityUpdateManyWithoutAuthorNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    createdDocumentVersions?: DocumentVersionUpdateManyWithoutCreatedByNestedInput
+    billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
+    emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUpdateManyWithoutAuthorNestedInput
+    maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSupportTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    taxId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    canAccessMaguiConnect?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    projects?: ProjectUncheckedUpdateManyWithoutClientNestedInput
+    projectMemberships?: ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+    ownedLeads?: LeadUncheckedUpdateManyWithoutAssignedToNestedInput
+    leadNotes?: LeadNoteUncheckedUpdateManyWithoutAuthorNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
+    scheduledReminders?: ScheduledReminderUncheckedUpdateManyWithoutRecipientUserNestedInput
+    approvalEvents?: ApprovalEventUncheckedUpdateManyWithoutActorNestedInput
+    leadActivities?: LeadActivityUncheckedUpdateManyWithoutAuthorNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    createdDocumentVersions?: DocumentVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+    billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
+    emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportMessages?: SupportTicketMessageUncheckedUpdateManyWithoutAuthorNestedInput
+    maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type ProjectUpsertWithoutSupportTicketsInput = {
+    update: XOR<ProjectUpdateWithoutSupportTicketsInput, ProjectUncheckedUpdateWithoutSupportTicketsInput>
+    create: XOR<ProjectCreateWithoutSupportTicketsInput, ProjectUncheckedCreateWithoutSupportTicketsInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutSupportTicketsInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutSupportTicketsInput, ProjectUncheckedUpdateWithoutSupportTicketsInput>
+  }
+
+  export type ProjectUpdateWithoutSupportTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    category?: EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+    progress?: IntFieldUpdateOperationsInput | number
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    customValue?: BoolFieldUpdateOperationsInput | boolean
+    hasInternationalization?: BoolFieldUpdateOperationsInput | boolean
+    internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
+    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
+    liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serviceCategory?: ServiceCategoryUpdateOneWithoutProjectsNestedInput
+    briefingNotes?: BriefingEntryUpdateManyWithoutProjectNestedInput
+    client?: UserUpdateOneRequiredWithoutProjectsNestedInput
+    members?: ProjectMemberUpdateManyWithoutProjectNestedInput
+    updates?: UpdateUpdateManyWithoutProjectNestedInput
+    assets?: AssetUpdateManyWithoutProjectNestedInput
+    actionItems?: ActionItemUpdateManyWithoutProjectNestedInput
+    versions?: VersionUpdateManyWithoutProjectNestedInput
+    notifications?: NotificationUpdateManyWithoutProjectNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutProjectNestedInput
+    proposals?: ProposalUpdateManyWithoutProjectNestedInput
+    handoff?: ProjectHandoffUpdateOneWithoutProjectNestedInput
+    kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
+    documents?: DocumentUpdateManyWithoutProjectNestedInput
+    invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+  }
+
+  export type ProjectUncheckedUpdateWithoutSupportTicketsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    category?: EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+    progress?: IntFieldUpdateOperationsInput | number
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    customValue?: BoolFieldUpdateOperationsInput | boolean
+    hasInternationalization?: BoolFieldUpdateOperationsInput | boolean
+    internationalizationFee?: NullableIntFieldUpdateOperationsInput | number | null
+    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    serviceCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    briefing?: NullableJsonNullValueInput | InputJsonValue
+    scheduleData?: NullableJsonNullValueInput | InputJsonValue
+    executionBusinessDays?: NullableIntFieldUpdateOperationsInput | number | null
+    executionStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    briefingValidatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveryForecastAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    abandonedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientDependencyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastClientResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientDelayCalendarDays?: IntFieldUpdateOperationsInput | number
+    clientDelayBusinessDays?: IntFieldUpdateOperationsInput | number
+    liveUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repositoryUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    clientId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    briefingNotes?: BriefingEntryUncheckedUpdateManyWithoutProjectNestedInput
+    members?: ProjectMemberUncheckedUpdateManyWithoutProjectNestedInput
+    updates?: UpdateUncheckedUpdateManyWithoutProjectNestedInput
+    assets?: AssetUncheckedUpdateManyWithoutProjectNestedInput
+    actionItems?: ActionItemUncheckedUpdateManyWithoutProjectNestedInput
+    versions?: VersionUncheckedUpdateManyWithoutProjectNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutProjectNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutProjectNestedInput
+    proposals?: ProposalUncheckedUpdateManyWithoutProjectNestedInput
+    handoff?: ProjectHandoffUncheckedUpdateOneWithoutProjectNestedInput
+    kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+  }
+
+  export type SupportTicketMessageUpsertWithWhereUniqueWithoutTicketInput = {
+    where: SupportTicketMessageWhereUniqueInput
+    update: XOR<SupportTicketMessageUpdateWithoutTicketInput, SupportTicketMessageUncheckedUpdateWithoutTicketInput>
+    create: XOR<SupportTicketMessageCreateWithoutTicketInput, SupportTicketMessageUncheckedCreateWithoutTicketInput>
+  }
+
+  export type SupportTicketMessageUpdateWithWhereUniqueWithoutTicketInput = {
+    where: SupportTicketMessageWhereUniqueInput
+    data: XOR<SupportTicketMessageUpdateWithoutTicketInput, SupportTicketMessageUncheckedUpdateWithoutTicketInput>
+  }
+
+  export type SupportTicketMessageUpdateManyWithWhereWithoutTicketInput = {
+    where: SupportTicketMessageScalarWhereInput
+    data: XOR<SupportTicketMessageUpdateManyMutationInput, SupportTicketMessageUncheckedUpdateManyWithoutTicketInput>
+  }
+
+  export type SupportTicketCreateWithoutMessagesInput = {
+    id?: string
+    number?: number
+    subject: string
+    description: string
+    status?: $Enums.SupportTicketStatus
+    priority?: $Enums.SupportTicketPriority
+    category?: $Enums.SupportTicketCategory
+    slaDeadlineAt?: Date | string | null
+    firstResponseAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    clientUnreadCount?: number
+    adminUnreadCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    client: UserCreateNestedOneWithoutSupportTicketsInput
+    project?: ProjectCreateNestedOneWithoutSupportTicketsInput
+  }
+
+  export type SupportTicketUncheckedCreateWithoutMessagesInput = {
+    id?: string
+    number?: number
+    subject: string
+    description: string
+    status?: $Enums.SupportTicketStatus
+    priority?: $Enums.SupportTicketPriority
+    category?: $Enums.SupportTicketCategory
+    slaDeadlineAt?: Date | string | null
+    firstResponseAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    clientUnreadCount?: number
+    adminUnreadCount?: number
+    clientId: string
+    projectId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SupportTicketCreateOrConnectWithoutMessagesInput = {
+    where: SupportTicketWhereUniqueInput
+    create: XOR<SupportTicketCreateWithoutMessagesInput, SupportTicketUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type UserCreateWithoutSupportMessagesInput = {
+    id?: string
+    clerkId: string
+    email: string
+    name?: string | null
+    role?: $Enums.UserRole
+    companyName?: string | null
+    phone?: string | null
+    position?: string | null
+    avatarUrl?: string | null
+    taxId?: string | null
+    stripeCustomerId?: string | null
+    canAccessMaguiConnect?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    projects?: ProjectCreateNestedManyWithoutClientInput
+    projectMemberships?: ProjectMemberCreateNestedManyWithoutUserInput
+    ownedLeads?: LeadCreateNestedManyWithoutAssignedToInput
+    leadNotes?: LeadNoteCreateNestedManyWithoutAuthorInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
+    scheduledReminders?: ScheduledReminderCreateNestedManyWithoutRecipientUserInput
+    approvalEvents?: ApprovalEventCreateNestedManyWithoutActorInput
+    leadActivities?: LeadActivityCreateNestedManyWithoutAuthorInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+    createdDocumentVersions?: DocumentVersionCreateNestedManyWithoutCreatedByInput
+    billingProfile?: BillingProfileCreateNestedOneWithoutUserInput
+    emailLogs?: EmailLogCreateNestedManyWithoutUserInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutClientInput
+    maguiConnectProfile?: MaguiConnectProfileCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSupportMessagesInput = {
+    id?: string
+    clerkId: string
+    email: string
+    name?: string | null
+    role?: $Enums.UserRole
+    companyName?: string | null
+    phone?: string | null
+    position?: string | null
+    avatarUrl?: string | null
+    taxId?: string | null
+    stripeCustomerId?: string | null
+    canAccessMaguiConnect?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    projects?: ProjectUncheckedCreateNestedManyWithoutClientInput
+    projectMemberships?: ProjectMemberUncheckedCreateNestedManyWithoutUserInput
+    ownedLeads?: LeadUncheckedCreateNestedManyWithoutAssignedToInput
+    leadNotes?: LeadNoteUncheckedCreateNestedManyWithoutAuthorInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
+    scheduledReminders?: ScheduledReminderUncheckedCreateNestedManyWithoutRecipientUserInput
+    approvalEvents?: ApprovalEventUncheckedCreateNestedManyWithoutActorInput
+    leadActivities?: LeadActivityUncheckedCreateNestedManyWithoutAuthorInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+    createdDocumentVersions?: DocumentVersionUncheckedCreateNestedManyWithoutCreatedByInput
+    billingProfile?: BillingProfileUncheckedCreateNestedOneWithoutUserInput
+    emailLogs?: EmailLogUncheckedCreateNestedManyWithoutUserInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutClientInput
+    maguiConnectProfile?: MaguiConnectProfileUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSupportMessagesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSupportMessagesInput, UserUncheckedCreateWithoutSupportMessagesInput>
+  }
+
+  export type SupportTicketUpsertWithoutMessagesInput = {
+    update: XOR<SupportTicketUpdateWithoutMessagesInput, SupportTicketUncheckedUpdateWithoutMessagesInput>
+    create: XOR<SupportTicketCreateWithoutMessagesInput, SupportTicketUncheckedCreateWithoutMessagesInput>
+    where?: SupportTicketWhereInput
+  }
+
+  export type SupportTicketUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: SupportTicketWhereInput
+    data: XOR<SupportTicketUpdateWithoutMessagesInput, SupportTicketUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type SupportTicketUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumSupportTicketStatusFieldUpdateOperationsInput | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFieldUpdateOperationsInput | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFieldUpdateOperationsInput | $Enums.SupportTicketCategory
+    slaDeadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    firstResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientUnreadCount?: IntFieldUpdateOperationsInput | number
+    adminUnreadCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: UserUpdateOneRequiredWithoutSupportTicketsNestedInput
+    project?: ProjectUpdateOneWithoutSupportTicketsNestedInput
+  }
+
+  export type SupportTicketUncheckedUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: IntFieldUpdateOperationsInput | number
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumSupportTicketStatusFieldUpdateOperationsInput | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFieldUpdateOperationsInput | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFieldUpdateOperationsInput | $Enums.SupportTicketCategory
+    slaDeadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    firstResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientUnreadCount?: IntFieldUpdateOperationsInput | number
+    adminUnreadCount?: IntFieldUpdateOperationsInput | number
+    clientId?: StringFieldUpdateOperationsInput | string
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutSupportMessagesInput = {
+    update: XOR<UserUpdateWithoutSupportMessagesInput, UserUncheckedUpdateWithoutSupportMessagesInput>
+    create: XOR<UserCreateWithoutSupportMessagesInput, UserUncheckedCreateWithoutSupportMessagesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSupportMessagesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSupportMessagesInput, UserUncheckedUpdateWithoutSupportMessagesInput>
+  }
+
+  export type UserUpdateWithoutSupportMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    taxId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    canAccessMaguiConnect?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    projects?: ProjectUpdateManyWithoutClientNestedInput
+    projectMemberships?: ProjectMemberUpdateManyWithoutUserNestedInput
+    ownedLeads?: LeadUpdateManyWithoutAssignedToNestedInput
+    leadNotes?: LeadNoteUpdateManyWithoutAuthorNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
+    scheduledReminders?: ScheduledReminderUpdateManyWithoutRecipientUserNestedInput
+    approvalEvents?: ApprovalEventUpdateManyWithoutActorNestedInput
+    leadActivities?: LeadActivityUpdateManyWithoutAuthorNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+    createdDocumentVersions?: DocumentVersionUpdateManyWithoutCreatedByNestedInput
+    billingProfile?: BillingProfileUpdateOneWithoutUserNestedInput
+    emailLogs?: EmailLogUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutClientNestedInput
+    maguiConnectProfile?: MaguiConnectProfileUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSupportMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    taxId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    canAccessMaguiConnect?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    projects?: ProjectUncheckedUpdateManyWithoutClientNestedInput
+    projectMemberships?: ProjectMemberUncheckedUpdateManyWithoutUserNestedInput
+    ownedLeads?: LeadUncheckedUpdateManyWithoutAssignedToNestedInput
+    leadNotes?: LeadNoteUncheckedUpdateManyWithoutAuthorNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
+    scheduledReminders?: ScheduledReminderUncheckedUpdateManyWithoutRecipientUserNestedInput
+    approvalEvents?: ApprovalEventUncheckedUpdateManyWithoutActorNestedInput
+    leadActivities?: LeadActivityUncheckedUpdateManyWithoutAuthorNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+    createdDocumentVersions?: DocumentVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+    billingProfile?: BillingProfileUncheckedUpdateOneWithoutUserNestedInput
+    emailLogs?: EmailLogUncheckedUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutClientNestedInput
     maguiConnectProfile?: MaguiConnectProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -78549,8 +83249,6 @@ export namespace Prisma {
     instagram?: string | null
     status?: $Enums.LeadStatus
     source?: $Enums.LeadSource
-    notes?: string | null
-    value?: string | null
     lastContactAt?: Date | string | null
     nextActionAt?: Date | string | null
     convertedProjectId?: string | null
@@ -78684,6 +83382,34 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type SupportTicketCreateManyClientInput = {
+    id?: string
+    number?: number
+    subject: string
+    description: string
+    status?: $Enums.SupportTicketStatus
+    priority?: $Enums.SupportTicketPriority
+    category?: $Enums.SupportTicketCategory
+    slaDeadlineAt?: Date | string | null
+    firstResponseAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    clientUnreadCount?: number
+    adminUnreadCount?: number
+    projectId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SupportTicketMessageCreateManyAuthorInput = {
+    id?: string
+    content: string
+    isInternal?: boolean
+    ticketId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ProjectUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -78727,6 +83453,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutClientInput = {
@@ -78772,6 +83499,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateManyWithoutClientInput = {
@@ -78840,8 +83568,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     convertedProjectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78864,8 +83590,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     convertedProjectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78888,8 +83612,6 @@ export namespace Prisma {
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    value?: NullableStringFieldUpdateOperationsInput | string | null
     lastContactAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     nextActionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     convertedProjectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -79279,6 +84001,91 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTicketUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumSupportTicketStatusFieldUpdateOperationsInput | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFieldUpdateOperationsInput | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFieldUpdateOperationsInput | $Enums.SupportTicketCategory
+    slaDeadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    firstResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientUnreadCount?: IntFieldUpdateOperationsInput | number
+    adminUnreadCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneWithoutSupportTicketsNestedInput
+    messages?: SupportTicketMessageUpdateManyWithoutTicketNestedInput
+  }
+
+  export type SupportTicketUncheckedUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: IntFieldUpdateOperationsInput | number
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumSupportTicketStatusFieldUpdateOperationsInput | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFieldUpdateOperationsInput | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFieldUpdateOperationsInput | $Enums.SupportTicketCategory
+    slaDeadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    firstResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientUnreadCount?: IntFieldUpdateOperationsInput | number
+    adminUnreadCount?: IntFieldUpdateOperationsInput | number
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: SupportTicketMessageUncheckedUpdateManyWithoutTicketNestedInput
+  }
+
+  export type SupportTicketUncheckedUpdateManyWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: IntFieldUpdateOperationsInput | number
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumSupportTicketStatusFieldUpdateOperationsInput | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFieldUpdateOperationsInput | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFieldUpdateOperationsInput | $Enums.SupportTicketCategory
+    slaDeadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    firstResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientUnreadCount?: IntFieldUpdateOperationsInput | number
+    adminUnreadCount?: IntFieldUpdateOperationsInput | number
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTicketMessageUpdateWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isInternal?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ticket?: SupportTicketUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type SupportTicketMessageUncheckedUpdateWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isInternal?: BoolFieldUpdateOperationsInput | boolean
+    ticketId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTicketMessageUncheckedUpdateManyWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isInternal?: BoolFieldUpdateOperationsInput | boolean
+    ticketId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -79830,6 +84637,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUpdateOneWithoutProjectNestedInput
     documents?: DocumentUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutServiceCategoryInput = {
@@ -79875,6 +84683,7 @@ export namespace Prisma {
     kickoff?: ProjectKickoffChecklistUncheckedUpdateOneWithoutProjectNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutProjectNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutProjectNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateManyWithoutServiceCategoryInput = {
@@ -80049,6 +84858,25 @@ export namespace Prisma {
     currency?: string
     issuedAt?: Date | string
     dueDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SupportTicketCreateManyProjectInput = {
+    id?: string
+    number?: number
+    subject: string
+    description: string
+    status?: $Enums.SupportTicketStatus
+    priority?: $Enums.SupportTicketPriority
+    category?: $Enums.SupportTicketCategory
+    slaDeadlineAt?: Date | string | null
+    firstResponseAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    clientUnreadCount?: number
+    adminUnreadCount?: number
+    clientId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -80501,6 +85329,64 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTicketUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumSupportTicketStatusFieldUpdateOperationsInput | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFieldUpdateOperationsInput | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFieldUpdateOperationsInput | $Enums.SupportTicketCategory
+    slaDeadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    firstResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientUnreadCount?: IntFieldUpdateOperationsInput | number
+    adminUnreadCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: UserUpdateOneRequiredWithoutSupportTicketsNestedInput
+    messages?: SupportTicketMessageUpdateManyWithoutTicketNestedInput
+  }
+
+  export type SupportTicketUncheckedUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: IntFieldUpdateOperationsInput | number
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumSupportTicketStatusFieldUpdateOperationsInput | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFieldUpdateOperationsInput | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFieldUpdateOperationsInput | $Enums.SupportTicketCategory
+    slaDeadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    firstResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientUnreadCount?: IntFieldUpdateOperationsInput | number
+    adminUnreadCount?: IntFieldUpdateOperationsInput | number
+    clientId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: SupportTicketMessageUncheckedUpdateManyWithoutTicketNestedInput
+  }
+
+  export type SupportTicketUncheckedUpdateManyWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: IntFieldUpdateOperationsInput | number
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumSupportTicketStatusFieldUpdateOperationsInput | $Enums.SupportTicketStatus
+    priority?: EnumSupportTicketPriorityFieldUpdateOperationsInput | $Enums.SupportTicketPriority
+    category?: EnumSupportTicketCategoryFieldUpdateOperationsInput | $Enums.SupportTicketCategory
+    slaDeadlineAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    firstResponseAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientUnreadCount?: IntFieldUpdateOperationsInput | number
+    adminUnreadCount?: IntFieldUpdateOperationsInput | number
+    clientId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -81007,6 +85893,42 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTicketMessageCreateManyTicketInput = {
+    id?: string
+    content: string
+    isInternal?: boolean
+    authorId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SupportTicketMessageUpdateWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isInternal?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    author?: UserUpdateOneWithoutSupportMessagesNestedInput
+  }
+
+  export type SupportTicketMessageUncheckedUpdateWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isInternal?: BoolFieldUpdateOperationsInput | boolean
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTicketMessageUncheckedUpdateManyWithoutTicketInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    isInternal?: BoolFieldUpdateOperationsInput | boolean
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

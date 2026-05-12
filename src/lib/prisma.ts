@@ -86,10 +86,21 @@ function prismaClientSingleton(): PrismaClient {
   return new PrismaClient({ adapter: getAdapter() })
 }
 
-const prisma = globalThis.prisma ?? prismaClientSingleton()
+function getPrismaClient(): PrismaClient {
+  if (process.env.NODE_ENV === "production") {
+    return globalThis.prisma ?? prismaClientSingleton()
+  }
+
+  // In development we intentionally recreate the Prisma Client so schema
+  // changes from `prisma generate` are picked up immediately instead of
+  // reusing a stale instance cached on the global object.
+  return prismaClientSingleton()
+}
+
+const prisma = getPrismaClient()
 
 export default prisma
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV === "production") {
   globalThis.prisma = prisma
 }

@@ -714,14 +714,15 @@
       "categories_all": "All Categories",
       "categories_new": "New Category"
     },
-    "commercial": {
-      "title": "Commercial",
-      "list": "All Leads",
-      "kanban": "Kanban",
-      "create": "New Lead",
-      "proposals": "All Proposals",
-      "proposal_create": "New Proposal"
-    },
+  "commercial": {
+    "title": "Commercial",
+    "list": "All Leads",
+    "kanban": "Kanban",
+    "create": "New Lead",
+    "proposals": "All Proposals",
+    "support": "Support Tickets",
+    "proposal_create": "New Proposal"
+  },
     "documents": {
       "title": "Documents",
       "list": "All Documents",
@@ -735,20 +736,22 @@
       "admin_role": "Administrator",
       "client_role": "Client"
     },
-    "client": {
-      "home": "Home",
-      "projects": "My Projects",
-      "maguiConnect": "MAGUI Connect",
-      "files": "Files",
-      "notifications": "Notifications"
-    },
+  "client": {
+    "home": "Home",
+    "projects": "My Projects",
+    "support": "Support",
+    "maguiConnect": "MAGUI Connect",
+    "files": "Files",
+    "notifications": "Notifications"
+  },
     "descriptions": {
       "dashboard": "Consolidated view of the operation",
-      "commercial_list": "Active lead and pipeline management",
-      "commercial_create": "Catalog a new opportunity",
-      "proposals": "Control sent proposals",
-      "proposal_create": "Generate a new commercial document",
-      "projects_list": "Execution monitoring",
+    "commercial_list": "Active lead and pipeline management",
+    "commercial_create": "Catalog a new opportunity",
+    "proposals": "Control sent proposals",
+    "proposal_create": "Generate a new commercial document",
+    "support": "Support handling, tickets and history",
+    "projects_list": "Execution monitoring",
       "projects_create": "Initialize a new project",
       "service_categories": "Service settings",
       "clients_list": "Access and users portal",
@@ -1381,11 +1384,15 @@
       "new_material": "New material",
       "lead_assigned": "Lead assigned",
       "informational": "Informational",
-      "operations": "Operations",
-      "automatic_reminder": "Automatic reminder",
-      "connect": "MAGUI Connect",
-      "connect_access_request": "Access request"
-    },
+    "operations": "Operations",
+    "automatic_reminder": "Automatic reminder",
+    "connect": "MAGUI Connect",
+    "connect_access_request": "Access request",
+    "support": "Support",
+    "new_ticket": "New ticket",
+    "client_reply": "Client reply",
+    "team_reply": "Team reply"
+  },
     "pagination": {
       "previous": "Previous",
       "next": "Next",

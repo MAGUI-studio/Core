@@ -8,6 +8,7 @@ import {
   ChartLineUp,
   ChartPie,
   House,
+  Lifebuoy,
   List,
   Money,
   Plus,
@@ -110,6 +111,8 @@ function NavIcon({
       return <Plus {...props} weight="bold" />
     case "tag":
       return <Tag {...props} weight="bold" />
+    case "support":
+      return <Lifebuoy {...props} />
     case "money":
       return <Money {...props} />
     case "list":
