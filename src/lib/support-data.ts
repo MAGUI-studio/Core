@@ -1,15 +1,64 @@
 import prisma from "@/src/lib/prisma"
 import { SupportTicketRecord } from "@/src/types/support"
 
-function mapTicket(ticket: any): SupportTicketRecord {
+type TicketAuthorRecord = {
+  id: string
+  name: string | null
+  email?: string | null
+  role?: string | null
+}
+
+type TicketMessageRecord = {
+  id: string
+  content: string
+  isInternal: boolean
+  createdAt: Date
+  updatedAt: Date
+  authorId: string | null
+  author?: TicketAuthorRecord | null
+}
+
+type TicketRelationRecord = {
+  id: string
+  number: number
+  subject: string
+  description: string
+  status: SupportTicketRecord["status"]
+  priority: SupportTicketRecord["priority"]
+  category: SupportTicketRecord["category"]
+  slaDeadlineAt: Date | null
+  firstResponseAt: Date | null
+  resolvedAt: Date | null
+  closedAt: Date | null
+  clientUnreadCount: number
+  adminUnreadCount: number
+  createdAt: Date
+  updatedAt: Date
+  clientId: string
+  projectId: string | null
+  client: {
+    id: string
+    name: string | null
+    email: string
+    companyName: string | null
+  }
+  project: {
+    id: string
+    name: string
+    status?: string
+  } | null
+  messages?: TicketMessageRecord[]
+  _count?: {
+    messages: number
+  }
+}
+
+function mapTicket(ticket: TicketRelationRecord): SupportTicketRecord {
   return {
     ...ticket,
-    messageCount: ticket._count?.messages ?? ticket.messageCount ?? 0,
-    lastMessageAt:
-      ticket.messages?.[0]?.createdAt ??
-      ticket.lastMessageAt ??
-      ticket.updatedAt,
-    messages: ticket.messages?.map((message: any) => ({
+    messageCount: ticket._count?.messages ?? 0,
+    lastMessageAt: ticket.messages?.[0]?.createdAt ?? ticket.updatedAt,
+    messages: ticket.messages?.map((message) => ({
       ...message,
       author: message.author
         ? {
@@ -43,7 +92,7 @@ export async function getAdminSupportTickets() {
     orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
   })
 
-  return tickets.map(mapTicket)
+  return tickets.map((ticket) => mapTicket(ticket as TicketRelationRecord))
 }
 
 export async function getAdminSupportTicketById(id: string) {
@@ -70,7 +119,7 @@ export async function getAdminSupportTicketById(id: string) {
     },
   })
 
-  return ticket ? mapTicket(ticket) : null
+  return ticket ? mapTicket(ticket as TicketRelationRecord) : null
 }
 
 export async function getClientSupportTickets(clientId: string) {
@@ -95,7 +144,7 @@ export async function getClientSupportTickets(clientId: string) {
     orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
   })
 
-  return tickets.map(mapTicket)
+  return tickets.map((ticket) => mapTicket(ticket as TicketRelationRecord))
 }
 
 export async function getClientSupportTicketById(id: string, clientId: string) {
@@ -123,5 +172,5 @@ export async function getClientSupportTicketById(id: string, clientId: string) {
     },
   })
 
-  return ticket ? mapTicket(ticket) : null
+  return ticket ? mapTicket(ticket as TicketRelationRecord) : null
 }

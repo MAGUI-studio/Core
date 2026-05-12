@@ -135,49 +135,50 @@ export function LeadDetailsPage({
     handleSaveLead,
   } = useLeadMutations(lead)
 
-  const loadExtraData = React.useCallback(
-    async (leadId: string) => {
-      setIsLoadingData(true)
+  const loadExtraData = React.useEffectEvent(async (leadId: string) => {
+    setIsLoadingData(true)
 
-      const [activitiesResult, snapshotResult] = await Promise.all([
-        getLeadActivitiesAction(leadId),
-        getLeadSnapshotAction(leadId),
-      ])
+    const [activitiesResult, snapshotResult] = await Promise.all([
+      getLeadActivitiesAction(leadId),
+      getLeadSnapshotAction(leadId),
+    ])
 
-      if (activitiesResult.success && activitiesResult.activities) {
-        setLocalLead((current) => ({
-          ...current,
-          activities: activitiesResult.activities,
-          followUpNotes: activitiesResult.notes,
-        }))
-      }
+    if (activitiesResult.success && activitiesResult.activities) {
+      setLocalLead((current) => ({
+        ...current,
+        activities: activitiesResult.activities,
+        followUpNotes: activitiesResult.notes,
+      }))
+    }
 
-      if (snapshotResult.success && snapshotResult.lead) {
-        setLocalLead((current) => ({
-          ...current,
-          status: snapshotResult.lead?.status ?? current.status,
-          updatedAt: snapshotResult.lead?.updatedAt ?? current.updatedAt,
-          proposalCount:
-            snapshotResult.lead?.proposalCount ?? current.proposalCount,
-          acceptedProposalCount:
-            snapshotResult.lead?.acceptedProposalCount ??
-            current.acceptedProposalCount,
-          acceptedProposals:
-            snapshotResult.lead?.acceptedProposals ??
-            current.acceptedProposals,
-          proposals: snapshotResult.lead?.proposals ?? current.proposals,
-          client: snapshotResult.lead?.client ?? current.client,
-        }))
-      }
+    if (snapshotResult.success && snapshotResult.lead) {
+      setLocalLead((current) => ({
+        ...current,
+        status: snapshotResult.lead?.status ?? current.status,
+        updatedAt: snapshotResult.lead?.updatedAt ?? current.updatedAt,
+        proposalCount:
+          snapshotResult.lead?.proposalCount ?? current.proposalCount,
+        acceptedProposalCount:
+          snapshotResult.lead?.acceptedProposalCount ??
+          current.acceptedProposalCount,
+        acceptedProposals:
+          snapshotResult.lead?.acceptedProposals ??
+          current.acceptedProposals,
+        proposals: snapshotResult.lead?.proposals ?? current.proposals,
+        client: snapshotResult.lead?.client ?? current.client,
+      }))
+    }
 
-      setIsLoadingData(false)
-    },
-    [setLocalLead]
-  )
+    setIsLoadingData(false)
+  })
 
   React.useEffect(() => {
-    void loadExtraData(localLead.id)
-  }, [localLead.id, loadExtraData])
+    const timeoutId = window.setTimeout(() => {
+      void loadExtraData(localLead.id)
+    }, 0)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [localLead.id])
 
   const statuses = [
     LeadStatus.GARIMPAGEM,
