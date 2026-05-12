@@ -73,21 +73,23 @@ export default async function ProjectsPage({
           </p>
         </div>
 
-        <Button
-          asChild
-          className="group relative h-14 overflow-hidden rounded-full px-10 font-sans font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-brand-primary/20"
-        >
-          <Link
-            href="/admin/projects/register"
-            className="flex items-center gap-3"
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            asChild
+            className="group relative h-14 overflow-hidden rounded-full px-10 font-sans font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-brand-primary/20"
           >
-            <FolderPlus
-              weight="duotone"
-              className="size-5 transition-transform group-hover:rotate-12"
-            />
-            <span>{t("create")}</span>
-          </Link>
-        </Button>
+            <Link
+              href="/admin/projects/register"
+              className="flex items-center gap-3"
+            >
+              <FolderPlus
+                weight="duotone"
+                className="size-5 transition-transform group-hover:rotate-12"
+              />
+              <span>{t("create")}</span>
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <ProjectsTable initialProjects={serializableProjects} />

@@ -8,12 +8,10 @@ import { useRouter } from "@/src/i18n/navigation"
 import {
   Building,
   CircleNotch,
-  CurrencyDollar,
   Envelope,
   Funnel,
   Globe,
   InstagramLogo,
-  Note,
   Phone,
   User,
 } from "@phosphor-icons/react"
@@ -29,10 +27,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select"
-import { Textarea } from "@/src/components/ui/textarea"
 
 import { createLead } from "@/src/lib/actions/crm.actions"
-import { formatCurrencyBRL } from "@/src/lib/utils/utils"
+import { formatBrazilPhoneInput } from "@/src/lib/utils/phone"
 
 type LeadSourceValue =
   | "REFERRAL"
@@ -82,8 +79,6 @@ export function CreateLeadForm(): React.JSX.Element {
       phone: formData.get("phone") as string,
       website: showWebsiteField ? websiteValue : "",
       instagram: showInstagramField ? instagramValue : "",
-      notes: formData.get("notes") as string,
-      value: formData.get("value") as string,
       source,
     })
 
@@ -196,8 +191,13 @@ export function CreateLeadForm(): React.JSX.Element {
                 <Input
                   id="phone"
                   name="phone"
-                  placeholder="(00) 00000-0000"
+                  placeholder="(00) 0 0000-0000"
                   className="h-12 rounded-2xl border-border/40 bg-transparent pl-12 shadow-none transition-all focus-visible:ring-0"
+                  onChange={(event) => {
+                    event.currentTarget.value = formatBrazilPhoneInput(
+                      event.currentTarget.value
+                    )
+                  }}
                 />
               </div>
             </div>
@@ -210,7 +210,11 @@ export function CreateLeadForm(): React.JSX.Element {
           </h3>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="space-y-2">
+            <div
+              className={`space-y-2 ${
+                showInstagramField || showWebsiteField ? "" : "md:col-span-2"
+              }`}
+            >
               <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                 {t("form.sourceLabel")}
               </Label>
@@ -245,39 +249,13 @@ export function CreateLeadForm(): React.JSX.Element {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label
-                htmlFor="value"
-                className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground"
-              >
-                {t("form.valueLabel")}
-              </Label>
-              <div className="group relative">
-                <CurrencyDollar
-                  className="absolute top-1/2 left-4 -translate-y-1/2 text-muted-foreground/40 transition-colors group-focus-within:text-brand-primary"
-                  size={18}
-                />
-                <Input
-                  id="value"
-                  name="value"
-                  placeholder="Ex: R$ 12.000"
-                  className="h-12 rounded-2xl border-border/40 bg-transparent pl-12 shadow-none transition-all focus-visible:ring-0"
-                  onChange={(event) => {
-                    event.currentTarget.value = formatCurrencyBRL(
-                      event.currentTarget.value
-                    )
-                  }}
-                />
-              </div>
-            </div>
-
             {showInstagramField ? (
-              <div className="space-y-2 md:col-span-2">
+              <div className="space-y-2">
                 <Label
                   htmlFor="instagram"
                   className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground"
                 >
-                  {sourceFieldLabel}
+                  {sourceFieldLabel} <span className="text-red-500">*</span>
                 </Label>
                 <div className="group relative">
                   <InstagramLogo
@@ -287,6 +265,7 @@ export function CreateLeadForm(): React.JSX.Element {
                   <Input
                     id="instagram"
                     name="instagram"
+                    required={showInstagramField}
                     placeholder={sourceFieldPlaceholder}
                     className="h-12 rounded-2xl border-border/40 bg-transparent pl-12 shadow-none transition-all focus-visible:ring-0"
                   />
@@ -295,12 +274,12 @@ export function CreateLeadForm(): React.JSX.Element {
             ) : null}
 
             {showWebsiteField ? (
-              <div className="space-y-2 md:col-span-2">
+              <div className="space-y-2">
                 <Label
                   htmlFor="website"
                   className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground"
                 >
-                  {sourceFieldLabel}
+                  {sourceFieldLabel} <span className="text-red-500">*</span>
                 </Label>
                 <div className="group relative">
                   <Globe
@@ -311,6 +290,7 @@ export function CreateLeadForm(): React.JSX.Element {
                     id="website"
                     name="website"
                     type="url"
+                    required={showWebsiteField}
                     placeholder={sourceFieldPlaceholder}
                     className="h-12 rounded-2xl border-border/40 bg-transparent pl-12 shadow-none transition-all focus-visible:ring-0"
                   />
@@ -320,35 +300,6 @@ export function CreateLeadForm(): React.JSX.Element {
           </div>
         </div>
 
-        <div className="space-y-4 pt-4">
-          <h3 className="text-[10px] font-black uppercase tracking-[0.28em] text-muted-foreground/60">
-            {t("form.notesSection")}
-          </h3>
-
-          <div className="space-y-2">
-            <Label
-              htmlFor="notes"
-              className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground"
-            >
-              {t("form.notes")}
-            </Label>
-            <div className="group relative">
-              <Note
-                className="absolute top-4 left-4 text-muted-foreground/40 transition-colors group-focus-within:text-brand-primary"
-                size={18}
-              />
-              <Textarea
-                id="notes"
-                name="notes"
-                placeholder={t("form.notesPlaceholder")}
-                className="min-h-[120px] rounded-2xl border-border/40 bg-transparent pl-12 shadow-none transition-all focus-visible:ring-0"
-              />
-            </div>
-            <p className="pl-1 text-[11px] text-muted-foreground/60">
-              {t("form.notesHelper")}
-            </p>
-          </div>
-        </div>
       </div>
 
       <div className="flex items-center justify-end gap-4 border-t border-border/40 pt-6">

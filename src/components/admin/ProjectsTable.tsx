@@ -6,16 +6,18 @@ import { useTranslations } from "next-intl"
 
 import { Link } from "@/src/i18n/navigation"
 import {
+  ArrowSquareOut,
+  DotsThreeVertical,
   MagnifyingGlass,
   ProjectorScreen,
   Trash,
+  User,
   WarningOctagon,
 } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
 import { Badge } from "@/src/components/ui/badge"
 import { Button } from "@/src/components/ui/button"
-import { Card } from "@/src/components/ui/card"
 import {
   Dialog,
   DialogClose,
@@ -26,6 +28,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/src/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/src/components/ui/dropdown-menu"
 import { Input } from "@/src/components/ui/input"
 import {
   Table,
@@ -98,33 +107,33 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="relative flex-1 group">
+      <div className="group relative flex-1">
         <MagnifyingGlass
-          weight="duotone"
-          className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-brand-primary"
+          weight="bold"
+          className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/50 transition-colors group-focus-within:text-brand-primary"
         />
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar projetos..."
-          className="h-14 rounded-2xl border-border/40 bg-muted/20 pl-12 pr-4 font-sans font-bold transition-all focus-visible:ring-brand-primary/20 focus-visible:bg-muted/30"
+          className="h-12 rounded-2xl border-border/40 bg-muted/10 pl-11 pr-4 text-xs font-bold transition-all focus-visible:bg-muted/20 focus-visible:ring-brand-primary/20"
         />
       </div>
 
-      <Card className="overflow-hidden rounded-3xl border-border/40 bg-muted/10 backdrop-blur-md">
+      <div className="overflow-x-auto">
         <Table>
-          <TableHeader className="bg-muted/30">
-            <TableRow className="hover:bg-transparent border-border/40">
-              <TableHead className="px-8 h-16 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+          <TableHeader>
+            <TableRow className="border-border/40 hover:bg-transparent">
+              <TableHead className="h-16 px-8 text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
                 Projeto
               </TableHead>
-              <TableHead className="px-8 h-16 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+              <TableHead className="h-16 px-8 text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
                 Cliente
               </TableHead>
-              <TableHead className="px-8 h-16 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+              <TableHead className="h-16 px-8 text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
                 Status / Progresso
               </TableHead>
-              <TableHead className="px-8 h-16 text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+              <TableHead className="h-16 px-8 text-right text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
                 {commonT("actions")}
               </TableHead>
             </TableRow>
@@ -134,7 +143,7 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
               <TableRow>
                 <TableCell
                   colSpan={4}
-                  className="h-32 text-center text-xs font-bold uppercase tracking-widest text-muted-foreground/40"
+                  className="h-48 text-center text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/30"
                 >
                   Nenhum projeto encontrado.
                 </TableCell>
@@ -143,7 +152,7 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
               filteredProjects.map((project) => (
                 <TableRow
                   key={project.id}
-                  className="group border-border/20 transition-all hover:bg-brand-primary/[0.03]"
+                  className="group border-border/15 transition-all hover:bg-brand-primary/[0.02]"
                 >
                   <TableCell className="px-8 py-6">
                     <div className="flex items-center gap-4">
@@ -154,29 +163,31 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
                         <span className="font-heading text-sm font-black uppercase tracking-tight text-foreground">
                           {project.name}
                         </span>
-                        <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
                           Criado em{" "}
-                          {new Date(project.createdAt).toLocaleDateString()}
+                          {new Date(project.createdAt).toLocaleDateString(
+                            "pt-BR"
+                          )}
                         </span>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell className="px-8 py-6">
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-xs font-bold text-foreground uppercase">
+                      <span className="text-[11px] font-bold text-foreground/80">
                         {project.client.name || "Sem nome"}
                       </span>
-                      <span className="text-[10px] font-medium text-muted-foreground">
+                      <span className="text-[9px] font-black tracking-widest text-muted-foreground/40 uppercase">
                         {project.client.email}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell className="px-8 py-6">
-                    <div className="flex flex-col gap-2 min-w-[140px]">
+                    <div className="flex min-w-[140px] flex-col gap-2">
                       <div className="flex items-center justify-between gap-2">
                         <Badge
                           variant="secondary"
-                          className="bg-brand-primary/5 text-brand-primary border-brand-primary/20 text-[8px] font-black uppercase tracking-widest py-0.5 px-2"
+                          className="border-brand-primary/20 bg-brand-primary/5 px-2 py-0.5 text-[8px] font-black uppercase text-brand-primary"
                         >
                           {t(project.status)}
                         </Badge>
@@ -184,7 +195,7 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
                           {project.progress}%
                         </span>
                       </div>
-                      <div className="h-1.5 w-full rounded-full bg-muted/30 overflow-hidden">
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted/30">
                         <div
                           className="h-full bg-brand-primary transition-all duration-500"
                           style={{ width: `${project.progress}%` }}
@@ -193,28 +204,13 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
                     </div>
                   </TableCell>
                   <TableCell className="px-8 py-6 text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        className="h-10 rounded-2xl px-5 text-[10px] font-black uppercase tracking-widest"
-                      >
-                        <Link
-                          href={{
-                            pathname: "/admin/clients/[id]",
-                            params: { id: project.client.id },
-                          }}
-                        >
-                          Cliente
-                        </Link>
-                      </Button>
-
+                    <div className="flex items-center justify-end gap-2">
                       <Button
                         asChild
                         variant="ghost"
-                        size="sm"
-                        className="h-10 rounded-2xl px-6 text-[10px] font-black uppercase tracking-widest transition-all hover:bg-brand-primary hover:text-white"
+                        size="icon"
+                        className="size-9 rounded-full text-muted-foreground/40 hover:bg-brand-primary/10 hover:text-brand-primary"
+                        title={commonT("inspect")}
                       >
                         <Link
                           href={{
@@ -222,67 +218,104 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
                             params: { id: project.id },
                           }}
                         >
-                          {commonT("inspect")}
+                          <ArrowSquareOut weight="bold" size={16} />
                         </Link>
                       </Button>
 
-                      <Dialog>
-                        <DialogTrigger asChild>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
                           <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-10 rounded-2xl border-red-500/20 px-5 text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500/10"
+                            variant="ghost"
+                            size="icon"
+                            className="size-9 rounded-full text-muted-foreground/40 hover:bg-muted/10"
                           >
-                            <Trash className="mr-2 size-4" weight="bold" />
-                            Excluir
+                            <DotsThreeVertical
+                              weight="bold"
+                              className="size-5"
+                            />
                           </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-xl rounded-4xl">
-                          <DialogHeader>
-                            <div className="mb-2 flex size-12 items-center justify-center rounded-2xl bg-red-500/10 text-red-500">
-                              <WarningOctagon
-                                className="size-6"
-                                weight="fill"
-                              />
-                            </div>
-                            <DialogTitle className="font-heading text-2xl font-black uppercase tracking-tight">
-                              Remover projeto
-                            </DialogTitle>
-                            <DialogDescription>
-                              Essa acao remove o projeto e todos os registros
-                              vinculados por cascata, incluindo updates, assets,
-                              action items, versoes, notificacoes e logs.
-                            </DialogDescription>
-                          </DialogHeader>
-
-                          <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 text-sm leading-relaxed text-foreground/75">
-                            Projeto:{" "}
-                            <span className="font-black uppercase">
-                              {project.name}
-                            </span>
-                            <br />
-                            Cliente:{" "}
-                            <span className="font-black">
-                              {project.client.name || project.client.email}
-                            </span>
-                          </div>
-
-                          <DialogFooter>
-                            <DialogClose asChild>
-                              <Button variant="outline" className="rounded-2xl">
-                                Cancelar
-                              </Button>
-                            </DialogClose>
-                            <Button
-                              onClick={() => handleDelete(project.id)}
-                              disabled={pendingDeletion}
-                              className="rounded-2xl bg-red-500 hover:bg-red-500/90"
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          align="end"
+                          className="w-56 rounded-[1.5rem] border-border/40 bg-background/95 p-1.5 shadow-2xl backdrop-blur-xl"
+                        >
+                          <DropdownMenuItem
+                            asChild
+                            className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
+                          >
+                            <Link
+                              href={{
+                                pathname: "/admin/clients/[id]",
+                                params: { id: project.client.id },
+                              }}
                             >
-                              Confirmar exclusão
-                            </Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
+                              <User className="mr-2 size-4" /> Cliente
+                            </Link>
+                          </DropdownMenuItem>
+
+                          <DropdownMenuSeparator className="my-1.5 bg-border/40" />
+
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <DropdownMenuItem
+                                onSelect={(event) => event.preventDefault()}
+                                className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight text-destructive focus:bg-destructive/10 focus:text-destructive"
+                              >
+                                <Trash className="mr-2 size-4" /> Excluir
+                              </DropdownMenuItem>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-xl rounded-4xl">
+                              <DialogHeader>
+                                <div className="mb-2 flex size-12 items-center justify-center rounded-2xl bg-red-500/10 text-red-500">
+                                  <WarningOctagon
+                                    className="size-6"
+                                    weight="fill"
+                                  />
+                                </div>
+                                <DialogTitle className="font-heading text-2xl font-black uppercase tracking-tight">
+                                  Remover projeto
+                                </DialogTitle>
+                                <DialogDescription>
+                                  Essa acao remove o projeto e todos os registros
+                                  vinculados por cascata, incluindo updates,
+                                  assets, action items, versoes, notificacoes e
+                                  logs.
+                                </DialogDescription>
+                              </DialogHeader>
+
+                              <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 text-sm leading-relaxed text-foreground/75">
+                                Projeto:{" "}
+                                <span className="font-black uppercase">
+                                  {project.name}
+                                </span>
+                                <br />
+                                Cliente:{" "}
+                                <span className="font-black">
+                                  {project.client.name || project.client.email}
+                                </span>
+                              </div>
+
+                              <DialogFooter>
+                                <DialogClose asChild>
+                                  <Button
+                                    variant="outline"
+                                    className="rounded-2xl"
+                                  >
+                                    Cancelar
+                                  </Button>
+                                </DialogClose>
+                                <Button
+                                  onClick={() => handleDelete(project.id)}
+                                  disabled={pendingDeletion}
+                                  className="rounded-2xl bg-red-500 hover:bg-red-500/90"
+                                >
+                                  Confirmar exclusao
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -290,7 +323,13 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
             )}
           </TableBody>
         </Table>
-      </Card>
+
+        <div className="flex items-center justify-between border-t border-border/15 px-8 py-4">
+          <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
+            {filteredProjects.length} projeto(s) encontrado(s)
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

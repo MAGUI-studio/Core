@@ -381,8 +381,6 @@ model Lead {
   instagram     String?
   status        LeadStatus @default(GARIMPAGEM)
   source        LeadSource @default(OTHER)
-  notes         String?    @db.Text
-  value         String?
   lastContactAt DateTime?
   nextActionAt  DateTime?
 

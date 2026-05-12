@@ -1624,7 +1624,7 @@
       "manageLinks": "Gerenciar links",
       "understandClicks": "Entender cliques",
       "economyTitle": "Economia de atenção",
-      "economyHeadline": "Menos opções. <span className=\"text-brand-primary\">Mais decisão.</span>",
+      "economyHeadline": "Menos opções. <highlight>Mais decisão.</highlight>",
       "economyDescription": "Opções demais parecem liberdade, mas geralmente aumentam hesitação. Uma página boa não mostra tudo: ela guia o olhar para o que tem mais valor.",
       "lessNoise": "Menos ruído",
       "moreFocus": "Mais foco",

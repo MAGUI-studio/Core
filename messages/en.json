@@ -1624,7 +1624,7 @@
       "manageLinks": "Manage links",
       "understandClicks": "Understand clicks",
       "economyTitle": "Attention economy",
-      "economyHeadline": "Less options. <span className=\"text-brand-primary\">More decision.</span>",
+      "economyHeadline": "Less options. <highlight>More decision.</highlight>",
       "economyDescription": "Too many options look like freedom, but usually increase hesitation. A good page doesn't show everything: it guides the eye to what has the most value.",
       "lessNoise": "Less noise",
       "moreFocus": "More focus",

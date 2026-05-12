@@ -49,8 +49,6 @@ const LeadSchema = z.object({
   phone: z.string().optional(),
   website: z.string().url().optional().or(z.literal("")),
   instagram: z.string().optional(),
-  notes: z.string().optional(),
-  value: z.string().optional(),
   status: z.nativeEnum(LeadStatus).optional(),
   source: z.nativeEnum(LeadSource).default(LeadSource.OTHER),
 })
@@ -177,8 +175,6 @@ export async function updateLead(
           phone: validatedData.phone || null,
           website: validatedData.website === "" ? null : validatedData.website,
           instagram: validatedData.instagram || null,
-          notes: validatedData.notes || null,
-          value: validatedData.value || null,
           source: validatedData.source,
         },
       })
@@ -477,7 +473,6 @@ export async function convertLeadToProjectAction(input: {
           clientId: finalUserId,
           status: ProjectStatus.STRATEGY,
           progress: 0,
-          description: lead.notes,
         },
       })
 

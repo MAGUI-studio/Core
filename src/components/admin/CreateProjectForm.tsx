@@ -442,7 +442,7 @@ export function CreateProjectForm({
 
             <Field className="md:col-span-2">
               <FieldLabel className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">
-                Categoria de ServiÃ§o <span className="text-red-500">*</span>
+                Categoria de Serviço <span className="text-red-500">*</span>
               </FieldLabel>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {serviceCategories.map((cat) => (
@@ -500,7 +500,7 @@ export function CreateProjectForm({
                     <div className="space-y-4">
                       <h4 className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.3em] text-brand-primary">
                         <Lightning weight="bold" className="size-4" />
-                        ServiÃ§o Selecionado
+                        Serviço Selecionado
                       </h4>
                       {selectedService.imageUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element

@@ -15,8 +15,6 @@ export interface Lead {
   instagram: string | null
   status: LeadStatus
   source: LeadSource
-  notes: string | null
-  value: string | null
   lastContactAt: Date | string | null
   nextActionAt: Date | string | null
   assignedToId: string | null

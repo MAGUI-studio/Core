@@ -36,6 +36,7 @@ import {
 import { Separator } from "@/src/components/ui/separator"
 
 import { createClientAction } from "@/src/lib/actions/user.actions"
+import { formatBrazilPhoneInput } from "@/src/lib/utils/phone"
 
 function generateStrongPassword(length: number = 16): string {
   const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ"
@@ -73,11 +74,45 @@ function generateStrongPassword(length: number = 16): string {
   return passwordChars.join("")
 }
 
+type TaxIdType = "cpf" | "cnpj"
+
+function formatTaxIdInput(value: string, type: TaxIdType): string {
+  const digits = value.replace(/\D/g, "")
+
+  if (type === "cpf") {
+    const cpf = digits.slice(0, 11)
+
+    if (cpf.length <= 3) return cpf
+    if (cpf.length <= 6) return `${cpf.slice(0, 3)}.${cpf.slice(3)}`
+    if (cpf.length <= 9) {
+      return `${cpf.slice(0, 3)}.${cpf.slice(3, 6)}.${cpf.slice(6)}`
+    }
+
+    return `${cpf.slice(0, 3)}.${cpf.slice(3, 6)}.${cpf.slice(6, 9)}-${cpf.slice(9)}`
+  }
+
+  const cnpj = digits.slice(0, 14)
+
+  if (cnpj.length <= 2) return cnpj
+  if (cnpj.length <= 5) return `${cnpj.slice(0, 2)}.${cnpj.slice(2)}`
+  if (cnpj.length <= 8) {
+    return `${cnpj.slice(0, 2)}.${cnpj.slice(2, 5)}.${cnpj.slice(5)}`
+  }
+  if (cnpj.length <= 12) {
+    return `${cnpj.slice(0, 2)}.${cnpj.slice(2, 5)}.${cnpj.slice(5, 8)}/${cnpj.slice(8)}`
+  }
+
+  return `${cnpj.slice(0, 2)}.${cnpj.slice(2, 5)}.${cnpj.slice(5, 8)}/${cnpj.slice(8, 12)}-${cnpj.slice(12)}`
+}
+
 export function CreateClientForm() {
   const t = useTranslations("Admin.clients.form")
   const router = useRouter()
   const [username, setUsername] = React.useState("")
   const [password, setPassword] = React.useState("")
+  const [phone, setPhone] = React.useState("")
+  const [taxIdType, setTaxIdType] = React.useState<TaxIdType>("cpf")
+  const [taxId, setTaxId] = React.useState("")
   const [showPassword, setShowPassword] = React.useState(false)
   const [credentialsCopied, setCredentialsCopied] = React.useState(false)
 
@@ -118,6 +153,9 @@ export function CreateClientForm() {
     }
   }
 
+  const taxIdPlaceholder =
+    taxIdType === "cpf" ? "000.000.000-00" : "00.000.000/0000-00"
+
   return (
     <form action={formAction} className="flex flex-col gap-12 text-left">
       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 italic">
@@ -149,8 +187,7 @@ export function CreateClientForm() {
             >
               {t("firstName")} <span className="text-red-500">*</span>
             </Label>
-            <div className="flex items-center gap-2">
-              <div className="relative group flex-1">
+            <div className="relative group">
               <User
                 weight="bold"
                 className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/40 transition-colors group-focus-within:text-brand-primary"
@@ -238,31 +275,75 @@ export function CreateClientForm() {
               <Input
                 id="phone"
                 name="phone"
-                placeholder="+55 (11) 99999-9999"
+                placeholder="(00) 0 0000-0000"
                 disabled={isPending}
+                value={phone}
+                onChange={(event) =>
+                  setPhone(formatBrazilPhoneInput(event.target.value))
+                }
                 className="h-14 rounded-2xl border-border/40 bg-muted/10 pl-11 font-sans font-bold transition-all focus-visible:ring-brand-primary/20 focus-visible:bg-muted/20"
               />
             </div>
           </div>
           <div className="flex flex-col gap-3">
-            <Label
-              htmlFor="taxId"
-              className="ml-1 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60"
-            >
+            <Label className="ml-1 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">
               CPF / CNPJ (Opcional)
             </Label>
-            <div className="relative group">
-              <Tag
-                weight="bold"
-                className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/40 transition-colors group-focus-within:text-brand-primary"
-              />
-              <Input
-                id="taxId"
-                name="taxId"
-                placeholder="000.000.000-00"
+            <div className="grid gap-4 sm:grid-cols-[160px_minmax(0,1fr)]">
+              <Select
+                value={taxIdType}
+                onValueChange={(value) => {
+                  const nextType = value as TaxIdType
+                  setTaxIdType(nextType)
+                  setTaxId((current) => formatTaxIdInput(current, nextType))
+                }}
                 disabled={isPending}
-                className="h-14 rounded-2xl border-border/40 bg-muted/10 pl-11 font-sans font-bold transition-all focus-visible:ring-brand-primary/20 focus-visible:bg-muted/20"
-              />
+              >
+                <SelectTrigger
+                  id="taxIdType"
+                  size="lg"
+                  className="h-14 rounded-2xl border-border/40 bg-muted/10 px-4 font-sans font-bold text-foreground transition-all focus:ring-brand-primary/20 disabled:opacity-50"
+                >
+                  <div className="flex items-center gap-3">
+                    <Tag
+                      weight="bold"
+                      className="size-4 text-brand-primary"
+                    />
+                    <SelectValue />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="rounded-2xl border-border/40 bg-background/95 shadow-2xl backdrop-blur-xl">
+                  <SelectItem
+                    value="cpf"
+                    className="rounded-lg py-3 text-xs font-bold uppercase tracking-widest transition-colors focus:bg-brand-primary focus:text-white"
+                  >
+                    CPF
+                  </SelectItem>
+                  <SelectItem
+                    value="cnpj"
+                    className="rounded-lg py-3 text-xs font-bold uppercase tracking-widest transition-colors focus:bg-brand-primary focus:text-white"
+                  >
+                    CNPJ
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="relative group">
+                <Tag
+                  weight="bold"
+                  className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/40 transition-colors group-focus-within:text-brand-primary"
+                />
+                <Input
+                  id="taxId"
+                  name="taxId"
+                  placeholder={taxIdPlaceholder}
+                  disabled={isPending}
+                  value={taxId}
+                  onChange={(event) =>
+                    setTaxId(formatTaxIdInput(event.target.value, taxIdType))
+                  }
+                  className="h-14 rounded-2xl border-border/40 bg-muted/10 pl-11 font-sans font-bold transition-all focus-visible:ring-brand-primary/20 focus-visible:bg-muted/20"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -409,7 +490,7 @@ export function CreateClientForm() {
               <SelectTrigger
                 id="role"
                 size="lg"
-                className="rounded-2xl border-border/40 bg-muted/10 px-4 font-sans font-bold text-foreground transition-all focus:ring-brand-primary/20 disabled:opacity-50"
+                className="h-14 w-full rounded-2xl border-border/40 bg-muted/10 px-4 font-sans font-bold text-foreground transition-all focus:ring-brand-primary/20 disabled:opacity-50"
               >
                 <div className="flex items-center gap-3">
                   <UserCircleGear
@@ -435,9 +516,8 @@ export function CreateClientForm() {
               </SelectContent>
             </Select>
           </div>
+          </div>
         </div>
-      </div>
-      </div>
 
       <div className="flex flex-col gap-6 pt-6">
         {state.error && (
@@ -452,7 +532,7 @@ export function CreateClientForm() {
         <Button
           type="submit"
           disabled={isPending}
-          className="group relative h-16 w-full overflow-hidden rounded-2xl font-sans font-black uppercase tracking-[0.3em] shadow-xl shadow-brand-primary/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-70 sm:w-max sm:self-end sm:px-12"
+          className="group relative h-16 w-full overflow-hidden rounded-2xl font-sans font-black uppercase tracking-[0.3em] text-white shadow-xl shadow-brand-primary/20 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-70 sm:w-max sm:self-end sm:px-12"
         >
           {isPending ? (
             <div className="flex items-center gap-3">

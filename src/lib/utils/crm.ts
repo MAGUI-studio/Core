@@ -1,5 +1,6 @@
 import { LeadStatus } from "@/src/generated/client"
 import { Lead } from "@/src/types/crm"
+import { formatBrazilPhoneInput } from "@/src/lib/utils/phone"
 
 export const CRM_STATUS_ORDER: LeadStatus[] = [
   LeadStatus.GARIMPAGEM,
@@ -41,40 +42,6 @@ export const LEAD_STATUS_STYLES: Record<
     accent: "text-foreground/70",
     column: "border-border/40 bg-muted/10",
   },
-}
-
-export function parseLeadValue(value: string | null | undefined): number {
-  if (!value) return 0
-
-  const normalized = value.trim().replace(/[^\d,.-]/g, "")
-
-  if (!normalized) return 0
-
-  if (normalized.includes(",") && normalized.includes(".")) {
-    return Number(normalized.replace(/\./g, "").replace(",", ".")) || 0
-  }
-
-  if (normalized.includes(",")) {
-    return Number(normalized.replace(",", ".")) || 0
-  }
-
-  return Number(normalized) || 0
-}
-
-export function formatLeadValue(
-  value: string | number | null | undefined
-): string {
-  const amount =
-    typeof value === "number" ? value : parseLeadValue(value ?? undefined)
-
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(amount)
-}
-
-export function getLeadValueTotal(leads: Lead[]): number {
-  return leads.reduce((total, lead) => total + parseLeadValue(lead.value), 0)
 }
 
 export function getLeadDaysWithoutMovement(lead: Lead): number {
@@ -137,6 +104,11 @@ export function sanitizePhoneForWhatsApp(
   phone: string | null | undefined
 ): string {
   return (phone ?? "").replace(/\D/g, "")
+}
+
+export function formatLeadPhone(phone: string | null | undefined): string {
+  if (!phone) return ""
+  return formatBrazilPhoneInput(phone)
 }
 
 export function getLeadWhatsappLinks(lead: Lead): Array<{

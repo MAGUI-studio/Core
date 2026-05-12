@@ -17,9 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select"
-import { Textarea } from "@/src/components/ui/textarea"
 
-import { formatCurrencyBRL } from "@/src/lib/utils/utils"
+import { formatBrazilPhoneInput } from "@/src/lib/utils/phone"
 
 type LeadSourceValue =
   | "REFERRAL"
@@ -44,8 +43,6 @@ export function LeadEditForm({ lead, onSave, isSaving }: LeadEditFormProps) {
     phone: lead.phone ?? "",
     website: lead.website ?? "",
     instagram: lead.instagram ?? "",
-    notes: lead.notes ?? "",
-    value: lead.value ?? "",
     source: lead.source as LeadSourceValue,
   })
 
@@ -86,7 +83,13 @@ export function LeadEditForm({ lead, onSave, isSaving }: LeadEditFormProps) {
           </Label>
           <Input
             value={form.phone}
-            onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+            onChange={(e) =>
+              setForm((f) => ({
+                ...f,
+                phone: formatBrazilPhoneInput(e.target.value),
+              }))
+            }
+            placeholder="(00) 0 0000-0000"
             className="h-12 rounded-[1rem]"
           />
         </div>
@@ -129,22 +132,6 @@ export function LeadEditForm({ lead, onSave, isSaving }: LeadEditFormProps) {
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-2">
-          <Label className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground/55">
-            Valor estimado
-          </Label>
-          <Input
-            value={form.value}
-            onChange={(e) =>
-              setForm((f) => ({
-                ...f,
-                value: formatCurrencyBRL(e.target.value),
-              }))
-            }
-            placeholder="Ex: R$ 12.000"
-            className="h-12 rounded-[1rem]"
-          />
-        </div>
         {showInstagramField && (
           <div className="space-y-2 md:col-span-2">
             <Label className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground/55">
@@ -175,17 +162,6 @@ export function LeadEditForm({ lead, onSave, isSaving }: LeadEditFormProps) {
             />
           </div>
         )}
-      </div>
-      <div className="space-y-2">
-        <Label className="text-[10px] font-black uppercase tracking-[0.18em] text-muted-foreground/55">
-          Observacoes iniciais
-        </Label>
-        <Textarea
-          value={form.notes}
-          onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-          placeholder="Registre contexto, decisor, valor, proximo passo e alertas da negociacao."
-          className="min-h-28 rounded-[1.25rem]"
-        />
       </div>
       <Button
         type="button"

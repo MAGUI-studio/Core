@@ -88,9 +88,7 @@ export function useLeadMutations(
       phone: String(data.phone || ""),
       website: String(data.website || ""),
       instagram: String(data.instagram || ""),
-      notes: String(data.notes || ""),
       source: (data.source as unknown as Lead["source"]) || "OTHER",
-      value: String(data.value || ""),
     })
 
     if (result.success) {

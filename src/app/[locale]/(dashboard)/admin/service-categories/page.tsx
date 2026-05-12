@@ -53,7 +53,7 @@ export default async function ServiceCategoriesPage(): Promise<React.JSX.Element
         >
           <Link
             href="/admin/service-categories/new"
-            className="flex items-center gap-3"
+            className="flex items-center gap-3 text-white!"
           >
             <FolderPlus
               weight="duotone"

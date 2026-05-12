@@ -122,6 +122,13 @@ export function getAdminHeaderNav(t: (key: string) => string): {
             description: t("descriptions.service_categories"),
             matchPrefix: "/admin/service-categories",
           },
+          {
+            href: "/admin/service-categories/new",
+            icon: "plus",
+            label: t("projects.categories_new"),
+            description: t("descriptions.service_categories"),
+            exact: true,
+          },
         ],
       },
       {

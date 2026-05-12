@@ -156,10 +156,13 @@ export default async function MaguiConnectOverviewPage() {
               {t("overview.economyTitle")}
             </p>
 
-            <h2
-              className="text-5xl font-black leading-[0.92] tracking-[-0.055em] lg:text-8xl"
-              dangerouslySetInnerHTML={{ __html: t("overview.economyHeadline") }}
-            />
+            <h2 className="text-5xl font-black leading-[0.92] tracking-[-0.055em] lg:text-8xl">
+              {t.rich("overview.economyHeadline", {
+                highlight: (chunks) => (
+                  <span className="text-brand-primary">{chunks}</span>
+                ),
+              })}
+            </h2>
           </div>
 
           <div className="space-y-8">

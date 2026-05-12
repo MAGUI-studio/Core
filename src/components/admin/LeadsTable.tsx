@@ -7,6 +7,8 @@ import { useTranslations } from "next-intl"
 import { Lead, MessageTemplate } from "@/src/types/crm"
 import { MagnifyingGlass, Rows, SealWarning } from "@phosphor-icons/react"
 
+import { LeadDetailsDrawer } from "@/src/components/admin/LeadDetailsDrawer"
+import { LeadStatusBadge } from "@/src/components/admin/LeadStatusBadge"
 import { Button } from "@/src/components/ui/button"
 import { Card } from "@/src/components/ui/card"
 import { Input } from "@/src/components/ui/input"
@@ -19,11 +21,8 @@ import {
   TableRow,
 } from "@/src/components/ui/table"
 
-import { LeadDetailsDrawer } from "@/src/components/admin/LeadDetailsDrawer"
-import { LeadStatusBadge } from "@/src/components/admin/LeadStatusBadge"
-
 import {
-  formatLeadValue,
+  formatLeadPhone,
   getLeadDaysWithoutMovement,
   getNextActionMeta,
   isLeadStagnant,
@@ -83,16 +82,16 @@ export function LeadsTable({
         </Button>
       </div>
 
-      <div className="relative group max-w-md">
+      <div className="group relative max-w-md">
         <MagnifyingGlass
           weight="duotone"
-          className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-brand-primary"
+          className="absolute top-1/2 left-4 size-5 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-brand-primary"
         />
         <Input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Buscar por empresa, contato ou e-mail..."
-          className="h-14 rounded-2xl border-border/40 bg-muted/20 pl-12 pr-4 font-sans font-bold transition-all focus-visible:bg-muted/30 focus-visible:ring-brand-primary/20"
+          className="h-14 rounded-2xl border-border/40 bg-muted/20 pr-4 pl-12 font-sans font-bold transition-all focus-visible:bg-muted/30 focus-visible:ring-brand-primary/20"
         />
       </div>
 
@@ -110,13 +109,7 @@ export function LeadsTable({
                 {t("table.status")}
               </TableHead>
               <TableHead className="h-16 px-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                {t("table.value")}
-              </TableHead>
-              <TableHead className="h-16 px-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                 Contato
-              </TableHead>
-              <TableHead className="h-16 px-8 text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                Observação
               </TableHead>
               <TableHead className="h-16 px-8 text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                 {t("table.actions")}
@@ -127,7 +120,7 @@ export function LeadsTable({
             {filteredLeads.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={5}
                   className="h-48 text-center text-xs font-bold uppercase tracking-widest text-muted-foreground/40"
                 >
                   {t("table.empty")}
@@ -157,7 +150,7 @@ export function LeadsTable({
                             {lead.companyName}
                           </div>
                           <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/55">
-                            {lead.source} • Atualizado em{" "}
+                            {lead.source} · Atualizado em{" "}
                             {new Date(lead.updatedAt).toLocaleDateString(
                               "pt-BR"
                             )}
@@ -186,14 +179,9 @@ export function LeadsTable({
                       <LeadStatusBadge status={lead.status} />
                     </TableCell>
                     <TableCell className="px-8 py-6">
-                      <div className="font-mono text-sm font-semibold text-brand-primary">
-                        {formatLeadValue(lead.value)}
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-8 py-6">
                       <div className="flex flex-col gap-1">
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
-                          {lead.phone || "Sem telefone"}
+                          {formatLeadPhone(lead.phone) || "Sem telefone"}
                         </span>
                         <span className="text-sm font-medium text-foreground/75">
                           {lead.instagram || "Sem Instagram"}
@@ -201,44 +189,38 @@ export function LeadsTable({
                       </div>
                     </TableCell>
                     <TableCell className="px-8 py-6 text-right">
-                      <div className="flex justify-end">
+                      <div className="flex items-center justify-end gap-3">
                         {stagnant ? (
                           <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-amber-700 dark:text-amber-300">
                             <SealWarning size={13} />
                             {getLeadDaysWithoutMovement(lead)} dia(s)
                           </div>
-                        ) : (
-                          <span className="max-w-[18rem] truncate text-sm text-muted-foreground/60">
-                            {lead.notes || "Sem observações"}
-                          </span>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-8 py-6 text-right">
-                      <LeadDetailsDrawer
-                        lead={lead}
-                        clients={clients}
-                        templates={templates}
-                        onLeadUpdated={(nextLead) => {
-                          setLeadItems((current) =>
-                            current.map((item) =>
-                              item.id === nextLead.id ? nextLead : item
+                        ) : null}
+                        <LeadDetailsDrawer
+                          lead={lead}
+                          clients={clients}
+                          templates={templates}
+                          onLeadUpdated={(nextLead) => {
+                            setLeadItems((current) =>
+                              current.map((item) =>
+                                item.id === nextLead.id ? nextLead : item
+                              )
                             )
-                          )
-                        }}
-                        onLeadDeleted={(leadId) => {
-                          setLeadItems((current) =>
-                            current.filter((item) => item.id !== leadId)
-                          )
-                        }}
-                      >
-                        <Button
-                          variant="outline"
-                          className="rounded-full border-border/60 bg-background/70 px-4 text-[10px] font-black uppercase tracking-[0.2em]"
+                          }}
+                          onLeadDeleted={(leadId) => {
+                            setLeadItems((current) =>
+                              current.filter((item) => item.id !== leadId)
+                            )
+                          }}
                         >
-                          Abrir lead
-                        </Button>
-                      </LeadDetailsDrawer>
+                          <Button
+                            variant="outline"
+                            className="rounded-full border-border/60 bg-background/70 px-4 text-[10px] font-black uppercase tracking-[0.2em]"
+                          >
+                            Abrir lead
+                          </Button>
+                        </LeadDetailsDrawer>
+                      </div>
                     </TableCell>
                   </TableRow>
                 )

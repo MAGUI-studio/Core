@@ -82,7 +82,7 @@ export function LeadInfoDisplay({
           />
         </div>
 
-        {(lead.website || lead.notes) ? (
+        {lead.website ? (
           <div className="mt-4 grid gap-3">
             {lead.website ? (
               <InfoItem icon={Globe} label="Website" value={lead.website} />

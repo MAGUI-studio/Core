@@ -257,9 +257,7 @@ export function ConvertLeadDialog({
         phone: lead.phone ?? "",
         website: lead.website ?? "",
         instagram: lead.instagram ?? "",
-        notes: lead.notes ?? "",
         source: lead.source,
-        value: lead.value ?? "",
       })
 
       if (!updateResult.success) {
