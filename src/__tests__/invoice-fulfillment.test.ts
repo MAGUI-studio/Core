@@ -18,6 +18,9 @@ describe("invoice fulfillment", () => {
     const { releaseProjectBonusIfEligible } = await import(
       "@/src/lib/invoice-fulfillment"
     )
+    type ReleaseProjectBonusTx = Parameters<
+      typeof releaseProjectBonusIfEligible
+    >[0]
 
     const tx = {
       project: {
@@ -52,7 +55,7 @@ describe("invoice fulfillment", () => {
         findUnique: vi.fn().mockResolvedValue(null),
         create: vi.fn().mockResolvedValue({ id: "profile_1" }),
       },
-    } as any
+    } as unknown as ReleaseProjectBonusTx
 
     const released = await releaseProjectBonusIfEligible(tx, "project_1")
 
@@ -86,6 +89,9 @@ describe("invoice fulfillment", () => {
     const { releaseProjectBonusIfEligible } = await import(
       "@/src/lib/invoice-fulfillment"
     )
+    type ReleaseProjectBonusTx = Parameters<
+      typeof releaseProjectBonusIfEligible
+    >[0]
 
     const tx = {
       project: {
@@ -119,7 +125,7 @@ describe("invoice fulfillment", () => {
         findUnique: vi.fn(),
         create: vi.fn(),
       },
-    } as any
+    } as unknown as ReleaseProjectBonusTx
 
     const released = await releaseProjectBonusIfEligible(tx, "project_1")
 
@@ -133,6 +139,9 @@ describe("invoice fulfillment", () => {
     const { releaseProjectBonusIfEligible } = await import(
       "@/src/lib/invoice-fulfillment"
     )
+    type ReleaseProjectBonusTx = Parameters<
+      typeof releaseProjectBonusIfEligible
+    >[0]
 
     const tx = {
       project: {
@@ -167,7 +176,7 @@ describe("invoice fulfillment", () => {
         findUnique: vi.fn().mockResolvedValue({ id: "profile_1" }),
         create: vi.fn(),
       },
-    } as any
+    } as unknown as ReleaseProjectBonusTx
 
     const released = await releaseProjectBonusIfEligible(tx, "project_1")
 
@@ -180,6 +189,9 @@ describe("invoice fulfillment", () => {
     const { cancelProjectBonusIfNeeded } = await import(
       "@/src/lib/invoice-fulfillment"
     )
+    type CancelProjectBonusTx = Parameters<
+      typeof cancelProjectBonusIfNeeded
+    >[0]
 
     const tx = {
       project: {
@@ -196,7 +208,7 @@ describe("invoice fulfillment", () => {
         }),
         update: vi.fn().mockResolvedValue({}),
       },
-    } as any
+    } as unknown as CancelProjectBonusTx
 
     const cancelled = await cancelProjectBonusIfNeeded(tx, "project_1")
 
@@ -224,6 +236,9 @@ describe("invoice fulfillment", () => {
     const { forceReleaseProjectBonus } = await import(
       "@/src/lib/invoice-fulfillment"
     )
+    type ForceReleaseProjectBonusTx = Parameters<
+      typeof forceReleaseProjectBonus
+    >[0]
 
     const tx = {
       project: {
@@ -257,7 +272,7 @@ describe("invoice fulfillment", () => {
         findUnique: vi.fn().mockResolvedValue(null),
         create: vi.fn().mockResolvedValue({ id: "profile_1" }),
       },
-    } as any
+    } as unknown as ForceReleaseProjectBonusTx
 
     const released = await forceReleaseProjectBonus(tx, "project_1", "admin_1")
 
@@ -284,6 +299,9 @@ describe("invoice fulfillment", () => {
     const { forceCancelProjectBonus } = await import(
       "@/src/lib/invoice-fulfillment"
     )
+    type ForceCancelProjectBonusTx = Parameters<
+      typeof forceCancelProjectBonus
+    >[0]
 
     const tx = {
       project: {
@@ -300,7 +318,7 @@ describe("invoice fulfillment", () => {
         }),
         update: vi.fn().mockResolvedValue({}),
       },
-    } as any
+    } as unknown as ForceCancelProjectBonusTx
 
     const cancelled = await forceCancelProjectBonus(tx, "project_1", "admin_1")
 

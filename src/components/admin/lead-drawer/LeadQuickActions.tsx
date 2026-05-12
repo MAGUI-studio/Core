@@ -7,7 +7,6 @@ import {
   CaretDown,
   CopySimple,
   InstagramLogo,
-  LinkSimple,
   Plus,
   RocketLaunch,
 } from "@phosphor-icons/react"
@@ -72,15 +71,10 @@ export function LeadQuickActions({
   const [selectedProposalId, setSelectedProposalId] = React.useState("")
   const [customMessage, setCustomMessage] = React.useState("")
   const [isSavingTemplate, setIsSavingTemplate] = React.useState(false)
-  const [siteOrigin, setSiteOrigin] = React.useState(
-    process.env.NEXT_PUBLIC_SITE_URL ?? ""
-  )
-
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && window.location.origin) {
-      setSiteOrigin(window.location.origin)
-    }
-  }, [])
+  const siteOrigin =
+    typeof window !== "undefined"
+      ? window.location.origin
+      : (process.env.NEXT_PUBLIC_SITE_URL ?? "")
 
   const selectedProposal = React.useMemo(
     () =>
@@ -254,16 +248,6 @@ export function LeadQuickActions({
 
     await navigator.clipboard.writeText(customMessage)
     toast.success("Mensagem copiada para colar no direct.")
-  }
-
-  const handleCopyProposalLink = async () => {
-    if (!selectedProposal || !proposalUrl) {
-      toast.error("Escolha uma proposta para copiar o link.")
-      return
-    }
-
-    await navigator.clipboard.writeText(proposalUrl)
-    toast.success("Link público da proposta copiado.")
   }
 
   return (

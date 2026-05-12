@@ -87,7 +87,6 @@ export function LeadProposalsTab({
       return
     }
 
-    setIsLoading(true)
     const result = await getLeadProposalsAction(lead.id)
 
     if (result.success) {
@@ -101,7 +100,11 @@ export function LeadProposalsTab({
 
   React.useEffect(() => {
     if (!providedProposals) {
-      void loadProposals()
+      const timeoutId = window.setTimeout(() => {
+        void loadProposals()
+      }, 0)
+
+      return () => window.clearTimeout(timeoutId)
     }
   }, [loadProposals, providedProposals])
 
