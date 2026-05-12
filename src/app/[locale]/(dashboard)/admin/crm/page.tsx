@@ -8,7 +8,7 @@ import { PlusIcon } from "@phosphor-icons/react/dist/ssr"
 
 import { Button } from "@/src/components/ui/button"
 
-import { KanbanBoard } from "@/src/components/admin/KanbanBoard"
+import { LeadsTable } from "@/src/components/admin/LeadsTable"
 
 import { getLeads, getMessageTemplates } from "@/src/lib/crm-data"
 import prisma from "@/src/lib/prisma"
@@ -86,9 +86,8 @@ export default async function CRMPage({
         </div>
       </div>
 
-      <KanbanBoard
+      <LeadsTable
         leads={leads}
-        initialLeadId={selectedLeadId}
         clients={clients}
         templates={templates}
       />

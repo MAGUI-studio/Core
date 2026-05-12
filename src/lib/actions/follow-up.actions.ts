@@ -49,7 +49,7 @@ export async function triggerAutomatedFollowUpsAction() {
             type: NotificationType.OPERATIONAL_REMINDER,
             title: "Lead Estagnado",
             message: `O lead "${lead.companyName}" está sem interação há mais de 4 dias. Verifique o status da negociação.`,
-            ctaPath: `/admin/crm/kanban`,
+            ctaPath: `/admin/crm`,
             metadata: {
               path: "lead_stale",
               leadId: lead.id,

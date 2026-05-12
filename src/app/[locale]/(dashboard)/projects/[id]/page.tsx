@@ -17,13 +17,19 @@ import { ClientActionBanner } from "@/src/components/client/ClientActionBanner"
 import { ClientFeatureLink } from "@/src/components/client/ClientFeatureLink"
 import { ClientLandingHero } from "@/src/components/client/ClientLandingHero"
 import { ClientSectionHeader } from "@/src/components/client/ClientSectionHeader"
+import { ProjectDelayImpact } from "@/src/components/client/ProjectDelayImpact"
+import { ProjectFinancialSummary } from "@/src/components/client/ProjectFinancialSummary"
+import { ProjectPerformanceHealth } from "@/src/components/client/ProjectPerformanceHealth"
+import { ProjectStatusRoadmap } from "@/src/components/client/ProjectStatusRoadmap"
 import { ProjectScheduleDelayTooltip } from "@/src/components/common/ProjectScheduleDelayTooltip"
 
 import { getClientProjectOverview } from "@/src/lib/client-projects"
 import prisma from "@/src/lib/prisma"
 import {
+  addBusinessDays,
   buildProjectScheduleView,
   getExecutionDaysLabel,
+  normalizeProjectScheduleData,
 } from "@/src/lib/project-schedule"
 import { toHref } from "@/src/lib/utils/navigation"
 
@@ -56,6 +62,25 @@ export default async function ProjectDetailPage({
   const tDetail = await getTranslations("Dashboard.project_detail")
   const statusLabel = tStatus(project.status)
   const schedule = buildProjectScheduleView(project.scheduleData, project.status)
+  const scheduleData = normalizeProjectScheduleData(project.scheduleData)
+
+  const statusTranslations = {
+    STRATEGY: tStatus("STRATEGY"),
+    ARCHITECTURE: tStatus("ARCHITECTURE"),
+    DESIGN: tStatus("DESIGN"),
+    ENGINEERING: tStatus("ENGINEERING"),
+    QA: tStatus("QA"),
+    LAUNCHED: tStatus("LAUNCHED"),
+  }
+
+  const initialForecastDate =
+    scheduleData.executionStartAt && scheduleData.executionBusinessDays
+      ? addBusinessDays(
+          new Date(scheduleData.executionStartAt),
+          scheduleData.executionBusinessDays
+        )
+      : null
+
   const visibleDelayReasons = schedule.delayReasons.filter(
     (reason) => reason.businessDaysAdded > 0
   )
@@ -71,8 +96,10 @@ export default async function ProjectDetailPage({
         ? toHref(`/projects/${project.id}/tasks`)
         : toHref(`/projects/${project.id}/timeline`)
 
+  const latestVersion = project.versions[0]
+
   return (
-    <div className="flex flex-col gap-10 lg:gap-12">
+    <div className="flex flex-col gap-12 lg:gap-16">
       <ClientLandingHero
         eyebrow={tDetail("eyebrow")}
         title={project.name}
@@ -123,123 +150,162 @@ export default async function ProjectDetailPage({
         ]}
       />
 
-      {schedule.executionState === "ABANDONED" && (
-        <ClientActionBanner
-          type="task"
-          eyebrow="Projeto abandonado"
-          title="Prazo contratual encerrado por abandono"
-          description="O projeto ultrapassou 30 dias corridos sem retorno suficiente no CRM. Entre em contato com a MAGUI.studio para revisar uma retomada formal."
-          href={toHref(`/projects/${project.id}/briefing`)}
-          label="Revisar pendências"
-          projectName={project.name}
+      <div className="mx-auto w-full">
+        <ProjectStatusRoadmap
+          currentStatus={
+            project.status === "ON_HOLD_CLIENT" || project.status === "ABANDONED"
+              ? scheduleData.operationalStatus
+              : project.status
+          }
+          translations={statusTranslations}
         />
-      )}
+      </div>
 
-      {schedule.executionState === "ON_HOLD_CLIENT" && (
-        <ClientActionBanner
-          type="task"
-          eyebrow="Projeto suspenso"
-          title="Cronograma aguardando seu retorno"
-          description="O projeto entrou em espera por inatividade contratual. Envie o briefing, os ativos ou o feedback pendente pelo CRM para reativar a contagem."
-          href={toHref(`/projects/${project.id}/briefing`)}
-          label="Retomar pelo CRM"
-          projectName={project.name}
-        />
-      )}
+      <div className="flex flex-col gap-12 lg:gap-16">
+        <div className="flex flex-col gap-10">
+          <ProjectDelayImpact
+            initialForecastDate={initialForecastDate}
+            currentForecastDate={schedule.currentForecastDate}
+            clientDelayBusinessDays={schedule.clientDelayBusinessDays}
+            delayMultiplier={schedule.delayMultiplier}
+          />
 
-      {hasPendingPayment && (
-        <ClientActionBanner
-          type="task"
-          eyebrow={tDetail("banner.payment.eyebrow")}
-          title={tDetail("banner.payment.title")}
-          description={tDetail("banner.payment.description")}
-          href={toHref(`/projects/${project.id}/financial`)}
-          label={tDetail("banner.payment.label")}
-          projectName={project.name}
-        />
-      )}
+          <div className="flex flex-col gap-5">
+            <ProjectFinancialSummary invoices={project.invoices} />
 
-      {!hasPendingPayment &&
-        (pendingApprovals.length > 0 || clientTasks.length > 0) && (
-          <ClientActionBanner
-            type={pendingApprovals.length > 0 ? "approval" : "task"}
-            eyebrow={tDetail("banner.attention.eyebrow")}
-            title={pendingApprovals[0]?.title ?? clientTasks[0]?.title ?? ""}
-            description={
-              pendingApprovals.length > 0
-                ? tDetail("banner.attention.description_approval")
-                : tDetail("banner.attention.description_task")
-            }
-            href={primaryHref}
-            label={
-              pendingApprovals.length > 0
-                ? tDetail("banner.attention.label_approval")
-                : tDetail("banner.attention.label_task")
-            }
-            projectName={project.name}
-          />
-        )}
-
-      <section className="grid gap-6">
-        <ClientSectionHeader
-          eyebrow={tDetail("explore.eyebrow")}
-          title={tDetail("explore.title")}
-          description={tDetail("explore.description")}
-        />
-
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-          <ClientFeatureLink
-            title={tDetail("explore.approvals.title")}
-            description={tDetail("explore.approvals.description")}
-            href={toHref(`/projects/${project.id}/approvals`)}
-            icon={CheckCircleIcon}
-            meta={tDetail("explore.approvals.meta", {
-              count: pendingApprovals.length,
-            })}
-          />
-          <ClientFeatureLink
-            title={tDetail("explore.files.title")}
-            description={tDetail("explore.files.description")}
-            href={toHref(`/projects/${project.id}/files`)}
-            icon={FilesIcon}
-            meta={tDetail("explore.files.meta", {
-              count: project._count.assets,
-            })}
-          />
-          <ClientFeatureLink
-            title={tDetail("explore.timeline.title")}
-            description={tDetail("explore.timeline.description")}
-            href={toHref(`/projects/${project.id}/timeline`)}
-            icon={ClockCountdownIcon}
-            meta={tDetail("explore.timeline.meta", {
-              count: project._count.updates,
-            })}
-          />
-          <ClientFeatureLink
-            title={tDetail("explore.briefing.title")}
-            description={tDetail("explore.briefing.description")}
-            href={toHref(`/projects/${project.id}/briefing`)}
-            icon={NotePencilIcon}
-            meta={tDetail("explore.briefing.meta")}
-          />
-          <ClientFeatureLink
-            title={tDetail("explore.financial.title")}
-            description={tDetail("explore.financial.description")}
-            href={toHref(`/projects/${project.id}/financial`)}
-            icon={CurrencyCircleDollarIcon}
-            meta={tDetail("explore.financial.meta")}
-          />
-          <ClientFeatureLink
-            title={tDetail("explore.tasks.title")}
-            description={tDetail("explore.tasks.description")}
-            href={toHref(`/projects/${project.id}/tasks`)}
-            icon={ShieldCheckIcon}
-            meta={tDetail("explore.tasks.meta", {
-              count: project._count.actionItems,
-            })}
-          />
+            {latestVersion && (
+              <ProjectPerformanceHealth
+                scores={{
+                  performance: latestVersion.scorePerformance,
+                  accessibility: latestVersion.scoreAccessibility,
+                  bestPractices: latestVersion.scoreBestPractices,
+                  seo: latestVersion.scoreSEO,
+                }}
+              />
+            )}
+          </div>
         </div>
-      </section>
+
+        <div className="flex flex-col gap-8">
+          {schedule.executionState === "ABANDONED" && (
+            <ClientActionBanner
+              type="task"
+              eyebrow="Projeto abandonado"
+              title="Prazo contratual encerrado por abandono"
+              description="O projeto ultrapassou 30 dias corridos sem retorno suficiente no CRM. Entre em contato com a MAGUI.studio para revisar uma retomada formal."
+              href={toHref(`/projects/${project.id}/briefing`)}
+              label="Revisar pendências"
+              projectName={project.name}
+            />
+          )}
+
+          {schedule.executionState === "ON_HOLD_CLIENT" && (
+            <ClientActionBanner
+              type="task"
+              eyebrow="Projeto suspenso"
+              title="Cronograma aguardando seu retorno"
+              description="O projeto entrou em espera por inatividade contratual. Envie o briefing, os ativos ou o feedback pendente pelo CRM para reativar a contagem."
+              href={toHref(`/projects/${project.id}/briefing`)}
+              label="Retomar pelo CRM"
+              projectName={project.name}
+            />
+          )}
+
+          {hasPendingPayment && (
+            <ClientActionBanner
+              type="task"
+              eyebrow={tDetail("banner.payment.eyebrow")}
+              title={tDetail("banner.payment.title")}
+              description={tDetail("banner.payment.description")}
+              href={toHref(`/projects/${project.id}/financial`)}
+              label={tDetail("banner.payment.label")}
+              projectName={project.name}
+            />
+          )}
+
+          {!hasPendingPayment &&
+            (pendingApprovals.length > 0 || clientTasks.length > 0) && (
+              <ClientActionBanner
+                type={pendingApprovals.length > 0 ? "approval" : "task"}
+                eyebrow={tDetail("banner.attention.eyebrow")}
+                title={pendingApprovals[0]?.title ?? clientTasks[0]?.title ?? ""}
+                description={
+                  pendingApprovals.length > 0
+                    ? tDetail("banner.attention.description_approval")
+                    : tDetail("banner.attention.description_task")
+                }
+                href={primaryHref}
+                label={
+                  pendingApprovals.length > 0
+                    ? tDetail("banner.attention.label_approval")
+                    : tDetail("banner.attention.label_task")
+                }
+                projectName={project.name}
+              />
+            )}
+        </div>
+
+        <section className="grid gap-8">
+          <ClientSectionHeader
+            eyebrow={tDetail("explore.eyebrow")}
+            title={tDetail("explore.title")}
+            description={tDetail("explore.description")}
+          />
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <ClientFeatureLink
+              title={tDetail("explore.approvals.title")}
+              description={tDetail("explore.approvals.description")}
+              href={toHref(`/projects/${project.id}/approvals`)}
+              icon={CheckCircleIcon}
+              meta={tDetail("explore.approvals.meta", {
+                count: pendingApprovals.length,
+              })}
+            />
+            <ClientFeatureLink
+              title={tDetail("explore.files.title")}
+              description={tDetail("explore.files.description")}
+              href={toHref(`/projects/${project.id}/files`)}
+              icon={FilesIcon}
+              meta={tDetail("explore.files.meta", {
+                count: project._count.assets,
+              })}
+            />
+            <ClientFeatureLink
+              title={tDetail("explore.timeline.title")}
+              description={tDetail("explore.timeline.description")}
+              href={toHref(`/projects/${project.id}/timeline`)}
+              icon={ClockCountdownIcon}
+              meta={tDetail("explore.timeline.meta", {
+                count: project._count.updates,
+              })}
+            />
+            <ClientFeatureLink
+              title={tDetail("explore.briefing.title")}
+              description={tDetail("explore.briefing.description")}
+              href={toHref(`/projects/${project.id}/briefing`)}
+              icon={NotePencilIcon}
+              meta={tDetail("explore.briefing.meta")}
+            />
+            <ClientFeatureLink
+              title={tDetail("explore.financial.title")}
+              description={tDetail("explore.financial.description")}
+              href={toHref(`/projects/${project.id}/financial`)}
+              icon={CurrencyCircleDollarIcon}
+              meta={tDetail("explore.financial.meta")}
+            />
+            <ClientFeatureLink
+              title={tDetail("explore.tasks.title")}
+              description={tDetail("explore.tasks.description")}
+              href={toHref(`/projects/${project.id}/tasks`)}
+              icon={ShieldCheckIcon}
+              meta={tDetail("explore.tasks.meta", {
+                count: project._count.actionItems,
+              })}
+            />
+          </div>
+        </section>
+      </div>
     </div>
   )
 }

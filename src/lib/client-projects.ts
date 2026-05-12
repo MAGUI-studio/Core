@@ -215,6 +215,18 @@ export async function getClientProjectOverview(id: string, userId: string) {
         orderBy: [{ dueDate: "asc" }, { createdAt: "desc" }],
         take: 1,
       },
+      versions: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+      },
+      invoices: {
+        where: { status: { not: "CANCELLED" } },
+        include: {
+          installments: {
+            orderBy: { dueDate: "asc" },
+          },
+        },
+      },
       _count: {
         select: {
           assets: true,
@@ -332,6 +344,35 @@ export async function getClientProjectApprovals(id: string, userId: string) {
           updates: {
             where: { requiresApproval: true },
           },
+        },
+      },
+    },
+  })
+}
+
+export async function getClientProjectCalendarData(id: string, userId: string) {
+  return prisma.project.findUnique({
+    where: { id, clientId: userId },
+    select: {
+      id: true,
+      name: true,
+      scheduleData: true,
+      status: true,
+      updates: {
+        select: {
+          id: true,
+          title: true,
+          createdAt: true,
+          isMilestone: true,
+        },
+      },
+      actionItems: {
+        where: { targetRole: "CLIENT" },
+        select: {
+          id: true,
+          title: true,
+          dueDate: true,
+          status: true,
         },
       },
     },

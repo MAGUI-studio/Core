@@ -143,7 +143,6 @@ export default async function DashboardLayout({
           },
         })
 
-        // Now we map each individual update to a banner item
         pendingApprovals = rawPendingUpdates.map((update) => ({
           count: 1,
           projectId: update.projectId,
@@ -154,7 +153,7 @@ export default async function DashboardLayout({
           attachments: update.attachments.map((a) => ({
             ...a,
             customId: null,
-            createdAt: new Date().toISOString(), // Fallback or accurate date if needed
+            createdAt: new Date().toISOString(),
           })),
         }))
       }

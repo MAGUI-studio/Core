@@ -56,7 +56,6 @@ import { useLeadMutations } from "@/src/hooks/use-lead-mutations"
 import { LeadDeleteDialog } from "./lead-drawer/LeadDeleteDialog"
 import { LeadEditForm } from "./lead-drawer/LeadEditForm"
 import { LeadInfoDisplay } from "./lead-drawer/LeadInfoDisplay"
-import { LeadNotesList } from "./lead-drawer/LeadNotesList"
 import { LeadProposalsTab } from "./lead-drawer/LeadProposalsTab"
 import { LeadQuickActions } from "./lead-drawer/LeadQuickActions"
 
@@ -72,9 +71,10 @@ function formatDateTime(value: string | Date): string {
 
 type LeadDetailsDrawerProps = {
   lead: Lead
-  children: React.ReactNode
+  children?: React.ReactNode
   onOpenChange?: (open: boolean) => void
   open?: boolean
+  initialMode?: "overview" | "edit"
   clients: Array<{ id: string; name: string | null; email: string }>
   templates: MessageTemplate[]
   onLeadUpdated?: (lead: Lead) => void
@@ -86,6 +86,7 @@ export function LeadDetailsDrawer({
   children,
   onOpenChange,
   open: controlledOpen,
+  initialMode = "overview",
   clients,
   templates,
   onLeadUpdated,
@@ -178,6 +179,11 @@ export function LeadDetailsDrawer({
     setUncontrolledOpen(nextOpen)
     onOpenChange?.(nextOpen)
 
+    if (nextOpen) {
+      setIsEditing(initialMode === "edit")
+      return
+    }
+
     if (!nextOpen) {
       setIsEditing(false)
     }
@@ -215,10 +221,10 @@ export function LeadDetailsDrawer({
 
   return (
     <Sheet open={open} onOpenChange={handleSheetOpenChange}>
-      <SheetTrigger asChild>{children}</SheetTrigger>
+      {children ? <SheetTrigger asChild>{children}</SheetTrigger> : null}
       <SheetContent
         side="right"
-        className="w-[96vw] overflow-y-auto border-l-0 bg-background p-0 sm:min-w-[40rem] sm:max-w-[42rem]"
+        className="w-[96vw] overflow-y-auto border-0 shadow-none bg-background p-0 sm:min-w-[40rem] sm:max-w-[42rem]"
       >
         <div className="flex min-h-screen flex-col">
           <SheetHeader className="px-8 py-8 text-left sm:px-10 sm:py-10">
@@ -484,13 +490,6 @@ export function LeadDetailsDrawer({
                         templates={templates}
                         proposals={localLead.proposals || []}
                       />
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <SectionHeader title="Notas salvas" icon={NotePencil} />
-                    <div className="rounded-[1.75rem] bg-muted/[0.03] p-6 sm:p-8">
-                      <LeadNotesList notes={localLead.followUpNotes || []} />
                     </div>
                   </div>
                 </div>

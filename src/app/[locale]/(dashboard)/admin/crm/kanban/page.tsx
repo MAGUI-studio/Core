@@ -3,8 +3,8 @@ import { redirect } from "next/navigation"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "Kanban CRM",
-  description: "Redirecionamento para o kanban comercial da MAGUI.studio.",
+  title: "CRM",
+  description: "Redirecionamento para a lista comercial da MAGUI.studio.",
   path: "/admin/crm/kanban",
 })
 
