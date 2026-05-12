@@ -7,7 +7,7 @@ import { applyInvoicePaidSideEffects } from "@/src/lib/invoice-fulfillment"
 import { logger } from "@/src/lib/logger"
 import prisma from "@/src/lib/prisma"
 import { revalidateProjectData } from "@/src/lib/revalidate"
-import { stripe } from "@/src/lib/stripe"
+import { getStripe } from "@/src/lib/stripe"
 
 import { env } from "@/src/config/env"
 
@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
   let event: Stripe.Event
 
   try {
+    const stripe = getStripe()
     if (!env.STRIPE_WEBHOOK_SECRET) {
       throw new Error("STRIPE_WEBHOOK_SECRET is not defined")
     }

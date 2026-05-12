@@ -4,9 +4,10 @@ import { env } from "@/src/config/env"
 
 import { applyInvoicePaidSideEffects } from "./invoice-fulfillment"
 import prisma from "./prisma"
-import { stripe } from "./stripe"
+import { getStripe } from "./stripe"
 
 export async function getOrCreateStripeCustomer(userId: string) {
+  const stripe = getStripe()
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { id: true, email: true, name: true, stripeCustomerId: true },
@@ -37,6 +38,7 @@ export async function getOrCreateStripeCustomer(userId: string) {
 }
 
 export async function createCheckoutSession(installmentId: string) {
+  const stripe = getStripe()
   const installment = await prisma.installment.findUnique({
     where: { id: installmentId },
     include: {
@@ -183,6 +185,7 @@ export async function createCheckoutSession(installmentId: string) {
 
 export async function verifyAndSyncStripePayment(sessionId: string) {
   try {
+    const stripe = getStripe()
     const session = await stripe.checkout.sessions.retrieve(sessionId)
 
     if (session.payment_status !== "paid") {

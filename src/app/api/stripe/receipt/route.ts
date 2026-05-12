@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server"
 import Stripe from "stripe"
 
 import prisma from "@/src/lib/prisma"
-import { stripe } from "@/src/lib/stripe"
+import { getStripe } from "@/src/lib/stripe"
 
 export async function GET(req: NextRequest) {
   const { userId } = await auth()
@@ -74,6 +74,7 @@ export async function GET(req: NextRequest) {
     )
   }
 
+  const stripe = getStripe()
   const paymentIntent = await stripe.paymentIntents.retrieve(
     installment.stripePaymentIntentId,
     {
