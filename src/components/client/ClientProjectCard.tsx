@@ -46,7 +46,7 @@ export async function ClientProjectCard({
         params: { id: project.id },
       }}
     >
-      <article className="group overflow-hidden rounded-[1.75rem] border border-border/20 bg-background/95 p-5 transition-all hover:-translate-y-0.5 hover:border-brand-primary/20 lg:p-6">
+      <article className="group overflow-hidden rounded-[1.75rem] border border-border/20 bg-background/95 p-5 transition-all hover:border-border lg:p-6">
         <div className="flex flex-col gap-6">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 space-y-3">
