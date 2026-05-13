@@ -9,8 +9,6 @@ import {
   Users,
 } from "@phosphor-icons/react/dist/ssr"
 
-import { Card, CardContent } from "@/src/components/ui/card"
-
 import { getAdminDashboardSummary } from "@/src/lib/admin-data"
 
 interface DashboardStatsWidgetProps {

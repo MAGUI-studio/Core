@@ -1,13 +1,6 @@
 import * as React from "react"
 
-import { getTranslations } from "next-intl/server"
-
-import {
-  Briefcase,
-  Receipt,
-  TrendUp,
-  Users,
-} from "@phosphor-icons/react/dist/ssr"
+import { Briefcase, Receipt, TrendUp } from "@phosphor-icons/react/dist/ssr"
 
 import { Card, CardContent } from "@/src/components/ui/card"
 
@@ -15,8 +8,6 @@ import prisma from "@/src/lib/prisma"
 import { formatCurrencyBRLFromCents } from "@/src/lib/utils/utils"
 
 export async function AdminFinancialMetrics() {
-  const t = await getTranslations("Admin.dashboard")
-
   // Simple sum of all PAID installments (total revenue history)
   const revenueResult = await prisma.installment.aggregate({
     where: { status: "PAID" },

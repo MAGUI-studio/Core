@@ -786,6 +786,7 @@ function InternalPage({
 }) {
   return (
     <Page size="A4" style={styles.page}>
+      {/* eslint-disable-next-line jsx-a11y/alt-text */}
       <Image src={PAGE_IMAGE} style={styles.sheet} fixed />
 
       <View style={styles.content}>
@@ -830,6 +831,7 @@ export function MaguiProposalTemplate({
   return (
     <Document title={proposal.title || "Proposta Comercial"}>
       <Page size="A4" style={styles.page}>
+        {/* eslint-disable-next-line jsx-a11y/alt-text */}
         <Image src={FRONT_IMAGE} style={styles.fullBleed} />
       </Page>
 
@@ -846,6 +848,7 @@ export function MaguiProposalTemplate({
       ))}
 
       <Page size="A4" style={styles.page}>
+        {/* eslint-disable-next-line jsx-a11y/alt-text */}
         <Image src={BACK_IMAGE} style={styles.fullBleed} />
       </Page>
     </Document>

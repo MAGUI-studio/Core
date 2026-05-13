@@ -4,10 +4,9 @@ import * as React from "react"
 
 import { useTranslations } from "next-intl"
 
-import { FileIcon, Files, MagnifyingGlass, Plus } from "@phosphor-icons/react"
+import { FileIcon, Files, MagnifyingGlass } from "@phosphor-icons/react"
 
 import { Badge } from "@/src/components/ui/badge"
-import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import {
   Select,

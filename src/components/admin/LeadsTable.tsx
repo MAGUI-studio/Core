@@ -86,11 +86,7 @@ function formatLeadSourceLabel(source: LeadSource): string {
   return source.replaceAll("_", " ")
 }
 
-export function LeadsTable({
-  leads,
-  clients,
-  templates,
-}: LeadsTableProps): React.JSX.Element {
+export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
   const t = useTranslations("Admin.crm")
   const [items, setItems] = React.useState(leads)
   const [search, setSearch] = React.useState("")

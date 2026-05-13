@@ -95,7 +95,6 @@ export function ProposalsOverviewList({
 }: ProposalsOverviewListProps): React.JSX.Element {
   const t = useTranslations("Proposals.status")
   const tList = useTranslations("Proposals.list")
-  const tCommon = useTranslations("Admin.crm")
   const [items, setItems] = React.useState(proposals)
   const [search, setSearch] = React.useState("")
   const [statusFilter, setStatusFilter] = React.useState<string>("ALL")

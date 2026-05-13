@@ -7,11 +7,8 @@ import { useTranslations } from "next-intl"
 import { ProjectCategory } from "@/src/generated/client"
 import { useRouter } from "@/src/i18n/navigation"
 import {
-  Calculator,
-  ClockCountdown,
   FilePdf,
   Gift,
-  Info,
   ListChecks,
   MagicWand,
   Plus,
@@ -141,17 +138,6 @@ export function ProposalBuilderForm({
     [executionBusinessDays]
   )
 
-  const requiredSections = [
-    { label: t("builder.leadLabel"), ok: Boolean(selectedLeadId) },
-    {
-      label: t("builder.narrativeTitle"),
-      ok: executiveSummary.trim().length > 0,
-    },
-    { label: "Objetivos do projeto", ok: objectives.trim().length > 0 },
-    { label: "Prazo contratado", ok: executionBusinessDays > 0 },
-    { label: "Condições de pagamento", ok: paymentTerms.trim().length > 0 },
-    { label: "Próximos passos", ok: nextSteps.trim().length > 0 },
-  ]
   const hasInvalidItems = items.some(
     (item) => !item.description.trim() || item.unitValue <= 0
   )

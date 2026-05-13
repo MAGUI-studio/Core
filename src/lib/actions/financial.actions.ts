@@ -6,7 +6,6 @@ import {
   InstallmentStatus,
   InvoiceKind,
   InvoiceStatus,
-  Prisma,
 } from "@/src/generated/client"
 import { z } from "zod"
 

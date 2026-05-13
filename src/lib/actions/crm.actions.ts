@@ -1,7 +1,5 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
-
 import { Prisma } from "@/src/generated/client"
 import {
   AuditActorType,
@@ -34,7 +32,6 @@ import {
   proposalIncludesMaguiConnectBonus,
 } from "@/src/lib/project-schedule"
 import {
-  revalidateCrmLead,
   revalidateCrmLeads,
   revalidateCrmPrefs,
   revalidateCrmTemplates,

@@ -73,7 +73,6 @@ interface ClientTabsProps {
 }
 
 export function ClientTabs({
-  userId,
   localUserId,
   clientFullName,
   clerkUserId,

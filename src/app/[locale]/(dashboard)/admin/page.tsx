@@ -4,14 +4,11 @@ import { getTranslations } from "next-intl/server"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
-import { auth } from "@clerk/nextjs/server"
-
 import { Button } from "@/src/components/ui/button"
 
 import { AdminFinancialMetrics } from "@/src/components/admin/dashboard/AdminFinancialMetrics"
 import { DashboardActivityWidget } from "@/src/components/admin/dashboard/DashboardActivityWidget"
 import { DashboardStatsWidget } from "@/src/components/admin/dashboard/DashboardStatsWidget"
-import { Logo } from "@/src/components/common/logo"
 
 import { isAdmin } from "@/src/lib/permissions"
 import { getCurrentAppUser } from "@/src/lib/project-governance"

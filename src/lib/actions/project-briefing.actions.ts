@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath, revalidateTag } from "next/cache"
+import { revalidatePath } from "next/cache"
 
 import { Prisma } from "@/src/generated/client"
 import {
@@ -35,8 +35,6 @@ import {
   revalidateProjectData,
 } from "@/src/lib/revalidate"
 import { briefingSchema } from "@/src/lib/validations/project"
-
-import { cacheTags } from "../cache-tags"
 
 async function verifyAndCreateMissingBriefingTasks(
   projectId: string,

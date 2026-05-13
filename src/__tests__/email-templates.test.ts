@@ -1,8 +1,6 @@
 import React from "react"
 
 import { render } from "@react-email/render"
-import { format } from "date-fns"
-import { ptBR } from "date-fns/locale"
 import { describe, expect, it } from "vitest"
 
 import { SupportTicketReplyEmail } from "@/src/components/email/SupportTicketReplyEmail"

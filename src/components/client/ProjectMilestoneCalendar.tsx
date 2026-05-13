@@ -12,12 +12,6 @@ import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
 import { Calendar } from "@/src/components/ui/calendar"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card"
 
 import { cn } from "@/src/lib/utils/utils"
 

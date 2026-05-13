@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server"
 import { redirect } from "next/navigation"
 
 import { Link } from "@/src/i18n/navigation"
-import { clerkClient } from "@clerk/nextjs/server"
+import { clerkClient, auth } from "@clerk/nextjs/server"
 import { UserPlusIcon } from "@phosphor-icons/react/dist/ssr"
 
 import { Button } from "@/src/components/ui/button"
@@ -103,6 +103,8 @@ export default async function ClientsPage(): Promise<React.JSX.Element> {
     ),
   }
 
+  const { userId: currentUserId } = await auth()
+
   return (
     <main className="relative flex flex-col gap-10 bg-background/50 p-6 lg:p-12 overflow-hidden">
       <div className="absolute top-0 right-0 -z-10 size-96 translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-primary/5 blur-3xl opacity-50" />
@@ -141,7 +143,11 @@ export default async function ClientsPage(): Promise<React.JSX.Element> {
         </Button>
       </div>
 
-      <ClientsTable initialUsers={serializableUsers} stats={stats} />
+      <ClientsTable
+        initialUsers={serializableUsers}
+        stats={stats}
+        currentUserId={currentUserId}
+      />
     </main>
   )
 }

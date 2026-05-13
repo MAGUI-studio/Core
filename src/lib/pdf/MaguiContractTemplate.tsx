@@ -481,11 +481,13 @@ export function MaguiContractTemplate({
   return (
     <Document title={document.title}>
       <Page size="A4" style={styles.page}>
+        {/* eslint-disable-next-line jsx-a11y/alt-text */}
         <Image src={FRONT_IMAGE} style={styles.fullBleed} />
       </Page>
 
       {pages.map((pageBlocks, pageIndex) => (
         <Page key={pageIndex} size="A4" style={styles.page}>
+          {/* eslint-disable-next-line jsx-a11y/alt-text */}
           <Image src={PAGE_IMAGE} style={styles.sheet} fixed />
           <View style={styles.content}>
             {pageIndex === 0 ? (
@@ -501,6 +503,7 @@ export function MaguiContractTemplate({
       ))}
 
       <Page size="A4" style={styles.page}>
+        {/* eslint-disable-next-line jsx-a11y/alt-text */}
         <Image src={BACK_IMAGE} style={styles.fullBleed} />
       </Page>
     </Document>

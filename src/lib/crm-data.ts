@@ -142,39 +142,6 @@ export const getLeads = async (page: number = 1, limit: number = 100) => {
   })) as unknown as Lead[]
 }
 
-const getLeadDetailsRawCached = unstable_cache(
-  async (id: string) => {
-    return prisma.lead.findUnique({
-      where: { id },
-      include: {
-        activities: {
-          orderBy: { createdAt: "desc" },
-          include: {
-            author: {
-              select: { id: true, name: true },
-            },
-          },
-        },
-        followUpNotes: {
-          orderBy: {
-            createdAt: "desc",
-          },
-          include: {
-            author: {
-              select: { id: true, name: true },
-            },
-          },
-        },
-      },
-    })
-  },
-  ["admin:crm:lead:details"],
-  {
-    revalidate: CACHE_TTL.LEADS,
-    tags: [cacheTags.adminCrm],
-  }
-)
-
 export const getLeadDetails = async (id: string) => {
   const lead = await prisma.lead.findUnique({
     where: { id },

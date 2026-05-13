@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 
 import { createCheckoutSession } from "@/src/lib/stripe-actions"
 
-import { env } from "@/src/config/env"
-
 export async function POST(req: NextRequest) {
   try {
     const { installmentId } = await req.json()

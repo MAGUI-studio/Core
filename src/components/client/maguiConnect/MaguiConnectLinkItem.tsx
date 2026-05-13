@@ -164,8 +164,7 @@ export function MaguiConnectLinkItem({
       })
       onUpdate?.(updated)
       router.refresh()
-    } catch (error) {
-      console.error(error)
+    } catch {
       setIsFeatured(!nextState)
     }
   }
@@ -186,7 +185,7 @@ export function MaguiConnectLinkItem({
       onUpdate?.(updated)
       router.refresh()
       toast.success("Grupo alterado")
-    } catch (error) {
+    } catch {
       toast.error("Erro ao alterar grupo")
     }
   }
@@ -208,7 +207,7 @@ export function MaguiConnectLinkItem({
       setIsEditDialogOpen(false)
       router.refresh()
       toast.success("Link atualizado")
-    } catch (error) {
+    } catch {
       toast.error("Erro ao atualizar link")
     }
   }
@@ -588,8 +587,7 @@ export function MaguiConnectLinkItem({
                         await deleteOwnMaguiConnectLinkAction(link.id)
                         onDelete?.()
                         toast.success(t("linkDeleted"))
-                      } catch (error) {
-                        console.error(error)
+                      } catch {
                         toast.error(t("deleteFailed"))
                       }
                     })

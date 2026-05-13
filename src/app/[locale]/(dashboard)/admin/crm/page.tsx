@@ -22,11 +22,7 @@ export const metadata = dashboardMetadata({
   path: "/admin/crm",
 })
 
-export default async function CRMPage({
-  searchParams,
-}: {
-  searchParams?: Promise<{ lead?: string }>
-}): Promise<React.JSX.Element> {
+export default async function CRMPage(): Promise<React.JSX.Element> {
   const t = await getTranslations("Admin.crm")
   const actor = await getCurrentAppUser()
 
@@ -42,9 +38,6 @@ export default async function CRMPage({
     select: { id: true, name: true, email: true },
     orderBy: { name: "asc" },
   })
-
-  const resolvedSearchParams = searchParams ? await searchParams : undefined
-  const selectedLeadId = resolvedSearchParams?.lead ?? null
 
   return (
     <main className="relative flex flex-col gap-10 overflow-hidden bg-background/50 p-6 lg:p-12">

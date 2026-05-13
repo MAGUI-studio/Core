@@ -19,6 +19,7 @@ const BackgroundImages = ({ className }: BackgroundImagesProps) => {
           src="/images/background.png"
           alt="Background Light"
           fill
+          sizes="100vw"
           priority
           className="object-cover object-center"
         />
@@ -29,6 +30,7 @@ const BackgroundImages = ({ className }: BackgroundImagesProps) => {
           src="/images/backgroundBlack.png"
           alt="Background Dark"
           fill
+          sizes="100vw"
           priority
           className="object-cover object-center"
         />

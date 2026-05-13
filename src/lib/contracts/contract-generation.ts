@@ -255,10 +255,6 @@ function buildExecutionDaysLabel(executionDays: string) {
   return `${normalized} (${word}) dias úteis`
 }
 
-function sanitizeCurrencyFragment(value: string) {
-  return value.replace(/^R\$\s*/i, "").trim()
-}
-
 export function buildContractText({ proposal, form }: BuildContractTextInput) {
   const parsedNotes = parseProposalNotes(proposal.notes)
   const totalValue = formatCurrencyBRL(
@@ -267,7 +263,6 @@ export function buildContractText({ proposal, form }: BuildContractTextInput) {
   )
   const executionDays = extractStructuredTimelineDays(proposal.scheduleData)
   const executionDaysLabel = buildExecutionDaysLabel(executionDays)
-  const renewalValue = sanitizeCurrencyFragment(form.renewalValue)
   const clauseOne = buildObjectClauseOne(proposal.items, proposal.title)
   const clauseTwo = buildObjectClauseTwo(parsedNotes, proposal.items)
   const clauseThree = buildExcludedScopeClause(parsedNotes)

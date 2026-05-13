@@ -109,7 +109,7 @@ export function MaguiConnectSectionList({
       setIsAdding(false)
       router.refresh()
       toast.success("Grupo criado com sucesso")
-    } catch (error) {
+    } catch {
       toast.error("Erro ao criar grupo")
     }
   }
@@ -291,7 +291,7 @@ function SectionItem({
       setIsEditing(false)
       router.refresh()
       toast.success("Grupo atualizado")
-    } catch (error) {
+    } catch {
       toast.error("Erro ao atualizar grupo")
     }
   }
@@ -306,7 +306,7 @@ function SectionItem({
       })
       router.refresh()
       toast.success("Configuração de grupo atualizada")
-    } catch (error) {
+    } catch {
       toast.error("Erro ao atualizar grupo")
     }
   }
@@ -316,7 +316,7 @@ function SectionItem({
       await deleteOwnMaguiConnectSectionAction(section.id)
       onDelete()
       toast.success("Grupo removido")
-    } catch (error) {
+    } catch {
       toast.error("Erro ao remover grupo")
     }
   }

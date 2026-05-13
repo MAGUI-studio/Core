@@ -72,6 +72,7 @@ interface ClientsTableProps {
     clients: number
     activeProjects: number
   }
+  currentUserId: string | null
 }
 
 type SortConfig = {
@@ -82,6 +83,7 @@ type SortConfig = {
 export function ClientsTable({
   initialUsers,
   stats,
+  currentUserId,
 }: ClientsTableProps): React.JSX.Element {
   const t = useTranslations("Admin.clients")
   const [search, setSearch] = React.useState("")
@@ -367,7 +369,7 @@ export function ClientsTable({
                           </Link>
                         </Button>
 
-                        {!isAdmin ? (
+                        {user.id !== currentUserId ? (
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button
@@ -418,33 +420,36 @@ export function ClientsTable({
                                 >
                                   <AlertDialogHeader className="gap-4 text-left sm:text-left">
                                     <AlertDialogTitle className="font-heading text-2xl font-black uppercase tracking-tight text-foreground">
-                                      Remover cliente do sistema
+                                      {isAdmin
+                                        ? "Remover administrador do sistema"
+                                        : "Remover cliente do sistema"}
                                     </AlertDialogTitle>
                                     <AlertDialogDescription className="max-w-none text-sm leading-relaxed text-muted-foreground/75">
-                                      Isso remove o usuario do Clerk, encerra o
-                                      acesso ao painel e apaga o cadastro local.
-                                      Projetos vinculados tambem serao removidos
-                                      por cascata.
+                                      {isAdmin
+                                        ? "Isso remove o administrador do Clerk, encerra o acesso ao painel e apaga o cadastro local."
+                                        : "Isso remove o usuario do Clerk, encerra o acesso ao painel e apaga o cadastro local. Projetos vinculados tambem serao removidos por cascata."}
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
 
                                   <div className="grid gap-3 rounded-[1.5rem] border border-border/30 bg-muted/30 p-4 text-sm text-foreground/80">
                                     <div className="flex items-center justify-between gap-4">
                                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/55">
-                                        Cliente
+                                        {isAdmin ? "Administrador" : "Cliente"}
                                       </span>
                                       <span className="text-right font-black uppercase">
                                         {user.firstName} {user.lastName}
                                       </span>
                                     </div>
-                                    <div className="flex items-center justify-between gap-4">
-                                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/55">
-                                        Projetos vinculados
-                                      </span>
-                                      <span className="font-black">
-                                        {user.projectCount}
-                                      </span>
-                                    </div>
+                                    {!isAdmin && (
+                                      <div className="flex items-center justify-between gap-4">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/55">
+                                          Projetos vinculados
+                                        </span>
+                                        <span className="font-black">
+                                          {user.projectCount}
+                                        </span>
+                                      </div>
+                                    )}
                                   </div>
 
                                   <AlertDialogFooter className="pt-2">

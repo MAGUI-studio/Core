@@ -63,8 +63,8 @@ export function UserMenu({ viewer }: UserMenuProps) {
     >
       <DropdownMenu modal={false} open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
-          <button className="group flex items-center gap-2 rounded-2xl bg-background px-2.5 py-1.5 transition-all outline-none focus-visible:ring-0 focus:ring-0 hover:bg-muted/40">
-            <Avatar className="size-8 rounded-xl shadow-sm transition-transform group-hover:scale-105">
+          <button className="group flex items-center gap-2 rounded-full bg-background px-2.5 py-1.5 transition-all outline-none hover:bg-muted/40">
+            <Avatar className="size-8 rounded-full shadow-sm transition-transform group-hover:scale-105">
               <AvatarImage
                 src={viewer.imageUrl ?? undefined}
                 alt={viewer.fullName || ""}
@@ -89,12 +89,12 @@ export function UserMenu({ viewer }: UserMenuProps) {
           className="w-64 rounded-[1.75rem] bg-background p-3 shadow-[0_28px_48px_-18px_rgba(0,0,0,0.28)] animate-in fade-in zoom-in-95 duration-200"
         >
           <div className="mb-3 flex items-center gap-3 rounded-[1.5rem] bg-muted/20 p-3">
-            <Avatar className="h-11 w-11 rounded-2xl shadow-md">
+            <Avatar className="h-11 w-11 rounded-full shadow-md">
               <AvatarImage
                 src={viewer.imageUrl ?? undefined}
                 alt={viewer.fullName || ""}
               />
-              <AvatarFallback className="rounded-2xl text-brand-primary font-black uppercase">
+              <AvatarFallback className="rounded-full text-brand-primary font-black uppercase">
                 {viewer.fullName?.charAt(0) || "U"}
               </AvatarFallback>
             </Avatar>

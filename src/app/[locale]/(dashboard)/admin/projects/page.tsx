@@ -37,7 +37,7 @@ export default async function ProjectsPage({
 
   const t = await getTranslations("Admin.projects")
 
-  const { projects, totalPages } = await getAdminProjectRows(currentPage, 30)
+  const { projects } = await getAdminProjectRows(currentPage, 30)
 
   const serializableProjects = projects.map((p) => ({
     id: p.id,

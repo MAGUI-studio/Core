@@ -9,8 +9,6 @@ import {
   LinkSimpleIcon,
   MagicWandIcon,
   PathIcon,
-  SelectionForegroundIcon,
-  SparkleIcon,
   TrendUpIcon,
 } from "@phosphor-icons/react/dist/ssr"
 
@@ -124,25 +122,21 @@ export default async function MaguiConnectOverviewPage() {
                 label={t("linkKinds.INSTAGRAM")}
                 url="instagram.com/seu-perfil"
                 iconPath="/icons/Instagram.svg"
-                accentColor="#E5FF00"
               />
               <DummyLink
                 label={t("linkKinds.LINKEDIN")}
                 url="linkedin.com/in/exemplo"
                 iconPath="/icons/LinkedIn.svg"
-                accentColor="#E5FF00"
               />
               <DummyLink
                 label={t("linkKinds.WHATSAPP")}
                 url="wa.me/5511999999999"
                 iconPath="/icons/Whatsapp.svg"
-                accentColor="#E5FF00"
               />
               <DummyLink
                 label="Portfólio"
                 url="magui.studio/portfolio"
                 iconPath="/icons/Link.svg"
-                accentColor="#E5FF00"
               />
             </div>
           </div>
@@ -314,10 +308,9 @@ type DummyLinkProps = {
   label: string
   url: string
   iconPath: string
-  accentColor: string
 }
 
-function DummyLink({ label, url, iconPath, accentColor }: DummyLinkProps) {
+function DummyLink({ label, url, iconPath }: DummyLinkProps) {
   return (
     <div className="group relative -mx-4 flex cursor-default items-center gap-6 rounded-xl border-b border-foreground/5 px-4 py-8 transition-all hover:bg-foreground/[0.02]">
       <div className="relative h-14 w-14 shrink-0 sm:h-16 sm:w-16">

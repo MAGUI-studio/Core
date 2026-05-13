@@ -7,7 +7,6 @@ import { useSearchParams } from "next/navigation"
 
 import { Prisma } from "@/src/generated/client"
 import {
-  Bank,
   CheckCircle,
   Clock,
   CreditCard,

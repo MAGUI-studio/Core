@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server"
 import { revalidatePath } from "next/cache"
 
 import { Prisma, UserRole } from "@/src/generated/client"
-import { clerkClient } from "@clerk/nextjs/server"
+import { clerkClient, auth } from "@clerk/nextjs/server"
 import { z } from "zod"
 
 import { logger } from "@/src/lib/logger"
@@ -147,23 +147,17 @@ export async function deleteClientAction(
 ): Promise<{ error?: string; success?: boolean }> {
   const t = await getTranslations("Admin.clients.form.errors")
 
+  const { userId: currentUserId } = await auth()
   await protect("admin")
+
+  if (clerkUserId === currentUserId) {
+    return { error: "Você não pode excluir seu próprio usuário." }
+  }
 
   try {
     const localUser = await prisma.user.findUnique({
       where: { clerkId: clerkUserId },
-      include: {
-        _count: {
-          select: {
-            projects: true,
-          },
-        },
-      },
     })
-
-    if (localUser?.role === UserRole.ADMIN) {
-      return { error: "Administradores não podem ser removidos por esta tela." }
-    }
 
     if (localUser) {
       await prisma.$transaction(async (tx) => {

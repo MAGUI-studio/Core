@@ -46,7 +46,7 @@ export const SupportTicketReplyEmail = ({
       </Text>
 
       <div className="my-6 rounded-lg border border-slate-200 bg-slate-50 p-4 italic text-slate-700">
-        "{messagePreview}"
+        &quot;{messagePreview}&quot;
       </div>
 
       <Text className="text-base">

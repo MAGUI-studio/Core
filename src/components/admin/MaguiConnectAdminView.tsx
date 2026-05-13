@@ -13,7 +13,6 @@ import {
   Plus,
   Trash,
 } from "@phosphor-icons/react"
-import { motion } from "framer-motion"
 import { toast } from "sonner"
 
 import { Button } from "@/src/components/ui/button"

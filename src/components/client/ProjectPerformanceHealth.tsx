@@ -10,13 +10,6 @@ import {
 } from "@phosphor-icons/react"
 import { motion } from "framer-motion"
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card"
-
 import { cn } from "@/src/lib/utils/utils"
 
 interface ProjectPerformanceHealthProps {
