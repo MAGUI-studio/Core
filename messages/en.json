@@ -1680,16 +1680,18 @@
       "DISCORD": "Discord",
       "DRIBBBLE": "Dribbble",
       "EDUZZ": "Eduzz",
+      "GITHUB": "Github",
       "DRIVE": "Google Drive",
       "MAPS": "Google Maps",
-      "GITHUB": "Github",
       "HOTMART": "Hotmart",
       "IFOOD": "iFood",
       "INSTAGRAM": "Instagram",
       "KIWIFY": "Kiwify",
       "LINKEDIN": "LinkedIn",
+      "MAGUI_STUDIO": "MAGUI.studio",
       "MEDIUM": "Medium",
       "MERCADO_LIVRE": "Mercado Livre",
+      "USER": "User Profile",
       "PINTEREST": "Pinterest",
       "SHOPEE": "Shopee",
       "SPOTIFY": "Spotify",
@@ -1702,5 +1704,6 @@
       "X": "X (Twitter)",
       "YOUTUBE": "YouTube"
     }
+
   }
 }
