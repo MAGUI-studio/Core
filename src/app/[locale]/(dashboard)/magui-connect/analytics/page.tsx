@@ -13,12 +13,16 @@ import { MaguiConnectLockedState } from "@/src/components/client/maguiConnect/Ma
 
 import { getOwnMaguiConnectAnalytics } from "@/src/lib/maguiConnectData"
 import { getCurrentAppUser } from "@/src/lib/project-governance"
+import { dashboardMetadata } from "@/src/lib/seo"
 
 export async function generateMetadata() {
   const t = await getTranslations("MaguiConnect")
-  return {
-    title: `${t("pageTitle")} | ${t("analyticsTitle")}`,
-  }
+  return dashboardMetadata({
+    title: `${t("analyticsTitle")} - Magui Connect`,
+    description:
+      "Acompanhe o desempenho dos seus links, analise cliques e entenda o engajamento do seu público no Magui Connect.",
+    path: "/magui-connect/analytics",
+  })
 }
 
 export default async function MaguiConnectAnalyticsPage() {

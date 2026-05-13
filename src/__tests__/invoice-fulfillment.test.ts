@@ -15,9 +15,8 @@ describe("invoice fulfillment", () => {
   })
 
   it("releases the bonus when the launched project is fully paid", async () => {
-    const { releaseProjectBonusIfEligible } = await import(
-      "@/src/lib/invoice-fulfillment"
-    )
+    const { releaseProjectBonusIfEligible } =
+      await import("@/src/lib/invoice-fulfillment")
     type ReleaseProjectBonusTx = Parameters<
       typeof releaseProjectBonusIfEligible
     >[0]
@@ -86,9 +85,8 @@ describe("invoice fulfillment", () => {
   })
 
   it("does not release the bonus while there are open installments", async () => {
-    const { releaseProjectBonusIfEligible } = await import(
-      "@/src/lib/invoice-fulfillment"
-    )
+    const { releaseProjectBonusIfEligible } =
+      await import("@/src/lib/invoice-fulfillment")
     type ReleaseProjectBonusTx = Parameters<
       typeof releaseProjectBonusIfEligible
     >[0]
@@ -136,9 +134,8 @@ describe("invoice fulfillment", () => {
   })
 
   it("preserves direct-purchase access while releasing the project bonus", async () => {
-    const { releaseProjectBonusIfEligible } = await import(
-      "@/src/lib/invoice-fulfillment"
-    )
+    const { releaseProjectBonusIfEligible } =
+      await import("@/src/lib/invoice-fulfillment")
     type ReleaseProjectBonusTx = Parameters<
       typeof releaseProjectBonusIfEligible
     >[0]
@@ -186,12 +183,9 @@ describe("invoice fulfillment", () => {
   })
 
   it("cancels the pending bonus when the project is abandoned", async () => {
-    const { cancelProjectBonusIfNeeded } = await import(
-      "@/src/lib/invoice-fulfillment"
-    )
-    type CancelProjectBonusTx = Parameters<
-      typeof cancelProjectBonusIfNeeded
-    >[0]
+    const { cancelProjectBonusIfNeeded } =
+      await import("@/src/lib/invoice-fulfillment")
+    type CancelProjectBonusTx = Parameters<typeof cancelProjectBonusIfNeeded>[0]
 
     const tx = {
       project: {
@@ -233,9 +227,8 @@ describe("invoice fulfillment", () => {
   })
 
   it("allows admin to release a pending bonus manually before launch", async () => {
-    const { forceReleaseProjectBonus } = await import(
-      "@/src/lib/invoice-fulfillment"
-    )
+    const { forceReleaseProjectBonus } =
+      await import("@/src/lib/invoice-fulfillment")
     type ForceReleaseProjectBonusTx = Parameters<
       typeof forceReleaseProjectBonus
     >[0]
@@ -296,9 +289,8 @@ describe("invoice fulfillment", () => {
   })
 
   it("allows admin to cancel a pending bonus manually without abandoning the project", async () => {
-    const { forceCancelProjectBonus } = await import(
-      "@/src/lib/invoice-fulfillment"
-    )
+    const { forceCancelProjectBonus } =
+      await import("@/src/lib/invoice-fulfillment")
     type ForceCancelProjectBonusTx = Parameters<
       typeof forceCancelProjectBonus
     >[0]

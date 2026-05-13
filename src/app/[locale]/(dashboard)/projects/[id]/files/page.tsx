@@ -13,13 +13,24 @@ import { getClientProjectFiles } from "@/src/lib/client-projects"
 import prisma from "@/src/lib/prisma"
 import { dashboardMetadata } from "@/src/lib/seo"
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
   const t = await getTranslations("Dashboard.project_detail.pages.files")
+  const { id } = await params
+  const project = await prisma.project.findUnique({
+    where: { id },
+    select: { name: true },
+  })
 
   return dashboardMetadata({
-    title: t("title"),
-    description: t("description"),
-    path: "/projects",
+    title: project ? `${t("title")} - ${project.name}` : t("title"),
+    description: project
+      ? `${t("description")} Projeto: ${project.name}.`
+      : t("description"),
+    path: `/projects/${id}/files`,
   })
 }
 

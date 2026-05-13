@@ -7,8 +7,9 @@ import { CreateLeadForm } from "@/src/components/admin/CreateLeadForm"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "Novo lead",
-  description: "Cadastro administrativo de leads no CRM da MAGUI.studio.",
+  title: "Cadastrar Novo Lead",
+  description:
+    "Interface administrativa para prospecção e cadastro de novos leads no ecossistema comercial da MAGUI.studio.",
   path: "/admin/crm/register",
 })
 

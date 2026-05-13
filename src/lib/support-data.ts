@@ -1,5 +1,6 @@
-import prisma from "@/src/lib/prisma"
 import { SupportTicketRecord } from "@/src/types/support"
+
+import prisma from "@/src/lib/prisma"
 
 type TicketAuthorRecord = {
   id: string

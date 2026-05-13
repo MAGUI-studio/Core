@@ -10,12 +10,24 @@ import prisma from "@/src/lib/prisma"
 import { dashboardMetadata } from "@/src/lib/seo"
 import { getClientSupportTicketById } from "@/src/lib/support-data"
 
-export const metadata = dashboardMetadata({
-  title: "Detalhes do ticket",
-  description:
-    "Acompanhe mensagens, prazo de resposta e histórico do ticket de suporte pelo CRM.",
-  path: "/support",
-})
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const ticket = await prisma.supportTicket.findUnique({
+    where: { id },
+    select: { subject: true },
+  })
+
+  return dashboardMetadata({
+    title: ticket ? `${ticket.subject} - Ticket` : "Detalhes do Ticket",
+    description:
+      "Acompanhe mensagens, prazo de resposta e historico completo do ticket de suporte pelo CRM da MAGUI.studio.",
+    path: `/support/${id}`,
+  })
+}
 
 export default async function SupportTicketPage({
   params,

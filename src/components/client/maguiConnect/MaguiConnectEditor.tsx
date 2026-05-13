@@ -652,7 +652,8 @@ export function MaguiConnectEditor({
                         }}
                         content={{
                           button({ ready, isUploading }) {
-                            if (isUploading || isUploadingBanner) return "Enviando..."
+                            if (isUploading || isUploadingBanner)
+                              return "Enviando..."
                             if (ready) return t("uploadBanner")
                             return "Carregando..."
                           },
@@ -661,7 +662,8 @@ export function MaguiConnectEditor({
                         appearance={{
                           button: cn(
                             "h-14 w-full rounded-none bg-brand-primary px-8 text-[11px] font-black uppercase tracking-[0.3em] text-white hover:bg-brand-primary/90 transition-all ut-ready:bg-brand-primary ut-uploading:cursor-not-allowed shadow-none",
-                            (isUploadingBanner) && "opacity-50 cursor-wait pointer-events-none"
+                            isUploadingBanner &&
+                              "opacity-50 cursor-wait pointer-events-none"
                           ),
                           allowedContent: "hidden",
                         }}
@@ -733,7 +735,8 @@ export function MaguiConnectEditor({
                       }}
                       content={{
                         button({ ready, isUploading }) {
-                          if (isUploading || isUploadingAvatar) return "Enviando..."
+                          if (isUploading || isUploadingAvatar)
+                            return "Enviando..."
                           if (ready) return t("uploadAvatar")
                           return "Carregando..."
                         },
@@ -742,7 +745,8 @@ export function MaguiConnectEditor({
                       appearance={{
                         button: cn(
                           "h-14 w-full rounded-none bg-brand-primary px-8 text-[11px] font-black uppercase tracking-[0.3em] text-white hover:bg-brand-primary/90 transition-all ut-ready:bg-brand-primary ut-uploading:cursor-not-allowed shadow-none",
-                          (isUploadingAvatar) && "opacity-50 cursor-wait pointer-events-none"
+                          isUploadingAvatar &&
+                            "opacity-50 cursor-wait pointer-events-none"
                         ),
                         allowedContent: "hidden",
                       }}
@@ -767,7 +771,6 @@ export function MaguiConnectEditor({
             </div>
           </div>
         </TabsContent>
-
       </Tabs>
 
       <div className="flex justify-end pt-8 sm:pt-12 mt-12 sm:mt-16 border-t border-border/20">

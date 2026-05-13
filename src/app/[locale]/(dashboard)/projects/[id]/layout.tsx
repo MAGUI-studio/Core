@@ -29,9 +29,10 @@ export async function generateMetadata({
   })
 
   return dashboardMetadata({
-    title: project?.name ?? "Projeto",
-    description:
-      "Area autenticada do projeto com timeline, aprovacoes, arquivos, briefing e tarefas.",
+    title: project ? `${project.name} - Projeto` : "Projeto",
+    description: project
+      ? `Area autenticada do projeto ${project.name} com timeline, aprovacoes, arquivos, briefing e tarefas.`
+      : "Area autenticada do projeto com timeline, aprovacoes, arquivos, briefing e tarefas.",
     path: `/projects/${id}`,
   })
 }

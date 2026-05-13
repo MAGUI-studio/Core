@@ -72,8 +72,7 @@ export function MaguiConnectLinkList({
   const [isAdding, setIsAdding] = React.useState(false)
   const [label, setLabel] = React.useState("")
   const [url, setUrl] = React.useState("")
-  const [customShortDescription, setCustomShortDescription] =
-    React.useState("")
+  const [customShortDescription, setCustomShortDescription] = React.useState("")
   const [startsAt, setStartsAt] = React.useState("")
   const [expiresAt, setExpiresAt] = React.useState("")
   const [kind, setKind] = React.useState("LINK")

@@ -38,7 +38,8 @@ const activityColors: Record<LeadActivityType, string> = {
   [LeadActivityType.CONTACT_UPDATED]: "text-foreground/60 bg-muted/[0.05]",
   [LeadActivityType.WHATSAPP_LINK_OPENED]: "text-foreground/60 bg-muted/[0.05]",
   [LeadActivityType.LEAD_EDITED]: "text-foreground/60 bg-muted/[0.05]",
-  [LeadActivityType.CONVERTED_TO_PROJECT]: "text-brand-primary bg-brand-primary/8",
+  [LeadActivityType.CONVERTED_TO_PROJECT]:
+    "text-brand-primary bg-brand-primary/8",
   [LeadActivityType.REMINDER_SET]: "text-foreground/60 bg-muted/[0.05]",
 }
 

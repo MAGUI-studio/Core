@@ -224,94 +224,94 @@ export function MaguiConnectLockedState({
 
       {!isBonusPending ? (
         <section className="w-full px-6 py-16 lg:px-12 lg:py-20">
-        <div className="space-y-10">
-          <div className="max-w-3xl space-y-4">
-            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-brand-primary/70">
-              {t("lockedHowEyebrow")}
-            </p>
-            <h2 className="text-4xl font-black leading-[0.94] tracking-[-0.05em] lg:text-6xl">
-              {t("lockedHowTitle")}
-            </h2>
-          </div>
+          <div className="space-y-10">
+            <div className="max-w-3xl space-y-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.35em] text-brand-primary/70">
+                {t("lockedHowEyebrow")}
+              </p>
+              <h2 className="text-4xl font-black leading-[0.94] tracking-[-0.05em] lg:text-6xl">
+                {t("lockedHowTitle")}
+              </h2>
+            </div>
 
-          <div className="grid gap-4 lg:grid-cols-4 lg:gap-0">
-            <HorizontalStepCard
-              number="01"
-              icon={<PaperPlaneTilt size={22} weight="duotone" />}
-              title={t("lockedHowStepOneTitle")}
-              description={t("lockedHowStepOneDescription")}
-            />
-            <HorizontalStepCard
-              number="02"
-              icon={<Receipt size={22} weight="duotone" />}
-              title={t("lockedHowStepTwoTitle")}
-              description={t("lockedHowStepTwoDescription")}
-            />
-            <HorizontalStepCard
-              number="03"
-              icon={<LockKey size={22} weight="duotone" />}
-              title={t("lockedHowStepThreeTitle")}
-              description={t("lockedHowStepThreeDescription")}
-            />
-            <HorizontalStepCard
-              number="04"
-              icon={<RocketLaunch size={22} weight="duotone" />}
-              title={t("lockedHowStepFourTitle")}
-              description={t("lockedHowStepFourDescription")}
-              isLast
-            />
+            <div className="grid gap-4 lg:grid-cols-4 lg:gap-0">
+              <HorizontalStepCard
+                number="01"
+                icon={<PaperPlaneTilt size={22} weight="duotone" />}
+                title={t("lockedHowStepOneTitle")}
+                description={t("lockedHowStepOneDescription")}
+              />
+              <HorizontalStepCard
+                number="02"
+                icon={<Receipt size={22} weight="duotone" />}
+                title={t("lockedHowStepTwoTitle")}
+                description={t("lockedHowStepTwoDescription")}
+              />
+              <HorizontalStepCard
+                number="03"
+                icon={<LockKey size={22} weight="duotone" />}
+                title={t("lockedHowStepThreeTitle")}
+                description={t("lockedHowStepThreeDescription")}
+              />
+              <HorizontalStepCard
+                number="04"
+                icon={<RocketLaunch size={22} weight="duotone" />}
+                title={t("lockedHowStepFourTitle")}
+                description={t("lockedHowStepFourDescription")}
+                isLast
+              />
+            </div>
           </div>
-        </div>
         </section>
       ) : null}
 
       {!isBonusPending ? (
         <section className="w-full px-6 py-16 lg:px-12 lg:py-22">
-        <div className="grid w-full gap-10 bg-muted/10 px-8 py-10 lg:grid-cols-[1fr_auto] lg:items-end lg:px-12 lg:py-14">
-          <div className="space-y-4">
-            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-brand-primary/70">
-              {t("lockedValueEyebrow")}
-            </p>
-            <h2 className="max-w-4xl text-4xl font-black leading-[0.94] tracking-[-0.05em] lg:text-6xl">
-              {t("lockedValueTitle")}
-            </h2>
-            <div className="grid gap-3 pt-2">
-              <ValueLine text={t("lockedValuePointOne")} />
-              <ValueLine text={t("lockedValuePointTwo")} />
-              <ValueLine text={t("lockedValuePointThree")} />
-              <ValueLine text={t("lockedValuePointFour")} />
-              <ValueLine text={t("lockedValuePointFive")} />
+          <div className="grid w-full gap-10 bg-muted/10 px-8 py-10 lg:grid-cols-[1fr_auto] lg:items-end lg:px-12 lg:py-14">
+            <div className="space-y-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.35em] text-brand-primary/70">
+                {t("lockedValueEyebrow")}
+              </p>
+              <h2 className="max-w-4xl text-4xl font-black leading-[0.94] tracking-[-0.05em] lg:text-6xl">
+                {t("lockedValueTitle")}
+              </h2>
+              <div className="grid gap-3 pt-2">
+                <ValueLine text={t("lockedValuePointOne")} />
+                <ValueLine text={t("lockedValuePointTwo")} />
+                <ValueLine text={t("lockedValuePointThree")} />
+                <ValueLine text={t("lockedValuePointFour")} />
+                <ValueLine text={t("lockedValuePointFive")} />
+              </div>
+            </div>
+
+            <div className="space-y-6 lg:text-right">
+              <p className="text-5xl font-black tracking-[-0.07em] text-foreground lg:text-7xl">
+                {priceValue}
+              </p>
+              {!isBonusPending ? (
+                <Button
+                  className="h-14 rounded-full bg-brand-primary px-8 text-[11px] font-black uppercase tracking-[0.24em] text-white shadow-none"
+                  disabled={isPending || requested}
+                  onClick={handleRequest}
+                >
+                  <PaperPlaneTilt size={18} weight="bold" className="mr-2" />
+                  {requested
+                    ? t("lockedRequestSent")
+                    : t("lockedRequestButton")}
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  className="h-14 rounded-full bg-brand-primary px-8 text-[11px] font-black uppercase tracking-[0.24em] text-white shadow-none"
+                >
+                  <Link href={primaryHref}>
+                    {primaryLabel}
+                    <ArrowRight size={18} weight="bold" className="ml-2" />
+                  </Link>
+                </Button>
+              )}
             </div>
           </div>
-
-          <div className="space-y-6 lg:text-right">
-            <p className="text-5xl font-black tracking-[-0.07em] text-foreground lg:text-7xl">
-              {priceValue}
-            </p>
-            {!isBonusPending ? (
-              <Button
-                className="h-14 rounded-full bg-brand-primary px-8 text-[11px] font-black uppercase tracking-[0.24em] text-white shadow-none"
-                disabled={isPending || requested}
-                onClick={handleRequest}
-              >
-                <PaperPlaneTilt size={18} weight="bold" className="mr-2" />
-                {requested
-                  ? t("lockedRequestSent")
-                  : t("lockedRequestButton")}
-              </Button>
-            ) : (
-              <Button
-                asChild
-                className="h-14 rounded-full bg-brand-primary px-8 text-[11px] font-black uppercase tracking-[0.24em] text-white shadow-none"
-              >
-                <Link href={primaryHref}>
-                  {primaryLabel}
-                  <ArrowRight size={18} weight="bold" className="ml-2" />
-                </Link>
-              </Button>
-            )}
-          </div>
-        </div>
         </section>
       ) : null}
     </main>

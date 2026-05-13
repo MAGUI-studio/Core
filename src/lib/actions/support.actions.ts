@@ -3,11 +3,11 @@
 import { revalidatePath } from "next/cache"
 
 import {
+  NotificationType,
   SupportTicketCategory,
   SupportTicketPriority,
   SupportTicketStatus,
   UserRole,
-  NotificationType,
 } from "@/src/generated/client"
 import { auth } from "@clerk/nextjs/server"
 import { z } from "zod"
@@ -31,12 +31,12 @@ const SUPPORT_TICKET_ADMIN_REPLY =
 const CreateTicketSchema = z.object({
   subject: z.string().trim().min(4).max(140),
   description: z.string().trim().min(10).max(5000),
-  priority: z.nativeEnum(SupportTicketPriority).default(
-    SupportTicketPriority.NORMAL
-  ),
-  category: z.nativeEnum(SupportTicketCategory).default(
-    SupportTicketCategory.GENERAL
-  ),
+  priority: z
+    .nativeEnum(SupportTicketPriority)
+    .default(SupportTicketPriority.NORMAL),
+  category: z
+    .nativeEnum(SupportTicketCategory)
+    .default(SupportTicketCategory.GENERAL),
   projectId: z.string().trim().optional().or(z.literal("")),
 })
 
@@ -67,7 +67,10 @@ async function getCurrentUser() {
   })
 }
 
-function revalidateSupportSurfaces(ticketId: string, projectId?: string | null) {
+function revalidateSupportSurfaces(
+  ticketId: string,
+  projectId?: string | null
+) {
   revalidatePath("/admin/support")
   revalidatePath(`/admin/support/${ticketId}`)
   revalidatePath("/support")
@@ -81,7 +84,9 @@ function buildTicketCtaPath(ticketId: string, isInternal: boolean) {
   return isInternal ? `/admin/support/${ticketId}` : `/support/${ticketId}`
 }
 
-export async function createSupportTicketAction(input: z.infer<typeof CreateTicketSchema>) {
+export async function createSupportTicketAction(
+  input: z.infer<typeof CreateTicketSchema>
+) {
   try {
     const user = await getCurrentUser()
     if (!user || user.role !== UserRole.CLIENT) {
@@ -139,7 +144,9 @@ export async function createSupportTicketAction(input: z.infer<typeof CreateTick
   }
 }
 
-export async function replySupportTicketAction(input: z.infer<typeof ReplySchema>) {
+export async function replySupportTicketAction(
+  input: z.infer<typeof ReplySchema>
+) {
   try {
     const user = await getCurrentUser()
     if (!user) throw new Error("Unauthorized")
@@ -260,7 +267,8 @@ export async function updateSupportTicketStatusAction(
         priority: data.priority,
         resolvedAt:
           data.status === SupportTicketStatus.RESOLVED ? new Date() : null,
-        closedAt: data.status === SupportTicketStatus.CLOSED ? new Date() : null,
+        closedAt:
+          data.status === SupportTicketStatus.CLOSED ? new Date() : null,
       },
       select: { id: true, projectId: true },
     })

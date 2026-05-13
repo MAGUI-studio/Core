@@ -13,12 +13,12 @@ import {
   Calendar,
   CircleNotch,
   DotsThreeVertical,
+  InstagramLogo,
   Layout,
   Lightning,
   NotePencil,
   PencilSimple,
   RocketLaunch,
-  InstagramLogo,
 } from "@phosphor-icons/react"
 
 import { Button } from "@/src/components/ui/button"
@@ -136,8 +136,7 @@ export function LeadDetailsDrawer({
             snapshotResult.lead?.acceptedProposalCount ??
             current.acceptedProposalCount,
           acceptedProposals:
-            snapshotResult.lead?.acceptedProposals ??
-            current.acceptedProposals,
+            snapshotResult.lead?.acceptedProposals ?? current.acceptedProposals,
           proposals: snapshotResult.lead?.proposals ?? current.proposals,
           client: snapshotResult.lead?.client ?? current.client,
         }))
@@ -446,7 +445,9 @@ export function LeadDetailsDrawer({
                       <LeadProposalsTab
                         lead={localLead}
                         showHeader={false}
-                        onProposalChanged={() => void loadExtraData(localLead.id)}
+                        onProposalChanged={() =>
+                          void loadExtraData(localLead.id)
+                        }
                       />
                     </div>
                   </div>

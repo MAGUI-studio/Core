@@ -11,8 +11,10 @@ import {
   FolderOpen,
 } from "@phosphor-icons/react/dist/ssr"
 
-import { ProjectScheduleDelayTooltip } from "@/src/components/common/ProjectScheduleDelayTooltip"
 import { Progress } from "@/src/components/ui/progress"
+
+import { ProjectScheduleDelayTooltip } from "@/src/components/common/ProjectScheduleDelayTooltip"
+
 import {
   buildProjectScheduleView,
   getExecutionDaysLabel,
@@ -29,7 +31,10 @@ export async function ClientProjectCard({
   const tStatus = await getTranslations("Dashboard.status")
   const locale = await getLocale()
   const statusLabel = tStatus(project.status)
-  const schedule = buildProjectScheduleView(project.scheduleData, project.status)
+  const schedule = buildProjectScheduleView(
+    project.scheduleData,
+    project.status
+  )
   const visibleDelayReasons = schedule.delayReasons.filter(
     (reason) => reason.businessDaysAdded > 0
   )
@@ -115,15 +120,17 @@ export async function ClientProjectCard({
                       {getExecutionDaysLabel(schedule.executionBusinessDays)}
                     </p>
                     {visibleDelayReasons.length > 0 ? (
-                      <ProjectScheduleDelayTooltip reasons={visibleDelayReasons} />
+                      <ProjectScheduleDelayTooltip
+                        reasons={visibleDelayReasons}
+                      />
                     ) : null}
                   </div>
                   {schedule.currentForecastDate ? (
                     <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground/55">
                       Previsao:{" "}
-                      {new Date(schedule.currentForecastDate).toLocaleDateString(
-                        locale
-                      )}
+                      {new Date(
+                        schedule.currentForecastDate
+                      ).toLocaleDateString(locale)}
                     </p>
                   ) : null}
                 </div>

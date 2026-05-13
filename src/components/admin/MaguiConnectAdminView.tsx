@@ -815,7 +815,10 @@ export function MaguiConnectAdminView({
                       }))
                     }
                   >
-                    <option className="bg-background text-foreground" value="PERSON">
+                    <option
+                      className="bg-background text-foreground"
+                      value="PERSON"
+                    >
                       {t("entityTypePerson")}
                     </option>
                     <option
@@ -824,7 +827,10 @@ export function MaguiConnectAdminView({
                     >
                       {t("entityTypeOrganization")}
                     </option>
-                    <option className="bg-background text-foreground" value="BRAND">
+                    <option
+                      className="bg-background text-foreground"
+                      value="BRAND"
+                    >
                       {t("entityTypeBrand")}
                     </option>
                   </select>

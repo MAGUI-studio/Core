@@ -300,10 +300,15 @@ async function saveMaguiConnectProfile(
     ...(adminInput.logoUrl !== undefined
       ? { logoUrl: toNullable(adminInput.logoUrl) }
       : {}),
-    ...(adminInput.ogImageUrl !== undefined || adminInput.bannerUrl !== undefined || adminInput.avatarUrl !== undefined
+    ...(adminInput.ogImageUrl !== undefined ||
+    adminInput.bannerUrl !== undefined ||
+    adminInput.avatarUrl !== undefined
       ? { ogImageUrl: fallbacks.ogImageUrl }
       : {}),
-    ...(adminInput.twitterImageUrl !== undefined || adminInput.ogImageUrl !== undefined || adminInput.bannerUrl !== undefined || adminInput.avatarUrl !== undefined
+    ...(adminInput.twitterImageUrl !== undefined ||
+    adminInput.ogImageUrl !== undefined ||
+    adminInput.bannerUrl !== undefined ||
+    adminInput.avatarUrl !== undefined
       ? { twitterImageUrl: fallbacks.twitterImageUrl }
       : {}),
     ...(adminInput.canonicalUrl !== undefined
@@ -324,12 +329,8 @@ async function saveMaguiConnectProfile(
     ...(adminInput.themeColor !== undefined
       ? { themeColor: toNullable(adminInput.themeColor) }
       : {}),
-    ...(isAdminInput
-      ? { seoTitle: fallbacks.seoTitle }
-      : {}),
-    ...(isAdminInput
-      ? { seoDescription: fallbacks.seoDescription }
-      : {}),
+    ...(isAdminInput ? { seoTitle: fallbacks.seoTitle } : {}),
+    ...(isAdminInput ? { seoDescription: fallbacks.seoDescription } : {}),
     ...(adminInput.seoKeywords !== undefined
       ? { seoKeywords: toNullable(adminInput.seoKeywords) }
       : {}),

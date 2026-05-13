@@ -17,14 +17,16 @@ import { getLeadHealth } from "@/src/lib/utils/lead-health"
 
 import { CACHE_TTL } from "@/src/config/cache"
 
-function getUpcomingScheduleProjects<T extends {
-  id: string
-  name: string
-  status: ProjectStatus
-  scheduleData?: unknown
-  progress?: number
-  client?: { name: string | null; email: string }
-}>(projects: T[], today: Date, nextSevenDays: Date) {
+function getUpcomingScheduleProjects<
+  T extends {
+    id: string
+    name: string
+    status: ProjectStatus
+    scheduleData?: unknown
+    progress?: number
+    client?: { name: string | null; email: string }
+  },
+>(projects: T[], today: Date, nextSevenDays: Date) {
   return projects
     .map((project) => {
       const schedule = buildProjectScheduleView(
@@ -152,13 +154,13 @@ const getAdminDashboardAttentionCached = unstable_cache(
     const today = new Date(todayIso)
     const nextSevenDays = new Date(today.getTime() + 7 * 86_400_000)
 
-      const [
-        pendingApprovals,
-        forecastProjectsRaw,
-        stagnantLeads,
-        overdueActionItems,
-        silentProjects,
-      ] = await Promise.all([
+    const [
+      pendingApprovals,
+      forecastProjectsRaw,
+      stagnantLeads,
+      overdueActionItems,
+      silentProjects,
+    ] = await Promise.all([
       prisma.update.findMany({
         where: {
           requiresApproval: true,
@@ -168,17 +170,17 @@ const getAdminDashboardAttentionCached = unstable_cache(
         orderBy: { createdAt: "desc" },
         take: 5,
       }),
-        prisma.project.findMany({
-          where: {
-            status: { not: ProjectStatus.LAUNCHED },
-          },
-          select: {
-            id: true,
-            name: true,
-            status: true,
-            scheduleData: true,
-          },
-        }),
+      prisma.project.findMany({
+        where: {
+          status: { not: ProjectStatus.LAUNCHED },
+        },
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          scheduleData: true,
+        },
+      }),
       prisma.lead.findMany({
         where: {
           status: { in: [LeadStatus.GARIMPAGEM, LeadStatus.CONTATO_REALIZADO] },
@@ -207,7 +209,7 @@ const getAdminDashboardAttentionCached = unstable_cache(
           },
         },
       }),
-      ])
+    ])
 
     const forecastProjects = getUpcomingScheduleProjects(
       forecastProjectsRaw,

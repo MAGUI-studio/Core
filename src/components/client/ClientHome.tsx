@@ -71,10 +71,7 @@ export async function ClientHome({
     label: t("cta.label.default"),
   }
 
-  if (
-    activeProject &&
-    activeProjectSchedule?.executionState === "ABANDONED"
-  ) {
+  if (activeProject && activeProjectSchedule?.executionState === "ABANDONED") {
     nextAction = {
       type: "task",
       eyebrow: "Projeto interrompido",

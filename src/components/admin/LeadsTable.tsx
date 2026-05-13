@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl"
 
 import { LeadSource, LeadStatus } from "@/src/generated/client"
 import { Link } from "@/src/i18n/navigation"
+import { Lead, MessageTemplate } from "@/src/types/crm"
 import {
   ArrowSquareOut,
   CaretDown,
@@ -18,7 +19,6 @@ import {
   SealWarning,
 } from "@phosphor-icons/react"
 
-import { LeadStatusBadge } from "@/src/components/admin/LeadStatusBadge"
 import { Button } from "@/src/components/ui/button"
 import {
   DropdownMenu,
@@ -43,13 +43,14 @@ import {
   TableRow,
 } from "@/src/components/ui/table"
 
+import { LeadStatusBadge } from "@/src/components/admin/LeadStatusBadge"
+
 import {
   formatLeadPhone,
   getLeadDaysWithoutMovement,
   getNextActionMeta,
   isLeadStagnant,
 } from "@/src/lib/utils/crm"
-import { Lead, MessageTemplate } from "@/src/types/crm"
 
 interface LeadsTableProps {
   leads: Lead[]
@@ -347,11 +348,14 @@ export function LeadsTable({
                           {stagnant ? (
                             <span className="inline-flex items-center gap-1 text-[8px] font-black uppercase tracking-[0.2em] text-amber-600 dark:text-amber-300">
                               <SealWarning size={12} />
-                              {getLeadDaysWithoutMovement(lead)} dia(s) sem mover
+                              {getLeadDaysWithoutMovement(lead)} dia(s) sem
+                              mover
                             </span>
                           ) : null}
                           {nextAction.label ? (
-                            <span className={`text-[8px] font-black uppercase tracking-[0.2em] ${nextAction.tone}`}>
+                            <span
+                              className={`text-[8px] font-black uppercase tracking-[0.2em] ${nextAction.tone}`}
+                            >
                               {nextAction.label}
                             </span>
                           ) : null}

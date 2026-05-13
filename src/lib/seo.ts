@@ -10,6 +10,21 @@ type PageMetadataInput = {
 }
 
 const defaultDescription = siteConfig.description
+const brandName = siteConfig.name
+
+function withBrandTitle(title: string): string {
+  const normalized = title.trim()
+
+  if (!normalized || normalized === brandName) {
+    return brandName
+  }
+
+  if (normalized.includes(`| ${brandName}`)) {
+    return normalized
+  }
+
+  return `${normalized} | ${brandName}`
+}
 
 export function pageMetadata({
   title,
@@ -29,13 +44,13 @@ export function pageMetadata({
     openGraph: {
       type: "website",
       url,
-      title,
+      title: withBrandTitle(title),
       description,
       siteName: siteConfig.name,
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: withBrandTitle(title),
       description,
     },
     robots: noIndex

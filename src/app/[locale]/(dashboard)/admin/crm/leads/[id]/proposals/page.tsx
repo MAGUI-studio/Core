@@ -12,14 +12,30 @@ import { LeadProposalsTab } from "@/src/components/admin/lead-drawer/LeadProposa
 
 import { getLeadDetails } from "@/src/lib/crm-data"
 import { protectAdmin } from "@/src/lib/permissions"
+import prisma from "@/src/lib/prisma"
 import { dashboardMetadata } from "@/src/lib/seo"
 
-export const metadata = dashboardMetadata({
-  title: "Propostas do lead",
-  description:
-    "Area dedicada para listar e criar propostas comerciais de um lead.",
-  path: "/admin/crm/leads/[id]/proposals",
-})
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const lead = await prisma.lead.findUnique({
+    where: { id },
+    select: { companyName: true },
+  })
+
+  return dashboardMetadata({
+    title: lead
+      ? `Propostas de ${lead.companyName} - CRM`
+      : "Propostas do Lead - CRM",
+    description: lead
+      ? `Histórico e gestão de propostas comerciais enviadas para ${lead.companyName} pela MAGUI.studio.`
+      : "Area dedicada para listar e criar propostas comerciais de um lead.",
+    path: `/admin/crm/leads/${id}/proposals`,
+  })
+}
 
 interface LeadProposalsPageProps {
   params: Promise<{ id: string; locale: string }>

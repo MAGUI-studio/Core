@@ -78,7 +78,10 @@ export function ProjectStatusRoadmap({
                     isCompleted || isActive
                       ? "var(--brand-primary)"
                       : "var(--border)",
-                  color: isCompleted || isActive ? "white" : "var(--muted-foreground)",
+                  color:
+                    isCompleted || isActive
+                      ? "white"
+                      : "var(--muted-foreground)",
                 }}
                 className={cn(
                   "flex size-10 items-center justify-center rounded-full border-2 transition-colors duration-500 sm:size-12",

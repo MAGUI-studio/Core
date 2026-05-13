@@ -8,23 +8,23 @@ import {
 import { z } from "zod"
 
 import {
+  type ContractDynamicFormData,
   buildContractText,
   formatCurrencyBRL,
   parseProposalNotes,
-  type ContractDynamicFormData,
 } from "@/src/lib/contracts/contract-generation"
 import { logger } from "@/src/lib/logger"
 import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
+import { createAuditLog, getCurrentAppUser } from "@/src/lib/project-governance"
 import {
   getExecutionDaysLabel,
   normalizeProposalScheduleData,
   proposalIncludesMaguiConnectBonus,
 } from "@/src/lib/project-schedule"
-import { createAuditLog, getCurrentAppUser } from "@/src/lib/project-governance"
 import {
-  formatCurrencyBRL as formatCurrencyBRLInput,
   formatCurrencyBRLFromCents,
+  formatCurrencyBRL as formatCurrencyBRLInput,
 } from "@/src/lib/utils/utils"
 
 type ContractClauseSeed = {
@@ -74,12 +74,14 @@ const ContractGenerationSchema = z
     }
   })
 
-function buildAddressFromBillingProfile(profile?: {
-  addressStreet?: string | null
-  addressNumber?: string | null
-  addressComplement?: string | null
-  addressDistrict?: string | null
-} | null) {
+function buildAddressFromBillingProfile(
+  profile?: {
+    addressStreet?: string | null
+    addressNumber?: string | null
+    addressComplement?: string | null
+    addressDistrict?: string | null
+  } | null
+) {
   if (!profile) return ""
 
   const firstLine = [
@@ -95,10 +97,12 @@ function buildAddressFromBillingProfile(profile?: {
   return [firstLine, secondLine].filter(Boolean).join(", ")
 }
 
-function buildCityStateFromBillingProfile(profile?: {
-  addressCity?: string | null
-  addressState?: string | null
-} | null) {
+function buildCityStateFromBillingProfile(
+  profile?: {
+    addressCity?: string | null
+    addressState?: string | null
+  } | null
+) {
   if (!profile) return ""
   return [profile.addressCity, profile.addressState].filter(Boolean).join("/")
 }
@@ -198,7 +202,9 @@ export async function getProposalContractPrefillAction(proposalId: string) {
         ? (existing.commercialData as Record<string, unknown>)
         : null
 
-    const proposalSchedule = normalizeProposalScheduleData(proposal.scheduleData)
+    const proposalSchedule = normalizeProposalScheduleData(
+      proposal.scheduleData
+    )
     const renewalValueFallback = proposalSchedule.annualRenewalFeeCents
       ? formatCurrencyBRL(
           proposalSchedule.annualRenewalFeeCents / 100,
@@ -338,8 +344,9 @@ export async function createContractFromProposalAction(
       currency: proposal.currency,
       paymentTerms: parsedNotes.paymentTerms,
       timeline: parsedNotes.timeline,
-      executionBusinessDays:
-        normalizeProposalScheduleData(proposal.scheduleData).executionBusinessDays,
+      executionBusinessDays: normalizeProposalScheduleData(
+        proposal.scheduleData
+      ).executionBusinessDays,
       includesMaguiConnectBonus: proposalIncludesMaguiConnectBonus(
         proposal.scheduleData
       ),
@@ -349,9 +356,9 @@ export async function createContractFromProposalAction(
         .keepFooterCredit,
       whiteLabelFeeCents: normalizeProposalScheduleData(proposal.scheduleData)
         .whiteLabelFeeCents,
-      annualRenewalFeeCents:
-        normalizeProposalScheduleData(proposal.scheduleData)
-          .annualRenewalFeeCents,
+      annualRenewalFeeCents: normalizeProposalScheduleData(
+        proposal.scheduleData
+      ).annualRenewalFeeCents,
       renewalValue: data.renewalValue,
       contractDate: new Date().toISOString(),
     }

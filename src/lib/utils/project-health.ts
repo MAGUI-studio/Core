@@ -1,5 +1,6 @@
-import { buildProjectScheduleView } from "@/src/lib/project-schedule"
 import { ProjectStatus } from "@/src/generated/client"
+
+import { buildProjectScheduleView } from "@/src/lib/project-schedule"
 
 export interface ProjectHealthInput {
   status: ProjectStatus

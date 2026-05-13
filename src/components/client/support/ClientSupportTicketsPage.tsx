@@ -7,6 +7,7 @@ import {
   SupportTicketStatus,
 } from "@/src/generated/client"
 import { Link, useRouter } from "@/src/i18n/navigation"
+import { SupportTicketRecord } from "@/src/types/support"
 import {
   ArrowSquareOut,
   ClockCountdown,
@@ -15,10 +16,6 @@ import {
 } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
-import {
-  SupportPriorityBadge,
-  SupportStatusBadge,
-} from "@/src/components/support/SupportTicketBadges"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
@@ -39,9 +36,13 @@ import {
 } from "@/src/components/ui/table"
 import { Textarea } from "@/src/components/ui/textarea"
 
+import {
+  SupportPriorityBadge,
+  SupportStatusBadge,
+} from "@/src/components/support/SupportTicketBadges"
+
 import { createSupportTicketAction } from "@/src/lib/actions/support.actions"
 import { SUPPORT_CATEGORY_LABELS } from "@/src/lib/utils/support"
-import { SupportTicketRecord } from "@/src/types/support"
 
 export function ClientSupportTicketsPage({
   tickets,
@@ -275,7 +276,9 @@ export function ClientSupportTicketsPage({
                 type="button"
                 onClick={() => void handleCreateTicket()}
                 disabled={
-                  submitting || subject.trim().length < 4 || description.trim().length < 10
+                  submitting ||
+                  subject.trim().length < 4 ||
+                  description.trim().length < 10
                 }
                 className="h-12 rounded-none px-8 text-[10px] font-black uppercase tracking-[0.24em] text-white"
               >
@@ -386,13 +389,18 @@ export function ClientSupportTicketsPage({
                     <TableCell className="px-6 py-6">
                       <div className="flex flex-col gap-0.5">
                         <span className="text-[10px] font-bold text-muted-foreground/75">
-                          {new Date(ticket.updatedAt).toLocaleDateString("pt-BR")}
+                          {new Date(ticket.updatedAt).toLocaleDateString(
+                            "pt-BR"
+                          )}
                         </span>
                         <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/40">
-                          {new Date(ticket.updatedAt).toLocaleTimeString("pt-BR", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {new Date(ticket.updatedAt).toLocaleTimeString(
+                            "pt-BR",
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
                         </span>
                       </div>
                     </TableCell>
@@ -463,7 +471,10 @@ function HeroMetric({
         <strong className="font-heading text-3xl font-black uppercase tracking-tight text-foreground">
           {value}
         </strong>
-        <ClockCountdown className="mb-1 size-4 text-brand-primary" weight="duotone" />
+        <ClockCountdown
+          className="mb-1 size-4 text-brand-primary"
+          weight="duotone"
+        />
       </div>
       <p className="text-[10px] font-black uppercase tracking-[0.22em] text-foreground/70">
         {label}

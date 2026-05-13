@@ -7,11 +7,11 @@ import { notFound } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
 
 import { ClientSectionHeader } from "@/src/components/client/ClientSectionHeader"
+import { ClientTimeline } from "@/src/components/client/ClientTimeline"
 import {
   Milestone,
   ProjectMilestoneCalendar,
 } from "@/src/components/client/ProjectMilestoneCalendar"
-import { ClientTimeline } from "@/src/components/client/ClientTimeline"
 
 import {
   getClientProjectCalendarData,
@@ -21,13 +21,24 @@ import prisma from "@/src/lib/prisma"
 import { buildProjectScheduleView } from "@/src/lib/project-schedule"
 import { dashboardMetadata } from "@/src/lib/seo"
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
   const t = await getTranslations("Dashboard.project_detail.pages.timeline")
+  const { id } = await params
+  const project = await prisma.project.findUnique({
+    where: { id },
+    select: { name: true },
+  })
 
   return dashboardMetadata({
-    title: t("title"),
-    description: t("description"),
-    path: "/projects",
+    title: project ? `${t("title")} - ${project.name}` : t("title"),
+    description: project
+      ? `${t("description")} Projeto: ${project.name}.`
+      : t("description"),
+    path: `/projects/${id}/timeline`,
   })
 }
 

@@ -443,10 +443,12 @@ function formatPublicPayload(profile: PublicMaguiConnectProfile) {
   const now = new Date()
   const seoStatus = getSeoStatus(profile)
   const siteName = profile.siteName || profile.displayName
-  const ogImageUrl = profile.ogImageUrl || profile.bannerUrl || profile.avatarUrl
+  const ogImageUrl =
+    profile.ogImageUrl || profile.bannerUrl || profile.avatarUrl
   const twitterImageUrl = profile.twitterImageUrl || ogImageUrl || null
   const seoTitle = profile.seoTitle || profile.displayName
-  const seoDescription = profile.seoDescription || profile.headline || profile.bio
+  const seoDescription =
+    profile.seoDescription || profile.headline || profile.bio
   const isLinkVisible = (link: MaguiConnectLink) => {
     if (link.startsAt && link.startsAt > now) return false
     if (link.expiresAt && link.expiresAt < now) return false

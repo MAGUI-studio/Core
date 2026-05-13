@@ -40,7 +40,8 @@ export function AssetManagement({
 }) {
   const t = useTranslations("Admin.projects.details")
   const [assets, setAssets] = React.useState(initialAssets)
-  const [prevInitialAssets, setPrevInitialAssets] = React.useState(initialAssets)
+  const [prevInitialAssets, setPrevInitialAssets] =
+    React.useState(initialAssets)
 
   if (initialAssets !== prevInitialAssets) {
     setPrevInitialAssets(initialAssets)

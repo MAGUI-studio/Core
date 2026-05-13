@@ -8,15 +8,19 @@ import { auth } from "@clerk/nextjs/server"
 
 import { Button } from "@/src/components/ui/button"
 
+import { AdminFinancialMetrics } from "@/src/components/admin/dashboard/AdminFinancialMetrics"
+import { DashboardActivityWidget } from "@/src/components/admin/dashboard/DashboardActivityWidget"
+import { DashboardStatsWidget } from "@/src/components/admin/dashboard/DashboardStatsWidget"
 import { Logo } from "@/src/components/common/logo"
 
 import { isAdmin } from "@/src/lib/permissions"
+import { getCurrentAppUser } from "@/src/lib/project-governance"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "Admin",
+  title: "Painel Administrativo",
   description:
-    "Area administrativa da MAGUI.studio para gestao de clientes, projetos e CRM.",
+    "Painel administrativo da MAGUI.studio para gerenciar clientes, projetos, CRM, contratos, tickets e operação.",
   path: "/admin",
 })
 
@@ -26,49 +30,72 @@ export default async function AdminPage(): Promise<React.JSX.Element> {
   }
 
   const t = await getTranslations("Admin")
-  const { sessionClaims } = await auth()
+  const user = await getCurrentAppUser()
+
+  if (!user) return <div />
 
   return (
-    <main className="flex flex-col items-center justify-center gap-12 bg-background px-6">
-      <Logo width={200} />
-
-      <div className="flex flex-col items-center gap-4 text-center">
+    <main className="flex flex-col gap-12 bg-background px-6 py-10 lg:px-12">
+      <div className="flex flex-col gap-2">
         <p className="text-[11px] font-black uppercase tracking-[0.5em] text-brand-primary">
           {t("eyebrow")}
         </p>
-        <h1 className="font-heading text-4xl font-black uppercase leading-[0.86] tracking-[-0.05em] sm:text-6xl lg:text-8xl">
+        <h1 className="font-heading text-4xl font-black uppercase leading-[0.86] tracking-[-0.05em] sm:text-6xl">
           {t("title")}{" "}
           <span className="text-brand-primary">{t("subtitle")}</span>
         </h1>
       </div>
 
-      <div className="w-full max-w-2xl rounded-2xl border border-border/60 bg-muted/20 p-8 backdrop-blur-sm">
+      <div className="flex flex-col gap-10">
+        <DashboardStatsWidget userId={user.id} />
+
         <div className="flex flex-col gap-6">
-          <div className="flex items-center justify-between border-b border-border/40 pb-4">
-            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground">
-              Status
-            </span>
-            <span className="rounded-full bg-brand-primary/10 px-4 py-1 text-[10px] font-black uppercase tracking-widest text-brand-primary">
-              Authenticated
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground">
-              Role
-            </span>
-            <span className="font-sans font-bold uppercase text-[11px] tracking-widest text-foreground">
-              {sessionClaims?.metadata?.role || "member"}
-            </span>
-          </div>
+          <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">
+            Performance Financeira
+          </h2>
+          <AdminFinancialMetrics />
         </div>
 
-        <div className="mt-8">
-          <Button
-            asChild
-            className="w-full rounded-full py-6 uppercase tracking-widest"
-          >
-            <Link href="/admin/clients">Gerenciar Clientes</Link>
-          </Button>
+        <div className="grid gap-10 xl:grid-cols-3">
+          <div className="xl:col-span-2">
+            <DashboardActivityWidget />
+          </div>
+
+          <div className="flex flex-col gap-6 rounded-3xl border border-border/40 bg-muted/10 p-8 backdrop-blur-sm">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">
+              Acesso Rápido
+            </h3>
+            <div className="flex flex-col gap-3">
+              <Button
+                asChild
+                variant="outline"
+                className="justify-start rounded-full border-border/40 py-6"
+              >
+                <Link href="/admin/clients">Gestão de Clientes</Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="justify-start rounded-full border-border/40 py-6"
+              >
+                <Link href="/admin/projects">Gestão de Projetos</Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="justify-start rounded-full border-border/40 py-6"
+              >
+                <Link href="/admin/crm">Pipeline Comercial</Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="justify-start rounded-full border-border/40 py-6"
+              >
+                <Link href="/admin/support">Central de Atendimento</Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </main>

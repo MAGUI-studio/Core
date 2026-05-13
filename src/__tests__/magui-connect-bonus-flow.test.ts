@@ -16,9 +16,8 @@ describe("MAGUI Connect bonus flow", () => {
   })
 
   it("returns requestable access immediately when the user already has access", async () => {
-    const { getOwnMaguiConnectAccessState } = await import(
-      "@/src/lib/maguiConnectData"
-    )
+    const { getOwnMaguiConnectAccessState } =
+      await import("@/src/lib/maguiConnectData")
 
     const state = await getOwnMaguiConnectAccessState("user_1", true)
 
@@ -44,9 +43,8 @@ describe("MAGUI Connect bonus flow", () => {
       },
     ])
 
-    const { getOwnMaguiConnectAccessState } = await import(
-      "@/src/lib/maguiConnectData"
-    )
+    const { getOwnMaguiConnectAccessState } =
+      await import("@/src/lib/maguiConnectData")
 
     const state = await getOwnMaguiConnectAccessState("user_2", false)
 
@@ -77,9 +75,8 @@ describe("MAGUI Connect bonus flow", () => {
       },
     ])
 
-    const { getOwnMaguiConnectAccessState } = await import(
-      "@/src/lib/maguiConnectData"
-    )
+    const { getOwnMaguiConnectAccessState } =
+      await import("@/src/lib/maguiConnectData")
 
     const state = await getOwnMaguiConnectAccessState("user_3", false)
 

@@ -276,10 +276,10 @@ export function ProjectsTable({ initialProjects }: ProjectsTableProps) {
                                   Remover projeto
                                 </DialogTitle>
                                 <DialogDescription>
-                                  Essa acao remove o projeto e todos os registros
-                                  vinculados por cascata, incluindo updates,
-                                  assets, action items, versoes, notificacoes e
-                                  logs.
+                                  Essa acao remove o projeto e todos os
+                                  registros vinculados por cascata, incluindo
+                                  updates, assets, action items, versoes,
+                                  notificacoes e logs.
                                 </DialogDescription>
                               </DialogHeader>
 

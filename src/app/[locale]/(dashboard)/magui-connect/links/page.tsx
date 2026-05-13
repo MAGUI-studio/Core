@@ -7,12 +7,16 @@ import { MaguiConnectSectionList } from "@/src/components/client/maguiConnect/Ma
 
 import { getOwnMaguiConnectProfile } from "@/src/lib/maguiConnectData"
 import { getCurrentAppUser } from "@/src/lib/project-governance"
+import { dashboardMetadata } from "@/src/lib/seo"
 
 export async function generateMetadata() {
   const t = await getTranslations("MaguiConnect")
-  return {
-    title: `${t("pageTitle")} | ${t("navLinks")}`,
-  }
+  return dashboardMetadata({
+    title: `${t("navLinks")} - Magui Connect`,
+    description:
+      "Gerencie seus links, personalize seu perfil e organize suas seções no Magui Connect.",
+    path: "/magui-connect/links",
+  })
 }
 
 export default async function MaguiConnectLinksPage() {

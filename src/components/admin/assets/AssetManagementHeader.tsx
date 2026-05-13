@@ -49,10 +49,14 @@ export function AssetManagementHeader({
       >
         <option value="ALL">{t("asset_type_all")}</option>
         <option value={AssetType.CONTRACT}>{t("asset_types.CONTRACT")}</option>
-        <option value={AssetType.DESIGN_SYSTEM}>{t("asset_types.DESIGN_SYSTEM")}</option>
+        <option value={AssetType.DESIGN_SYSTEM}>
+          {t("asset_types.DESIGN_SYSTEM")}
+        </option>
         <option value={AssetType.IMAGE}>{t("asset_types.IMAGE")}</option>
         <option value={AssetType.DOCUMENT}>{t("asset_types.DOCUMENT")}</option>
-        <option value={AssetType.SOURCE_CODE}>{t("asset_types.SOURCE_CODE")}</option>
+        <option value={AssetType.SOURCE_CODE}>
+          {t("asset_types.SOURCE_CODE")}
+        </option>
       </select>
 
       <select
@@ -75,8 +79,12 @@ export function AssetManagementHeader({
         className="h-11 rounded-full border border-border/35 bg-background px-4 text-xs font-bold outline-none focus:border-brand-primary"
       >
         <option value="ALL">{t("asset_visibility_all")}</option>
-        <option value={AssetVisibility.CLIENT}>{t("asset_visibilities.CLIENT")}</option>
-        <option value={AssetVisibility.INTERNAL}>{t("asset_visibilities.INTERNAL")}</option>
+        <option value={AssetVisibility.CLIENT}>
+          {t("asset_visibilities.CLIENT")}
+        </option>
+        <option value={AssetVisibility.INTERNAL}>
+          {t("asset_visibilities.INTERNAL")}
+        </option>
       </select>
     </div>
   )

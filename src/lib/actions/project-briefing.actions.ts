@@ -12,9 +12,9 @@ import {
 import { addDays } from "date-fns"
 
 import { triggerProductEvent } from "@/src/lib/email/events"
+import { cancelProjectBonusIfNeeded } from "@/src/lib/invoice-fulfillment"
 import { logger } from "@/src/lib/logger"
 import prisma from "@/src/lib/prisma"
-import { cancelProjectBonusIfNeeded } from "@/src/lib/invoice-fulfillment"
 import {
   createAuditLog,
   createNotificationsMany,
@@ -23,10 +23,6 @@ import {
   getInternalNotificationRecipients,
 } from "@/src/lib/project-governance"
 import {
-  revalidateProjectBriefing,
-  revalidateProjectData,
-} from "@/src/lib/revalidate"
-import {
   buildProjectSchedulePersistence,
   hasMinimumBrandAssets,
   hasPrimaryBriefingData,
@@ -34,6 +30,10 @@ import {
   resolveProjectStatusFromSchedule,
   syncProjectScheduleFromBriefing,
 } from "@/src/lib/project-schedule"
+import {
+  revalidateProjectBriefing,
+  revalidateProjectData,
+} from "@/src/lib/revalidate"
 import { briefingSchema } from "@/src/lib/validations/project"
 
 import { cacheTags } from "../cache-tags"
@@ -178,11 +178,15 @@ export async function updateProjectBriefingAction(
           kickoff: {
             upsert: {
               create: {
-                briefingCompleted: hasPrimaryBriefingData(validatedBriefing.data),
+                briefingCompleted: hasPrimaryBriefingData(
+                  validatedBriefing.data
+                ),
                 brandAssetsSent: hasMinimumBrandAssets(validatedBriefing.data),
               },
               update: {
-                briefingCompleted: hasPrimaryBriefingData(validatedBriefing.data),
+                briefingCompleted: hasPrimaryBriefingData(
+                  validatedBriefing.data
+                ),
                 brandAssetsSent: hasMinimumBrandAssets(validatedBriefing.data),
               },
             },

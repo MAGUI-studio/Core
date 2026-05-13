@@ -200,12 +200,21 @@ export function ProjectBriefingTab({
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-2">
               <div className="md:col-span-2">
-                {renderField(t("steps.businessDescription.label"), data.businessDescription)}
+                {renderField(
+                  t("steps.businessDescription.label"),
+                  data.businessDescription
+                )}
               </div>
               {renderField(t("steps.brandTone.label"), data.brandTone)}
               {renderField(t("steps.businessGoals.label"), data.businessGoals)}
-              {renderField(t("steps.targetAudience.label"), data.targetAudience)}
-              {renderField(t("steps.differentiators.label"), data.differentiators)}
+              {renderField(
+                t("steps.targetAudience.label"),
+                data.targetAudience
+              )}
+              {renderField(
+                t("steps.differentiators.label"),
+                data.differentiators
+              )}
               <div className="md:col-span-2">
                 {renderField(t("steps.primaryCta.label"), data.primaryCta)}
               </div>
@@ -223,8 +232,16 @@ export function ProjectBriefingTab({
                 data.visualReferences,
                 "list"
               )}
-              {renderField(t("steps.dislikedReferences.label"), data.dislikedReferences, "list")}
-              {renderField(t("steps.competitors.label"), data.competitors, "list")}
+              {renderField(
+                t("steps.dislikedReferences.label"),
+                data.dislikedReferences,
+                "list"
+              )}
+              {renderField(
+                t("steps.competitors.label"),
+                data.competitors,
+                "list"
+              )}
             </div>
           </section>
 
@@ -263,7 +280,10 @@ export function ProjectBriefingTab({
             <CardContent className="pt-8 space-y-8 px-8 pb-10">
               <div className="grid gap-6">
                 {renderLogo(t("briefing_primary_logo"), data.logos?.primary)}
-                {renderLogo(t("briefing_secondary_logo"), data.logos?.secondary)}
+                {renderLogo(
+                  t("briefing_secondary_logo"),
+                  data.logos?.secondary
+                )}
               </div>
 
               <Separator className="bg-border/40" />
@@ -325,7 +345,9 @@ export function ProjectBriefingTab({
               disabled={isResetting}
               className="rounded-full bg-destructive text-xs font-bold uppercase tracking-widest text-white hover:bg-destructive/90"
             >
-              {isResetting ? t("briefing_resetting") : t("briefing_confirm_reset")}
+              {isResetting
+                ? t("briefing_resetting")
+                : t("briefing_confirm_reset")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

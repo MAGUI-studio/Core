@@ -67,14 +67,17 @@ export function LeadProposalsTab({
 
   const [isLoading, setIsLoading] = React.useState(!providedProposals)
 
-  const buildPublicProposalUrl = React.useCallback((proposalId: string) => {
-    const origin =
-      typeof window !== "undefined"
-        ? window.location.origin
-        : (process.env.NEXT_PUBLIC_SITE_URL ?? "")
+  const buildPublicProposalUrl = React.useCallback(
+    (proposalId: string) => {
+      const origin =
+        typeof window !== "undefined"
+          ? window.location.origin
+          : (process.env.NEXT_PUBLIC_SITE_URL ?? "")
 
-    return `${origin}${buildProposalPublicPath(lead.instagram, proposalId)}`
-  }, [lead.instagram])
+      return `${origin}${buildProposalPublicPath(lead.instagram, proposalId)}`
+    },
+    [lead.instagram]
+  )
 
   const handleCopyPublicLink = async (proposalId: string) => {
     await navigator.clipboard.writeText(buildPublicProposalUrl(proposalId))
@@ -113,7 +116,9 @@ export function LeadProposalsTab({
 
     if (result.success) {
       toast.success("Proposta excluida")
-      setProposals((current) => current.filter((proposal) => proposal.id !== id))
+      setProposals((current) =>
+        current.filter((proposal) => proposal.id !== id)
+      )
       onProposalChanged?.()
       return
     }
@@ -242,7 +247,10 @@ export function LeadProposalsTab({
                       align="end"
                       className="w-56 rounded-2xl border-border/20 bg-background p-1.5"
                     >
-                      <DropdownMenuItem asChild className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight">
+                      <DropdownMenuItem
+                        asChild
+                        className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight"
+                      >
                         <a
                           href={`/api/proposals/${proposal.id}/pdf`}
                           target="_blank"
@@ -252,7 +260,10 @@ export function LeadProposalsTab({
                           Abrir PDF
                         </a>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight">
+                      <DropdownMenuItem
+                        asChild
+                        className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight"
+                      >
                         <a
                           href={buildPublicProposalUrl(proposal.id)}
                           target="_blank"
@@ -269,7 +280,10 @@ export function LeadProposalsTab({
                         <Copy className="mr-2 size-4" />
                         Copiar link público
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight">
+                      <DropdownMenuItem
+                        asChild
+                        className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight"
+                      >
                         <a
                           href={`/api/proposals/${proposal.id}/pdf?download=1`}
                           download={`proposta-${proposal.number}.pdf`}

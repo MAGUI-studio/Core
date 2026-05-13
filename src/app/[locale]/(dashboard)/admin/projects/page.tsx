@@ -15,9 +15,9 @@ import { isAdmin } from "@/src/lib/permissions"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "Projetos admin",
+  title: "Gestão de Projetos",
   description:
-    "Gestao administrativa de projetos, clientes e status operacionais da MAGUI.studio.",
+    "Gestão de projetos da MAGUI.studio com visão operacional, status, progresso e relacionamento com clientes.",
   path: "/admin/projects",
 })
 

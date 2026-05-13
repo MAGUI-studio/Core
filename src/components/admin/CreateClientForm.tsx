@@ -8,8 +8,8 @@ import { useRouter } from "next/navigation"
 import {
   ArrowRight,
   Buildings,
-  Copy,
   Checks,
+  Copy,
   EnvelopeSimple,
   Eye,
   EyeSlash,
@@ -305,10 +305,7 @@ export function CreateClientForm() {
                   className="h-14 rounded-2xl border-border/40 bg-muted/10 px-4 font-sans font-bold text-foreground transition-all focus:ring-brand-primary/20 disabled:opacity-50"
                 >
                   <div className="flex items-center gap-3">
-                    <Tag
-                      weight="bold"
-                      className="size-4 text-brand-primary"
-                    />
+                    <Tag weight="bold" className="size-4 text-brand-primary" />
                     <SelectValue />
                   </div>
                 </SelectTrigger>
@@ -433,13 +430,13 @@ export function CreateClientForm() {
                 onChange={(event) => setPassword(event.target.value)}
                 className="h-14 rounded-2xl border-border/40 bg-muted/10 pr-32 pl-11 font-sans font-bold transition-all focus-visible:ring-brand-primary/20 focus-visible:bg-muted/20"
               />
-                <button
-                  type="button"
-                  className="absolute top-1/2 right-11 flex h-8 -translate-y-1/2 items-center rounded-full px-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 transition-none hover:text-foreground focus:outline-none"
-                  onClick={() => setPassword(generateStrongPassword())}
-                >
-                  Gerar
-                </button>
+              <button
+                type="button"
+                className="absolute top-1/2 right-11 flex h-8 -translate-y-1/2 items-center rounded-full px-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 transition-none hover:text-foreground focus:outline-none"
+                onClick={() => setPassword(generateStrongPassword())}
+              >
+                Gerar
+              </button>
               <Button
                 type="button"
                 variant="ghost"
@@ -516,8 +513,8 @@ export function CreateClientForm() {
               </SelectContent>
             </Select>
           </div>
-          </div>
         </div>
+      </div>
 
       <div className="flex flex-col gap-6 pt-6">
         {state.error && (

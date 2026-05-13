@@ -24,7 +24,10 @@ export function SupportStatusBadge({
   const style = SUPPORT_STATUS_STYLES[status]
 
   return (
-    <Badge variant="outline" className={`text-[8px] font-black uppercase ${style}`}>
+    <Badge
+      variant="outline"
+      className={`text-[8px] font-black uppercase ${style}`}
+    >
       {SUPPORT_STATUS_LABELS[status]}
     </Badge>
   )
@@ -38,7 +41,10 @@ export function SupportPriorityBadge({
   const style = SUPPORT_PRIORITY_STYLES[priority]
 
   return (
-    <Badge variant="outline" className={`text-[8px] font-black uppercase ${style}`}>
+    <Badge
+      variant="outline"
+      className={`text-[8px] font-black uppercase ${style}`}
+    >
       {SUPPORT_PRIORITY_LABELS[priority]}
     </Badge>
   )

@@ -114,8 +114,7 @@ export function CreateProjectForm({
     (s) => s.id === selectedCategoryId
   )
 
-  const [prevSelectedCategoryId, setPrevSelectedCategoryId] =
-    React.useState("")
+  const [prevSelectedCategoryId, setPrevSelectedCategoryId] = React.useState("")
   const [prevCustomValue, setPrevCustomValue] = React.useState(customValue)
 
   if (
@@ -305,7 +304,8 @@ export function CreateProjectForm({
     <form action={formAction} className="mx-auto w-full">
       <FieldGroup className="gap-12">
         <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 italic">
-          Os campos marcados com <span className="text-red-500">*</span> são obrigatórios.
+          Os campos marcados com <span className="text-red-500">*</span> são
+          obrigatórios.
         </p>
 
         <FieldSet>
@@ -959,6 +959,3 @@ export function CreateProjectForm({
     </form>
   )
 }
-
-
-

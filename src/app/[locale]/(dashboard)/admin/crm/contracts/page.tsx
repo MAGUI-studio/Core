@@ -1,7 +1,8 @@
 import * as React from "react"
 
-import { DocumentType } from "@/src/generated/client"
 import { getTranslations } from "next-intl/server"
+
+import { DocumentType } from "@/src/generated/client"
 
 import { ContractsOverviewList } from "@/src/components/admin/contracts/ContractsOverviewList"
 
@@ -10,9 +11,9 @@ import prisma from "@/src/lib/prisma"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "Contratos gerados",
+  title: "Contratos Gerados",
   description:
-    "Central para consultar contratos já gerados, acompanhar status documental, versões e vínculos com clientes, propostas e projetos.",
+    "Gestão e consulta de contratos da MAGUI.studio com controle de status, versões, assinaturas e vínculos operacionais.",
   path: "/admin/crm/contracts",
 })
 

@@ -12,7 +12,12 @@ import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
 import { Calendar } from "@/src/components/ui/calendar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card"
 
 import { cn } from "@/src/lib/utils/utils"
 
@@ -35,8 +40,12 @@ export function ProjectMilestoneCalendar({
     milestone: milestones
       .filter((m) => m.type === "milestone" || m.type === "update")
       .map((m) => m.date),
-    deadline: milestones.filter((m) => m.type === "deadline").map((m) => m.date),
-    forecast: milestones.filter((m) => m.type === "forecast").map((m) => m.date),
+    deadline: milestones
+      .filter((m) => m.type === "deadline")
+      .map((m) => m.date),
+    forecast: milestones
+      .filter((m) => m.type === "forecast")
+      .map((m) => m.date),
   }
 
   const modifiersStyles = {

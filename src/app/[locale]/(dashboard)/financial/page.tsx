@@ -1,5 +1,7 @@
 import * as React from "react"
 
+import { getTranslations } from "next-intl/server"
+
 import { auth } from "@clerk/nextjs/server"
 
 import { ClientFinancialView } from "@/src/components/client/ClientFinancialView"
@@ -7,10 +9,21 @@ import { ClientSectionHeader } from "@/src/components/client/ClientSectionHeader
 
 import { getClientInvoices } from "@/src/lib/financial-data"
 import prisma from "@/src/lib/prisma"
+import { dashboardMetadata } from "@/src/lib/seo"
 import { verifyAndSyncStripePayment } from "@/src/lib/stripe-actions"
 
 export const dynamic = "force-dynamic"
 export const revalidate = 0
+
+export async function generateMetadata() {
+  const t = await getTranslations("Dashboard.financial")
+
+  return dashboardMetadata({
+    title: t("title"),
+    description: t("description"),
+    path: "/financial",
+  })
+}
 
 interface PageProps {
   searchParams: Promise<{ session_id?: string }>

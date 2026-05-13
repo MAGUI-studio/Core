@@ -82,18 +82,14 @@ export const briefingSchema = z.object({
   visualReferences: optionalUrlList,
   dislikedReferences: optionalUrlList,
   competitors: z.array(z.string()).optional(),
-  assetOwnershipAccepted: z
-    .boolean()
-    .refine(Boolean, {
-      message:
-        "Confirme a responsabilidade sobre direitos, uso e legalidade dos ativos enviados.",
-    }),
-  contentResponsibilityAccepted: z
-    .boolean()
-    .refine(Boolean, {
-      message:
-        "Confirme a responsabilidade sobre ofertas, promessas e legalidade do conteúdo.",
-    }),
+  assetOwnershipAccepted: z.boolean().refine(Boolean, {
+    message:
+      "Confirme a responsabilidade sobre direitos, uso e legalidade dos ativos enviados.",
+  }),
+  contentResponsibilityAccepted: z.boolean().refine(Boolean, {
+    message:
+      "Confirme a responsabilidade sobre ofertas, promessas e legalidade do conteúdo.",
+  }),
 })
 
 export type BriefingInput = z.infer<typeof briefingSchema>

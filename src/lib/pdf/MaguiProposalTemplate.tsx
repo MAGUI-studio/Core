@@ -429,7 +429,10 @@ function estimateBlockHeight(block: Block) {
     return Math.max(18, estimateLines(block.text, 86) * 15)
   }
 
-  return 10 + block.lines.reduce((sum, line) => sum + estimateLines(line, 82) * 15, 0)
+  return (
+    10 +
+    block.lines.reduce((sum, line) => sum + estimateLines(line, 82) * 15, 0)
+  )
 }
 
 function cleanPageBlocks(blocks: Block[]) {
@@ -448,7 +451,8 @@ function paginateBlocks(blocks: Block[]) {
 
   blocks.forEach((block, index) => {
     const blockHeight = estimateBlockHeight(block)
-    const currentLimit = pages.length === 0 ? firstPageUsableHeight : usableHeight
+    const currentLimit =
+      pages.length === 0 ? firstPageUsableHeight : usableHeight
 
     const nextBlock = blocks[index + 1]
     const keepWithNext =
@@ -458,7 +462,10 @@ function paginateBlocks(blocks: Block[]) {
         ? estimateBlockHeight(nextBlock)
         : 0
 
-    if (current.length > 0 && height + blockHeight + keepWithNext > currentLimit) {
+    if (
+      current.length > 0 &&
+      height + blockHeight + keepWithNext > currentLimit
+    ) {
       const cleaned = cleanPageBlocks(current)
       if (cleaned.length > 0) pages.push(cleaned)
       current = []
@@ -507,7 +514,10 @@ function renderBlock(block: Block, index: number) {
         <Link src="https://magui.studio" style={styles.studioInlineLink}>
           MAGUI.studio
         </Link>{" "}
-        é um estúdio de arquitetura de interface, performance digital e engenharia frontend. Nossa atuação é focada em transformar demandas comerciais em ativos digitais claros, rápidos, confiáveis e visualmente sólidos.
+        é um estúdio de arquitetura de interface, performance digital e
+        engenharia frontend. Nossa atuação é focada em transformar demandas
+        comerciais em ativos digitais claros, rápidos, confiáveis e visualmente
+        sólidos.
       </Text>
     )
   }
@@ -684,13 +694,18 @@ function buildProposalBlocks(
       type: "paragraph",
       text: "Trabalhamos com metodologia assíncrona, escopo técnico bem definido e comunicação centralizada via CRM. Dúvidas, alinhamentos e chamados de suporte acontecem por esse canal, com resposta em até 24 horas úteis dentro da janela operacional de segunda a sexta, das 09h00 às 18h00. Isso cria previsibilidade para o cliente e protege a execução do projeto contra ruído, retrabalho e desalinhamento.",
     },
-    { type: "clause", text: "1. IDENTIFICAÇÃO DAS PARTES E OBJETIVO DO PROJETO" },
+    {
+      type: "clause",
+      text: "1. IDENTIFICAÇÃO DAS PARTES E OBJETIVO DO PROJETO",
+    },
     {
       type: "paragraph",
       text: `Esta proposta comercial é apresentada pela **MAGUI.studio** para **${lead.companyName}**.`,
     },
     ...summary.flatMap((line) =>
-      splitParagraphIntoChunks(line, 220).map((text) => ({ type: "paragraph", text }) as Block)
+      splitParagraphIntoChunks(line, 220).map(
+        (text) => ({ type: "paragraph", text }) as Block
+      )
     ),
     { type: "bullets", lines: objectives },
     { type: "clause", text: "2. ESCOPO TÉCNICO DETALHADO" },
@@ -720,18 +735,27 @@ function buildProposalBlocks(
       type: "paragraph",
       text: `Esta proposta permanece válida até **${proposalValidity}**. A reserva de agenda só é confirmada após aprovação formal e pagamento do sinal, garantindo previsibilidade real de início e entrega.`,
     },
-    { type: "clause", text: "5. PRAZO, GATILHO DE INÍCIO E METODOLOGIA DE TRABALHO" },
+    {
+      type: "clause",
+      text: "5. PRAZO, GATILHO DE INÍCIO E METODOLOGIA DE TRABALHO",
+    },
     { type: "bullets", lines: timeline },
     { type: "bullets", lines: platformFlow },
     {
       type: "paragraph",
       text: "O prazo começa somente após o preenchimento do briefing e o envio dos ativos obrigatórios pelo CRM. A ausência de retorno do cliente impacta diretamente o cronograma, conforme a regra contratual.",
     },
-    { type: "clause", text: "6. CRITÉRIOS DE ACEITE, EXCLUSÕES E TRANSPARÊNCIA DE ESCOPO" },
+    {
+      type: "clause",
+      text: "6. CRITÉRIOS DE ACEITE, EXCLUSÕES E TRANSPARÊNCIA DE ESCOPO",
+    },
     { type: "bullets", lines: acceptance },
     { type: "bullets", lines: notIncluded },
     { type: "bullets", lines: warranty },
-    { type: "clause", text: "7. INFRAESTRUTURA, CONTINUIDADE E CUSTOS FUTUROS" },
+    {
+      type: "clause",
+      text: "7. INFRAESTRUTURA, CONTINUIDADE E CUSTOS FUTUROS",
+    },
     {
       type: "paragraph",
       text: "O primeiro ciclo de **12 meses** pode incluir domínio e hospedagem conforme o escopo comercial aprovado. Após esse período, a continuidade do projeto depende da renovação da infraestrutura e das condições de permanência aplicáveis.",
@@ -770,8 +794,12 @@ function InternalPage({
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.companyLine}>{leadName}</Text>
             <View style={styles.metaRow}>
-              <Text style={styles.metaText}>Emitido em {toDateLabel(createdAt)}</Text>
-              <Text style={styles.metaText}>Válido até {toDateLabel(validUntil)}</Text>
+              <Text style={styles.metaText}>
+                Emitido em {toDateLabel(createdAt)}
+              </Text>
+              <Text style={styles.metaText}>
+                Válido até {toDateLabel(validUntil)}
+              </Text>
             </View>
           </>
         ) : null}
@@ -781,7 +809,9 @@ function InternalPage({
         <View style={styles.footer} fixed>
           <Text>MAGUI.studio</Text>
           <Text
-            render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
+            render={({ pageNumber, totalPages }) =>
+              `${pageNumber} / ${totalPages}`
+            }
           />
         </View>
       </View>
@@ -821,4 +851,3 @@ export function MaguiProposalTemplate({
     </Document>
   )
 }
-

@@ -10,9 +10,9 @@ import prisma from "@/src/lib/prisma"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "Novo projeto",
+  title: "Cadastrar Novo Projeto",
   description:
-    "Cadastro administrativo de novos projetos e clientes responsaveis.",
+    "Interface administrativa para abertura de novos projetos, atribuição de clientes e configuração de escopo na MAGUI.studio.",
   path: "/admin/projects/register",
 })
 

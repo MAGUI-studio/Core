@@ -8,9 +8,9 @@ import { useRouter } from "next/navigation"
 import { Lead } from "@/src/types/crm"
 import {
   CheckCircle,
-  Copy,
   Checks,
   CircleNotch,
+  Copy,
   Eye,
   EyeSlash,
   RocketLaunch,
@@ -169,9 +169,7 @@ export function ConvertLeadDialog({
         INSTITUTIONAL_SITE:
           locale === "pt" ? "Site Institucional" : "Institutional Website",
         BOOKING_PLATFORM:
-          locale === "pt"
-            ? "Plataforma de Agendamento"
-            : "Booking Platform",
+          locale === "pt" ? "Plataforma de Agendamento" : "Booking Platform",
         STABILITY_PLAN:
           locale === "pt" ? "Plano de Estabilidade" : "Stability Plan",
       }[selectedProposalCategory] ?? selectedProposalCategory
@@ -261,7 +259,9 @@ export function ConvertLeadDialog({
       })
 
       if (!updateResult.success) {
-        toast.error("Nao foi possivel salvar o e-mail do lead antes da conversao.")
+        toast.error(
+          "Nao foi possivel salvar o e-mail do lead antes da conversao."
+        )
         return
       }
     }
@@ -463,8 +463,7 @@ export function ConvertLeadDialog({
                   </div>
 
                   <Label className="pt-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
-                    Senha do cliente{" "}
-                    <span className="text-destructive">*</span>
+                    Senha do cliente <span className="text-destructive">*</span>
                   </Label>
                   <div className="relative">
                     <div className="relative">
@@ -478,7 +477,9 @@ export function ConvertLeadDialog({
                       <button
                         type="button"
                         className="absolute top-1/2 right-11 flex h-8 -translate-y-1/2 items-center rounded-full px-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 transition-none hover:text-foreground focus:outline-none"
-                        onClick={() => setLeadPassword(generateStrongPassword())}
+                        onClick={() =>
+                          setLeadPassword(generateStrongPassword())
+                        }
                       >
                         Gerar
                       </button>
@@ -562,11 +563,11 @@ export function ConvertLeadDialog({
                       <Label className="ml-1 text-[10px] font-bold uppercase tracking-tight">
                         Prazo herdado da proposta
                       </Label>
-                    <div className="flex h-12 items-center rounded-2xl bg-muted/10 px-4 text-sm font-bold text-foreground/50 opacity-60">
-                      {getExecutionDaysLabel(
-                        selectedProposal.executionBusinessDays
-                      )}
-                    </div>
+                      <div className="flex h-12 items-center rounded-2xl bg-muted/10 px-4 text-sm font-bold text-foreground/50 opacity-60">
+                        {getExecutionDaysLabel(
+                          selectedProposal.executionBusinessDays
+                        )}
+                      </div>
                     </div>
                   </>
                 ) : null}

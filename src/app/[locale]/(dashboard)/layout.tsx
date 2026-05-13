@@ -17,9 +17,9 @@ import { getCurrentAppUser } from "@/src/lib/project-governance"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "Dashboard",
+  title: "Área do Cliente",
   description:
-    "Area autenticada da MAGUI.studio para gestao de clientes, projetos e operacao.",
+    "Área autenticada da MAGUI.studio para acompanhar projetos, aprovações, arquivos, tickets e operação em andamento.",
   path: "/",
 })
 

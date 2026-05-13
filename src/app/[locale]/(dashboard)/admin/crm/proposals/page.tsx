@@ -14,9 +14,9 @@ import prisma from "@/src/lib/prisma"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "Propostas comerciais",
+  title: "Gestão de Propostas",
   description:
-    "Central comercial para consultar propostas, acompanhar investimento, status, validade e gerar novos documentos para leads e clientes.",
+    "Central de propostas comerciais da MAGUI.studio para consultar investimento, status, validade e gerar novos documentos para leads e clientes.",
   path: "/admin/crm/proposals",
 })
 

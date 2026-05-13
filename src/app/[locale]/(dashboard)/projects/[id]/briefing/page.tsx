@@ -23,13 +23,24 @@ import { toHref } from "@/src/lib/utils/navigation"
 export const dynamic = "force-dynamic"
 export const revalidate = 0
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
   const t = await getTranslations("Dashboard.project_detail.pages.briefing")
+  const { id } = await params
+  const project = await prisma.project.findUnique({
+    where: { id },
+    select: { name: true },
+  })
 
   return dashboardMetadata({
-    title: t("title"),
-    description: t("description"),
-    path: "/projects",
+    title: project ? `${t("title")} - ${project.name}` : t("title"),
+    description: project
+      ? `${t("description")} Projeto: ${project.name}.`
+      : t("description"),
+    path: `/projects/${id}/briefing`,
   })
 }
 

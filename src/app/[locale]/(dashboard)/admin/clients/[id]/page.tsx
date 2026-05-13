@@ -37,9 +37,8 @@ export async function generateMetadata({
   const title = localUser?.name ?? localUser?.email ?? "Cliente"
 
   return dashboardMetadata({
-    title: `Cliente: ${title}`,
-    description:
-      "Detalhes administrativos de cliente, projetos vinculados e dados de acesso.",
+    title: `${title} - Detalhes do Cliente`,
+    description: `Ficha administrativa de ${title} com dados de acesso, projetos vinculados, financeiro e contexto operacional na MAGUI.studio.`,
     path: `/admin/clients/${id}`,
   })
 }
@@ -123,7 +122,8 @@ export default async function ClientDetailsPage({
             {fullName}
           </h1>
           <p className="max-w-xl text-sm font-medium leading-relaxed text-muted-foreground/80">
-            Visao consolidada do cadastro, papel de acesso e projetos vinculados.
+            Visao consolidada do cadastro, papel de acesso e projetos
+            vinculados.
           </p>
         </div>
       </div>

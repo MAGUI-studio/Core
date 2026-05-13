@@ -394,10 +394,13 @@ export async function updateClientProfileAction(
       )
 
       if (existingEmailAddress) {
-        await client.emailAddresses.updateEmailAddress(existingEmailAddress.id, {
-          verified: true,
-          primary: true,
-        })
+        await client.emailAddresses.updateEmailAddress(
+          existingEmailAddress.id,
+          {
+            verified: true,
+            primary: true,
+          }
+        )
       } else {
         await client.emailAddresses.createEmailAddress({
           userId: clerkUserId,

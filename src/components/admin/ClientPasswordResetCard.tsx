@@ -2,7 +2,14 @@
 
 import * as React from "react"
 
-import { Checks, Copy, Eye, EyeSlash, LockKey, Sparkle } from "@phosphor-icons/react"
+import {
+  Checks,
+  Copy,
+  Eye,
+  EyeSlash,
+  LockKey,
+  Sparkle,
+} from "@phosphor-icons/react"
 import { toast } from "sonner"
 
 import { Button } from "@/src/components/ui/button"

@@ -1,5 +1,6 @@
 import { LeadStatus } from "@/src/generated/client"
 import { Lead } from "@/src/types/crm"
+
 import { formatBrazilPhoneInput } from "@/src/lib/utils/phone"
 
 export const CRM_STATUS_ORDER: LeadStatus[] = [

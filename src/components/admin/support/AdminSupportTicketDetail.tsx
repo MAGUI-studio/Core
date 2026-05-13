@@ -7,13 +7,14 @@ import {
   SupportTicketStatus,
 } from "@/src/generated/client"
 import { Link, useRouter } from "@/src/i18n/navigation"
-import { ArrowLeft, ArrowSquareOut, PaperPlaneTilt } from "@phosphor-icons/react"
+import { SupportTicketRecord } from "@/src/types/support"
+import {
+  ArrowLeft,
+  ArrowSquareOut,
+  PaperPlaneTilt,
+} from "@phosphor-icons/react"
 import { toast } from "sonner"
 
-import {
-  SupportPriorityBadge,
-  SupportStatusBadge,
-} from "@/src/components/support/SupportTicketBadges"
 import { Button } from "@/src/components/ui/button"
 import { Label } from "@/src/components/ui/label"
 import {
@@ -24,8 +25,18 @@ import {
   SelectValue,
 } from "@/src/components/ui/select"
 import { Separator } from "@/src/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/src/components/ui/tabs"
 import { Textarea } from "@/src/components/ui/textarea"
+
+import {
+  SupportPriorityBadge,
+  SupportStatusBadge,
+} from "@/src/components/support/SupportTicketBadges"
 
 import {
   replySupportTicketAction,
@@ -37,7 +48,6 @@ import {
   SUPPORT_STATUS_LABELS,
   formatSupportSlaCountdown,
 } from "@/src/lib/utils/support"
-import { SupportTicketRecord } from "@/src/types/support"
 
 export function AdminSupportTicketDetail({
   ticket,
@@ -152,7 +162,9 @@ export function AdminSupportTicketDetail({
           <div className="grid gap-5 border-l border-border/20 pl-0 xl:pl-8">
             <MetaBlock
               label="Cliente"
-              value={ticket.client.companyName ?? ticket.client.name ?? "Cliente"}
+              value={
+                ticket.client.companyName ?? ticket.client.name ?? "Cliente"
+              }
               supporting={ticket.client.email}
             />
             <MetaBlock
@@ -216,7 +228,9 @@ export function AdminSupportTicketDetail({
                             {isClient ? "Cliente" : "Equipe MAGUI"}
                           </span>
                           <span className="text-[10px] text-muted-foreground/58">
-                            {new Date(messageItem.createdAt).toLocaleString("pt-BR")}
+                            {new Date(messageItem.createdAt).toLocaleString(
+                              "pt-BR"
+                            )}
                           </span>
                         </div>
                         <p className="max-w-3xl whitespace-pre-wrap text-[15px] leading-7 text-foreground/84">
@@ -294,7 +308,9 @@ export function AdminSupportTicketDetail({
               </Label>
               <Select
                 value={status}
-                onValueChange={(value) => setStatus(value as SupportTicketStatus)}
+                onValueChange={(value) =>
+                  setStatus(value as SupportTicketStatus)
+                }
               >
                 <SelectTrigger className="h-12 rounded-none border-x-0 border-t-0 border-b border-border/35 bg-transparent px-0 text-[10px] font-black uppercase tracking-[0.18em] shadow-none focus:ring-0 focus:ring-offset-0">
                   <SelectValue />
@@ -337,7 +353,12 @@ export function AdminSupportTicketDetail({
                 </SelectTrigger>
                 <SelectContent className="rounded-none border-border/30 bg-background">
                   {(
-                    ["LOW", "NORMAL", "HIGH", "URGENT"] as SupportTicketPriority[]
+                    [
+                      "LOW",
+                      "NORMAL",
+                      "HIGH",
+                      "URGENT",
+                    ] as SupportTicketPriority[]
                   ).map((item) => (
                     <SelectItem
                       key={item}

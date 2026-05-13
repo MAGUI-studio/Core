@@ -1,6 +1,5 @@
-import { describe, expect, it } from "vitest"
-
 import { ProjectStatus } from "@/src/generated/client"
+import { describe, expect, it } from "vitest"
 
 import {
   addBusinessDays,

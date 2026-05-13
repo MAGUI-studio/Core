@@ -2,7 +2,12 @@
 
 import * as React from "react"
 
-import { Image as ImageIcon, Lightning, ShieldCheck, Tag } from "@phosphor-icons/react"
+import {
+  Image as ImageIcon,
+  Lightning,
+  ShieldCheck,
+  Tag,
+} from "@phosphor-icons/react"
 
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"

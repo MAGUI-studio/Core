@@ -6,17 +6,31 @@ import { auth } from "@clerk/nextjs/server"
 
 import { AdminSupportTicketDetail } from "@/src/components/admin/support/AdminSupportTicketDetail"
 
-import { dashboardMetadata } from "@/src/lib/seo"
-import { getAdminSupportTicketById } from "@/src/lib/support-data"
 import { protectInternal } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
+import { dashboardMetadata } from "@/src/lib/seo"
+import { getAdminSupportTicketById } from "@/src/lib/support-data"
 
-export const metadata = dashboardMetadata({
-  title: "Atendimento de ticket",
-  description:
-    "Painel administrativo de atendimento, acompanhamento e atualização de tickets no CRM.",
-  path: "/admin/support",
-})
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const ticket = await prisma.supportTicket.findUnique({
+    where: { id },
+    select: { subject: true },
+  })
+
+  return dashboardMetadata({
+    title: ticket
+      ? `${ticket.subject} - Atendimento de Ticket`
+      : "Atendimento de Ticket",
+    description:
+      "Painel interno da MAGUI.studio para atendimento, acompanhamento e atualizacao completa dos tickets de suporte no CRM.",
+    path: `/admin/support/${id}`,
+  })
+}
 
 export default async function AdminSupportTicketPage({
   params,

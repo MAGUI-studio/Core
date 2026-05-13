@@ -11,7 +11,7 @@ import { getClientSupportTickets } from "@/src/lib/support-data"
 export const metadata = dashboardMetadata({
   title: "Suporte",
   description:
-    "Área do cliente para abrir tickets, acompanhar respostas e manter o histórico de suporte dentro do CRM.",
+    "Area do cliente da MAGUI.studio para abrir tickets, acompanhar respostas e centralizar todo o historico de suporte no CRM.",
   path: "/support",
 })
 

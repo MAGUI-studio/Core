@@ -24,12 +24,12 @@ import {
   getInternalNotificationRecipients,
 } from "@/src/lib/project-governance"
 import {
-  buildProjectScheduleView,
   buildProjectSchedulePersistence,
+  buildProjectScheduleView,
   clearPendingClientApproval,
   registerPendingClientApproval,
-  resolveProjectStatusFromSchedule,
   resolvePendingClientApproval,
+  resolveProjectStatusFromSchedule,
 } from "@/src/lib/project-schedule"
 import { revalidateProjectTimeline } from "@/src/lib/revalidate"
 import {
@@ -741,7 +741,12 @@ export async function requestScopeChangeAction(input: {
     await prisma.$transaction(async (tx) => {
       const update = await tx.update.findUnique({
         where: { id: input.updateId },
-        select: { id: true, title: true, approvalStatus: true, requiresApproval: true },
+        select: {
+          id: true,
+          title: true,
+          approvalStatus: true,
+          requiresApproval: true,
+        },
       })
 
       if (!update) {

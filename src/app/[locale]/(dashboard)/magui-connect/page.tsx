@@ -21,13 +21,17 @@ import {
   getOwnMaguiConnectProfile,
 } from "@/src/lib/maguiConnectData"
 import { getCurrentAppUser } from "@/src/lib/project-governance"
+import { dashboardMetadata } from "@/src/lib/seo"
 
 export async function generateMetadata() {
   const t = await getTranslations("MaguiConnect")
 
-  return {
-    title: t("pageTitle"),
-  }
+  return dashboardMetadata({
+    title: `${t("pageTitle")} - Magui Connect`,
+    description:
+      "Centralize seus links, acompanhe cliques e entenda o interesse do seu público em tempo real com o Magui Connect.",
+    path: "/magui-connect",
+  })
 }
 
 export default async function MaguiConnectOverviewPage() {
@@ -224,7 +228,10 @@ export default async function MaguiConnectOverviewPage() {
           </div>
 
           <div className="grid gap-10">
-            <MetricLine label={t("overview.clicksReceived")} value={totalClicks} />
+            <MetricLine
+              label={t("overview.clicksReceived")}
+              value={totalClicks}
+            />
             <MetricLine label={t("overview.activeLinks")} value={totalLinks} />
 
             <p className="text-lg font-medium leading-relaxed text-muted-foreground lg:text-xl">

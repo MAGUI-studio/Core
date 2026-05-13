@@ -11,8 +11,8 @@ import { z } from "zod"
 import { logger } from "@/src/lib/logger"
 import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
-import { buildProposalScheduleData } from "@/src/lib/project-schedule"
 import { createAuditLog, getCurrentAppUser } from "@/src/lib/project-governance"
+import { buildProposalScheduleData } from "@/src/lib/project-schedule"
 import { revalidateCrmLead } from "@/src/lib/revalidate"
 
 function convertReaisToCents(value: number) {
@@ -238,8 +238,7 @@ export async function duplicateProposalAction(id: string) {
           totalValue: original.totalValue,
           currency: original.currency,
           notes: original.notes,
-          scheduleData:
-            (original.scheduleData ?? {}) as Prisma.InputJsonValue,
+          scheduleData: (original.scheduleData ?? {}) as Prisma.InputJsonValue,
           items: {
             create: original.items.map((item) => ({
               description: item.description,

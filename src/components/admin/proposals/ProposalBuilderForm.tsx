@@ -4,8 +4,8 @@ import * as React from "react"
 
 import { useTranslations } from "next-intl"
 
-import { useRouter } from "@/src/i18n/navigation"
 import { ProjectCategory } from "@/src/generated/client"
+import { useRouter } from "@/src/i18n/navigation"
 import {
   Calculator,
   ClockCountdown,
@@ -300,7 +300,8 @@ export function ProposalBuilderForm({
   const [includeConnectBonus, setIncludeConnectBonus] = React.useState(false)
   const [exposeInPortfolio, setExposeInPortfolio] = React.useState(true)
   const [keepFooterCredit, setKeepFooterCredit] = React.useState(true)
-  const [whiteLabelFeeValue, setWhiteLabelFeeValue] = React.useState("R$ 200,00")
+  const [whiteLabelFeeValue, setWhiteLabelFeeValue] =
+    React.useState("R$ 200,00")
   const [annualRenewalFeeValue, setAnnualRenewalFeeValue] =
     React.useState("R$ 297,00")
 
@@ -320,9 +321,7 @@ export function ProposalBuilderForm({
       ["Observações adicionais", notes],
       [
         t("builder.connectBonusTitle"),
-        includeConnectBonus
-          ? CONNECT_BONUS_NOTE
-          : "",
+        includeConnectBonus ? CONNECT_BONUS_NOTE : "",
       ],
     ]
       .map(([sectionTitle, content]) => [sectionTitle, content.trim()] as const)
@@ -382,7 +381,9 @@ export function ProposalBuilderForm({
       includesMaguiConnectBonus: includeConnectBonus,
       exposeInPortfolio,
       keepFooterCredit,
-      whiteLabelFeeCents: Math.round(parseCurrencyInput(whiteLabelFeeValue) * 100),
+      whiteLabelFeeCents: Math.round(
+        parseCurrencyInput(whiteLabelFeeValue) * 100
+      ),
       annualRenewalFeeCents: Math.round(
         parseCurrencyInput(annualRenewalFeeValue) * 100
       ),
@@ -858,7 +859,10 @@ export function ProposalBuilderForm({
 
           <div className="space-y-4 border-t border-border/20 pt-6">
             <div className="flex items-center gap-3">
-              <ShieldCheck className="size-5 text-brand-primary" weight="bold" />
+              <ShieldCheck
+                className="size-5 text-brand-primary"
+                weight="bold"
+              />
               <p className="text-[10px] font-black uppercase tracking-[0.22em] text-muted-foreground/55">
                 Governanca comercial
               </p>
@@ -871,7 +875,8 @@ export function ProposalBuilderForm({
                     Expor no portfolio
                   </p>
                   <p className="text-[11px] leading-relaxed text-muted-foreground/70">
-                    Autoriza a MAGUI.studio a mostrar o projeto em portfolio e materiais comerciais.
+                    Autoriza a MAGUI.studio a mostrar o projeto em portfolio e
+                    materiais comerciais.
                   </p>
                 </div>
                 <Switch
@@ -887,7 +892,8 @@ export function ProposalBuilderForm({
                     Manter credito no rodape
                   </p>
                   <p className="text-[11px] leading-relaxed text-muted-foreground/70">
-                    Se desligado, a proposta assume cenário de white label com taxa adicional.
+                    Se desligado, a proposta assume cenário de white label com
+                    taxa adicional.
                   </p>
                 </div>
                 <Switch
@@ -906,7 +912,10 @@ export function ProposalBuilderForm({
                     value={whiteLabelFeeValue}
                     onChange={(e) =>
                       setWhiteLabelFeeValue(
-                        formatCurrencyInput(parseCurrencyInput(e.target.value), currency)
+                        formatCurrencyInput(
+                          parseCurrencyInput(e.target.value),
+                          currency
+                        )
                       )
                     }
                     className="h-12 rounded-2xl border-border/40 bg-background/60 font-mono font-bold"
@@ -922,7 +931,10 @@ export function ProposalBuilderForm({
                   value={annualRenewalFeeValue}
                   onChange={(e) =>
                     setAnnualRenewalFeeValue(
-                      formatCurrencyInput(parseCurrencyInput(e.target.value), currency)
+                      formatCurrencyInput(
+                        parseCurrencyInput(e.target.value),
+                        currency
+                      )
                     )
                   }
                   className="h-12 rounded-2xl border-border/40 bg-background/60 font-mono font-bold"

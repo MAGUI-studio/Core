@@ -3,7 +3,9 @@ import * as React from "react"
 import { notFound, redirect } from "next/navigation"
 
 import { UserRole } from "@/src/generated/client"
+
 import { LeadDetailsPage } from "@/src/components/admin/LeadDetailsPage"
+
 import { getLeadDetails, getMessageTemplates } from "@/src/lib/crm-data"
 import { isAdmin } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
@@ -14,9 +16,7 @@ interface AdminLeadDetailPageProps {
   searchParams?: Promise<{ mode?: string }>
 }
 
-export async function generateMetadata({
-  params,
-}: AdminLeadDetailPageProps) {
+export async function generateMetadata({ params }: AdminLeadDetailPageProps) {
   const { id } = await params
   const lead = await prisma.lead.findUnique({
     where: { id },
@@ -24,8 +24,10 @@ export async function generateMetadata({
   })
 
   return dashboardMetadata({
-    title: lead ? `Lead: ${lead.companyName}` : "Lead",
-    description: "Detalhes administrativos, propostas e atividades do lead.",
+    title: lead ? `${lead.companyName} - Gestão de Lead` : "Gestão de Lead",
+    description: lead
+      ? `Página de gestão do lead ${lead.companyName} com propostas, pipeline, atividades e conversão em projeto na MAGUI.studio.`
+      : "Detalhes administrativos, propostas e atividades do lead.",
     path: `/admin/crm/leads/${id}`,
   })
 }

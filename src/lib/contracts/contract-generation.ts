@@ -259,10 +259,7 @@ function sanitizeCurrencyFragment(value: string) {
   return value.replace(/^R\$\s*/i, "").trim()
 }
 
-export function buildContractText({
-  proposal,
-  form,
-}: BuildContractTextInput) {
+export function buildContractText({ proposal, form }: BuildContractTextInput) {
   const parsedNotes = parseProposalNotes(proposal.notes)
   const totalValue = formatCurrencyBRL(
     proposal.totalValue / 100,
@@ -378,5 +375,3 @@ CLÁUSULA 12. DA VALIDADE JURÍDICA DIGITAL
 CLÁUSULA 13. DO FORO
 13.1. Fica eleito o Foro da Comarca de São José dos Campos/SP para dirimir controvérsias deste instrumento.`
 }
-
-

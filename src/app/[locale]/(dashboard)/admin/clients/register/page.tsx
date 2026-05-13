@@ -7,8 +7,9 @@ import { CreateClientForm } from "@/src/components/admin/CreateClientForm"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "Novo cliente",
-  description: "Cadastro administrativo de novos clientes da MAGUI.studio.",
+  title: "Cadastrar Novo Cliente",
+  description:
+    "Interface administrativa para registro de novos clientes, configuração de acessos e onboarding na MAGUI.studio.",
   path: "/admin/clients/register",
 })
 

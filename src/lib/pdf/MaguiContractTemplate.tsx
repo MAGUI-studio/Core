@@ -221,7 +221,12 @@ function buildBlocks(text: string): Block[] {
     if (block.type !== "spacer") return true
     const prev = array[index - 1]
     const next = array[index + 1]
-    return Boolean(prev) && Boolean(next) && prev.type !== "spacer" && next.type !== "spacer"
+    return (
+      Boolean(prev) &&
+      Boolean(next) &&
+      prev.type !== "spacer" &&
+      next.type !== "spacer"
+    )
   })
 }
 
@@ -249,7 +254,8 @@ function paginateBlocks(blocks: Block[]) {
 
   blocks.forEach((block, index) => {
     const blockHeight = estimateBlockHeight(block)
-    const currentLimit = pages.length === 0 ? firstPageUsableHeight : usableHeight
+    const currentLimit =
+      pages.length === 0 ? firstPageUsableHeight : usableHeight
 
     const nextBlock = blocks[index + 1]
     const keepWithNext =
@@ -305,10 +311,7 @@ function formatContractDate(value?: string | null) {
 }
 
 function renderHighlightedTokens(text: string) {
-  const normalizedText = text.replace(
-    /https:\/\/\s+([^\s),]+)/g,
-    "https://$1"
-  )
+  const normalizedText = text.replace(/https:\/\/\s+([^\s),]+)/g, "https://$1")
   const tokenPattern =
     /https?:\/\/[^\s),]+|02 \(dois\) dias úteis|01 \(um\) dia de atraso|2 \(dois\) dias úteis|1 \(um\) dia de atraso|\d+(?:\s*a\s*\d+)? dias úteis|01 \(um\)|12 meses|CONTRATADA ?|CONTRATANTE ?/gi
 
@@ -450,7 +453,7 @@ function getSignatureBlock(document: ContractDocumentData): Block {
       : typeof contractingData.legalName === "string" &&
           contractingData.legalName.trim().length > 0
         ? contractingData.legalName
-      : "[Nome do Responsável]"
+        : "[Nome do Responsável]"
 
   const contractDateLabel = formatContractDate(
     typeof commercialData.contractDate === "string"
@@ -486,7 +489,9 @@ export function MaguiContractTemplate({
           <Image src={PAGE_IMAGE} style={styles.sheet} fixed />
           <View style={styles.content}>
             {pageIndex === 0 ? (
-              <Text style={styles.title}>CONTRATO DE PRESTAÇÃO DE SERVIÇOS</Text>
+              <Text style={styles.title}>
+                CONTRATO DE PRESTAÇÃO DE SERVIÇOS
+              </Text>
             ) : null}
             {pageBlocks.map((block, index) =>
               renderBlock(block, `${pageIndex}-${index}`)

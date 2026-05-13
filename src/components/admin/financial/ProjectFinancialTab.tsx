@@ -285,8 +285,7 @@ export function ProjectFinancialTab({
                       </span>
                     </div>
                     <p className="text-sm font-medium text-muted-foreground/70">
-                      {invoice.description ||
-                        t("schedule.invoiceDescription")}
+                      {invoice.description || t("schedule.invoiceDescription")}
                     </p>
                   </div>
                   <div className="text-left sm:text-right">
@@ -294,7 +293,9 @@ export function ProjectFinancialTab({
                       {t("schedule.relatedProject")}
                     </p>
                     <p className="text-sm font-black uppercase tracking-tight text-foreground">
-                      {invoice.project?.name || projectName || t("schedule.projectLabel")}
+                      {invoice.project?.name ||
+                        projectName ||
+                        t("schedule.projectLabel")}
                     </p>
                   </div>
                 </div>
@@ -373,9 +374,13 @@ export function ProjectFinancialTab({
                                   : isOverdue
                                     ? t("schedule.overdue")
                                     : t("schedule.dueDate", {
-                                        date: format(new Date(inst.dueDate), "dd/MM", {
-                                          locale: ptBR,
-                                        }),
+                                        date: format(
+                                          new Date(inst.dueDate),
+                                          "dd/MM",
+                                          {
+                                            locale: ptBR,
+                                          }
+                                        ),
                                       })}
                               </span>
                             )}
@@ -435,7 +440,9 @@ export function ProjectFinancialTab({
                               ) : (
                                 <CreditCard weight="fill" className="size-5" />
                               )}
-                              {hasUnpaidPrevious ? t("schedule.blocked") : t("schedule.payNow")}
+                              {hasUnpaidPrevious
+                                ? t("schedule.blocked")
+                                : t("schedule.payNow")}
                             </Button>
 
                             {isAdmin && (
@@ -512,13 +519,19 @@ export function ProjectFinancialTab({
                 </label>
                 <Select value={paymentType} onValueChange={setPaymentType}>
                   <SelectTrigger className="h-14 rounded-2xl border-border/40 bg-muted/5 px-6 font-bold text-sm">
-                    <SelectValue placeholder={t("manualEntry.sourcePlaceholder")} />
+                    <SelectValue
+                      placeholder={t("manualEntry.sourcePlaceholder")}
+                    />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-border/10 bg-background/95 backdrop-blur-xl">
                     <SelectItem value="PIX">{t("paymentTypes.PIX")}</SelectItem>
                     <SelectItem value="TED">{t("paymentTypes.TED")}</SelectItem>
-                    <SelectItem value="CASH">{t("paymentTypes.CASH")}</SelectItem>
-                    <SelectItem value="OTHER">{t("paymentTypes.OTHER")}</SelectItem>
+                    <SelectItem value="CASH">
+                      {t("paymentTypes.CASH")}
+                    </SelectItem>
+                    <SelectItem value="OTHER">
+                      {t("paymentTypes.OTHER")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -14,11 +14,26 @@ import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
 import { dashboardMetadata } from "@/src/lib/seo"
 
-export const metadata = dashboardMetadata({
-  title: "Editar categoria de servico",
-  description: "Edicao de categoria de servico.",
-  path: "/admin/service-categories",
-})
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const category = await prisma.serviceCategory.findUnique({
+    where: { id },
+    select: { name: true },
+  })
+
+  return dashboardMetadata({
+    title: category
+      ? `${category.name} - Editar Categoria`
+      : "Editar Categoria de Serviço",
+    description:
+      "Interface administrativa para edição de detalhes, precificação e narrativa de valor de categorias de serviço na MAGUI.studio.",
+    path: `/admin/service-categories/${id}`,
+  })
+}
 
 interface ServiceCategoryDetailPageProps {
   params: Promise<{ id: string }>

@@ -17,9 +17,15 @@ import { LeadActivity, LeadNote } from "@/src/types/crm"
 import { addDays } from "date-fns"
 import { z } from "zod"
 
+import { createInvoiceAction } from "@/src/lib/actions/financial.actions"
 import { logger } from "@/src/lib/logger"
 import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
+import {
+  createAuditLog,
+  findOrCreateClientFromEmail,
+  getCurrentAppUser,
+} from "@/src/lib/project-governance"
 import {
   buildInitialProjectScheduleData,
   buildProjectSchedulePersistence,
@@ -28,11 +34,6 @@ import {
   proposalIncludesMaguiConnectBonus,
 } from "@/src/lib/project-schedule"
 import {
-  createAuditLog,
-  findOrCreateClientFromEmail,
-  getCurrentAppUser,
-} from "@/src/lib/project-governance"
-import {
   revalidateCrmLead,
   revalidateCrmLeads,
   revalidateCrmPrefs,
@@ -40,7 +41,6 @@ import {
   revalidateCrmViews,
   revalidateProjectData,
 } from "@/src/lib/revalidate"
-import { createInvoiceAction } from "@/src/lib/actions/financial.actions"
 
 const LeadSchema = z.object({
   companyName: z.string().min(2),
@@ -438,7 +438,9 @@ export async function convertLeadToProjectAction(input: {
         proposalSchedule.projectCategory ?? ProjectCategory.LANDING_PAGE
       const scheduleSeed =
         input.projectData.executionBusinessDays ??
-        getProposalExecutionDaysFromSchedule(selectedAcceptedProposal.scheduleData) ??
+        getProposalExecutionDaysFromSchedule(
+          selectedAcceptedProposal.scheduleData
+        ) ??
         20
       const includesMaguiConnectBonus = proposalIncludesMaguiConnectBonus(
         selectedAcceptedProposal.scheduleData
@@ -761,9 +763,9 @@ export async function getLeadSnapshotAction(leadId: string): Promise<{
       id: string
       title: string
       totalValue: number
-        executionBusinessDays: number | null
-        projectCategory: ProjectCategory | null
-        includesMaguiConnectBonus: boolean
+      executionBusinessDays: number | null
+      projectCategory: ProjectCategory | null
+      includesMaguiConnectBonus: boolean
     }>
     proposals: Array<{
       id: string

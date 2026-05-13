@@ -10,10 +10,33 @@ import { ClientSectionHeader } from "@/src/components/client/ClientSectionHeader
 
 import { getProjectInvoices } from "@/src/lib/financial-data"
 import prisma from "@/src/lib/prisma"
+import { dashboardMetadata } from "@/src/lib/seo"
 import { verifyAndSyncStripePayment } from "@/src/lib/stripe-actions"
 
 export const dynamic = "force-dynamic"
 export const revalidate = 0
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const project = await prisma.project.findUnique({
+    where: { id },
+    select: { name: true },
+  })
+
+  const t = await getTranslations("Dashboard.project_detail.pages.financial")
+
+  return dashboardMetadata({
+    title: project ? `${t("title")} - ${project.name}` : t("title"),
+    description: project
+      ? `${t("description")} Projeto: ${project.name}.`
+      : t("description"),
+    path: `/projects/${id}/financial`,
+  })
+}
 
 interface PageProps {
   params: Promise<{ id: string }>

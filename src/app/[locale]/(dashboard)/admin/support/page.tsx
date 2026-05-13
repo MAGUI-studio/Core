@@ -1,15 +1,15 @@
 import * as React from "react"
 
-import { getAdminSupportTickets } from "@/src/lib/support-data"
-import { dashboardMetadata } from "@/src/lib/seo"
-import { protectInternal } from "@/src/lib/permissions"
-
 import { AdminSupportTicketsTable } from "@/src/components/admin/support/AdminSupportTicketsTable"
 
+import { protectInternal } from "@/src/lib/permissions"
+import { dashboardMetadata } from "@/src/lib/seo"
+import { getAdminSupportTickets } from "@/src/lib/support-data"
+
 export const metadata = dashboardMetadata({
-  title: "Tickets de suporte",
+  title: "Central de Atendimento",
   description:
-    "Central administrativa para atendimento, resposta e acompanhamento dos tickets registrados no CRM.",
+    "Central administrativa de tickets da MAGUI.studio para atendimento, SLA, respostas e acompanhamento completo do suporte via CRM.",
   path: "/admin/support",
 })
 

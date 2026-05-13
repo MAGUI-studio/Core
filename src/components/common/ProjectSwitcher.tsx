@@ -96,7 +96,7 @@ export function ProjectSwitcher({
               {t("no_project_found")}
             </CommandEmpty>
             <CommandGroup className="p-3">
-              {projects.map((project) => (
+              {projects.map((project) =>
                 (() => {
                   const schedule = buildProjectScheduleView(
                     project.scheduleData,
@@ -140,7 +140,7 @@ export function ProjectSwitcher({
                     </CommandItem>
                   )
                 })()
-              ))}
+              )}
             </CommandGroup>
           </CommandList>
         </Command>

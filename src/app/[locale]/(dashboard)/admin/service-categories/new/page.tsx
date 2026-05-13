@@ -12,8 +12,9 @@ import { protect } from "@/src/lib/permissions"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "Nova categoria de servico",
-  description: "Cadastro de uma nova categoria de servico.",
+  title: "Cadastrar Nova Categoria",
+  description:
+    "Interface administrativa para cadastrar novas ofertas de serviço, precificação e descrição no catálogo da MAGUI.studio.",
   path: "/admin/service-categories/new",
 })
 

@@ -12,9 +12,9 @@ import prisma from "@/src/lib/prisma"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "Categorias de servico",
+  title: "Categorias de Serviço",
   description:
-    "Gestao das categorias de servico usadas em projetos e checkout.",
+    "Gestão das categorias de serviço utilizadas em projetos, propostas e operação comercial da MAGUI.studio.",
   path: "/admin/service-categories",
 })
 

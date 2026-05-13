@@ -18,8 +18,10 @@ import {
   UserCircle,
 } from "@phosphor-icons/react"
 import { toast } from "sonner"
-import { ProjectScheduleDelayTooltip } from "@/src/components/common/ProjectScheduleDelayTooltip"
+
 import { Button } from "@/src/components/ui/button"
+
+import { ProjectScheduleDelayTooltip } from "@/src/components/common/ProjectScheduleDelayTooltip"
 
 import {
   cancelProjectBonusManuallyAction,
@@ -52,11 +54,12 @@ interface ProjectDetailsHeaderProps {
 export function ProjectDetailsHeader({ project }: ProjectDetailsHeaderProps) {
   const t = useTranslations("Admin.projects.details")
   const router = useRouter()
-  const [isReleasingBonus, startBonusReleaseTransition] =
-    React.useTransition()
-  const [isCancellingBonus, startBonusCancelTransition] =
-    React.useTransition()
-  const schedule = buildProjectScheduleView(project.scheduleData, project.status)
+  const [isReleasingBonus, startBonusReleaseTransition] = React.useTransition()
+  const [isCancellingBonus, startBonusCancelTransition] = React.useTransition()
+  const schedule = buildProjectScheduleView(
+    project.scheduleData,
+    project.status
+  )
   const forecastDateLabel = schedule.currentForecastDate
     ? new Intl.DateTimeFormat("pt-BR", {
         weekday: "long",
@@ -252,7 +255,9 @@ export function ProjectDetailsHeader({ project }: ProjectDetailsHeaderProps) {
                     </span>
                   ) : null}
                   {visibleDelayReasons.length > 0 ? (
-                    <ProjectScheduleDelayTooltip reasons={visibleDelayReasons} />
+                    <ProjectScheduleDelayTooltip
+                      reasons={visibleDelayReasons}
+                    />
                   ) : null}
                 </div>
                 {schedule.clientDelayBusinessDays > 0 ? (
@@ -296,7 +301,6 @@ export function ProjectDetailsHeader({ project }: ProjectDetailsHeaderProps) {
               </Button>
             </div>
           ) : null}
-
         </div>
       </div>
     </div>

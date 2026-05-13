@@ -242,10 +242,12 @@ export function ProposalContractDrawer({
                 <div className="space-y-2">
                   <RequiredLabel>Tipo de contratante</RequiredLabel>
                   <div className="grid grid-cols-2 gap-2">
-                    {([
-                      { value: "COMPANY", label: "Empresa" },
-                      { value: "INDIVIDUAL", label: "Pessoa Física" },
-                    ] as const).map((option) => (
+                    {(
+                      [
+                        { value: "COMPANY", label: "Empresa" },
+                        { value: "INDIVIDUAL", label: "Pessoa Física" },
+                      ] as const
+                    ).map((option) => (
                       <Button
                         key={option.value}
                         type="button"

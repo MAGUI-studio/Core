@@ -15,8 +15,8 @@ import {
   DotsThreeVertical,
   DownloadSimple,
   Funnel,
-  MagnifyingGlass,
   LinkSimple,
+  MagnifyingGlass,
   Trash,
 } from "@phosphor-icons/react"
 import { toast } from "sonner"
@@ -47,12 +47,13 @@ import {
   TableRow,
 } from "@/src/components/ui/table"
 
+import { ProposalContractDrawer } from "@/src/components/admin/proposals/ProposalContractDrawer"
+
 import {
   deleteProposalAction,
   duplicateProposalAction,
   updateProposalStatusAction,
 } from "@/src/lib/actions/proposal.actions"
-import { ProposalContractDrawer } from "@/src/components/admin/proposals/ProposalContractDrawer"
 import { buildProposalPublicPath } from "@/src/lib/proposals/public-links"
 import { formatCurrencyBRLFromCents } from "@/src/lib/utils/utils"
 
@@ -109,17 +110,20 @@ export function ProposalsOverviewList({
       companyName: string
     } | null>(null)
 
-  const buildPublicProposalUrl = React.useCallback((proposal: ProposalRecord) => {
-    const origin =
-      typeof window !== "undefined"
-        ? window.location.origin
-        : (process.env.NEXT_PUBLIC_SITE_URL ?? "")
+  const buildPublicProposalUrl = React.useCallback(
+    (proposal: ProposalRecord) => {
+      const origin =
+        typeof window !== "undefined"
+          ? window.location.origin
+          : (process.env.NEXT_PUBLIC_SITE_URL ?? "")
 
-    return `${origin}${buildProposalPublicPath(
-      proposal.lead.instagram,
-      proposal.id
-    )}`
-  }, [])
+      return `${origin}${buildProposalPublicPath(
+        proposal.lead.instagram,
+        proposal.id
+      )}`
+    },
+    []
+  )
 
   const handleCopyPublicLink = async (proposal: ProposalRecord) => {
     await navigator.clipboard.writeText(buildPublicProposalUrl(proposal))
@@ -409,179 +413,193 @@ export function ProposalsOverviewList({
                     key={proposal.id}
                     className="group border-border/15 transition-all hover:bg-brand-primary/[0.02]"
                   >
-                  <TableCell className="px-8 py-6">
-                    <Link
-                      href={{
-                        pathname: "/admin/crm/leads/[id]/proposals",
-                        params: { id: proposal.lead.id },
-                      }}
-                      className="font-heading text-sm font-black uppercase tracking-tight text-foreground transition-colors hover:text-brand-primary"
-                    >
-                      {proposal.lead.companyName}
-                    </Link>
-                  </TableCell>
-                  <TableCell className="px-8 py-6">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[11px] font-bold text-foreground/80">
-                        {proposal.title}
+                    <TableCell className="px-8 py-6">
+                      <Link
+                        href={{
+                          pathname: "/admin/crm/leads/[id]/proposals",
+                          params: { id: proposal.lead.id },
+                        }}
+                        className="font-heading text-sm font-black uppercase tracking-tight text-foreground transition-colors hover:text-brand-primary"
+                      >
+                        {proposal.lead.companyName}
+                      </Link>
+                    </TableCell>
+                    <TableCell className="px-8 py-6">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-[11px] font-bold text-foreground/80">
+                          {proposal.title}
+                        </span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">
+                          #{proposal.number}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-8 py-6">
+                      {getStatusBadge(proposal.status)}
+                    </TableCell>
+                    <TableCell className="px-8 py-6">
+                      <span className="font-sans text-xs font-black text-foreground/90">
+                        {formatCurrencyBRLFromCents(proposal.totalValue)}
                       </span>
-                      <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">
-                        #{proposal.number}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-8 py-6">
-                    {getStatusBadge(proposal.status)}
-                  </TableCell>
-                  <TableCell className="px-8 py-6">
-                    <span className="font-sans text-xs font-black text-foreground/90">
-                      {formatCurrencyBRLFromCents(proposal.totalValue)}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-8 py-6">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[10px] font-bold text-muted-foreground/70">
-                        {new Date(proposal.createdAt).toLocaleDateString(
-                          "pt-BR"
-                        )}
-                      </span>
-                      {proposal.validUntil && (
-                        <span className="text-[8px] font-black uppercase tracking-wider text-muted-foreground/40">
-                          Val:{" "}
-                          {new Date(proposal.validUntil).toLocaleDateString(
+                    </TableCell>
+                    <TableCell className="px-8 py-6">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-[10px] font-bold text-muted-foreground/70">
+                          {new Date(proposal.createdAt).toLocaleDateString(
                             "pt-BR"
                           )}
                         </span>
-                      )}
-                    </div>
-                  </TableCell>
+                        {proposal.validUntil && (
+                          <span className="text-[8px] font-black uppercase tracking-wider text-muted-foreground/40">
+                            Val:{" "}
+                            {new Date(proposal.validUntil).toLocaleDateString(
+                              "pt-BR"
+                            )}
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell className="px-8 py-6 text-right">
                       <div className="flex items-center justify-end gap-2">
-                      <Button
-                        asChild
-                        variant="ghost"
-                        size="icon"
-                        className="size-9 rounded-full text-muted-foreground/40 hover:bg-brand-primary/10 hover:text-brand-primary"
-                        title={tList("openPdf")}
-                      >
-                        <a
-                          href={`/api/proposals/${proposal.id}/pdf`}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <Button
+                          asChild
+                          variant="ghost"
+                          size="icon"
+                          className="size-9 rounded-full text-muted-foreground/40 hover:bg-brand-primary/10 hover:text-brand-primary"
+                          title={tList("openPdf")}
                         >
-                          <ArrowSquareOut weight="bold" size={16} />
-                        </a>
-                      </Button>
+                          <a
+                            href={`/api/proposals/${proposal.id}/pdf`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <ArrowSquareOut weight="bold" size={16} />
+                          </a>
+                        </Button>
 
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-9 rounded-full text-muted-foreground/40 hover:bg-muted/10"
-                          >
-                            <DotsThreeVertical
-                              weight="bold"
-                              className="size-5"
-                            />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                          align="end"
-                          className="w-56 rounded-[1.5rem] border-border/40 bg-background/95 p-1.5 shadow-2xl backdrop-blur-xl"
-                        >
-                          <div className="px-3 py-2">
-                            <p className="text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
-                              {tList("exportLabel")}
-                            </p>
-                          </div>
-                          <DropdownMenuItem
-                            asChild
-                            className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
-                          >
-                            <a
-                              href={`/api/proposals/${proposal.id}/pdf?download=1`}
-                              download={`proposta-${proposal.number}.pdf`}
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="size-9 rounded-full text-muted-foreground/40 hover:bg-muted/10"
                             >
-                              <DownloadSimple className="mr-2 size-4" /> {tList("downloadPdf")}
-                            </a>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            asChild
-                            className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
+                              <DotsThreeVertical
+                                weight="bold"
+                                className="size-5"
+                              />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent
+                            align="end"
+                            className="w-56 rounded-[1.5rem] border-border/40 bg-background/95 p-1.5 shadow-2xl backdrop-blur-xl"
                           >
-                            <a
-                              href={buildPublicProposalUrl(proposal)}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                            <div className="px-3 py-2">
+                              <p className="text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+                                {tList("exportLabel")}
+                              </p>
+                            </div>
+                            <DropdownMenuItem
+                              asChild
+                              className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
                             >
-                              <LinkSimple className="mr-2 size-4" /> Abrir link público
-                            </a>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => void handleCopyPublicLink(proposal)}
-                            className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
-                          >
-                            <Copy className="mr-2 size-4" /> Copiar link público
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDuplicate(proposal.id)}
-                            className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
-                          >
-                            <Copy className="mr-2 size-4" /> {tList("duplicate")}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleGenerateContract(proposal)}
-                            className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
-                          >
-                            <ArrowSquareOut className="mr-2 size-4" /> Gerar contrato
-                          </DropdownMenuItem>
+                              <a
+                                href={`/api/proposals/${proposal.id}/pdf?download=1`}
+                                download={`proposta-${proposal.number}.pdf`}
+                              >
+                                <DownloadSimple className="mr-2 size-4" />{" "}
+                                {tList("downloadPdf")}
+                              </a>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              asChild
+                              className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
+                            >
+                              <a
+                                href={buildPublicProposalUrl(proposal)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <LinkSimple className="mr-2 size-4" /> Abrir
+                                link público
+                              </a>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                void handleCopyPublicLink(proposal)
+                              }
+                              className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
+                            >
+                              <Copy className="mr-2 size-4" /> Copiar link
+                              público
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleDuplicate(proposal.id)}
+                              className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
+                            >
+                              <Copy className="mr-2 size-4" />{" "}
+                              {tList("duplicate")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleGenerateContract(proposal)}
+                              className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
+                            >
+                              <ArrowSquareOut className="mr-2 size-4" /> Gerar
+                              contrato
+                            </DropdownMenuItem>
 
-                          <DropdownMenuSeparator className="my-1.5 bg-border/40" />
+                            <DropdownMenuSeparator className="my-1.5 bg-border/40" />
 
-                          <div className="px-3 py-2">
-                            <p className="text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
-                              {tList("statusLabel")}
-                            </p>
-                          </div>
-                          <DropdownMenuItem
-                            disabled={isLockedStatus || proposal.status === "SENT"}
-                            onClick={() =>
-                              handleStatusChange(proposal.id, "SENT")
-                            }
-                            className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-blue-500/10 focus:text-blue-600 data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
-                          >
-                            {tList("markAs", { status: t("SENT") })}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            disabled={isLockedStatus || proposal.status === "ACCEPTED"}
-                            onClick={() =>
-                              handleStatusChange(proposal.id, "ACCEPTED")
-                            }
-                            className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-emerald-500/10 focus:text-emerald-600 data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
-                          >
-                            {tList("markAs", { status: t("ACCEPTED") })}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            disabled={isLockedStatus || proposal.status === "REJECTED"}
-                            onClick={() =>
-                              handleStatusChange(proposal.id, "REJECTED")
-                            }
-                            className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-red-500/10 focus:text-red-600 data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
-                          >
-                            {tList("markAs", { status: t("REJECTED") })}
-                          </DropdownMenuItem>
+                            <div className="px-3 py-2">
+                              <p className="text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+                                {tList("statusLabel")}
+                              </p>
+                            </div>
+                            <DropdownMenuItem
+                              disabled={
+                                isLockedStatus || proposal.status === "SENT"
+                              }
+                              onClick={() =>
+                                handleStatusChange(proposal.id, "SENT")
+                              }
+                              className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-blue-500/10 focus:text-blue-600 data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
+                            >
+                              {tList("markAs", { status: t("SENT") })}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              disabled={
+                                isLockedStatus || proposal.status === "ACCEPTED"
+                              }
+                              onClick={() =>
+                                handleStatusChange(proposal.id, "ACCEPTED")
+                              }
+                              className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-emerald-500/10 focus:text-emerald-600 data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
+                            >
+                              {tList("markAs", { status: t("ACCEPTED") })}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              disabled={
+                                isLockedStatus || proposal.status === "REJECTED"
+                              }
+                              onClick={() =>
+                                handleStatusChange(proposal.id, "REJECTED")
+                              }
+                              className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight focus:bg-red-500/10 focus:text-red-600 data-[disabled]:pointer-events-none data-[disabled]:opacity-40"
+                            >
+                              {tList("markAs", { status: t("REJECTED") })}
+                            </DropdownMenuItem>
 
-                          <DropdownMenuSeparator className="my-1.5 bg-border/40" />
+                            <DropdownMenuSeparator className="my-1.5 bg-border/40" />
 
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(proposal.id)}
-                            className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight text-destructive focus:bg-destructive/10 focus:text-destructive"
-                          >
-                            <Trash className="mr-2 size-4" /> {tList("delete")}
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                            <DropdownMenuItem
+                              onClick={() => handleDelete(proposal.id)}
+                              className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight text-destructive focus:bg-destructive/10 focus:text-destructive"
+                            >
+                              <Trash className="mr-2 size-4" />{" "}
+                              {tList("delete")}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </TableCell>
                   </TableRow>

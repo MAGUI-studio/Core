@@ -16,9 +16,9 @@ import { getCurrentAppUser } from "@/src/lib/project-governance"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "CRM",
+  title: "Gestão de Leads",
   description:
-    "Pipeline comercial autenticado da MAGUI.studio com leads e templates.",
+    "Central de leads e relacionamento comercial da MAGUI.studio para acompanhar origem, estágio, propostas e conversão em projetos.",
   path: "/admin/crm",
 })
 
@@ -86,11 +86,7 @@ export default async function CRMPage({
         </div>
       </div>
 
-      <LeadsTable
-        leads={leads}
-        clients={clients}
-        templates={templates}
-      />
+      <LeadsTable leads={leads} clients={clients} templates={templates} />
     </main>
   )
 }

@@ -61,7 +61,10 @@ export default async function ProjectDetailPage({
   const tStatus = await getTranslations("Dashboard.status")
   const tDetail = await getTranslations("Dashboard.project_detail")
   const statusLabel = tStatus(project.status)
-  const schedule = buildProjectScheduleView(project.scheduleData, project.status)
+  const schedule = buildProjectScheduleView(
+    project.scheduleData,
+    project.status
+  )
   const scheduleData = normalizeProjectScheduleData(project.scheduleData)
 
   const statusTranslations = {
@@ -135,7 +138,9 @@ export default async function ProjectDetailPage({
             label: "Prazo contratado",
             value: (
               <span className="inline-flex items-center gap-2">
-                <span>{getExecutionDaysLabel(schedule.executionBusinessDays)}</span>
+                <span>
+                  {getExecutionDaysLabel(schedule.executionBusinessDays)}
+                </span>
                 {visibleDelayReasons.length > 0 ? (
                   <ProjectScheduleDelayTooltip reasons={visibleDelayReasons} />
                 ) : null}
@@ -153,7 +158,8 @@ export default async function ProjectDetailPage({
       <div className="mx-auto w-full">
         <ProjectStatusRoadmap
           currentStatus={
-            project.status === "ON_HOLD_CLIENT" || project.status === "ABANDONED"
+            project.status === "ON_HOLD_CLIENT" ||
+            project.status === "ABANDONED"
               ? scheduleData.operationalStatus
               : project.status
           }
@@ -228,7 +234,9 @@ export default async function ProjectDetailPage({
               <ClientActionBanner
                 type={pendingApprovals.length > 0 ? "approval" : "task"}
                 eyebrow={tDetail("banner.attention.eyebrow")}
-                title={pendingApprovals[0]?.title ?? clientTasks[0]?.title ?? ""}
+                title={
+                  pendingApprovals[0]?.title ?? clientTasks[0]?.title ?? ""
+                }
                 description={
                   pendingApprovals.length > 0
                     ? tDetail("banner.attention.description_approval")

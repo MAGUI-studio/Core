@@ -2,11 +2,7 @@
 
 import * as React from "react"
 
-import {
-  CalendarCheckIcon,
-  InfoIcon,
-  WarningIcon,
-} from "@phosphor-icons/react"
+import { CalendarCheckIcon, InfoIcon, WarningIcon } from "@phosphor-icons/react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { motion } from "framer-motion"

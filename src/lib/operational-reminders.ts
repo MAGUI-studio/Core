@@ -54,118 +54,117 @@ async function getReminderCandidates(): Promise<ReminderCandidate[]> {
     activeProjects,
     overdueActionItems,
     launchedProjects,
-  ] =
-    await Promise.all([
-      prisma.lead.findMany({
-        where: {
-          status: {
-            in: [LeadStatus.GARIMPAGEM, LeadStatus.CONTATO_REALIZADO],
-          },
-          updatedAt: {
-            lte: stalledLeadThreshold,
-          },
+  ] = await Promise.all([
+    prisma.lead.findMany({
+      where: {
+        status: {
+          in: [LeadStatus.GARIMPAGEM, LeadStatus.CONTATO_REALIZADO],
         },
-        select: {
-          id: true,
-          companyName: true,
-          status: true,
-          updatedAt: true,
+        updatedAt: {
+          lte: stalledLeadThreshold,
         },
-        take: 20,
-        orderBy: { updatedAt: "asc" },
-      }),
-      prisma.update.findMany({
-        where: {
-          requiresApproval: true,
-          approvalStatus: ApprovalStatus.PENDING,
-          createdAt: {
-            lte: pendingApprovalThreshold,
-          },
+      },
+      select: {
+        id: true,
+        companyName: true,
+        status: true,
+        updatedAt: true,
+      },
+      take: 20,
+      orderBy: { updatedAt: "asc" },
+    }),
+    prisma.update.findMany({
+      where: {
+        requiresApproval: true,
+        approvalStatus: ApprovalStatus.PENDING,
+        createdAt: {
+          lte: pendingApprovalThreshold,
         },
-        select: {
-          id: true,
-          title: true,
-          createdAt: true,
-          project: {
-            select: {
-              id: true,
-              name: true,
-            },
+      },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        project: {
+          select: {
+            id: true,
+            name: true,
           },
         },
-        take: 20,
-        orderBy: { createdAt: "asc" },
-      }),
-      prisma.project.findMany({
-        where: {
-          status: {
-            not: ProjectStatus.LAUNCHED,
+      },
+      take: 20,
+      orderBy: { createdAt: "asc" },
+    }),
+    prisma.project.findMany({
+      where: {
+        status: {
+          not: ProjectStatus.LAUNCHED,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        status: true,
+        scheduleData: true,
+        updatedAt: true,
+        client: {
+          select: {
+            name: true,
+            email: true,
           },
         },
-        select: {
-          id: true,
-          name: true,
-          status: true,
-          scheduleData: true,
-          updatedAt: true,
-          client: {
-            select: {
-              name: true,
-              email: true,
-            },
+        updates: {
+          select: {
+            createdAt: true,
           },
-          updates: {
-            select: {
-              createdAt: true,
-            },
-            orderBy: { createdAt: "desc" },
-            take: 1,
-          },
+          orderBy: { createdAt: "desc" },
+          take: 1,
         },
-        take: 50,
-        orderBy: { updatedAt: "asc" },
-      }),
-      prisma.actionItem.findMany({
-        where: {
-          status: "PENDING",
-          dueDate: {
-            lt: overdueStart,
+      },
+      take: 50,
+      orderBy: { updatedAt: "asc" },
+    }),
+    prisma.actionItem.findMany({
+      where: {
+        status: "PENDING",
+        dueDate: {
+          lt: overdueStart,
+        },
+      },
+      select: {
+        id: true,
+        title: true,
+        dueDate: true,
+        project: {
+          select: {
+            id: true,
+            name: true,
           },
         },
-        select: {
-          id: true,
-          title: true,
-          dueDate: true,
-          project: {
-            select: {
-              id: true,
-              name: true,
-            },
+      },
+      take: 20,
+      orderBy: { dueDate: "asc" },
+    }),
+    prisma.project.findMany({
+      where: {
+        status: ProjectStatus.LAUNCHED,
+      },
+      select: {
+        id: true,
+        name: true,
+        status: true,
+        scheduleData: true,
+        client: {
+          select: {
+            name: true,
+            email: true,
           },
         },
-        take: 20,
-        orderBy: { dueDate: "asc" },
-      }),
-      prisma.project.findMany({
-        where: {
-          status: ProjectStatus.LAUNCHED,
-        },
-        select: {
-          id: true,
-          name: true,
-          status: true,
-          scheduleData: true,
-          client: {
-            select: {
-              name: true,
-              email: true,
-            },
-          },
-        },
-        take: 50,
-        orderBy: { updatedAt: "desc" },
-      }),
-    ])
+      },
+      take: 50,
+      orderBy: { updatedAt: "desc" },
+    }),
+  ])
 
   const scheduleProjects = activeProjects.map((project) => ({
     ...project,

@@ -3,7 +3,6 @@
 import * as React from "react"
 
 import { useTranslations } from "next-intl"
-import { parseAsString, useQueryState } from "nuqs"
 
 import { LeadStatus } from "@/src/generated/client"
 import { Link } from "@/src/i18n/navigation"
@@ -25,6 +24,15 @@ import {
   Target,
   UserCircle,
 } from "@phosphor-icons/react"
+import { parseAsString, useQueryState } from "nuqs"
+
+import { Button } from "@/src/components/ui/button"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/src/components/ui/tabs"
 
 import { ConvertLeadDialog } from "@/src/components/admin/ConvertLeadDialog"
 import { LeadActivityFeed } from "@/src/components/admin/LeadActivityFeed"
@@ -33,17 +41,12 @@ import { LeadEditForm } from "@/src/components/admin/lead-drawer/LeadEditForm"
 import { LeadInfoDisplay } from "@/src/components/admin/lead-drawer/LeadInfoDisplay"
 import { LeadProposalsTab } from "@/src/components/admin/lead-drawer/LeadProposalsTab"
 import { LeadQuickActions } from "@/src/components/admin/lead-drawer/LeadQuickActions"
-import { Button } from "@/src/components/ui/button"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/src/components/ui/tabs"
+
 import {
   getLeadActivitiesAction,
   getLeadSnapshotAction,
 } from "@/src/lib/actions/crm.actions"
+
 import { useLeadMutations } from "@/src/hooks/use-lead-mutations"
 
 function formatDateTime(value: string | Date): string {
@@ -162,8 +165,7 @@ export function LeadDetailsPage({
           snapshotResult.lead?.acceptedProposalCount ??
           current.acceptedProposalCount,
         acceptedProposals:
-          snapshotResult.lead?.acceptedProposals ??
-          current.acceptedProposals,
+          snapshotResult.lead?.acceptedProposals ?? current.acceptedProposals,
         proposals: snapshotResult.lead?.proposals ?? current.proposals,
         client: snapshotResult.lead?.client ?? current.client,
       }))
@@ -213,7 +215,9 @@ export function LeadDetailsPage({
     matchedClient?.name || localLead.contactName || "Cliente nao identificado"
   const leadSourceLabel = t(`source.${localLead.source}`)
   const proposalCountLabel = String(localLead.proposalCount ?? 0)
-  const acceptedProposalCountLabel = String(localLead.acceptedProposalCount ?? 0)
+  const acceptedProposalCountLabel = String(
+    localLead.acceptedProposalCount ?? 0
+  )
   const updatedAtLabel = formatDateTime(localLead.updatedAt)
 
   return (
@@ -401,7 +405,10 @@ export function LeadDetailsPage({
           </TabsList>
         </div>
 
-        <TabsContent value="overview" className="mt-0 focus-visible:outline-none">
+        <TabsContent
+          value="overview"
+          className="mt-0 focus-visible:outline-none"
+        >
           <div className="grid gap-8 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
             <div className="space-y-8">
               {isEditing ? (
@@ -450,7 +457,9 @@ export function LeadDetailsPage({
                     label="Última atualização"
                     value={updatedAtLabel}
                     helper={
-                      isLoadingData ? "Sincronizando dados..." : "Base atualizada"
+                      isLoadingData
+                        ? "Sincronizando dados..."
+                        : "Base atualizada"
                     }
                   />
                 </div>
@@ -459,7 +468,10 @@ export function LeadDetailsPage({
           </div>
         </TabsContent>
 
-        <TabsContent value="pipeline" className="mt-0 focus-visible:outline-none">
+        <TabsContent
+          value="pipeline"
+          className="mt-0 focus-visible:outline-none"
+        >
           <div className="rounded-[2rem] border border-border/15 bg-muted/[0.03] p-6 sm:p-8">
             <SectionHeader title="Estágio do funil" icon={Sliders} />
             <div className="mt-6 flex flex-wrap gap-3">
@@ -486,7 +498,10 @@ export function LeadDetailsPage({
           </div>
         </TabsContent>
 
-        <TabsContent value="proposals" className="mt-0 focus-visible:outline-none">
+        <TabsContent
+          value="proposals"
+          className="mt-0 focus-visible:outline-none"
+        >
           <div className="space-y-4">
             <Button
               asChild
@@ -514,7 +529,10 @@ export function LeadDetailsPage({
           </div>
         </TabsContent>
 
-        <TabsContent value="messages" className="mt-0 focus-visible:outline-none">
+        <TabsContent
+          value="messages"
+          className="mt-0 focus-visible:outline-none"
+        >
           <div className="rounded-[2rem] border border-border/15 bg-muted/[0.03] p-6 sm:p-8">
             <LeadQuickActions
               lead={localLead}
@@ -524,7 +542,10 @@ export function LeadDetailsPage({
           </div>
         </TabsContent>
 
-        <TabsContent value="timeline" className="mt-0 focus-visible:outline-none">
+        <TabsContent
+          value="timeline"
+          className="mt-0 focus-visible:outline-none"
+        >
           <div className="rounded-[2rem] border border-border/15 bg-muted/[0.03] p-6 sm:p-8">
             <LeadActivityFeed activities={localLead.activities || []} />
           </div>

@@ -133,8 +133,7 @@ export function formatSupportSlaCountdown(
 ): string {
   if (!deadline) return "Sem prazo"
 
-  const deadlineDate =
-    deadline instanceof Date ? deadline : new Date(deadline)
+  const deadlineDate = deadline instanceof Date ? deadline : new Date(deadline)
 
   if (Number.isNaN(deadlineDate.getTime())) {
     return "Sem prazo"

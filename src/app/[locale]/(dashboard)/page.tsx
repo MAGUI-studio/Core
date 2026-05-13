@@ -20,8 +20,9 @@ import prisma from "@/src/lib/prisma"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "Dashboard",
-  description: "MAGUI.studio",
+  title: "Portal do Cliente",
+  description:
+    "Portal do cliente da MAGUI.studio para acompanhar status, tarefas, aprovações, arquivos e próximos passos do projeto.",
   path: "/",
 })
 

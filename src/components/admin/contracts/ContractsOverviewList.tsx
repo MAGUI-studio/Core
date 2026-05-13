@@ -9,8 +9,8 @@ import {
   CaretDown,
   CaretUp,
   CaretUpDown,
-  DownloadSimple,
   DotsThreeVertical,
+  DownloadSimple,
   Funnel,
   MagnifyingGlass,
 } from "@phosphor-icons/react"
@@ -41,6 +41,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui/table"
+
 import { updateDocumentStatusAction } from "@/src/lib/actions/document.actions"
 
 type ContractRecord = {

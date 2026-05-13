@@ -122,10 +122,22 @@ export default async function RootLayout({
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: t("name"),
-    description: t("description"),
-    url: siteConfig.url,
+    "@graph": [
+      {
+        "@type": "WebSite",
+        name: t("name"),
+        description: t("description"),
+        url: siteConfig.url,
+      },
+      {
+        "@type": "Organization",
+        name: siteConfig.name,
+        url: siteConfig.url,
+        description: t("description"),
+        email: siteConfig.contact.email,
+        logo: `${siteConfig.url}/favicon.ico`,
+      },
+    ],
   }
 
   const clerkLocalization = locale === "pt" ? ptBR : enUS

@@ -71,9 +71,12 @@ export async function generateMetadata({ params }: ProjectPageProps) {
   })
 
   return dashboardMetadata({
-    title: project ? `Projeto admin: ${project.name}` : "Projeto admin",
-    description:
-      "Detalhes administrativos, membros, atividades e atualizacoes do projeto.",
+    title: project
+      ? `${project.name} - Gestão do Projeto`
+      : "Gestão do Projeto",
+    description: project
+      ? `Painel administrativo do projeto ${project.name} com membros, atividades, ativos e atualizações operacionais.`
+      : "Detalhes administrativos, membros, atividades e atualizações do projeto.",
     path: `/admin/projects/${id}`,
   })
 }

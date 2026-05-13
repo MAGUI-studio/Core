@@ -2,6 +2,7 @@ import * as React from "react"
 
 import { getTranslations } from "next-intl/server"
 
+import { LeadStatus } from "@/src/generated/client"
 import { Link } from "@/src/i18n/navigation"
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr"
 
@@ -9,15 +10,14 @@ import { Button } from "@/src/components/ui/button"
 
 import { ProposalBuilderForm } from "@/src/components/admin/proposals/ProposalBuilderForm"
 
-import { LeadStatus } from "@/src/generated/client"
 import { protectAdmin } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
 import { dashboardMetadata } from "@/src/lib/seo"
 
 export const metadata = dashboardMetadata({
-  title: "Nova proposta comercial",
+  title: "Gerar Nova Proposta",
   description:
-    "Monte uma proposta comercial completa com lead selecionado, narrativa de valor, escopo detalhado e PDF pronto para apresentacao e download.",
+    "Interface de construção de propostas comerciais da MAGUI.studio com seleção de leads, escopo, narrativa de valor e automação de documentos.",
   path: "/admin/crm/proposals/new",
 })
 

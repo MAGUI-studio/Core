@@ -52,7 +52,7 @@ export function ClientLandingHero({
   const t = useTranslations("Dashboard.project_detail.hero")
 
   return (
-    <section className="relative overflow-hidden border-b border-border/20">
+    <section className="relative overflow-hidden border-b border-border/20 pb-10">
       <div className="mx-auto grid w-full max-w-440 gap-10 2xl:grid-cols-2 2xl:items-end">
         <div className="flex min-w-0 flex-col gap-8">
           <div className="flex flex-wrap items-center gap-3">

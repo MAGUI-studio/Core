@@ -99,7 +99,9 @@ export function ProjectFinancialSummary({
 
       <div className="mt-2 space-y-3 px-1">
         <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
-          <span className="text-muted-foreground/40">Progresso de Quitação</span>
+          <span className="text-muted-foreground/40">
+            Progresso de Quitação
+          </span>
           <span className="text-brand-primary">{Math.round(progress)}%</span>
         </div>
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted/50">

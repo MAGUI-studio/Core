@@ -78,7 +78,8 @@ export function ClientProfileForm({
           Editar informacoes
         </h2>
         <p className="text-sm text-muted-foreground/75">
-          Atualize nome, e-mail, username e dados de contato sem sair desta tela.
+          Atualize nome, e-mail, username e dados de contato sem sair desta
+          tela.
         </p>
       </div>
 

@@ -13,9 +13,19 @@ import {
 } from "@/src/generated/client"
 import { addDays } from "date-fns"
 
+import {
+  cancelProjectBonusIfNeeded,
+  forceCancelProjectBonus,
+  forceReleaseProjectBonus,
+  releaseProjectBonusIfEligible,
+} from "@/src/lib/invoice-fulfillment"
 import { logger } from "@/src/lib/logger"
 import { protect } from "@/src/lib/permissions"
 import prisma from "@/src/lib/prisma"
+import {
+  getAuditOriginLabel,
+  getCurrentAppUser,
+} from "@/src/lib/project-governance"
 import {
   buildInitialProjectScheduleData,
   buildProjectSchedulePersistence,
@@ -23,20 +33,10 @@ import {
   setProjectOperationalStatus,
 } from "@/src/lib/project-schedule"
 import {
-  getAuditOriginLabel,
-  getCurrentAppUser,
-} from "@/src/lib/project-governance"
-import {
   revalidateProjectData,
   revalidateProjectStatus,
 } from "@/src/lib/revalidate"
 import { getOrCreateStripeCustomer } from "@/src/lib/stripe-actions"
-import {
-  cancelProjectBonusIfNeeded,
-  forceCancelProjectBonus,
-  forceReleaseProjectBonus,
-  releaseProjectBonusIfEligible,
-} from "@/src/lib/invoice-fulfillment"
 import { getInternationalizationFeeCents } from "@/src/lib/utils/project-pricing"
 import { parseCurrencyBRLToCents } from "@/src/lib/utils/utils"
 import {

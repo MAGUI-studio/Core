@@ -243,7 +243,8 @@ function normalizeDelayEvent(value: unknown): ProjectDelayEvent | null {
           ? "Atraso no briefing"
           : "Atraso em aprovação pendente",
     description:
-      typeof source.description === "string" && source.description.trim().length > 0
+      typeof source.description === "string" &&
+      source.description.trim().length > 0
         ? source.description
         : buildDelayDescription({
             kind,
@@ -263,7 +264,9 @@ function normalizeDelayEvent(value: unknown): ProjectDelayEvent | null {
   }
 }
 
-function normalizePendingClientApproval(value: unknown): PendingClientApproval | null {
+function normalizePendingClientApproval(
+  value: unknown
+): PendingClientApproval | null {
   if (!value || typeof value !== "object") return null
 
   const source = value as Record<string, unknown>
@@ -483,8 +486,12 @@ export function normalizeProjectScheduleData(
     materialValidatedAt: toIsoString(parseDate(source.materialValidatedAt)),
     executionStartAt: toIsoString(parseDate(source.executionStartAt)),
     awaitingClientSince: toIsoString(parseDate(source.awaitingClientSince)),
-    clientDelayCalendarDays: parseNonNegativeInt(source.clientDelayCalendarDays),
-    clientDelayBusinessDays: parseNonNegativeInt(source.clientDelayBusinessDays),
+    clientDelayCalendarDays: parseNonNegativeInt(
+      source.clientDelayCalendarDays
+    ),
+    clientDelayBusinessDays: parseNonNegativeInt(
+      source.clientDelayBusinessDays
+    ),
     currentForecastDate: toIsoString(parseDate(source.currentForecastDate)),
     suspensionStartedAt: toIsoString(parseDate(source.suspensionStartedAt)),
     abandonedAt: toIsoString(parseDate(source.abandonedAt)),
@@ -680,11 +687,9 @@ export function syncProjectScheduleFromBriefing(
     : true
 
   const briefingValidatedAt =
-    schedule.briefingValidatedAt ??
-    (hasBriefing ? now.toISOString() : null)
+    schedule.briefingValidatedAt ?? (hasBriefing ? now.toISOString() : null)
   const assetsValidatedAt =
-    schedule.assetsValidatedAt ??
-    (hasAssets ? now.toISOString() : null)
+    schedule.assetsValidatedAt ?? (hasAssets ? now.toISOString() : null)
   const materialValidatedAt =
     schedule.materialValidatedAt ??
     (hasBriefing && hasAssets ? now.toISOString() : null)
@@ -696,7 +701,9 @@ export function syncProjectScheduleFromBriefing(
   const materialValidatedDate = parseDate(materialValidatedAt)
   const awaitingClientSince =
     materialValidatedAt === null
-      ? schedule.awaitingClientSince ?? schedule.briefingRequestedAt ?? now.toISOString()
+      ? (schedule.awaitingClientSince ??
+        schedule.briefingRequestedAt ??
+        now.toISOString())
       : null
 
   const briefingDelayCalendarDays = materialValidatedDate
@@ -747,7 +754,9 @@ export function syncProjectScheduleFromBriefing(
     openApprovalDelayCalendarDays
   const totalDelayBusinessDays =
     closedDelayBusinessDays +
-    (materialValidatedDate ? 0 : briefingDelayCalendarDays * schedule.delayMultiplier) +
+    (materialValidatedDate
+      ? 0
+      : briefingDelayCalendarDays * schedule.delayMultiplier) +
     openApprovalDelayBusinessDays
   const forecastDate = buildForecastDate(
     executionStartAt,
@@ -783,11 +792,11 @@ export function syncProjectScheduleFromBriefing(
     currentForecastDate: toIsoString(forecastDate),
     suspensionStartedAt:
       currentState === "ON_HOLD_CLIENT"
-        ? schedule.suspensionStartedAt ?? now.toISOString()
+        ? (schedule.suspensionStartedAt ?? now.toISOString())
         : null,
     abandonedAt:
       currentState === "ABANDONED"
-        ? schedule.abandonedAt ?? now.toISOString()
+        ? (schedule.abandonedAt ?? now.toISOString())
         : null,
     delayEvents,
   })
@@ -802,7 +811,11 @@ export function registerPendingClientApproval(
   }
 ) {
   const schedule = normalizeProjectScheduleData(rawSchedule)
-  if (schedule.pendingClientApprovals.some((item) => item.updateId === input.updateId)) {
+  if (
+    schedule.pendingClientApprovals.some(
+      (item) => item.updateId === input.updateId
+    )
+  ) {
     return schedule
   }
 
@@ -836,7 +849,10 @@ export function resolvePendingClientApproval(
   if (!pendingItem) return schedule
 
   const resolvedAt = input.resolvedAt ?? new Date()
-  const calendarDays = diffCalendarDays(new Date(pendingItem.requestedAt), resolvedAt)
+  const calendarDays = diffCalendarDays(
+    new Date(pendingItem.requestedAt),
+    resolvedAt
+  )
   const businessDaysAdded = calendarDays * schedule.delayMultiplier
   const pendingClientApprovals = schedule.pendingClientApprovals.filter(
     (item) => item.updateId !== input.updateId
@@ -916,28 +932,30 @@ export function buildProjectScheduleView(
       : 0
   const briefingDelayBusinessDays =
     briefingDelayCalendarDays * schedule.delayMultiplier
-  const pendingApprovalReasons = schedule.pendingClientApprovals.map((approval) => {
-    const calendarDays = diffCalendarDays(new Date(approval.requestedAt), now)
-    const businessDaysAdded = calendarDays * schedule.delayMultiplier
+  const pendingApprovalReasons = schedule.pendingClientApprovals.map(
+    (approval) => {
+      const calendarDays = diffCalendarDays(new Date(approval.requestedAt), now)
+      const businessDaysAdded = calendarDays * schedule.delayMultiplier
 
-    return toReasonView({
-      id: `approval-live-${approval.updateId}`,
-      kind: "APPROVAL_PENDING",
-      title: `Aguardando aprovação: ${approval.title}`,
-      description: buildDelayDescription({
+      return toReasonView({
+        id: `approval-live-${approval.updateId}`,
         kind: "APPROVAL_PENDING",
+        title: `Aguardando aprovação: ${approval.title}`,
+        description: buildDelayDescription({
+          kind: "APPROVAL_PENDING",
+          calendarDays,
+          businessDaysAdded,
+          contextTitle: approval.title,
+        }),
+        sourceId: approval.updateId,
+        startedAt: approval.requestedAt,
+        resolvedAt: null,
         calendarDays,
         businessDaysAdded,
-        contextTitle: approval.title,
-      }),
-      sourceId: approval.updateId,
-      startedAt: approval.requestedAt,
-      resolvedAt: null,
-      calendarDays,
-      businessDaysAdded,
-      isActive: true,
-    })
-  })
+        isActive: true,
+      })
+    }
+  )
   const closedDelayReasons = schedule.delayEvents.map((event) =>
     toReasonView({
       ...event,
@@ -965,7 +983,11 @@ export function buildProjectScheduleView(
           }),
         ]
       : []
-  const delayReasons = [...closedDelayReasons, ...briefingReason, ...pendingApprovalReasons]
+  const delayReasons = [
+    ...closedDelayReasons,
+    ...briefingReason,
+    ...pendingApprovalReasons,
+  ]
   const totalDelayCalendarDays = delayReasons.reduce(
     (acc, reason) => acc + reason.calendarDays,
     0
@@ -1051,7 +1073,8 @@ export function ensureProjectRenewalSchedule(
   launchedAt: Date = new Date()
 ) {
   const schedule = normalizeProjectScheduleData(rawSchedule)
-  const cycleStartedAt = schedule.renewalCycleStartedAt ?? launchedAt.toISOString()
+  const cycleStartedAt =
+    schedule.renewalCycleStartedAt ?? launchedAt.toISOString()
   const nextRenewalDate = new Date(cycleStartedAt)
   nextRenewalDate.setFullYear(nextRenewalDate.getFullYear() + 1)
 
@@ -1169,8 +1192,9 @@ export function buildProjectSchedulePersistence(
   const briefingRequestedAt = parseDate(schedule.briefingRequestedAt)
   const briefingValidatedAt = parseDate(schedule.briefingValidatedAt)
   const awaitingClientSince = parseDate(schedule.awaitingClientSince)
-  const lastResolvedDelay = [...schedule.delayEvents]
-    .sort((a, b) => b.resolvedAt.localeCompare(a.resolvedAt))[0]
+  const lastResolvedDelay = [...schedule.delayEvents].sort((a, b) =>
+    b.resolvedAt.localeCompare(a.resolvedAt)
+  )[0]
 
   return {
     executionBusinessDays: schedule.executionBusinessDays,

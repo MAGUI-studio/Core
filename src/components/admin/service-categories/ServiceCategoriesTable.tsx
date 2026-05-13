@@ -2,14 +2,13 @@
 
 import * as React from "react"
 
+import { Link } from "@/src/i18n/navigation"
 import {
   ArrowSquareOut,
   MagnifyingGlass,
   Plus,
   Tag,
 } from "@phosphor-icons/react"
-
-import { Link } from "@/src/i18n/navigation"
 
 import { Badge } from "@/src/components/ui/badge"
 import { Button } from "@/src/components/ui/button"

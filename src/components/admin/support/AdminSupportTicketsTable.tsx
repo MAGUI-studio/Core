@@ -7,6 +7,7 @@ import {
   SupportTicketStatus,
 } from "@/src/generated/client"
 import { Link, useRouter } from "@/src/i18n/navigation"
+import { SupportTicketRecord } from "@/src/types/support"
 import {
   ArrowSquareOut,
   CaretDown,
@@ -18,10 +19,6 @@ import {
 } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
-import {
-  SupportPriorityBadge,
-  SupportStatusBadge,
-} from "@/src/components/support/SupportTicketBadges"
 import { Button } from "@/src/components/ui/button"
 import {
   DropdownMenu,
@@ -48,6 +45,11 @@ import {
   TableRow,
 } from "@/src/components/ui/table"
 
+import {
+  SupportPriorityBadge,
+  SupportStatusBadge,
+} from "@/src/components/support/SupportTicketBadges"
+
 import { updateSupportTicketStatusAction } from "@/src/lib/actions/support.actions"
 import {
   SUPPORT_CATEGORY_LABELS,
@@ -55,14 +57,8 @@ import {
   SUPPORT_STATUS_LABELS,
   formatSupportSlaCountdown,
 } from "@/src/lib/utils/support"
-import { SupportTicketRecord } from "@/src/types/support"
 
-type SortKey =
-  | "client"
-  | "subject"
-  | "status"
-  | "priority"
-  | "updatedAt"
+type SortKey = "client" | "subject" | "status" | "priority" | "updatedAt"
 
 const STATUS_FILTERS = [
   "ALL",
@@ -173,7 +169,8 @@ export function AdminSupportTicketsTable({
           case "updatedAt":
           default:
             return (
-              (new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()) *
+              (new Date(a.updatedAt).getTime() -
+                new Date(b.updatedAt).getTime()) *
               direction
             )
         }
@@ -366,7 +363,9 @@ export function AdminSupportTicketsTable({
                   <TableCell className="px-8 py-6">
                     <div className="flex flex-col gap-0.5">
                       <span className="font-heading text-sm font-black uppercase tracking-tight text-foreground">
-                        {ticket.client.companyName ?? ticket.client.name ?? "Cliente"}
+                        {ticket.client.companyName ??
+                          ticket.client.name ??
+                          "Cliente"}
                       </span>
                       <span className="text-[10px] font-bold text-muted-foreground/60">
                         {ticket.client.email}
@@ -422,12 +421,15 @@ export function AdminSupportTicketsTable({
                       </span>
                       <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/40">
                         {ticket.slaDeadlineAt
-                          ? new Date(ticket.slaDeadlineAt).toLocaleString("pt-BR", {
-                              day: "2-digit",
-                              month: "2-digit",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })
+                          ? new Date(ticket.slaDeadlineAt).toLocaleString(
+                              "pt-BR",
+                              {
+                                day: "2-digit",
+                                month: "2-digit",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }
+                            )
                           : "Sem prazo"}
                       </span>
                     </div>
@@ -438,10 +440,13 @@ export function AdminSupportTicketsTable({
                         {new Date(ticket.updatedAt).toLocaleDateString("pt-BR")}
                       </span>
                       <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/40">
-                        {new Date(ticket.updatedAt).toLocaleTimeString("pt-BR", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                        {new Date(ticket.updatedAt).toLocaleTimeString(
+                          "pt-BR",
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
                       </span>
                     </div>
                   </TableCell>
@@ -471,7 +476,10 @@ export function AdminSupportTicketsTable({
                             size="icon"
                             className="size-9 rounded-full text-muted-foreground/40 hover:bg-muted/10"
                           >
-                            <DotsThreeVertical weight="bold" className="size-5" />
+                            <DotsThreeVertical
+                              weight="bold"
+                              className="size-5"
+                            />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
@@ -493,14 +501,19 @@ export function AdminSupportTicketsTable({
                           ).map((status) => (
                             <DropdownMenuItem
                               key={status}
-                              onClick={() => void handleStatusUpdate(ticket.id, status)}
+                              onClick={() =>
+                                void handleStatusUpdate(ticket.id, status)
+                              }
                               className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
                             >
                               {status.replaceAll("_", " ")}
                             </DropdownMenuItem>
                           ))}
                           <DropdownMenuSeparator className="my-1.5 bg-border/40" />
-                          <DropdownMenuItem asChild className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary">
+                          <DropdownMenuItem
+                            asChild
+                            className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
+                          >
                             <Link
                               href={{
                                 pathname: "/admin/support/[id]",

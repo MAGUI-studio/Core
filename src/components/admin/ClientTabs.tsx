@@ -32,9 +32,9 @@ import {
   TabsTrigger,
 } from "@/src/components/ui/tabs"
 
-import { MaguiConnectAdminView } from "@/src/components/admin/MaguiConnectAdminView"
 import { ClientPasswordResetCard } from "@/src/components/admin/ClientPasswordResetCard"
 import { ClientProfileForm } from "@/src/components/admin/ClientProfileForm"
+import { MaguiConnectAdminView } from "@/src/components/admin/MaguiConnectAdminView"
 import { AddInvoiceForm } from "@/src/components/admin/financial/AddInvoiceForm"
 
 import { formatCurrencyBRLFromCents } from "@/src/lib/utils/utils"
@@ -136,7 +136,10 @@ export function ClientTabs({
         </TabsList>
       </div>
 
-      <TabsContent value="billing" className="space-y-6 focus-visible:outline-none">
+      <TabsContent
+        value="billing"
+        className="space-y-6 focus-visible:outline-none"
+      >
         <section className="rounded-4xl border border-border/30 bg-muted/10 p-6 backdrop-blur-md">
           <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div className="space-y-2">
@@ -201,7 +204,8 @@ export function ClientTabs({
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground/75">
-                        {invoice.description || t("billing.noProjectDescription")}
+                        {invoice.description ||
+                          t("billing.noProjectDescription")}
                       </p>
                     </div>
 
@@ -229,9 +233,13 @@ export function ClientTabs({
                             {formatCurrencyBRLFromCents(installment.amount)}
                           </span>
                           <span className="text-xs text-muted-foreground/70">
-                            {format(new Date(installment.dueDate), "dd/MM/yyyy", {
-                              locale: ptBR,
-                            })}
+                            {format(
+                              new Date(installment.dueDate),
+                              "dd/MM/yyyy",
+                              {
+                                locale: ptBR,
+                              }
+                            )}
                           </span>
                         </div>
                         <Badge
@@ -315,7 +323,10 @@ export function ClientTabs({
         </Card>
       </TabsContent>
 
-      <TabsContent value="settings" className="mt-0 space-y-10 focus-visible:outline-none">
+      <TabsContent
+        value="settings"
+        className="mt-0 space-y-10 focus-visible:outline-none"
+      >
         <ClientProfileForm
           clerkUserId={clerkUserId}
           firstName={clientFirstName}

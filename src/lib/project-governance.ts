@@ -96,9 +96,7 @@ async function upsertUserFromClerk(clerkUserId: string) {
   throw new Error("Unable to sync Clerk user after retries")
 }
 
-function splitClientName(
-  name: string
-): {
+function splitClientName(name: string): {
   firstName: string
   lastName?: string
 } {

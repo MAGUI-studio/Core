@@ -238,11 +238,21 @@ export function CreateLeadForm(): React.JSX.Element {
                     position="popper"
                     className="border border-border/60 bg-background shadow-2xl"
                   >
-                    <SelectItem value="REFERRAL">{t("source.REFERRAL")}</SelectItem>
-                    <SelectItem value="ORGANIC">{t("source.ORGANIC")}</SelectItem>
-                    <SelectItem value="INSTAGRAM">{t("source.INSTAGRAM")}</SelectItem>
-                    <SelectItem value="LINKEDIN">{t("source.LINKEDIN")}</SelectItem>
-                    <SelectItem value="WEBSITE">{t("source.WEBSITE")}</SelectItem>
+                    <SelectItem value="REFERRAL">
+                      {t("source.REFERRAL")}
+                    </SelectItem>
+                    <SelectItem value="ORGANIC">
+                      {t("source.ORGANIC")}
+                    </SelectItem>
+                    <SelectItem value="INSTAGRAM">
+                      {t("source.INSTAGRAM")}
+                    </SelectItem>
+                    <SelectItem value="LINKEDIN">
+                      {t("source.LINKEDIN")}
+                    </SelectItem>
+                    <SelectItem value="WEBSITE">
+                      {t("source.WEBSITE")}
+                    </SelectItem>
                     <SelectItem value="OTHER">{t("source.OTHER")}</SelectItem>
                   </SelectContent>
                 </Select>
@@ -299,7 +309,6 @@ export function CreateLeadForm(): React.JSX.Element {
             ) : null}
           </div>
         </div>
-
       </div>
 
       <div className="flex items-center justify-end gap-4 border-t border-border/40 pt-6">

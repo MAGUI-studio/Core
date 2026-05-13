@@ -24,12 +24,13 @@ import {
 import { type Variants, motion } from "framer-motion"
 import { toast } from "sonner"
 
+import { ProjectScheduleDelayTooltip } from "@/src/components/common/ProjectScheduleDelayTooltip"
+
 import {
   approveUpdateAction,
   rejectUpdateAction,
   requestScopeChangeAction,
 } from "@/src/lib/actions/project.actions"
-import { ProjectScheduleDelayTooltip } from "@/src/components/common/ProjectScheduleDelayTooltip"
 import {
   buildProjectScheduleView,
   getExecutionDaysLabel,
@@ -164,7 +165,10 @@ export function DashboardSummary({
       }),
     []
   )
-  const schedule = buildProjectScheduleView(project.scheduleData, project.status)
+  const schedule = buildProjectScheduleView(
+    project.scheduleData,
+    project.status
+  )
   const visibleDelayReasons = schedule.delayReasons.filter(
     (reason) => reason.businessDaysAdded > 0
   )
@@ -543,7 +547,9 @@ export function DashboardSummary({
                                 Formalizar novo escopo
                               </SheetTitle>
                               <SheetDescription className="mt-3 text-sm font-medium leading-relaxed text-muted-foreground/60 text-left">
-                                Use este fluxo quando a etapa ja foi aprovada, mas voce precisa solicitar mudancas que extrapolam o combinado original.
+                                Use este fluxo quando a etapa ja foi aprovada,
+                                mas voce precisa solicitar mudancas que
+                                extrapolam o combinado original.
                               </SheetDescription>
                             </SheetHeader>
 
@@ -730,7 +736,9 @@ export function DashboardSummary({
                     {getExecutionDaysLabel(schedule.executionBusinessDays)}
                   </p>
                   {visibleDelayReasons.length > 0 ? (
-                    <ProjectScheduleDelayTooltip reasons={visibleDelayReasons} />
+                    <ProjectScheduleDelayTooltip
+                      reasons={visibleDelayReasons}
+                    />
                   ) : null}
                 </div>
                 <p className="mt-2 text-[10px] font-semibold leading-tight text-muted-foreground/65">

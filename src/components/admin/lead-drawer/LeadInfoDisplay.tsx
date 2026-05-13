@@ -1,8 +1,14 @@
 "use client"
 
-import { Buildings, EnvelopeSimple, Globe, InstagramLogo, Phone, User } from "@phosphor-icons/react"
-
 import { Lead } from "@/src/types/crm"
+import {
+  Buildings,
+  EnvelopeSimple,
+  Globe,
+  InstagramLogo,
+  Phone,
+  User,
+} from "@phosphor-icons/react"
 
 type LeadInfoDisplayProps = {
   lead: Lead
@@ -47,7 +53,8 @@ export function LeadInfoDisplay({
   client,
 }: LeadInfoDisplayProps): React.JSX.Element {
   const displayClientName = client?.name || lead.contactName || "Nao informado"
-  const displayCompanyName = client?.companyName || lead.companyName || "Nao informado"
+  const displayCompanyName =
+    client?.companyName || lead.companyName || "Nao informado"
   const displayEmail = client?.email || lead.email || "Nao informado"
   const displayPhone = client?.phone || lead.phone || "Nao informado"
   const displayRole = client?.position || "Contato principal"
@@ -71,7 +78,11 @@ export function LeadInfoDisplay({
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <InfoItem icon={User} label="Nome" value={displayClientName} />
-          <InfoItem icon={Buildings} label="Empresa" value={displayCompanyName} />
+          <InfoItem
+            icon={Buildings}
+            label="Empresa"
+            value={displayCompanyName}
+          />
           <InfoItem icon={EnvelopeSimple} label="E-mail" value={displayEmail} />
           <InfoItem icon={Phone} label="Telefone" value={displayPhone} />
           <InfoItem icon={User} label="Papel" value={displayRole} />

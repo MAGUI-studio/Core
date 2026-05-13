@@ -3,21 +3,22 @@
 import * as React from "react"
 
 import { Link, useRouter } from "@/src/i18n/navigation"
+import { SupportTicketRecord } from "@/src/types/support"
 import { ArrowLeft, PaperPlaneTilt } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
-import {
-  SupportPriorityBadge,
-  SupportStatusBadge,
-} from "@/src/components/support/SupportTicketBadges"
 import { Button } from "@/src/components/ui/button"
 import { Label } from "@/src/components/ui/label"
 import { Separator } from "@/src/components/ui/separator"
 import { Textarea } from "@/src/components/ui/textarea"
 
+import {
+  SupportPriorityBadge,
+  SupportStatusBadge,
+} from "@/src/components/support/SupportTicketBadges"
+
 import { replySupportTicketAction } from "@/src/lib/actions/support.actions"
 import { SUPPORT_CATEGORY_LABELS } from "@/src/lib/utils/support"
-import { SupportTicketRecord } from "@/src/types/support"
 
 export function ClientSupportTicketDetail({
   ticket,
@@ -139,7 +140,9 @@ export function ClientSupportTicketDetail({
                         {isClient ? "Você" : "Equipe MAGUI"}
                       </span>
                       <span className="text-[10px] text-muted-foreground/58">
-                        {new Date(messageItem.createdAt).toLocaleString("pt-BR")}
+                        {new Date(messageItem.createdAt).toLocaleString(
+                          "pt-BR"
+                        )}
                       </span>
                     </div>
                     <p className="max-w-3xl whitespace-pre-wrap text-[15px] leading-7 text-foreground/84">
