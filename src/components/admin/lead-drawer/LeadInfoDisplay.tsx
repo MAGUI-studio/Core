@@ -1,5 +1,7 @@
 "use client"
 
+import * as React from "react"
+
 import { Lead } from "@/src/types/crm"
 import {
   Buildings,
@@ -25,7 +27,7 @@ type LeadInfoDisplayProps = {
 type InfoItemProps = {
   icon: React.ElementType
   label: string
-  value: string
+  value: React.ReactNode
 }
 
 function InfoItem({ icon: Icon, label, value }: InfoItemProps) {
@@ -48,6 +50,29 @@ function InfoItem({ icon: Icon, label, value }: InfoItemProps) {
   )
 }
 
+function getInstagramHandle(instagramValue: string): string {
+  const cleanedValue = instagramValue
+    .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
+    .replace(/^\/+|\/+$/g, "")
+
+  if (!cleanedValue) {
+    return "@instagram"
+  }
+
+  return cleanedValue.startsWith("@") ? cleanedValue : `@${cleanedValue}`
+}
+
+function buildInstagramUrl(instagramValue: string): string {
+  if (
+    instagramValue.startsWith("http://") ||
+    instagramValue.startsWith("https://")
+  ) {
+    return instagramValue
+  }
+
+  return `https://instagram.com/${instagramValue.replace(/^@/, "").replace(/^\/+|\/+$/g, "")}`
+}
+
 export function LeadInfoDisplay({
   lead,
   client,
@@ -58,6 +83,10 @@ export function LeadInfoDisplay({
   const displayEmail = client?.email || lead.email || "Nao informado"
   const displayPhone = client?.phone || lead.phone || "Nao informado"
   const displayRole = client?.position || "Contato principal"
+  const instagramUrl = lead.instagram ? buildInstagramUrl(lead.instagram) : null
+  const instagramLabel = lead.instagram
+    ? getInstagramHandle(lead.instagram)
+    : "Nao informado"
   const clientOriginLabel = client
     ? lead.convertedProjectId
       ? "Cliente vinculado ao projeto"
@@ -89,7 +118,20 @@ export function LeadInfoDisplay({
           <InfoItem
             icon={InstagramLogo}
             label="Instagram"
-            value={lead.instagram || "Nao informado"}
+            value={
+              instagramUrl ? (
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition-colors hover:text-brand-primary"
+                >
+                  {instagramLabel}
+                </a>
+              ) : (
+                instagramLabel
+              )
+            }
           />
         </div>
 

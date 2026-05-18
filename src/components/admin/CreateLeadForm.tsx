@@ -37,6 +37,8 @@ type LeadSourceValue =
   | "INSTAGRAM"
   | "LINKEDIN"
   | "WEBSITE"
+  | "OUTBOUND"
+  | "EVENT"
   | "OTHER"
 
 export function CreateLeadForm(): React.JSX.Element {
@@ -253,6 +255,10 @@ export function CreateLeadForm(): React.JSX.Element {
                     <SelectItem value="WEBSITE">
                       {t("source.WEBSITE")}
                     </SelectItem>
+                    <SelectItem value="OUTBOUND">
+                      {t("source.OUTBOUND")}
+                    </SelectItem>
+                    <SelectItem value="EVENT">{t("source.EVENT")}</SelectItem>
                     <SelectItem value="OTHER">{t("source.OTHER")}</SelectItem>
                   </SelectContent>
                 </Select>

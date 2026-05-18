@@ -13,7 +13,6 @@ import {
   CaretUp,
   CaretUpDown,
   DotsThreeVertical,
-  Funnel,
   MagnifyingGlass,
   PencilSimple,
   SealWarning,
@@ -82,8 +81,42 @@ const LEAD_SOURCE_OPTIONS: LeadSource[] = [
   LeadSource.OTHER,
 ]
 
-function formatLeadSourceLabel(source: LeadSource): string {
-  return source.replaceAll("_", " ")
+function getInstagramHandle(instagramUrl: string): string {
+  const cleanedValue = instagramUrl
+    .trim()
+    .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
+    .replace(/^instagram\.com\//i, "")
+    .replace(/^\/+|\/+$/g, "")
+
+  if (!cleanedValue) {
+    return "@instagram"
+  }
+
+  return `@${cleanedValue.replace(/^@+/, "")}`
+}
+
+function getWebsiteLabel(websiteUrl: string): string {
+  try {
+    const normalizedUrl = websiteUrl.startsWith("http")
+      ? websiteUrl
+      : `https://${websiteUrl}`
+    const url = new URL(normalizedUrl)
+    return url.hostname.replace(/^www\./i, "")
+  } catch {
+    return websiteUrl.replace(/^https?:\/\//i, "").replace(/^www\./i, "")
+  }
+}
+
+function isInstagramLink(value: string): boolean {
+  return /(^@)|instagram\.com/i.test(value)
+}
+
+function buildInstagramUrl(value: string): string {
+  if (value.startsWith("http://") || value.startsWith("https://")) {
+    return value
+  }
+
+  return `https://instagram.com/${value.replace(/^@/, "").replace(/^\/+|\/+$/g, "")}`
 }
 
 export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
@@ -97,6 +130,11 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
     key: "updatedAt",
     direction: "desc",
   })
+
+  const formatLeadSourceLabel = React.useCallback(
+    (source: LeadSource) => t(`source.${source}`),
+    [t]
+  )
 
   if (leads !== prevLeads) {
     setPrevLeads(leads)
@@ -201,16 +239,9 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 px-3 text-muted-foreground/40">
-            <Funnel weight="bold" size={14} />
-            <span className="text-[10px] font-black uppercase tracking-widest">
-              Filtros
-            </span>
-          </div>
-
+        <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="h-12 w-44 rounded-2xl border-border/40 bg-muted/10 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+            <SelectTrigger className="h-12 w-full min-w-0 rounded-2xl border-border/40 bg-muted/10 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 sm:w-44">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl">
@@ -233,7 +264,7 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
           </Select>
 
           <Select value={sourceFilter} onValueChange={setSourceFilter}>
-            <SelectTrigger className="h-12 w-44 rounded-2xl border-border/40 bg-muted/10 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70">
+            <SelectTrigger className="h-12 w-full min-w-0 rounded-2xl border-border/40 bg-muted/10 text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 sm:w-44">
               <SelectValue placeholder="Origem" />
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl">
@@ -323,6 +354,18 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
               filteredAndSortedItems.map((lead) => {
                 const stagnant = isLeadStagnant(lead)
                 const nextAction = getNextActionMeta(lead.nextActionAt)
+                const rawContactLink = lead.instagram || lead.website || null
+                const contactLinkUrl =
+                  rawContactLink &&
+                  (Boolean(lead.instagram) || lead.source === LeadSource.INSTAGRAM)
+                    ? buildInstagramUrl(rawContactLink)
+                    : rawContactLink
+                const preferredLinkValue = lead.instagram || lead.website || ""
+                const contactLinkLabel = preferredLinkValue
+                  ? Boolean(lead.instagram) || lead.source === LeadSource.INSTAGRAM
+                      ? getInstagramHandle(preferredLinkValue)
+                      : getWebsiteLabel(preferredLinkValue)
+                  : "Sem link"
 
                 return (
                   <TableRow
@@ -381,9 +424,20 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
                         <span className="text-[10px] font-bold text-muted-foreground/70">
                           {formatLeadPhone(lead.phone) || "Sem telefone"}
                         </span>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">
-                          {lead.instagram || lead.website || "Sem link"}
-                        </span>
+                        {contactLinkUrl ? (
+                          <a
+                            href={contactLinkUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 transition-colors hover:text-brand-primary"
+                          >
+                            {contactLinkLabel}
+                          </a>
+                        ) : (
+                          <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">
+                            {contactLinkLabel}
+                          </span>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell className="px-8 py-6">
