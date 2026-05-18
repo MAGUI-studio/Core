@@ -24,21 +24,21 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
   executiveSummary: [
     {
       id: "exec-performance",
-      label: "Performance e Conversão",
+      label: "Performance e Conversao",
       content:
-        "A MAGUI.studio propõe uma entrega premium focada em performance e conversão para a [Empresa]. O objetivo é estruturar uma experiência digital que não apenas apresente a marca, mas conduza o usuário para a próxima ação com clareza, velocidade e uma narrativa comercial consistente.",
+        "A MAGUI.studio propoe uma entrega premium focada em performance e conversao para a [Empresa]. O objetivo e estruturar uma experiencia digital que nao apenas apresente a marca, mas conduza o usuario para a proxima acao com clareza, velocidade e uma narrativa comercial consistente.",
     },
     {
       id: "exec-institucional",
       label: "Institucional e Autoridade",
       content:
-        "Esta proposta foi desenhada para elevar o posicionamento e a percepção de autoridade da [Empresa]. Estruturamos uma presença digital séria, clara e tecnicamente consistente, alinhada com a experiência que o cliente final espera de uma marca confiável.",
+        "Esta proposta foi desenhada para elevar o posicionamento e a percepcao de autoridade da [Empresa]. Estruturamos uma presenca digital seria, clara e tecnicamente consistente, alinhada com a experiencia que o cliente final espera de uma marca confiavel.",
     },
     {
       id: "exec-growth",
       label: "Estrutura para Crescimento",
       content:
-        "Esta proposta organiza a presença digital da [Empresa] como um ativo comercial sólido, preparado para comunicar valor com clareza, reduzir ruído operacional e sustentar crescimento com uma base técnica confiável.",
+        "Esta proposta organiza a presenca digital da [Empresa] como um ativo comercial solido, preparado para comunicar valor com clareza, reduzir ruido operacional e sustentar crescimento com uma base tecnica confiavel.",
     },
   ],
   objectives: [
@@ -46,61 +46,61 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
       id: "obj-lp",
       label: "Landing Page",
       content:
-        "O objetivo deste projeto é otimizar a conversão e a velocidade de resposta, apresentando a oferta da [Empresa] com clareza e conduzindo o visitante para uma ação comercial direta sem distrações desnecessárias.",
+        "O objetivo deste projeto e otimizar a conversao e a velocidade de resposta, apresentando a oferta da [Empresa] com clareza e conduzindo o visitante para uma acao comercial direta sem distrações desnecessarias.",
     },
     {
       id: "obj-inst",
       label: "Institucional",
       content:
-        "O objetivo deste projeto é consolidar a presença institucional da [Empresa], organizar a apresentação dos serviços e transmitir uma percepção imediata de profissionalismo, autoridade e confiança.",
+        "O objetivo deste projeto e consolidar a presenca institucional da [Empresa], organizar a apresentacao dos servicos e transmitir uma percepcao imediata de profissionalismo, autoridade e confianca.",
     },
   ],
   expectedImpact: [
     {
       id: "imp-clarity",
-      label: "Clareza e confiança",
+      label: "Clareza e confianca",
       content:
-        "A expectativa é aumentar a percepção de valor da marca, facilitar a tomada de decisão do cliente final e reduzir o atrito comercial causado por comunicação confusa ou estrutura digital fraca.",
+        "A expectativa e aumentar a percepcao de valor da marca, facilitar a tomada de decisao do cliente final e reduzir o atrito comercial causado por comunicacao confusa ou estrutura digital fraca.",
     },
     {
       id: "imp-speed",
-      label: "Velocidade de decisão",
+      label: "Velocidade de decisao",
       content:
-        "Com uma experiência mais objetiva, rápida e bem organizada, o ciclo de resposta tende a ficar menor e a jornada de contato se torna mais eficiente para o visitante.",
+        "Com uma experiencia mais objetiva, rapida e bem organizada, o ciclo de resposta tende a ficar menor e a jornada de contato se torna mais eficiente para o visitante.",
     },
     {
       id: "imp-positioning",
       label: "Posicionamento premium",
       content:
-        "A entrega fortalece o posicionamento da empresa ao apresentar a marca com linguagem visual mais madura, melhor leitura de valor e uma experiência compatível com um serviço profissional.",
+        "A entrega fortalece o posicionamento da empresa ao apresentar a marca com linguagem visual mais madura, melhor leitura de valor e uma experiencia compativel com um servico profissional.",
     },
   ],
   differentials: [
     {
       id: "diff-governance",
-      label: "Governança e cadência",
+      label: "Governanca e cadencia",
       content:
-        "A condução do projeto acontece com checkpoints claros, critérios de aceite objetivos e uma rotina operacional documentada, o que reduz ruído, retrabalho e ambiguidades durante a execução.",
+        "A conducao do projeto acontece com checkpoints claros, criterios de aceite objetivos e uma rotina operacional documentada, o que reduz ruido, retrabalho e ambiguidades durante a execucao.",
     },
     {
       id: "diff-documentation",
-      label: "Rigor técnico",
+      label: "Rigor tecnico",
       content:
-        "A MAGUI.studio não entrega apenas uma página final pronta. Entrega uma estrutura técnica sólida, com foco em performance, previsibilidade de manutenção e padrão profissional de implementação.",
+        "A MAGUI.studio nao entrega apenas uma pagina final pronta. Entrega uma estrutura tecnica solida, com foco em performance, previsibilidade de manutencao e padrao profissional de implementacao.",
     },
     {
       id: "diff-performance",
-      label: "Performance e experiência",
+      label: "Performance e experiencia",
       content:
-        "O projeto é pensado para carregar rápido, funcionar bem em dispositivos móveis e transmitir seriedade desde o primeiro contato, sem depender de soluções improvisadas ou visuais genéricos.",
+        "O projeto e pensado para carregar rapido, funcionar bem em dispositivos moveis e transmitir seriedade desde o primeiro contato, sem depender de solucoes improvisadas ou visuais genericos.",
     },
   ],
   timeline: [
     {
       id: "time-standard",
-      label: "Padrão comercial",
+      label: "Padrao comercial",
       content:
-        "O cronograma é contado em dias úteis e só começa após a validação do briefing e o envio dos ativos obrigatórios pelo cliente no CRM da MAGUI.studio. Para este projeto, dias úteis correspondem a segunda-feira a sexta-feira, excluídos sábados, domingos, feriados nacionais e feriados municipais de São José dos Campos/SP.",
+        "O cronograma e contado em dias uteis e so comeca apos a validacao do briefing e o envio dos ativos obrigatorios pelo cliente no CRM da MAGUI.studio. Para este projeto, dias uteis correspondem a segunda-feira a sexta-feira, excluidos sabados, domingos, feriados nacionais e feriados municipais de Sao Jose dos Campos/SP.",
     },
   ],
   paymentTerms: [
@@ -108,7 +108,7 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
       id: "pay-kickoff",
       label: "Entrada + saldo final",
       content:
-        "O pagamento é dividido em duas etapas: 50% no ato da aprovação e assinatura, para reserva de agenda e início da estruturação, e 50% após a aprovação final em homologação, obrigatoriamente antes da publicação em produção. A cobrança é realizada pela plataforma via link seguro do Stripe, com opções como cartão de crédito e boleto bancário.",
+        "O fluxo financeiro do projeto ocorre em duas fases: uma entrada de 50% mediante a assinatura do contrato de prestacao de servicos, para alocacao de recursos e inicio imediato do design, e os 50% finais condicionados a aprovacao do projeto em homologacao, obrigatoriamente antes do deploy em producao. O faturamento e realizado via link seguro da Stripe atraves da infraestrutura da MAGUI.studio, com opcoes de pagamento via boleto bancario e cartao de credito.",
     },
   ],
   platformFlow: [
@@ -116,15 +116,15 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
       id: "plat-default",
       label: "Fluxo oficial pelo CRM",
       content:
-        "Toda a comunicação, aprovações, envio de materiais e acompanhamento das etapas acontece pela plataforma oficial da MAGUI.studio. Isso preserva histórico, reduz ruído operacional e garante rastreabilidade real de tudo o que foi solicitado, aprovado e entregue.",
+        "Toda a comunicacao, aprovacoes, envio de materiais e acompanhamento das etapas acontece pela plataforma oficial da MAGUI.studio. Isso preserva historico, reduz ruido operacional e garante rastreabilidade real de tudo o que foi solicitado, aprovado e entregue.",
     },
   ],
   nextSteps: [
     {
       id: "next-standard",
-      label: "Fechamento e início",
+      label: "Fechamento e inicio",
       content:
-        "A sequência prevista para início do projeto é simples e objetiva: aprovação da proposta comercial, assinatura do contrato digital, pagamento do sinal de 50%, preenchimento do briefing no CRM e envio dos ativos obrigatórios para liberação oficial do cronograma.",
+        "A sequencia prevista para inicio do projeto e simples e objetiva: aprovacao da proposta comercial, assinatura do contrato digital, pagamento do sinal de 50%, preenchimento do briefing no CRM e envio dos ativos obrigatorios para liberacao oficial do cronograma.",
     },
   ],
   acceptanceCriteria: [
@@ -132,27 +132,27 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
       id: "acc-operational",
       label: "Entrega validada",
       content:
-        "A entrega será considerada aprovada quando a solução refletir o escopo validado nos checkpoints, apresentar funcionamento correto em dispositivos modernos, manter consistência visual com a direção aprovada e cumprir os objetivos comerciais definidos para a proposta.",
+        "A entrega sera considerada aprovada quando a solucao refletir o escopo validado nos checkpoints, apresentar funcionamento correto em dispositivos modernos, manter consistencia visual com a direcao aprovada e cumprir os objetivos comerciais definidos para a proposta.",
     },
     {
       id: "acc-quality",
-      label: "Qualidade técnica",
+      label: "Qualidade tecnica",
       content:
-        "Os critérios de aceite consideram estabilidade da interface, responsividade, funcionamento de links e formulários, integridade dos blocos visuais e coerência entre a proposta aprovada e a entrega publicada em ambiente de homologação.",
+        "Os criterios de aceite consideram estabilidade da interface, responsividade, funcionamento de links e formularios, integridade dos blocos visuais e coerencia entre a proposta aprovada e a entrega publicada em ambiente de homologacao.",
     },
   ],
   notIncluded: [
     {
       id: "not-scope",
-      label: "Escopo excluído",
+      label: "Escopo excluido",
       content:
-        "Não fazem parte do escopo padrão a gestão de redes sociais, a criação contínua de posts e artes, o gerenciamento de tráfego pago, a redação publicitária integral e o licenciamento de ativos de terceiros que envolvam custo adicional para a operação.",
+        "Nao fazem parte do escopo padrao a gestao de redes sociais, a criacao continua de posts e artes, o gerenciamento de trafego pago, a redacao publicitaria integral e o licenciamento de ativos de terceiros que envolvam custo adicional para a operacao.",
     },
     {
       id: "not-infra",
       label: "Custos externos e continuidade",
       content:
-        "Custos de plataformas externas, APIs pagas, ativos premium e renovações futuras não estão incluídos além do que estiver explicitamente descrito nesta proposta. Após o primeiro ciclo de 12 meses, a continuidade da estrutura depende das regras comerciais de renovação e permanência vigentes.",
+        "Custos de plataformas externas, APIs pagas, ativos premium e renovacoes futuras nao estao incluidos alem do que estiver explicitamente descrito nesta proposta. Apos o primeiro ciclo de 12 meses, a continuidade da estrutura depende das regras comerciais de renovacao e permanencia vigentes.",
     },
   ],
   warranty: [
@@ -160,14 +160,14 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
       id: "war-30days",
       label: "Garantia e ajustes",
       content:
-        "Cada etapa contempla 02 rodadas de ajustes consolidados durante a execução. Após o lançamento, a garantia de 30 dias cobre exclusivamente correções de bugs técnicos dentro do escopo aprovado, sem incluir novas funcionalidades ou mudanças estratégicas fora do combinado.",
+        "Cada etapa contempla 02 rodadas de ajustes consolidados durante a execucao. Apos o lancamento, a garantia de 30 dias cobre exclusivamente correcoes de bugs tecnicos dentro do escopo aprovado, sem incluir novas funcionalidades ou mudancas estrategicas fora do combinado.",
     },
   ],
   itemDescriptions: [
     {
       id: "item-desc-lp",
       label: "Landing Page",
-      content: "Landing page comercial de alta conversão",
+      content: "Landing page comercial de alta conversao",
     },
     {
       id: "item-desc-inst",
@@ -180,13 +180,13 @@ export const PROPOSAL_PRESETS: ProposalPresets = {
       id: "item-long-lp",
       label: "Landing Page detalhada",
       content:
-        "Estrutura pensada para conversão direta, com narrativa comercial clara, design responsivo, integração com formulários ou WhatsApp e otimização para desempenho rápido em dispositivos móveis.",
+        "Estrutura pensada para conversao direta, com narrativa comercial clara, design responsivo, integracao com formularios ou WhatsApp e otimizacao para desempenho rapido em dispositivos moveis.",
     },
     {
       id: "item-long-inst",
       label: "Institucional detalhado",
       content:
-        "Presença digital institucional com organização clara dos serviços, leitura de autoridade da marca, páginas estratégicas e estrutura técnica preparada para performance, confiança e boa navegação.",
+        "Presenca digital institucional com organizacao clara dos servicos, leitura de autoridade da marca, paginas estrategicas e estrutura tecnica preparada para performance, confianca e boa navegacao.",
     },
   ],
 }
