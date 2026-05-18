@@ -8,14 +8,14 @@ import { LeadSource, LeadStatus } from "@/src/generated/client"
 import { Link } from "@/src/i18n/navigation"
 import { Lead, MessageTemplate } from "@/src/types/crm"
 import {
-  ArrowSquareOut,
-  CaretDown,
-  CaretUp,
-  CaretUpDown,
-  DotsThreeVertical,
-  MagnifyingGlass,
-  PencilSimple,
-  SealWarning,
+  ArrowSquareOutIcon,
+  CaretDownIcon,
+  CaretUpIcon,
+  CaretUpDownIcon,
+  DotsThreeVerticalIcon,
+  MagnifyingGlassIcon,
+  PencilSimpleIcon,
+  SealWarningIcon,
 } from "@phosphor-icons/react"
 
 import { Button } from "@/src/components/ui/button"
@@ -107,16 +107,31 @@ function getWebsiteLabel(websiteUrl: string): string {
   }
 }
 
-function isInstagramLink(value: string): boolean {
-  return /(^@)|instagram\.com/i.test(value)
-}
-
 function buildInstagramUrl(value: string): string {
   if (value.startsWith("http://") || value.startsWith("https://")) {
     return value
   }
 
   return `https://instagram.com/${value.replace(/^@/, "").replace(/^\/+|\/+$/g, "")}`
+}
+
+function getLeadTemperature(source: LeadSource): {
+  icon: string | null
+  label: string | null
+} {
+  switch (source) {
+    case LeadSource.WEBSITE:
+
+    case LeadSource.LINKEDIN:
+    case LeadSource.REFERRAL:
+    case LeadSource.ORGANIC:
+      return { icon: "🔥", label: "Lead quente" }
+    case LeadSource.INSTAGRAM:
+    case LeadSource.OUTBOUND:
+      return { icon: "🧊", label: "Lead frio" }
+    default:
+      return { icon: null, label: null }
+  }
 }
 
 export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
@@ -155,13 +170,13 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
 
   const getSortIcon = (key: SortConfig["key"]) => {
     if (sort.key !== key || !sort.direction) {
-      return <CaretUpDown className="size-3 opacity-30" />
+      return <CaretUpDownIcon className="size-3 opacity-30" />
     }
 
     return sort.direction === "asc" ? (
-      <CaretUp className="size-3 text-brand-primary" />
+      <CaretUpIcon className="size-3 text-brand-primary" />
     ) : (
-      <CaretDown className="size-3 text-brand-primary" />
+      <CaretDownIcon className="size-3 text-brand-primary" />
     )
   }
 
@@ -227,7 +242,7 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="group relative flex-1">
-          <MagnifyingGlass
+          <MagnifyingGlassIcon
             weight="bold"
             className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/50 transition-colors group-focus-within:text-brand-primary"
           />
@@ -354,23 +369,26 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
               filteredAndSortedItems.map((lead) => {
                 const stagnant = isLeadStagnant(lead)
                 const nextAction = getNextActionMeta(lead.nextActionAt)
+                const temperature = getLeadTemperature(lead.source)
                 const rawContactLink = lead.instagram || lead.website || null
                 const contactLinkUrl =
                   rawContactLink &&
-                  (Boolean(lead.instagram) || lead.source === LeadSource.INSTAGRAM)
+                  (Boolean(lead.instagram) ||
+                    lead.source === LeadSource.INSTAGRAM)
                     ? buildInstagramUrl(rawContactLink)
                     : rawContactLink
                 const preferredLinkValue = lead.instagram || lead.website || ""
                 const contactLinkLabel = preferredLinkValue
-                  ? Boolean(lead.instagram) || lead.source === LeadSource.INSTAGRAM
-                      ? getInstagramHandle(preferredLinkValue)
-                      : getWebsiteLabel(preferredLinkValue)
+                  ? Boolean(lead.instagram) ||
+                    lead.source === LeadSource.INSTAGRAM
+                    ? getInstagramHandle(preferredLinkValue)
+                    : getWebsiteLabel(preferredLinkValue)
                   : "Sem link"
 
                 return (
                   <TableRow
                     key={lead.id}
-                    className="group border-border/15 transition-all hover:bg-brand-primary/[0.02]"
+                    className="group border-border/15 transition-all hover:bg-brand-primary/2"
                   >
                     <TableCell className="px-8 py-6">
                       <div className="flex flex-col gap-1">
@@ -386,7 +404,7 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
                         <div className="flex flex-wrap items-center gap-2">
                           {stagnant ? (
                             <span className="inline-flex items-center gap-1 text-[8px] font-black uppercase tracking-[0.2em] text-amber-600 dark:text-amber-300">
-                              <SealWarning size={12} />
+                              <SealWarningIcon size={12} />
                               {getLeadDaysWithoutMovement(lead)} dia(s) sem
                               mover
                             </span>
@@ -415,9 +433,19 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
                       <LeadStatusBadge status={lead.status} />
                     </TableCell>
                     <TableCell className="px-8 py-6">
-                      <span className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
-                        {formatLeadSourceLabel(lead.source)}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {temperature.icon ? (
+                          <span
+                            title={temperature.label ?? undefined}
+                            className="text-xs leading-none"
+                          >
+                            {temperature.icon}
+                          </span>
+                        ) : null}
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
+                          {formatLeadSourceLabel(lead.source)}
+                        </span>
+                      </div>
                     </TableCell>
                     <TableCell className="px-8 py-6">
                       <div className="flex flex-col gap-0.5">
@@ -466,7 +494,7 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
                               params: { id: lead.id },
                             }}
                           >
-                            <ArrowSquareOut weight="bold" size={16} />
+                            <ArrowSquareOutIcon weight="bold" size={16} />
                           </Link>
                         </Button>
 
@@ -478,7 +506,7 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
                               className="size-9 rounded-full text-muted-foreground/40 hover:bg-muted/10"
                               title="Mais ações"
                             >
-                              <DotsThreeVertical
+                              <DotsThreeVerticalIcon
                                 weight="bold"
                                 className="size-5"
                               />
@@ -486,7 +514,7 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent
                             align="end"
-                            className="w-52 rounded-[1.5rem] border-border/40 bg-background/95 p-1.5 shadow-2xl backdrop-blur-xl"
+                            className="w-52 rounded-3xl border-border/40 bg-background/95 p-1.5 shadow-2xl backdrop-blur-xl"
                           >
                             <DropdownMenuItem
                               asChild
@@ -499,7 +527,7 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
                                   query: { mode: "edit" },
                                 }}
                               >
-                                <PencilSimple className="mr-2 size-4" />
+                                <PencilSimpleIcon className="mr-2 size-4" />
                                 Editar lead
                               </Link>
                             </DropdownMenuItem>
@@ -515,7 +543,7 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
                                 }}
                                 target="_blank"
                               >
-                                <ArrowSquareOut className="mr-2 size-4" />
+                                <ArrowSquareOutIcon className="mr-2 size-4" />
                                 Ver detalhes
                               </Link>
                             </DropdownMenuItem>
@@ -531,7 +559,7 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
                                 }}
                                 target="_blank"
                               >
-                                <ArrowSquareOut className="mr-2 size-4" />
+                                <ArrowSquareOutIcon className="mr-2 size-4" />
                                 Ver propostas
                               </Link>
                             </DropdownMenuItem>
