@@ -941,6 +941,9 @@ model Proposal {
 
   acceptedAt DateTime?
   acceptedIp String?
+  firstViewedAt DateTime?
+  lastViewedAt  DateTime?
+  viewCount     Int       @default(0)
 
   leadId String
   lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
@@ -952,12 +955,25 @@ model Proposal {
 
   items    ProposalItem[]
   invoices Invoice[]
+  viewEvents ProposalViewEvent[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([leadId])
   @@index([status])
+}
+
+model ProposalViewEvent {
+  id         String   @id @default(cuid())
+  proposalId String
+  proposal   Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  ip         String?
+  userAgent  String?  @db.Text
+  referer    String?  @db.Text
+  viewedAt   DateTime @default(now())
+
+  @@index([proposalId, viewedAt])
 }
 
 model ProposalItem {

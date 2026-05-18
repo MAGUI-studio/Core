@@ -11,6 +11,7 @@ import {
   CaretDown,
   CaretUp,
   CaretUpDown,
+  ChartBar,
   Copy,
   DotsThreeVertical,
   DownloadSimple,
@@ -545,6 +546,21 @@ export function ProposalsOverviewList({
                             >
                               <ArrowSquareOut className="mr-2 size-4" /> Gerar
                               contrato
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              asChild
+                              className="cursor-pointer rounded-xl px-3 py-2.5 text-[10px] font-bold uppercase tracking-tight focus:bg-brand-primary/10 focus:text-brand-primary"
+                            >
+                              <Link
+                                href={{
+                                  pathname:
+                                    "/admin/crm/proposals/[id]/statistics",
+                                  params: { id: proposal.id },
+                                }}
+                              >
+                                <ChartBar className="mr-2 size-4" />{" "}
+                                Estatísticas
+                              </Link>
                             </DropdownMenuItem>
 
                             <DropdownMenuSeparator className="my-1.5 bg-border/40" />

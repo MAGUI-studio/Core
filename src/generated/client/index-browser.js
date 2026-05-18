@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.7.0
- * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
+ * Prisma Client JS version: 7.8.0
+ * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 Prisma.prismaVersion = {
-  client: "7.7.0",
-  engine: "75cbdc1eb7150937890ad5465d861175c6624711"
+  client: "7.8.0",
+  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -576,10 +576,22 @@ exports.Prisma.ProposalScalarFieldEnum = {
   scheduleData: 'scheduleData',
   acceptedAt: 'acceptedAt',
   acceptedIp: 'acceptedIp',
+  firstViewedAt: 'firstViewedAt',
+  lastViewedAt: 'lastViewedAt',
+  viewCount: 'viewCount',
   leadId: 'leadId',
   projectId: 'projectId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProposalViewEventScalarFieldEnum = {
+  id: 'id',
+  proposalId: 'proposalId',
+  ip: 'ip',
+  userAgent: 'userAgent',
+  referer: 'referer',
+  viewedAt: 'viewedAt'
 };
 
 exports.Prisma.ProposalItemScalarFieldEnum = {
@@ -1009,6 +1021,7 @@ exports.Prisma.ModelName = {
   ScheduledReminder: 'ScheduledReminder',
   AuditLog: 'AuditLog',
   Proposal: 'Proposal',
+  ProposalViewEvent: 'ProposalViewEvent',
   ProposalItem: 'ProposalItem',
   ProposalBlock: 'ProposalBlock',
   BillingProfile: 'BillingProfile',
