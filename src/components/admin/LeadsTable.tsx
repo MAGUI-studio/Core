@@ -16,13 +16,28 @@ import {
   MagnifyingGlassIcon,
   PencilSimpleIcon,
   SealWarningIcon,
+  TrashIcon,
+  WarningOctagonIcon,
 } from "@phosphor-icons/react"
+import { toast } from "sonner"
 
 import { Button } from "@/src/components/ui/button"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/src/components/ui/alert-dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu"
 import { Input } from "@/src/components/ui/input"
@@ -43,6 +58,7 @@ import {
 } from "@/src/components/ui/table"
 
 import { LeadStatusBadge } from "@/src/components/admin/LeadStatusBadge"
+import { deleteLead } from "@/src/lib/actions/crm.actions"
 
 import {
   formatLeadPhone,
@@ -145,6 +161,7 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
     key: "updatedAt",
     direction: "desc",
   })
+  const [pendingDeletion, startDeletion] = React.useTransition()
 
   const formatLeadSourceLabel = React.useCallback(
     (source: LeadSource) => t(`source.${source}`),
@@ -178,6 +195,20 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
     ) : (
       <CaretDownIcon className="size-3 text-brand-primary" />
     )
+  }
+
+  const handleDelete = (leadId: string) => {
+    startDeletion(async () => {
+      const result = await deleteLead(leadId)
+
+      if (result.success) {
+        setItems((current) => current.filter((lead) => lead.id !== leadId))
+        setPrevLeads((current) => current.filter((lead) => lead.id !== leadId))
+        toast.success("Lead removido.")
+      } else {
+        toast.error(result.error ?? "Nao foi possivel remover o lead.")
+      }
+    })
   }
 
   const filteredAndSortedItems = React.useMemo(() => {
@@ -563,6 +594,71 @@ export function LeadsTable({ leads }: LeadsTableProps): React.JSX.Element {
                                 Ver propostas
                               </Link>
                             </DropdownMenuItem>
+
+                            <DropdownMenuSeparator className="my-1.5 bg-border/40" />
+
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <DropdownMenuItem
+                                  onSelect={(event) => event.preventDefault()}
+                                  className="cursor-pointer rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-tight text-destructive focus:bg-destructive/10 focus:text-destructive"
+                                >
+                                  <TrashIcon className="mr-2 size-4" />
+                                  Excluir lead
+                                </DropdownMenuItem>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent
+                                size="default"
+                                className="max-w-xl rounded-4xl border border-border/40 bg-background p-7 text-foreground shadow-2xl shadow-foreground/10 sm:max-w-xl"
+                              >
+                                <AlertDialogHeader className="gap-4 text-left sm:text-left">
+                                  <AlertDialogTitle className="font-heading text-2xl font-black uppercase tracking-tight text-foreground">
+                                    Excluir lead do CRM
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription className="max-w-none text-sm leading-relaxed text-muted-foreground/75">
+                                    Isso remove o lead de forma definitiva da lista comercial.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+
+                                <div className="grid gap-3 rounded-[1.5rem] border border-border/30 bg-muted/30 p-4 text-sm text-foreground/80">
+                                  <div className="flex items-center justify-between gap-4">
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/55">
+                                      Empresa
+                                    </span>
+                                    <span className="text-right font-black uppercase">
+                                      {lead.companyName}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between gap-4">
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/55">
+                                      Contato
+                                    </span>
+                                    <span className="text-right font-black">
+                                      {lead.contactName || "Nao informado"}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2 rounded-2xl border border-amber-500/20 bg-amber-500/10 px-3 py-3 text-amber-800 dark:text-amber-200">
+                                    <WarningOctagonIcon className="size-4 shrink-0" />
+                                    <span className="text-xs font-bold">
+                                      Essa acao nao pode ser desfeita.
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <AlertDialogFooter className="pt-2">
+                                  <AlertDialogCancel className="rounded-full border-border/30 bg-background">
+                                    Cancelar
+                                  </AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleDelete(lead.id)}
+                                    disabled={pendingDeletion}
+                                    className="rounded-full bg-red-500 text-white hover:bg-red-500/90"
+                                  >
+                                    Confirmar exclusao
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>
