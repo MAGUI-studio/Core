@@ -15,6 +15,8 @@ const intlMiddleware = createMiddleware({
 const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/proposal(.*)",
+  "/proposta(.*)",
   "/api/og(.*)",
   "/api/public/leads(.*)",
   "/api/uploadthing(.*)",
